@@ -1,0 +1,72 @@
+{
+  "l2arctic": {
+    "file_size": 7515454814,
+    "sha256": "490d5a43e48b0af84f6bce8e766ad453e8cd670521d5876bb4d0741cca304fda",
+    "md5": "0c475a7d1ca6771ab44de0f6a95d7e7e",
+    "total_members": 29,
+    "extensions": {
+      ".zip": 25,
+      "": 2,
+      ".md": 1,
+      ".pdf": 1
+    },
+    "total_uncompressed_bytes": 7523558772,
+    "total_compressed_bytes": 7515451916,
+    "duplicates_count": 0,
+    "unsafe_count": 0,
+    "top_level": [
+      "ZHAA.zip",
+      "RRBI.zip",
+      "ASI.zip",
+      "MBMPS.zip",
+      "suitcase_corpus.zip",
+      "TXHC.zip",
+      "NJS.zip",
+      "PNV.zip",
+      "HQTV.zip",
+      "BWC.zip",
+      "YKWK.zip",
+      "ERMS.zip",
+      "ABA.zip",
+      "HJK.zip",
+      "TLV.zip",
+      "PROMPTS",
+      "YBAA.zip",
+      "README.md",
+      "YDCK.zip",
+      "TNI.zip",
+      "README.pdf",
+      "SKA.zip",
+      "LXC.zip",
+      "SVBI.zip",
+      "LICENSE",
+      "HKK.zip",
+      "THV.zip",
+      "NCC.zip",
+      "EBVS.zip"
+    ],
+    "crc_status": "PASS"
+  },
+  "speechocean762": {
+    "file_size": 520810923,
+    "sha256": "876c34b828c2ebcc35ba2ff1ba5947d50e6b0162fc4a4af91db0942422b3bdd5",
+    "md5": "4d7f795bc3d60a6f80c1eb46a03a53c0",
+    "total_members": 5518,
+    "extensions": {
+      "<DIR>": 255,
+      "": 12,
+      ".md": 1,
+      ".wav": 5245,
+      ".txt": 1,
+      ".json": 2,
+      ".scp": 2
+    },
+    "total_uncompressed_bytes": 719457465,
+    "duplicates_count": 0,
+    "unsafe_count": 0,
+    "top_level": [
+      "speechocean762"
+    ],
+    "tar_stream_status": "PASS"
+  }
+}

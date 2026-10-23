@@ -1,0 +1,84 @@
+{
+  "total_annotations_inspected": 3599,
+  "global_counts": {
+    "total_phones_all": 135890,
+    "total_phones_nonsil": 119151,
+    "correct_phones": 101633,
+    "substitution_count": 14098,
+    "deletion_count": 3420,
+    "addition_count": 1092,
+    "err_tags": 269,
+    "asterisk_tags": 1496,
+    "unknown_symbols": {
+      "ER)": 1,
+      "D_": 1,
+      "W`": 1,
+      "V``": 1,
+      "Z_": 1,
+      "Y_": 1
+    },
+    "whitespace_issue_count": 3185
+  },
+  "l1_stats": {
+    "Arabic": {
+      "utterances": 599,
+      "phones_nonsil": 19764,
+      "correct": 17836,
+      "sub": 1708,
+      "del": 220,
+      "add": 274,
+      "err": 69,
+      "asterisk": 340
+    },
+    "Chinese": {
+      "utterances": 600,
+      "phones_nonsil": 19778,
+      "correct": 16740,
+      "sub": 2433,
+      "del": 605,
+      "add": 206,
+      "err": 36,
+      "asterisk": 53
+    },
+    "Hindi": {
+      "utterances": 600,
+      "phones_nonsil": 19737,
+      "correct": 16975,
+      "sub": 2420,
+      "del": 342,
+      "add": 109,
+      "err": 84,
+      "asterisk": 624
+    },
+    "Korean": {
+      "utterances": 600,
+      "phones_nonsil": 19686,
+      "correct": 17832,
+      "sub": 1560,
+      "del": 294,
+      "add": 105,
+      "err": 35,
+      "asterisk": 9
+    },
+    "Spanish": {
+      "utterances": 600,
+      "phones_nonsil": 20050,
+      "correct": 16835,
+      "sub": 2822,
+      "del": 393,
+      "add": 200,
+      "err": 42,
+      "asterisk": 311
+    },
+    "Vietnamese": {
+      "utterances": 600,
+      "phones_nonsil": 20136,
+      "correct": 15415,
+      "sub": 3155,
+      "del": 1566,
+      "add": 198,
+      "err": 3,
+      "asterisk": 159
+    }
+  }
+}

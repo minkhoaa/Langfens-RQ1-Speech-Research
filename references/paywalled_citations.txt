@@ -1,0 +1,15 @@
+# LANGFENS Paywalled & Restricted Research Citations
+
+1. Phone-level Pronunciation Scoring and Assessment for Interactive Language Learning (P02)
+   Authors: Silke M. Witt, Steve J. Young (2000)
+   Journal: Speech Communication, Vol. 30, No. 2-3, pp. 95-108
+   DOI: https://doi.org/10.1016/S0167-6393(99)00044-8
+   Status: ACCESS_RESTRICTED (Elsevier Paywall)
+
+2. Computer-assisted pronunciation training: A systematic review (P09)
+   Authors: Moustafa Amrate, Pi-hua Tsai (2024)
+   Journal: ReCALL, Cambridge University Press
+   DOI: https://doi.org/10.1017/S0958344024000181
+   Status: ACCESS_RESTRICTED (Cambridge Core Paywall)
+
+Note: L2-ARCTIC (Zhao et al., 2018) is Open Access via ISCA Interspeech archive and has been acquired as full text (zhao2018_l2_arctic.pdf).

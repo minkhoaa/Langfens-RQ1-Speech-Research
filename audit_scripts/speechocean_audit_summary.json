@@ -1,0 +1,21 @@
+{
+  "total_utterances": 5000,
+  "train_utterances": 2500,
+  "test_utterances": 2500,
+  "total_words": 31816,
+  "total_phones": 94445,
+  "phone_score_histogram": {
+    "2.0": 76202,
+    "1.8": 6141,
+    "1.0": 326,
+    "1.4": 861,
+    "1.2": 1501,
+    "1.6": 4872,
+    "0.0": 2287,
+    "0.6": 173,
+    "0.8": 966,
+    "0.4": 1041,
+    "0.2": 75
+  },
+  "total_issues": 0
+}

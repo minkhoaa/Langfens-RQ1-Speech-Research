@@ -1,0 +1,84 @@
+{
+  "generated_artifacts": [
+    {
+      "description": "Gate status (PASS), active blockers audit, and handover to RQ1-PREP-01",
+      "file_name": "BLOCKERS_AND_NEXT_ACTIONS.md",
+      "file_size_bytes": 4891,
+      "license": "CC BY-NC 4.0 / CC BY 4.0 (Dual/Composite)",
+      "relative_path": "manifests/RQ1-SPLIT-01/BLOCKERS_AND_NEXT_ACTIONS.md",
+      "sha256": "00e9e31dc5e75519136d4fd6b3f42c7b4abb65d6f6b10ba5c70a0865e7a070a2"
+    },
+    {
+      "description": "Formal erratum rectifying L2-ARCTIC license citation to CC BY-NC 4.0",
+      "file_name": "LICENSE_PROVENANCE_ERRATUM.md",
+      "file_size_bytes": 9449,
+      "license": "CC BY-NC 4.0",
+      "relative_path": "manifests/RQ1-SPLIT-01/LICENSE_PROVENANCE_ERRATUM.md",
+      "sha256": "fdef7abbd42bac29ed3219dde2b83d877dcec135b6db0b19aae4460a81a097d3"
+    },
+    {
+      "description": "Full mathematical and programmatic split validation audit report",
+      "file_name": "SPLIT_VALIDATION_REPORT.md",
+      "file_size_bytes": 16857,
+      "license": "CC BY-NC 4.0 / CC BY 4.0 (Dual/Composite)",
+      "relative_path": "manifests/RQ1-SPLIT-01/SPLIT_VALIDATION_REPORT.md",
+      "sha256": "9df3a7e488f77773f1c99966324b61f41ef6c57cfc9efe37875a6d9019d5ea3d"
+    },
+    {
+      "description": "Deterministic, balanced 4-fold speaker-independent CV manifest for L2-ARCTIC",
+      "file_name": "l2arctic_4fold_splits.json",
+      "file_size_bytes": 448900,
+      "license": "CC BY-NC 4.0",
+      "relative_path": "manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json",
+      "sha256": "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b"
+    },
+    {
+      "description": "Vietnamese evaluation splits: Regime A (Intra-L1 LOSO) and Regime B (Zero-Shot)",
+      "file_name": "l2arctic_loso_vietnamese_splits.json",
+      "file_size_bytes": 582840,
+      "license": "CC BY-NC 4.0",
+      "relative_path": "manifests/RQ1-SPLIT-01/l2arctic_loso_vietnamese_splits.json",
+      "sha256": "7a59b63ad73c7616af2ef583760b50253c973090c4c7c76aadc46029cfe69118"
+    },
+    {
+      "description": "Preserved official test split with 25-speaker stratified train-val sub-split",
+      "file_name": "speechocean762_official_splits.json",
+      "file_size_bytes": 126598,
+      "license": "CC BY 4.0",
+      "relative_path": "manifests/RQ1-SPLIT-01/speechocean762_official_splits.json",
+      "sha256": "bc3f9ec97b5077402b3c67d89c857b9efe694649bef6e5d43776f07b528bad17"
+    }
+  ],
+  "provenance_metadata": {
+    "engineering_role": "Senior Speech ML Research Engineer & Research Data Engineer",
+    "gate_status": "PASS",
+    "generated_at_utc": "2026-10-23T13:30:00Z",
+    "input_corpus_sources": [
+      {
+        "archive_path": "datasets/L2-ARCTIC/original/l2arctic_release_v5.0.zip",
+        "dataset_name": "L2-ARCTIC",
+        "file_size_bytes": 7515454814,
+        "license": "CC BY-NC 4.0",
+        "sha256": "490d5a43e48b0af84f6bce8e766ad453e8cd670521d5876bb4d0741cca304fda",
+        "source_url": "https://psi.engr.tamu.edu/l2-arctic-corpus/",
+        "version": "Release v5.0 (March 2020)"
+      },
+      {
+        "archive_path": "datasets/SpeechOcean762/original/speechocean762.tar.gz",
+        "dataset_name": "SpeechOcean762",
+        "file_size_bytes": 520810923,
+        "license": "CC BY 4.0",
+        "sha256": "876c34b828c2ebcc35ba2ff1ba5947d50e6b0162fc4a4af91db0942422b3bdd5",
+        "source_url": "https://openslr.org/101/",
+        "version": "SLR101 / commit 613968e"
+      }
+    ],
+    "phase": "RQ1-SPLIT-01",
+    "project": "LANGFENS",
+    "system_environment": {
+      "platform": "Linux-7.2.11-1-cachyos-x86_64-with-glibc2.44",
+      "python_version": "3.14.8",
+      "rclone_version": "rclone v1.75.2"
+    }
+  }
+}
