@@ -1,0 +1,55 @@
+# ==============================================================================
+# Langfens RQ1 — Hugging Face Model Registry Configuration
+# Target Model Registry: langfens-wav2vec2-mdd
+# ==============================================================================
+
+model_registry:
+  repo_id: "langfens-wav2vec2-mdd"
+  repo_type: "model"
+  private: false
+  license: "cc-by-nc-4.0"
+
+metadata:
+  model_name: "Langfens Wav2Vec 2.0 Phoneme Mispronunciation Detection & Diagnosis"
+  base_model: "facebook/wav2vec2-base-960h"
+  architecture: "Wav2Vec2ForPreTraining / Custom Multi-Task MDD Head"
+  tasks:
+    - "automatic-speech-recognition"
+    - "audio-classification"
+  languages:
+    - "en"
+  tags:
+    - "speech"
+    - "wav2vec2"
+    - "mispronunciation-detection"
+    - "mdd"
+    - "computer-assisted-pronunciation-training"
+    - "capt"
+    - "phoneme-recognition"
+    - "l2-arctic"
+    - "speechocean762"
+  datasets:
+    - "L2-ARCTIC v5.0"
+    - "SpeechOcean762"
+
+evaluation_benchmarks:
+  primary_protocol: "4-Fold Speaker-Independent Cross-Validation"
+  metrics:
+    - name: "Strict Binary PR-AUC"
+      denominator: 119151
+      target_tokens: "Canonical Prompt Phonemes"
+    - name: "Strict Binary F1-Score"
+    - name: "Substitution Diagnosis Accuracy"
+      evaluable_substitutions: 13829
+    - name: "Corpus Deletion Recall"
+      total_deletions: 3420
+    - name: "Vietnamese Deletion Recall"
+      vietnamese_deletions: 1566
+
+artifacts_to_publish:
+  - "pytorch_model.bin" # or model.safetensors
+  - "config.json"
+  - "preprocessor_config.json"
+  - "vocab.json"
+  - "README.md" # Model Card
+  - "metrics_summary.json"

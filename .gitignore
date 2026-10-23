@@ -1,8 +1,96 @@
+# ==============================================================================
+# Langfens RQ1 — Git Ignore Specification
+# Prevents large speech datasets, audio archives, checkpoints and temporary data
+# from contaminating the GitHub repository.
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# 1. Datasets & Raw Corpus Audio Archives (Strictly Prohibited from Git)
+# ------------------------------------------------------------------------------
 datasets/
-.venv/
-__pycache__/
-*.pyc
-.pytest_cache/
-*.tmp
+*.zip
+*.tar.gz
+*.tar
+*.tgz
+*.rar
+*.7z
+*.bz2
+
+# Raw Audio Formats
+*.wav
+*.WAV
+*.mp3
+*.flac
+*.ogg
+*.m4a
+*.sph
+*.TextGrid.gz
+
+# Local Ephemeral Audio Staging & Temp Caches
+staged_audio/
+data_stage/
+audio_stage/
 tmp/
+*.tmp
+*.temp
+
+# ------------------------------------------------------------------------------
+# 2. Machine Learning Checkpoints, Model Weights & Large Artifacts
+# ------------------------------------------------------------------------------
+checkpoints/
+models/
+artifacts/
+*.pt
+*.pth
+*.bin
+*.safetensors
+*.ckpt
+*.onnx
+*.h5
+*.pkl
+
+# ------------------------------------------------------------------------------
+# 3. Experiment Tracking & Logging
+# ------------------------------------------------------------------------------
+wandb/
+runs/
+.tensorboard/
+*.log
+
+# ------------------------------------------------------------------------------
+# 4. Python Environment, Build & Caches
+# ------------------------------------------------------------------------------
+.venv/
+venv/
+env/
+ENV/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# ------------------------------------------------------------------------------
+# 5. Jupyter Notebooks & IDE Configurations
+# ------------------------------------------------------------------------------
 .ipynb_checkpoints/
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ------------------------------------------------------------------------------
+# 6. Operating System Files & Credentials / Secrets
+# ------------------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+*.token
+*.key
+*.pem
+.env
+.env.*
+!.env.example
