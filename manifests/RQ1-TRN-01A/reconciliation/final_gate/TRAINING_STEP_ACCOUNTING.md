@@ -62,11 +62,15 @@ We establish precise mathematical definitions:
 
 ### Reconciled Computational Dimensions:
 
-| Scope | Samples Processed | Micro-Batches | Forward/Backward Steps | Optimizer Steps | Effective Batches |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **Per Epoch (Single Fold)** | $2,400$ | $600$ | $600$ | $150$ | $150$ |
-| **Per Fold ($25$ Epochs)** | $60,000$ | $15,000$ | **$15,000$** | **$3,750$** | $3,750$ |
-| **Complete 4-Fold Cross-Validation** | **$240,000$** | **$60,000$** | **$60,000$** | **$15,000$** | **$15,000$** |
+| Scope | Nominal Utterances | Exact Utterances ($N_{\text{train}}$) | Exact Sample Exposures ($25$ Epochs) | Micro-Batches ($B=4$) | Forward/Backward Steps | Optimizer Steps ($A=4$) |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Fold 1** | $2,400$ | $2,399$ | $2,399 \times 25 = \mathbf{59,975}$ | $600$ | $15,000$ | $3,750$ |
+| **Fold 2** | $2,400$ | $2,400$ | $2,400 \times 25 = \mathbf{60,000}$ | $600$ | $15,000$ | $3,750$ |
+| **Fold 3** | $2,400$ | $2,400$ | $2,400 \times 25 = \mathbf{60,000}$ | $600$ | $15,000$ | $3,750$ |
+| **Fold 4** | $2,400$ | $2,399$ | $2,399 \times 25 = \mathbf{59,975}$ | $600$ | $15,000$ | $3,750$ |
+| **Complete 4-Fold CV** | **$9,600$** | **$9,598$** | **$9,598 \times 25 = \mathbf{239,950}$** | **$60,000$** | **$60,000$** | **$15,000$** |
+
+*Exact Accounting Erratum:* While nominal estimates round each fold to $2,400$ utterances ($2,400 \times 4 \times 25 = 240,000$ sample exposures), the exact cardinality across all four folds is $2,399 + 2,400 + 2,400 + 2,399 = 9,598$ unique train utterances, yielding exactly **$239,950$ cumulative sample exposures** across 25 training epochs.
 
 ### Historical Erratum Reconciliation:
 $$\text{Earlier Claim: } 360,000 \text{ forward-backward passes}$$
@@ -93,15 +97,17 @@ Wall-clock estimates are grounded on empirical hardware measurements:
 
 *Local Feasibility:* Complete 4-fold cross-validation requires ~29 hours on the local GTX 1650 Mobile. This is feasible over a weekend, but cloud migration remains strongly recommended for multi-seed hyperparameter sweeps.
 
-### 5.2 Cloud Hardware Profile (NVIDIA A10G / A100 Cloud Instance)
+### 5.2 Cloud Hardware Profile (NVIDIA A10G / A100 Cloud Instance — Theoretical / Unverified Projection)
+> **Scientific Disclosure Note:** The cloud benchmark figures below ($150\text{ ms/batch}$ and $18.75\text{ minutes}$ full CV completion) are **unverified analytical projections** based on published FP16/BF16 Tensor Core FLOPS ratings. Zero physical training passes have been executed on cloud infrastructure to date. Physical empirical validation is deferred until authorized cloud execution.
+
 - **Configuration:** Native batch size $B=32$ (no gradient accumulation needed, $A=1$), mixed precision bf16.
-- **Estimated Step Time (A10G Tensor Cores):** $t_{\text{step}} \approx 150\text{ ms} = 0.150\text{ s}$ per batch.
+- **Estimated Step Time (A10G Tensor Cores — Unverified):** $t_{\text{step}} \approx 150\text{ ms} = 0.150\text{ s}$ per batch.
 - **Batches per Epoch:** $\lceil 2,400 / 32 \rceil = 75$ batches.
 
-| Unit of Work | Number of Steps | Calculation | Wall-Clock Time |
+| Unit of Work | Number of Steps | Calculation | Projected Wall-Clock Time (Unverified) |
 | :--- | :---: | :--- | :---: |
 | **1 Epoch (1 Fold)** | $75$ batches | $75 \times 0.150\text{ s}$ | $11.25\text{ s} \approx \mathbf{0.19\text{ minutes}}$ |
 | **1 Fold (25 Epochs)** | $1,875$ batches | $25 \times 11.25\text{ s}$ | $281.25\text{ s} \approx \mathbf{4.69\text{ minutes}}$ |
 | **4 Folds (Full CV)** | $7,500$ batches | $4 \times 4.69\text{ min}$ | $18.75\text{ minutes} \approx \mathbf{0.31\text{ hours}}$ |
 
-*Throughput Advantage:* Cloud deployment achieves a **$92\times$ acceleration**, completing the full 4-fold research benchmark in under 20 minutes.
+*Theoretical Throughput Advantage:* Projected cloud deployment models a **$92\times$ acceleration**, completing the full 4-fold research benchmark in under 20 minutes once verified.
