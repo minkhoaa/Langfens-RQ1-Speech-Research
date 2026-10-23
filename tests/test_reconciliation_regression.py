@@ -21,7 +21,12 @@ from langfens_prep.phoneme_normalizer import (
     PHONE_TO_INDEX
 )
 from langfens_prep.textgrid_parser import parse_gold_textgrid_content
-from langfens_prep.losses import MaskedBCEWithLogitsLoss, MaskedCrossEntropyLoss
+from langfens_prep.losses import (
+    MaskedBCEWithLogitsLoss,
+    MaskedCrossEntropyLoss,
+    validate_ctc_contract,
+    CTCContractError
+)
 
 
 # ==============================================================================
@@ -432,4 +437,369 @@ def test_full_sized_synthetic_gpu_smoke():
     scaler.step(optimizer)
     scaler.update()
 
+    assert model.ctc_head.weight.grad is not None
+
+
+# ==============================================================================
+# 13. Task A: Acoustic Padding Invariance (Alone vs Mixed-Duration Batch)
+# ==============================================================================
+def test_acoustic_padding_alone_vs_batched_invariance():
+    """
+    Task A: Verify that output logits and probabilities for an utterance evaluated alone
+    match evaluating the same utterance inside a mixed-duration padded batch
+    within strict numerical tolerance (< 1e-5 in FP32).
+    """
+    torch.manual_seed(42)
+    model = LangfensWav2Vec2MDD(hidden_dim=256, num_transformer_layers=2)
+    model.eval()
+
+    # Utterance 1: 1.0s (16,000 samples), 4 canonical phones
+    w1 = torch.randn(1, 16000)
+    c1 = torch.tensor([[5, 12, 19, 25]], dtype=torch.long)
+    l1 = torch.tensor([16000], dtype=torch.long)
+
+    # Utterance 2: 2.0s (32,000 samples), 6 canonical phones
+    w2 = torch.randn(1, 32000)
+    c2 = torch.tensor([[7, 14, 21, 28, 30, 35]], dtype=torch.long)
+    l2 = torch.tensor([32000], dtype=torch.long)
+
+    # 1. Evaluate utterance 1 alone
+    with torch.no_grad():
+        out1_alone = model(waveforms=w1, audio_lengths=l1, canonical_phone_indices=c1)
+
+    # 2. Form variable-duration padded batch
+    w_batch = torch.zeros(2, 32000)
+    w_batch[0, :16000] = w1[0]
+    w_batch[1, :32000] = w2[0]
+    batch_audio_lens = torch.tensor([16000, 32000], dtype=torch.long)
+
+    c_batch = torch.zeros(2, 6, dtype=torch.long)
+    c_batch[0, :4] = c1[0]
+    c_batch[1, :6] = c2[0]
+    can_lens = torch.tensor([4, 6], dtype=torch.long)
+
+    # 3. Evaluate inside padded batch
+    with torch.no_grad():
+        out_batch = model(
+            waveforms=w_batch,
+            audio_lengths=batch_audio_lens,
+            canonical_phone_indices=c_batch,
+            canonical_phone_lengths=can_lens
+        )
+
+    valid_frames = out1_alone.input_lengths[0].item()
+    valid_phones = c1.shape[1]
+
+    # Max difference over valid frames / phones must be strictly within single-precision epsilon
+    ctc_diff = (out1_alone.ctc_logits[0, :valid_frames] - out_batch.ctc_logits[0, :valid_frames]).abs().max().item()
+    bin_diff = (out1_alone.binary_logits[0, :valid_phones] - out_batch.binary_logits[0, :valid_phones]).abs().max().item()
+    diag_diff = (out1_alone.diagnosis_logits[0, :valid_phones] - out_batch.diagnosis_logits[0, :valid_phones]).abs().max().item()
+
+    assert ctc_diff < 1e-5, f"CTC diff {ctc_diff} exceeds numerical tolerance"
+    assert bin_diff < 1e-5, f"Binary diff {bin_diff} exceeds numerical tolerance"
+    assert diag_diff < 1e-5, f"Diagnosis diff {diag_diff} exceeds numerical tolerance"
+
+
+def test_pretrained_acoustic_padding_alone_vs_batched_invariance():
+    """
+    Task A: Verify on the genuine pretrained facebook/wav2vec2-base-960h backbone
+    that an utterance evaluated alone matches evaluating inside a variable-length padded batch
+    within numerical tolerance (< 1e-5 in FP32).
+    """
+    torch.manual_seed(42)
+    model = LangfensWav2Vec2MDD.from_pretrained("facebook/wav2vec2-base-960h")
+    model.eval()
+
+    # Utterance 1: 1.0s (16,000 samples)
+    w1 = torch.randn(1, 16000)
+    c1 = torch.tensor([[5, 12, 19, 25]], dtype=torch.long)
+    l1 = torch.tensor([16000], dtype=torch.long)
+
+    # Utterance 2: 2.0s (32,000 samples)
+    w2 = torch.randn(1, 32000)
+    c2 = torch.tensor([[7, 14, 21, 28, 30, 35]], dtype=torch.long)
+    l2 = torch.tensor([32000], dtype=torch.long)
+
+    with torch.no_grad():
+        out1_alone = model(waveforms=w1, audio_lengths=l1, canonical_phone_indices=c1)
+
+    w_batch = torch.zeros(2, 32000)
+    w_batch[0, :16000] = w1[0]
+    w_batch[1, :32000] = w2[0]
+    batch_audio_lens = torch.tensor([16000, 32000], dtype=torch.long)
+
+    c_batch = torch.zeros(2, 6, dtype=torch.long)
+    c_batch[0, :4] = c1[0]
+    c_batch[1, :6] = c2[0]
+    can_lens = torch.tensor([4, 6], dtype=torch.long)
+
+    with torch.no_grad():
+        out_batch = model(
+            waveforms=w_batch,
+            audio_lengths=batch_audio_lens,
+            canonical_phone_indices=c_batch,
+            canonical_phone_lengths=can_lens
+        )
+
+    valid_frames = out1_alone.input_lengths[0].item()
+    valid_phones = c1.shape[1]
+
+    ctc_diff = (out1_alone.ctc_logits[0, :valid_frames] - out_batch.ctc_logits[0, :valid_frames]).abs().max().item()
+    bin_diff = (out1_alone.binary_logits[0, :valid_phones] - out_batch.binary_logits[0, :valid_phones]).abs().max().item()
+    diag_diff = (out1_alone.diagnosis_logits[0, :valid_phones] - out_batch.diagnosis_logits[0, :valid_phones]).abs().max().item()
+
+    assert ctc_diff < 1e-5, f"Pretrained CTC diff {ctc_diff} exceeds numerical tolerance"
+    assert bin_diff < 1e-5, f"Pretrained Binary diff {bin_diff} exceeds numerical tolerance"
+    assert diag_diff < 1e-5, f"Pretrained Diagnosis diff {diag_diff} exceeds numerical tolerance"
+
+
+# ==============================================================================
+# 14. Task A: Canonical Padding Excluded from Loss and Predictions
+# ==============================================================================
+def test_canonical_padding_excluded_from_loss_and_predictions():
+    """Verify canonical padding tokens are excluded from predictions and loss calculation."""
+    torch.manual_seed(99)
+    model = LangfensWav2Vec2MDD(hidden_dim=256, num_transformer_layers=2)
+    model.eval()
+
+    waveforms = torch.randn(2, 16000)
+    audio_lengths = torch.tensor([16000, 16000], dtype=torch.long)
+    canonical_indices = torch.tensor([
+        [5, 12, 19, 0],
+        [8, 22, 0, 0]
+    ], dtype=torch.long)
+    can_lengths = torch.tensor([3, 2], dtype=torch.long)
+
+    preds = model.predict(
+        waveforms=waveforms,
+        audio_lengths=audio_lengths,
+        canonical_phone_indices=canonical_indices,
+        canonical_phone_lengths=can_lengths
+    )
+
+    assert "canonical_mask" in preds
+    assert preds["canonical_mask"][0].tolist() == [True, True, True, False]
+    assert preds["canonical_mask"][1].tolist() == [True, True, False, False]
+
+
+# ==============================================================================
+# 15. Task B: Silent Truncation Removed — Positive and Negative Tests
+# ==============================================================================
+def test_silent_truncation_raises_value_error():
+    """
+    MANDATORY NEGATIVE TEST:
+    Verify that sequence length and batch size mismatches between targets and logits
+    raise explicit ValueError instead of silently truncating via min().
+    """
+    model = LangfensWav2Vec2MDD(hidden_dim=256, num_transformer_layers=2)
+    model.train()
+
+    waveforms = torch.randn(2, 16000)
+    audio_lengths = torch.tensor([16000, 16000], dtype=torch.long)
+    canonical_indices = torch.tensor([
+        [5, 12, 19],
+        [8, 22, 14]
+    ], dtype=torch.long) # num_canonical_phones = 3
+
+    # Negative 1: Target binary sequence length mismatch (4 vs 3)
+    incompatible_target_binary = torch.tensor([
+        [0, 1, 0, 1],
+        [1, 0, 1, 0]
+    ], dtype=torch.long)
+
+    with pytest.raises(ValueError, match="target_binary sequence length .* does not match .* Silent label truncation is strictly forbidden"):
+        model(
+            waveforms=waveforms,
+            audio_lengths=audio_lengths,
+            canonical_phone_indices=canonical_indices,
+            target_binary=incompatible_target_binary
+        )
+
+    # Negative 2: Target diagnosis sequence length mismatch (2 vs 3)
+    incompatible_target_diag = torch.tensor([
+        [4, 11],
+        [7, 21]
+    ], dtype=torch.long)
+
+    with pytest.raises(ValueError, match="target_diagnosis sequence length .* does not match .* Silent label truncation is strictly forbidden"):
+        model(
+            waveforms=waveforms,
+            audio_lengths=audio_lengths,
+            canonical_phone_indices=canonical_indices,
+            target_diagnosis=incompatible_target_diag
+        )
+
+    # Negative 3: Target batch size mismatch (3 vs 2)
+    incompatible_batch_binary = torch.tensor([
+        [0, 1, 0],
+        [1, 0, 1],
+        [0, 0, 1]
+    ], dtype=torch.long)
+
+    with pytest.raises(ValueError, match="target_binary batch size .* does not match"):
+        model(
+            waveforms=waveforms,
+            audio_lengths=audio_lengths,
+            canonical_phone_indices=canonical_indices,
+            target_binary=incompatible_batch_binary
+        )
+
+
+def test_legitimate_labels_in_padding_dimension_detected():
+    """
+    MANDATORY NEGATIVE TEST:
+    Verify that if legitimate labels (not -100) exist beyond declared canonical_phone_lengths,
+    an explicit ValueError is raised to prevent silent label disappearance.
+    """
+    model = LangfensWav2Vec2MDD(hidden_dim=256, num_transformer_layers=2)
+    model.train()
+
+    waveforms = torch.randn(2, 16000)
+    audio_lengths = torch.tensor([16000, 16000], dtype=torch.long)
+    canonical_indices = torch.tensor([
+        [5, 12, 19, 0],
+        [8, 22, 0, 0]
+    ], dtype=torch.long)
+    can_lengths = torch.tensor([3, 2], dtype=torch.long)
+
+    # Defective target: utt 2 has a legitimate label (1) at index 2, despite can_len=2!
+    corrupted_target_binary = torch.tensor([
+        [0, 1, 0, -100],
+        [1, 0, 1, -100]  # pos 2 is '1' instead of -100!
+    ], dtype=torch.long)
+
+    with pytest.raises(ValueError, match="contains legitimate labels beyond declared canonical_phone_length"):
+        model(
+            waveforms=waveforms,
+            audio_lengths=audio_lengths,
+            canonical_phone_indices=canonical_indices,
+            canonical_phone_lengths=can_lengths,
+            target_binary=corrupted_target_binary
+        )
+
+
+# ==============================================================================
+# 16. Task C: Runtime CTC Contract Enforcement & Zero-Infinity Hardening
+# ==============================================================================
+def test_runtime_ctc_contract_enforcement_cases():
+    """
+    Task C: Test normal, repeated-phone, all-masked/empty-target, and infeasible alignment cases.
+    Verifies that zero_infinity=False does not conceal annotation or shape defects.
+    """
+    model = LangfensWav2Vec2MDD(hidden_dim=256, num_transformer_layers=2, ctc_zero_infinity_policy="raise")
+    model.train()
+
+    # 1. Normal case: 1.0s audio (~49 frames), 4 target phonemes -> passes
+    w = torch.randn(1, 16000)
+    audio_lens = torch.tensor([16000], dtype=torch.long)
+    target_ctc = torch.tensor([[5, 12, 19, 25]], dtype=torch.long)
+    target_lens = torch.tensor([4], dtype=torch.long)
+
+    out_normal = model(
+        waveforms=w,
+        audio_lengths=audio_lens,
+        target_ctc=target_ctc,
+        target_lengths=target_lens
+    )
+    assert out_normal.loss is not None
+    assert torch.isfinite(out_normal.loss)
+
+    # 2. Repeated-phone feasible case: target [5, 5] requires 3 frames; 16000 samples gives ~49 frames -> passes
+    target_repeat = torch.tensor([[5, 5]], dtype=torch.long)
+    target_repeat_len = torch.tensor([2], dtype=torch.long)
+    out_repeat = model(
+        waveforms=w,
+        audio_lengths=audio_lens,
+        target_ctc=target_repeat,
+        target_lengths=target_repeat_len
+    )
+    assert torch.isfinite(out_repeat.loss)
+
+    # 3. Infeasible alignment case: target length exceeds audio frames
+    # Short audio: 1000 samples -> 2 frames; target length = 4 -> requires >= 4 frames!
+    w_short = torch.randn(1, 1000)
+    short_audio_lens = torch.tensor([1000], dtype=torch.long)
+    with pytest.raises(CTCContractError, match="CTC length violation"):
+        model(
+            waveforms=w_short,
+            audio_lengths=short_audio_lens,
+            target_ctc=target_ctc,
+            target_lengths=target_lens
+        )
+
+    # 4. Target contains blank_id (0) within active sequence -> rejected
+    corrupted_ctc = torch.tensor([[5, 0, 19, 25]], dtype=torch.long)
+    with pytest.raises(CTCContractError, match="contains blank_id"):
+        model(
+            waveforms=w,
+            audio_lengths=audio_lens,
+            target_ctc=corrupted_ctc,
+            target_lengths=target_lens
+        )
+
+    # 5. Out of vocabulary token -> rejected
+    oov_ctc = torch.tensor([[5, 999, 19, 25]], dtype=torch.long)
+    with pytest.raises(CTCContractError, match="out-of-vocabulary"):
+        model(
+            waveforms=w,
+            audio_lengths=audio_lens,
+            target_ctc=oov_ctc,
+            target_lengths=target_lens
+        )
+
+
+def test_ctc_contract_documented_zero_loss_policy():
+    """
+    Task C: Verify that ctc_zero_infinity_policy="warn_and_zero" increments counters,
+    reports violation details, and maintains finite differentiable autograd loss.
+    """
+    model = LangfensWav2Vec2MDD(hidden_dim=256, num_transformer_layers=2, ctc_zero_infinity_policy="warn_and_zero")
+    model.train()
+
+    # Infeasible alignment (1000 samples -> 2 frames < 4 target phones)
+    w_short = torch.randn(1, 1000)
+    short_audio_lens = torch.tensor([1000], dtype=torch.long)
+    target_ctc = torch.tensor([[5, 12, 19, 25]], dtype=torch.long)
+    target_lens = torch.tensor([4], dtype=torch.long)
+
+    assert model.ctc_contract_violations == 0
+    out = model(
+        waveforms=w_short,
+        audio_lengths=short_audio_lens,
+        target_ctc=target_ctc,
+        target_lengths=target_lens
+    )
+
+    # Violation counter must increment and details must be logged
+    assert model.ctc_contract_violations == 1
+    assert "CTC length violation" in model.last_ctc_violation_details
+    assert out.loss is not None
+    assert out.loss.item() == 0.0
+
+    # Retains backward graph
+    out.loss.backward()
+    assert model.ctc_head.weight.grad is not None
+
+
+def test_ctc_empty_targets_handling():
+    """Task C: Verify empty targets (target_lengths=0) produce finite differentiable loss without NaN."""
+    model = LangfensWav2Vec2MDD(hidden_dim=256, num_transformer_layers=2)
+    model.train()
+
+    w = torch.randn(2, 16000)
+    audio_lens = torch.tensor([16000, 16000], dtype=torch.long)
+    empty_ctc = torch.zeros(2, 4, dtype=torch.long)
+    empty_lengths = torch.tensor([0, 0], dtype=torch.long)
+
+    out = model(
+        waveforms=w,
+        audio_lengths=audio_lens,
+        target_ctc=empty_ctc,
+        target_lengths=empty_lengths
+    )
+
+    assert out.loss is not None
+    assert torch.isfinite(out.loss)
+    assert out.loss.item() == 0.0
+    out.loss.backward()
     assert model.ctc_head.weight.grad is not None

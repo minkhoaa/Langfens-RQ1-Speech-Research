@@ -221,3 +221,30 @@ def test_gpu_forward_backward_if_available(synthetic_mdd_batch):
     assert torch.isfinite(out.loss)
     out.loss.backward()
     assert model.ctc_head.weight.grad is not None
+
+
+def test_mixed_duration_batch_via_padding_mask():
+    """Verify forward and predict handle padding_mask boolean tensor correctly."""
+    model = LangfensWav2Vec2MDD(hidden_dim=128, conv_dim=64, num_transformer_layers=1)
+    model.eval()
+
+    # 2 waveforms padded to 24,000 samples (sample 1: 16,000, sample 2: 24,000)
+    w = torch.randn(2, 24000)
+    # padding_mask: True where padded
+    mask = torch.tensor([
+        [False] * 16000 + [True] * 8000,
+        [False] * 24000
+    ], dtype=torch.bool)
+
+    can_idx = torch.tensor([[5, 12, 19, 0], [7, 14, 21, 28]], dtype=torch.long)
+    can_lens = torch.tensor([3, 4], dtype=torch.long)
+
+    with torch.no_grad():
+        out = model(waveforms=w, padding_mask=mask, canonical_phone_indices=can_idx, canonical_phone_lengths=can_lens)
+        preds = model.predict(waveforms=w, canonical_phone_indices=can_idx, canonical_phone_lengths=can_lens)
+
+    assert out.input_lengths is not None
+    assert out.input_lengths[0] < out.input_lengths[1]
+    assert "canonical_mask" in preds
+    assert preds["canonical_mask"][0, 3].item() is False
+    assert preds["canonical_mask"][1, 3].item() is True

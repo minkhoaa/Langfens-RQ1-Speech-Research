@@ -14,9 +14,9 @@
       "grad_checkpoint": true,
       "freeze_feat": true,
       "status": "PASS",
-      "peak_alloc_mb": 762.7,
-      "peak_rsvd_mb": 866.0,
-      "step_time_ms": 1106.7
+      "peak_alloc_mb": 708.6,
+      "peak_rsvd_mb": 806.0,
+      "step_time_ms": 616.1
     },
     {
       "label": "B=1, 2.0s, AMP fp16, GradCheckpoint, FrozenFeat",
@@ -26,9 +26,9 @@
       "grad_checkpoint": true,
       "freeze_feat": true,
       "status": "PASS",
-      "peak_alloc_mb": 763.2,
-      "peak_rsvd_mb": 872.0,
-      "step_time_ms": 424.7
+      "peak_alloc_mb": 736.2,
+      "peak_rsvd_mb": 832.0,
+      "step_time_ms": 369.0
     },
     {
       "label": "B=1, 3.0s, AMP fp16, GradCheckpoint, FrozenFeat",
@@ -38,9 +38,9 @@
       "grad_checkpoint": true,
       "freeze_feat": true,
       "status": "PASS",
-      "peak_alloc_mb": 763.8,
-      "peak_rsvd_mb": 882.0,
-      "step_time_ms": 600.0
+      "peak_alloc_mb": 718.8,
+      "peak_rsvd_mb": 844.0,
+      "step_time_ms": 480.0
     },
     {
       "label": "B=1, 5.0s, AMP fp16, GradCheckpoint, FrozenFeat",
@@ -50,9 +50,9 @@
       "grad_checkpoint": true,
       "freeze_feat": true,
       "status": "PASS",
-      "peak_alloc_mb": 746.1,
-      "peak_rsvd_mb": 976.0,
-      "step_time_ms": 800.2
+      "peak_alloc_mb": 692.1,
+      "peak_rsvd_mb": 910.0,
+      "step_time_ms": 578.4
     },
     {
       "label": "B=2, 2.0s, AMP fp16, GradCheckpoint, FrozenFeat",
@@ -62,9 +62,9 @@
       "grad_checkpoint": true,
       "freeze_feat": true,
       "status": "PASS",
-      "peak_alloc_mb": 764.3,
-      "peak_rsvd_mb": 906.0,
-      "step_time_ms": 768.1
+      "peak_alloc_mb": 764.4,
+      "peak_rsvd_mb": 866.0,
+      "step_time_ms": 689.3
     },
     {
       "label": "B=2, 3.0s, AMP fp16, GradCheckpoint, FrozenFeat",
@@ -74,9 +74,9 @@
       "grad_checkpoint": true,
       "freeze_feat": true,
       "status": "PASS",
-      "peak_alloc_mb": 765.9,
-      "peak_rsvd_mb": 1016.0,
-      "step_time_ms": 1065.7
+      "peak_alloc_mb": 746.4,
+      "peak_rsvd_mb": 982.0,
+      "step_time_ms": 763.6
     },
     {
       "label": "B=4, 2.0s, AMP fp16, GradCheckpoint, FrozenFeat",
@@ -86,9 +86,9 @@
       "grad_checkpoint": true,
       "freeze_feat": true,
       "status": "PASS",
-      "peak_alloc_mb": 770.7,
-      "peak_rsvd_mb": 980.0,
-      "step_time_ms": 1351.3
+      "peak_alloc_mb": 771.2,
+      "peak_rsvd_mb": 916.0,
+      "step_time_ms": 1317.4
     },
     {
       "label": "B=4, 3.0s, AMP fp16, GradCheckpoint, FrozenFeat",
@@ -98,9 +98,9 @@
       "grad_checkpoint": true,
       "freeze_feat": true,
       "status": "PASS",
-      "peak_alloc_mb": 750.1,
-      "peak_rsvd_mb": 1034.0,
-      "step_time_ms": 1733.3
+      "peak_alloc_mb": 750.3,
+      "peak_rsvd_mb": 1024.0,
+      "step_time_ms": 1539.4
     },
     {
       "label": "B=1, 3.0s, FP32, GradCheckpoint, FrozenFeat",
@@ -110,9 +110,9 @@
       "grad_checkpoint": true,
       "freeze_feat": true,
       "status": "PASS",
-      "peak_alloc_mb": 1706.0,
-      "peak_rsvd_mb": 1892.0,
-      "step_time_ms": 412.5
+      "peak_alloc_mb": 1598.6,
+      "peak_rsvd_mb": 1764.0,
+      "step_time_ms": 224.6
     },
     {
       "label": "B=1, 3.0s, AMP fp16, NO GradCheckpoint, FrozenFeat",
@@ -122,9 +122,9 @@
       "grad_checkpoint": false,
       "freeze_feat": true,
       "status": "PASS",
-      "peak_alloc_mb": 763.8,
-      "peak_rsvd_mb": 1534.0,
-      "step_time_ms": 723.4
+      "peak_alloc_mb": 709.8,
+      "peak_rsvd_mb": 1428.0,
+      "step_time_ms": 473.8
     },
     {
       "label": "B=1, 3.0s, AMP fp16, GradCheckpoint, UnfrozenFeat",
@@ -134,9 +134,9 @@
       "grad_checkpoint": true,
       "freeze_feat": false,
       "status": "PASS",
-      "peak_alloc_mb": 837.1,
-      "peak_rsvd_mb": 968.0,
-      "step_time_ms": 709.9
+      "peak_alloc_mb": 810.6,
+      "peak_rsvd_mb": 930.0,
+      "step_time_ms": 612.6
     }
   ]
 }

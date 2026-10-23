@@ -1,23 +1,24 @@
 """
 audit_scripts/gpu_feasibility_bench.py
 Independent GPU Feasibility Benchmarking for Full Pretrained Wav2Vec 2.0 MDD Architecture
-Conforms to RQ1-TRN-01A-R Task E.
+Conforms to RQ1-TRN-01A-R Task E and RQ1-TRN-01A-R2 Task D.
 """
 
 import os
 import gc
 import json
 import time
+import argparse
 import torch
 import torch.nn as nn
-from langfens_prep.model import LangfensWav2Vec2MDD
+from langfens_prep.model import LangfensWav2Vec2MDD, DEFAULT_PRETRAINED_CHECKPOINT, DEFAULT_PRETRAINED_REVISION
 
 def reset_cuda_memory():
     gc.collect()
     torch.cuda.empty_cache()
     torch.cuda.reset_peak_memory_stats()
 
-def run_feasibility_benchmark():
+def run_feasibility_benchmark(include_scaling: bool = False):
     if not torch.cuda.is_available():
         print("CUDA is not available on this system.")
         return
@@ -32,9 +33,12 @@ def run_feasibility_benchmark():
     print(f"================================================================================")
 
     # 1. Inspect Pretrained Model Parameters
-    print("\n[1] Initializing Full Pretrained LangfensWav2Vec2MDD (facebook/wav2vec2-base-960h)...")
+    print(f"\n[1] Initializing Full Pretrained LangfensWav2Vec2MDD ({DEFAULT_PRETRAINED_CHECKPOINT} @ {DEFAULT_PRETRAINED_REVISION[:8]})...")
     t0 = time.time()
-    model = LangfensWav2Vec2MDD(pretrained_model_name_or_path="facebook/wav2vec2-base-960h")
+    model = LangfensWav2Vec2MDD(
+        pretrained_model_name_or_path=DEFAULT_PRETRAINED_CHECKPOINT,
+        revision=DEFAULT_PRETRAINED_REVISION
+    )
     load_time = time.time() - t0
     
     backbone_params = sum(p.numel() for p in model.wav2vec2.parameters())
@@ -193,5 +197,102 @@ def run_feasibility_benchmark():
         }, f, indent=2)
     print(f"\nSaved raw GPU feasibility measurements to {summary_path}")
 
+    # Optional Batch Scaling Matrix (Task D Synthetic Bounded Investigation)
+    if include_scaling:
+        print(f"\n[3] Executing High-Throughput Batch Scaling Matrix (Synthetic Speech Only, 4.0s duration)...")
+        print(f"{'Batch Size':<12} | {'Audio Len':<10} | {'Status':<6} | {'Peak Alloc':<12} | {'Peak Reserved':<14} | {'Step Time':<10}")
+        print("-" * 75)
+
+        scaling_results = []
+        scaling_batch_sizes = [8, 16, 24, 32, 36, 40, 48]
+
+        # Ensure features frozen and grad checkpointing enabled for scaling test
+        model.freeze_feature_encoder()
+        model.gradient_checkpointing_enable()
+
+        dur = 4.0
+        sample_len = int(dur * 16000)
+        num_phones = int(dur * 8) # 32 phones
+
+        for bsz in scaling_batch_sizes:
+            reset_cuda_memory()
+            model.train()
+            optimizer = torch.optim.AdamW([p for p in model.parameters() if p.requires_grad], lr=1e-5)
+            scaler = torch.amp.GradScaler('cuda', enabled=True)
+
+            status = "PASS"
+            step_time_ms = 0.0
+            peak_alloc_mb = 0.0
+            peak_rsvd_mb = 0.0
+
+            try:
+                waveforms = torch.randn(bsz, sample_len, device=device)
+                audio_lengths = torch.full((bsz,), sample_len, dtype=torch.long, device=device)
+                canonical_indices = torch.randint(1, 40, (bsz, num_phones), device=device)
+                target_binary = torch.randint(0, 2, (bsz, num_phones), device=device)
+                target_ctc = torch.randint(1, 40, (bsz, num_phones), device=device)
+                target_lengths = torch.full((bsz,), num_phones, dtype=torch.long, device=device)
+                target_diagnosis = torch.randint(0, 39, (bsz, num_phones), device=device)
+
+                torch.cuda.reset_peak_memory_stats()
+                t_start = time.time()
+                optimizer.zero_grad()
+
+                with torch.amp.autocast('cuda', dtype=torch.float16):
+                    out = model(
+                        waveforms=waveforms,
+                        audio_lengths=audio_lengths,
+                        canonical_phone_indices=canonical_indices,
+                        target_binary=target_binary,
+                        target_ctc=target_ctc,
+                        target_lengths=target_lengths,
+                        target_diagnosis=target_diagnosis
+                    )
+                    loss = out.loss
+
+                scaler.scale(loss).backward()
+                scaler.step(optimizer)
+                scaler.update()
+                torch.cuda.synchronize()
+
+                step_time_ms = (time.time() - t_start) * 1000
+                peak_alloc_mb = torch.cuda.max_memory_allocated(device) / (1024 ** 2)
+                peak_rsvd_mb = torch.cuda.max_memory_reserved(device) / (1024 ** 2)
+
+            except torch.cuda.OutOfMemoryError:
+                status = "OOM"
+                peak_alloc_mb = total_vram_mb
+                peak_rsvd_mb = total_vram_mb
+                torch.cuda.empty_cache()
+            except Exception as e:
+                status = f"ERR: {type(e).__name__}"
+
+            scaling_results.append({
+                "batch_size": bsz,
+                "duration_sec": dur,
+                "status": status,
+                "peak_alloc_mb": round(peak_alloc_mb, 1),
+                "peak_rsvd_mb": round(peak_rsvd_mb, 1),
+                "step_time_ms": round(step_time_ms, 1)
+            })
+
+            alloc_str = f"{peak_alloc_mb:.1f} MiB" if status == "PASS" else "N/A"
+            rsvd_str = f"{peak_rsvd_mb:.1f} MiB" if status == "PASS" else "N/A"
+            time_str = f"{step_time_ms:.1f} ms" if status == "PASS" else "N/A"
+            print(f"B={bsz:<10} | {dur:<10.1f} | {status:<6} | {alloc_str:<12} | {rsvd_str:<14} | {time_str:<10}")
+
+        scaling_out_path = "manifests/RQ1-TRN-01A/reconciliation/final_gate/gpu_scaling_synthetic_measurements.json"
+        with open(scaling_out_path, "w", encoding="utf-8") as f:
+            json.dump({
+                "device_name": device_name,
+                "total_physical_vram_mb": round(total_vram_mb, 1),
+                "model_provenance": f"{DEFAULT_PRETRAINED_CHECKPOINT}@{DEFAULT_PRETRAINED_REVISION}",
+                "scaling_results": scaling_results
+            }, f, indent=2)
+        print(f"\nSaved synthetic batch scaling measurements to {scaling_out_path}")
+
 if __name__ == "__main__":
-    run_feasibility_benchmark()
+    parser = argparse.ArgumentParser(description="GPU Feasibility Benchmarking for Langfens Wav2Vec2 MDD")
+    parser.add_argument("--batch-scaling", action="store_true", help="Run high-throughput synthetic batch scaling matrix (B=8..48)")
+    args = parser.parse_args()
+    run_feasibility_benchmark(include_scaling=args.batch_scaling)

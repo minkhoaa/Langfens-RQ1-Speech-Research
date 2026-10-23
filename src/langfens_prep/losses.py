@@ -105,6 +105,11 @@ class MaskedCrossEntropyLoss(nn.Module):
                 logits = logits.transpose(1, 2)
         return self.loss_fn(logits, targets)
 
+class CTCContractError(ValueError):
+    """Raised when CTC mathematical preconditions are violated at runtime."""
+    pass
+
+
 def validate_ctc_contract(
     log_probs: torch.Tensor,
     targets: torch.Tensor,
@@ -117,12 +122,23 @@ def validate_ctc_contract(
     1. Dimensionality and bounds:
        - log_probs shape: (T, N, C) if batch_first=False or (N, T, C) if batch_first=True
        - input_lengths.shape[0] == target_lengths.shape[0] == N
+       - targets is either 2D (N, max_target_len) or 1D unpadded concatenated (sum(target_lengths),)
     2. Finiteness: log_probs contains no NaNs or +/- Infs
-    3. Temporal coverage: input_lengths[i] >= target_lengths[i] for all i
-    4. Target positivity: target_lengths[i] > 0
-    5. Blank integrity: targets[i, :target_lengths[i]] must NEVER contain blank_id
-    6. Vocabulary containment: targets are within valid class indices [1, C-1]
+    3. Input length bounds: 0 <= input_lengths[i] <= T
+    4. Target length non-negativity: target_lengths[i] >= 0 (permitting empty target sequences)
+    5. Temporal coverage with repeats: input_lengths[i] >= target_lengths[i] + adjacent_repeats
+    6. Blank integrity: targets[i, :target_lengths[i]] must NEVER contain blank_id
+    7. Vocabulary containment: targets are strictly within valid class indices [0, C-1] (excluding blank_id)
     """
+    if log_probs.dim() != 3:
+        return False, f"log_probs must be 3D tensor (T, N, C) or (N, T, C), got dim={log_probs.dim()} shape={log_probs.shape}"
+
+    if input_lengths.dim() != 1 or target_lengths.dim() != 1:
+        return False, (
+            f"input_lengths and target_lengths must be 1D tensors, got "
+            f"input_lengths.dim()={input_lengths.dim()} and target_lengths.dim()={target_lengths.dim()}"
+        )
+
     # Assume batch_first if dim 0 matches input_lengths size
     if log_probs.shape[0] == input_lengths.shape[0]:
         # (N, T, C)
@@ -131,7 +147,10 @@ def validate_ctc_contract(
         # (T, N, C)
         T, N, C = log_probs.shape
     else:
-        return False, f"Batch size mismatch: log_probs shape {log_probs.shape} incompatible with lengths {input_lengths.shape}"
+        return False, f"Batch size mismatch: neither dim 0 nor dim 1 of log_probs {log_probs.shape} matches lengths {input_lengths.shape[0]}"
+
+    if target_lengths.shape[0] != N:
+        return False, f"target_lengths batch size ({target_lengths.shape[0]}) does not match input_lengths batch size ({N})"
 
     if not torch.isfinite(log_probs).all():
         return False, "log_probs contains NaN or Inf values"
@@ -139,30 +158,54 @@ def validate_ctc_contract(
     if (input_lengths > T).any():
         return False, f"input_lengths exceed max sequence length T={T}: {input_lengths.tolist()}"
 
-    if (target_lengths <= 0).any():
-        return False, f"target_lengths contains non-positive length: {target_lengths.tolist()}"
+    if (input_lengths < 0).any():
+        return False, f"input_lengths contains negative length: {input_lengths.tolist()}"
 
-    # Mathematical CTC requirement: input length >= target length accounting for repeated identical tokens
+    if (target_lengths < 0).any():
+        return False, f"target_lengths contains negative length: {target_lengths.tolist()}"
+
+    # Target shape validation
+    if targets.dim() == 2:
+        if targets.shape[0] != N:
+            return False, f"targets batch size ({targets.shape[0]}) does not match batch size ({N})"
+    elif targets.dim() == 1:
+        total_target_len = target_lengths.sum().item()
+        if targets.shape[0] != total_target_len:
+            return False, f"1D targets length ({targets.shape[0]}) does not match sum of target_lengths ({total_target_len})"
+    else:
+        return False, f"targets must be 1D or 2D tensor, got dim={targets.dim()} shape={targets.shape}"
+
+    # Target content and temporal feasibility validation
+    target_offset = 0
     for i in range(N):
         t_len = target_lengths[i].item()
-        utt_targets = targets[i, :t_len]
+        in_len = input_lengths[i].item()
+
+        if t_len == 0:
+            # Empty target requires 0 frames in CTC
+            continue
+
+        if targets.dim() == 2:
+            if targets.shape[1] < t_len:
+                return False, f"targets sequence length ({targets.shape[1]}) < target_lengths[{i}] ({t_len})"
+            utt_targets = targets[i, :t_len]
+        else:
+            utt_targets = targets[target_offset:target_offset + t_len]
+            target_offset += t_len
 
         # In CTC, adjacent identical tokens require an intervening blank, necessitating extra acoustic frames
         repeats = (utt_targets[:-1] == utt_targets[1:]).sum().item() if t_len > 1 else 0
         min_required_frames = t_len + repeats
 
-        if input_lengths[i].item() < min_required_frames:
+        if in_len < min_required_frames:
             return False, (
-                f"CTC length violation at batch index {i}: input_length ({input_lengths[i].item()}) "
+                f"CTC length violation at batch index {i}: input_length ({in_len}) "
                 f"< minimum required frames ({min_required_frames}) for target length {t_len} with {repeats} adjacent identical tokens."
             )
 
-    # Blank ID and target token validation
-    for i in range(N):
-        t_len = target_lengths[i].item()
-        utt_targets = targets[i, :t_len]
         if (utt_targets == blank_id).any():
             return False, f"target sequence at batch index {i} contains blank_id ({blank_id}) within active sequence"
+
         if (utt_targets < 0).any() or (utt_targets >= C).any():
             return False, f"target sequence at batch index {i} contains out-of-vocabulary index (outside [0, {C-1}])"
 

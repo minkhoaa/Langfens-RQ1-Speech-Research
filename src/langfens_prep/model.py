@@ -23,9 +23,13 @@ from transformers import Wav2Vec2Model, Wav2Vec2Config
 from langfens_prep.losses import (
     MaskedBCEWithLogitsLoss,
     MaskedCrossEntropyLoss,
-    validate_ctc_contract
+    validate_ctc_contract,
+    CTCContractError
 )
 from langfens_prep.alignment import pool_frames_to_canonical_phones
+
+DEFAULT_PRETRAINED_CHECKPOINT = "facebook/wav2vec2-base-960h"
+DEFAULT_PRETRAINED_REVISION = "22aad52d435eb6dbaf354bdad9b0da84ce7d6156"
 
 @dataclass
 class LangfensMDDOutput:
@@ -130,6 +134,7 @@ class LangfensWav2Vec2MDD(nn.Module):
         self,
         pretrained_model_name_or_path: Optional[str] = None,
         config: Optional[Wav2Vec2Config] = None,
+        revision: Optional[str] = None,
         hidden_dim: Optional[int] = None,
         conv_dim: int = 512,
         num_transformer_layers: Optional[int] = None,
@@ -145,7 +150,8 @@ class LangfensWav2Vec2MDD(nn.Module):
         diagnosis_weight: float = 0.5,
         alignment_mode: str = "cross_attention",  # "cross_attention" (deployable) or "oracle"
         cross_attention_heads: int = 4,
-        max_canonical_len: int = 128
+        max_canonical_len: int = 128,
+        ctc_zero_infinity_policy: str = "raise"  # "raise" (strict runtime contract) or "warn_and_zero"
     ):
         super().__init__()
         self.ctc_weight = ctc_weight
@@ -157,15 +163,20 @@ class LangfensWav2Vec2MDD(nn.Module):
 
         # 1. Instantiate Wav2Vec2 Backbone
         if pretrained_model_name_or_path is not None:
-            self.wav2vec2 = Wav2Vec2Model.from_pretrained(pretrained_model_name_or_path)
+            rev = revision if revision is not None else (
+                DEFAULT_PRETRAINED_REVISION if pretrained_model_name_or_path == DEFAULT_PRETRAINED_CHECKPOINT else None
+            )
+            self.wav2vec2 = Wav2Vec2Model.from_pretrained(pretrained_model_name_or_path, revision=rev)
             self.hidden_dim = self.wav2vec2.config.hidden_size
             self.is_pretrained = True
             self.provenance = pretrained_model_name_or_path
+            self.revision = rev
         elif config is not None:
             self.wav2vec2 = Wav2Vec2Model(config)
             self.hidden_dim = config.hidden_size
             self.is_pretrained = False
             self.provenance = "uninitialized_wav2vec2_config"
+            self.revision = None
         elif hidden_dim is not None or num_transformer_layers is not None:
             # Custom lightweight configuration (e.g. for deterministic unit & smoke testing)
             h_dim = hidden_dim if hidden_dim is not None else 256
@@ -190,13 +201,16 @@ class LangfensWav2Vec2MDD(nn.Module):
             self.hidden_dim = h_dim
             self.is_pretrained = False
             self.provenance = f"synthetic_custom_config_L{n_layers}_D{h_dim}"
+            self.revision = None
         else:
-            # Default: Load genuine pretrained Wav2Vec2 Base 960h checkpoint
-            default_ckpt = "facebook/wav2vec2-base-960h"
-            self.wav2vec2 = Wav2Vec2Model.from_pretrained(default_ckpt)
+            # Default: Load genuine pretrained Wav2Vec2 Base 960h checkpoint pinned to reproducible revision
+            default_ckpt = DEFAULT_PRETRAINED_CHECKPOINT
+            rev = revision if revision is not None else DEFAULT_PRETRAINED_REVISION
+            self.wav2vec2 = Wav2Vec2Model.from_pretrained(default_ckpt, revision=rev)
             self.hidden_dim = self.wav2vec2.config.hidden_size
             self.is_pretrained = True
             self.provenance = default_ckpt
+            self.revision = rev
 
         # Downstream Fine-Tuning Stability:
         # Zero out missing masked_spec_embed and disable unconfigured SpecAugment to prevent FP16 NaN overflow
@@ -239,18 +253,26 @@ class LangfensWav2Vec2MDD(nn.Module):
         )
 
         # 4. Dedicated Loss Functions
-        self.ctc_loss_fn = nn.CTCLoss(blank=0, zero_infinity=True)
+        self.ctc_zero_infinity_policy = ctc_zero_infinity_policy
+        self.ctc_contract_violations = 0
+        self.last_ctc_violation_details: Optional[str] = None
+        self.ctc_loss_fn = nn.CTCLoss(blank=0, zero_infinity=False)
         self.binary_loss_fn = MaskedBCEWithLogitsLoss(ignore_index=-100)
         self.diagnosis_loss_fn = MaskedCrossEntropyLoss(ignore_index=-100)
 
     @classmethod
     def from_pretrained(
         cls,
-        pretrained_model_name_or_path: str = "facebook/wav2vec2-base-960h",
+        pretrained_model_name_or_path: str = DEFAULT_PRETRAINED_CHECKPOINT,
+        revision: Optional[str] = DEFAULT_PRETRAINED_REVISION,
         **kwargs
     ) -> "LangfensWav2Vec2MDD":
         """Explicit constructor for verified pretrained Hugging Face checkpoint."""
-        return cls(pretrained_model_name_or_path=pretrained_model_name_or_path, **kwargs)
+        return cls(
+            pretrained_model_name_or_path=pretrained_model_name_or_path,
+            revision=revision,
+            **kwargs
+        )
 
     @property
     def feature_extractor(self):
@@ -308,13 +330,51 @@ class LangfensWav2Vec2MDD(nn.Module):
         device = waveforms.device
 
         if audio_lengths is None:
-            audio_lengths = torch.tensor([waveforms.shape[1]] * batch_size, device=device, dtype=torch.long)
+            if padding_mask is not None:
+                # padding_mask convention: True where padded, False where valid
+                audio_lengths = (~padding_mask).long().sum(dim=-1)
+            else:
+                audio_lengths = torch.tensor([waveforms.shape[1]] * batch_size, device=device, dtype=torch.long)
+        else:
+            audio_lengths = audio_lengths.to(device=device, dtype=torch.long)
 
         # 1. Feature extraction & contextual encoding via Wav2Vec2
-        wav2vec2_out = self.wav2vec2(waveforms)
-        hidden_states = wav2vec2_out.last_hidden_state  # (B, T_frames, hidden_dim)
+        # PADDING-SAFE ACOUSTIC BACKBONE EXECUTION:
+        # facebook/wav2vec2-base-960h uses GroupNorm(512, 512) in conv_layers[0].
+        # In PyTorch, GroupNorm over (B, C, T) normalizes across the temporal dimension T.
+        # Zero-padding in variable-duration batches distorts the mean and variance reduction across valid frames.
+        # To eliminate cross-utterance contamination:
+        # For variable-length batches, extract features per unpadded waveform slice.
+        # For uniform unpadded batches, use the fast single-shot vectorized path.
+        if (audio_lengths == waveforms.shape[1]).all():
+            fe = self.wav2vec2.feature_extractor(waveforms).transpose(1, 2)
+            frame_output_lengths = self._get_feat_extract_output_lengths(audio_lengths)
+            T_max = fe.shape[1]
+            padded_features = fe
+        else:
+            feats = [
+                self.wav2vec2.feature_extractor(waveforms[i:i+1, :audio_lengths[i]]).transpose(1, 2)
+                for i in range(batch_size)
+            ]
+            frame_output_lengths = torch.tensor([f.shape[1] for f in feats], device=device, dtype=torch.long)
+            T_max = frame_output_lengths.max().item()
+            padded_features = torch.zeros(batch_size, T_max, feats[0].shape[-1], device=device, dtype=feats[0].dtype)
+            for i, f in enumerate(feats):
+                padded_features[i, :f.shape[1]] = f[0]
 
-        frame_output_lengths = self._get_feat_extract_output_lengths(audio_lengths)
+        # Feature attention mask (True for valid frames, False for padding)
+        frame_indices = torch.arange(T_max, device=device).unsqueeze(0)
+        feat_attention_mask = frame_indices < frame_output_lengths.unsqueeze(1)
+
+        # Feature projection and explicit zeroing of padding positions
+        hidden_states, _ = self.wav2vec2.feature_projection(padded_features)
+        hidden_states = hidden_states.masked_fill(~feat_attention_mask.unsqueeze(-1), 0.0)
+
+        # Context Transformer Encoder with boolean attention mask
+        encoder_outputs = self.wav2vec2.encoder(hidden_states, attention_mask=feat_attention_mask)
+        hidden_states = encoder_outputs.last_hidden_state
+        if getattr(self.wav2vec2, "adapter", None) is not None:
+            hidden_states = self.wav2vec2.adapter(hidden_states)
 
         # 2. Head 1: Realized CTC Phone Recognition
         ctc_logits = self.ctc_head(hidden_states)
@@ -365,23 +425,98 @@ class LangfensWav2Vec2MDD(nn.Module):
         if target_ctc is not None and target_lengths is not None:
             # CTCLoss expects log_probs as (T, B, C)
             log_probs = F.log_softmax(ctc_logits.transpose(0, 1), dim=-1)
-            ctc_loss = self.ctc_loss_fn(
-                log_probs, target_ctc, frame_output_lengths, target_lengths
+
+            # Runtime CTC contract validation
+            is_valid, error_msg = validate_ctc_contract(
+                log_probs=log_probs,
+                targets=target_ctc,
+                input_lengths=frame_output_lengths,
+                target_lengths=target_lengths,
+                blank_id=0
             )
-            loss_dict["ctc_loss"] = ctc_loss
+
+            if not is_valid:
+                if self.ctc_zero_infinity_policy == "raise":
+                    raise CTCContractError(f"Runtime CTC Contract Violation: {error_msg}")
+                elif self.ctc_zero_infinity_policy == "warn_and_zero":
+                    self.ctc_contract_violations += 1
+                    self.last_ctc_violation_details = error_msg
+                    import warnings
+                    warnings.warn(f"[CTC_CONTRACT_VIOLATION] Counter={self.ctc_contract_violations}: {error_msg}")
+                    ctc_loss = (log_probs * 0.0).sum()
+                    loss_dict["ctc_loss"] = ctc_loss
+                else:
+                    raise ValueError(f"Unknown ctc_zero_infinity_policy: {self.ctc_zero_infinity_policy}")
+            else:
+                if (target_lengths == 0).all():
+                    # Empty targets batch: produce differentiable 0.0 loss
+                    ctc_loss = (log_probs * 0.0).sum()
+                else:
+                    ctc_loss = self.ctc_loss_fn(
+                        log_probs, target_ctc, frame_output_lengths, target_lengths
+                    )
+                loss_dict["ctc_loss"] = ctc_loss
 
         if target_binary is not None and binary_logits is not None:
-            min_len = min(target_binary.shape[1], binary_logits.shape[1])
-            t_bin = target_binary[:, :min_len]
-            b_logits = binary_logits[:, :min_len]
-            b_loss = self.binary_loss_fn(b_logits, t_bin)
+            if target_binary.shape[0] != binary_logits.shape[0]:
+                raise ValueError(
+                    f"target_binary batch size ({target_binary.shape[0]}) does not match "
+                    f"binary_logits batch size ({binary_logits.shape[0]})."
+                )
+            if target_binary.shape[1] != binary_logits.shape[1]:
+                raise ValueError(
+                    f"target_binary sequence length ({target_binary.shape[1]}) does not match "
+                    f"binary_logits sequence length ({binary_logits.shape[1]}). "
+                    f"Silent label truncation is strictly forbidden."
+                )
+            if canonical_phone_lengths is not None:
+                if (canonical_phone_lengths > target_binary.shape[1]).any():
+                    raise ValueError(
+                        f"canonical_phone_lengths contains length exceeding target_binary sequence length: "
+                        f"{canonical_phone_lengths.tolist()} vs {target_binary.shape[1]}"
+                    )
+                for b_idx in range(target_binary.shape[0]):
+                    valid_len = canonical_phone_lengths[b_idx].item()
+                    trailing_labels = target_binary[b_idx, valid_len:]
+                    if trailing_labels.numel() > 0 and (trailing_labels != self.binary_loss_fn.ignore_index).any():
+                        invalid_pos = (trailing_labels != self.binary_loss_fn.ignore_index).nonzero(as_tuple=True)[0]
+                        raise ValueError(
+                            f"target_binary at batch index {b_idx} contains legitimate labels beyond declared "
+                            f"canonical_phone_length ({valid_len}) at offset {invalid_pos[0].item()}. "
+                            f"Padding dimensions must contain strictly ignore_index={self.binary_loss_fn.ignore_index}."
+                        )
+            b_loss = self.binary_loss_fn(binary_logits, target_binary)
             loss_dict["binary_loss"] = b_loss
 
         if target_diagnosis is not None and diagnosis_logits is not None:
-            min_len = min(target_diagnosis.shape[1], diagnosis_logits.shape[1])
-            t_diag = target_diagnosis[:, :min_len]
-            d_logits = diagnosis_logits[:, :min_len]
-            d_loss = self.diagnosis_loss_fn(d_logits, t_diag)
+            if target_diagnosis.shape[0] != diagnosis_logits.shape[0]:
+                raise ValueError(
+                    f"target_diagnosis batch size ({target_diagnosis.shape[0]}) does not match "
+                    f"diagnosis_logits batch size ({diagnosis_logits.shape[0]})."
+                )
+            if target_diagnosis.shape[1] != diagnosis_logits.shape[1]:
+                raise ValueError(
+                    f"target_diagnosis sequence length ({target_diagnosis.shape[1]}) does not match "
+                    f"diagnosis_logits sequence length ({diagnosis_logits.shape[1]}). "
+                    f"Silent label truncation is strictly forbidden."
+                )
+            if canonical_phone_lengths is not None:
+                if (canonical_phone_lengths > target_diagnosis.shape[1]).any():
+                    raise ValueError(
+                        f"canonical_phone_lengths contains length exceeding target_diagnosis sequence length: "
+                        f"{canonical_phone_lengths.tolist()} vs {target_diagnosis.shape[1]}"
+                    )
+                for b_idx in range(target_diagnosis.shape[0]):
+                    valid_len = canonical_phone_lengths[b_idx].item()
+                    trailing_labels = target_diagnosis[b_idx, valid_len:]
+                    if trailing_labels.numel() > 0 and (trailing_labels != self.diagnosis_loss_fn.ignore_index).any():
+                        invalid_pos = (trailing_labels != self.diagnosis_loss_fn.ignore_index).nonzero(as_tuple=True)[0]
+                        raise ValueError(
+                            f"target_diagnosis at batch index {b_idx} contains legitimate labels beyond declared "
+                            f"canonical_phone_length ({valid_len}) at offset {invalid_pos[0].item()}. "
+                            f"Padding dimensions must contain strictly ignore_index={self.diagnosis_loss_fn.ignore_index}."
+                        )
+            d_loss = self.diagnosis_loss_fn(diagnosis_logits, target_diagnosis)
             loss_dict["diagnosis_loss"] = d_loss
 
         if loss_dict:
@@ -449,6 +584,15 @@ class LangfensWav2Vec2MDD(nn.Module):
                 prev = tok
             ctc_decoded.append(collapsed)
 
+        canonical_mask = None
+        if canonical_phone_indices is not None:
+            num_phones = canonical_phone_indices.shape[1]
+            if canonical_phone_lengths is not None:
+                can_idx = torch.arange(num_phones, device=canonical_phone_indices.device).unsqueeze(0)
+                canonical_mask = can_idx < canonical_phone_lengths.unsqueeze(1)
+            else:
+                canonical_mask = (canonical_phone_indices != 0)
+
         return {
             "binary_logits": out.binary_logits,
             "binary_probs": binary_probs,
@@ -459,7 +603,8 @@ class LangfensWav2Vec2MDD(nn.Module):
             "ctc_logits": out.ctc_logits,
             "ctc_decoded_indices": ctc_decoded,
             "alignment_weights": out.alignment_weights,
-            "input_lengths": out.input_lengths
+            "input_lengths": out.input_lengths,
+            "canonical_mask": canonical_mask
         }
 
 
@@ -586,14 +731,15 @@ class LangfensCustomMDDReference(nn.Module):
 
 
 def inspect_pretrained_backbone_integrity(
-    checkpoint_name: str = "facebook/wav2vec2-base-960h"
+    checkpoint_name: str = DEFAULT_PRETRAINED_CHECKPOINT,
+    revision: str = DEFAULT_PRETRAINED_REVISION
 ) -> Dict[str, Any]:
     """
     Independently inspects and verifies Hugging Face Wav2Vec 2.0 checkpoint loading.
     Returns complete reconciliation of loaded, missing, unexpected, and mismatched keys.
     """
-    cfg = Wav2Vec2Config.from_pretrained(checkpoint_name)
-    model = Wav2Vec2Model.from_pretrained(checkpoint_name)
+    cfg = Wav2Vec2Config.from_pretrained(checkpoint_name, revision=revision)
+    model = Wav2Vec2Model.from_pretrained(checkpoint_name, revision=revision)
 
     # Inspect keys
     backbone_keys = set(model.state_dict().keys())
@@ -604,7 +750,7 @@ def inspect_pretrained_backbone_integrity(
     # and masked_spec_embed which is missing (used only in pretraining)
     return {
         "checkpoint_name": checkpoint_name,
-        "revision": getattr(cfg, "_commit_hash", "main"),
+        "revision": revision,
         "license": "Apache-2.0",
         "provenance": "Hugging Face Hub / Meta AI FAIR",
         "hidden_size": cfg.hidden_size,

@@ -1,0 +1,63 @@
+{
+  "device_name": "NVIDIA GeForce GTX 1650",
+  "total_physical_vram_mb": 3730.4,
+  "model_provenance": "facebook/wav2vec2-base-960h@22aad52d435eb6dbaf354bdad9b0da84ce7d6156",
+  "scaling_results": [
+    {
+      "batch_size": 8,
+      "duration_sec": 4.0,
+      "status": "PASS",
+      "peak_alloc_mb": 911.1,
+      "peak_rsvd_mb": 1474.0,
+      "step_time_ms": 3570.5
+    },
+    {
+      "batch_size": 16,
+      "duration_sec": 4.0,
+      "status": "PASS",
+      "peak_alloc_mb": 1417.7,
+      "peak_rsvd_mb": 1920.0,
+      "step_time_ms": 7663.4
+    },
+    {
+      "batch_size": 24,
+      "duration_sec": 4.0,
+      "status": "PASS",
+      "peak_alloc_mb": 1923.9,
+      "peak_rsvd_mb": 2598.0,
+      "step_time_ms": 10459.2
+    },
+    {
+      "batch_size": 32,
+      "duration_sec": 4.0,
+      "status": "PASS",
+      "peak_alloc_mb": 2430.9,
+      "peak_rsvd_mb": 3100.0,
+      "step_time_ms": 12195.9
+    },
+    {
+      "batch_size": 36,
+      "duration_sec": 4.0,
+      "status": "PASS",
+      "peak_alloc_mb": 2683.9,
+      "peak_rsvd_mb": 3226.0,
+      "step_time_ms": 16949.1
+    },
+    {
+      "batch_size": 40,
+      "duration_sec": 4.0,
+      "status": "PASS",
+      "peak_alloc_mb": 2937.9,
+      "peak_rsvd_mb": 3546.0,
+      "step_time_ms": 17853.9
+    },
+    {
+      "batch_size": 48,
+      "duration_sec": 4.0,
+      "status": "OOM",
+      "peak_alloc_mb": 3730.4,
+      "peak_rsvd_mb": 3730.4,
+      "step_time_ms": 0.0
+    }
+  ]
+}
