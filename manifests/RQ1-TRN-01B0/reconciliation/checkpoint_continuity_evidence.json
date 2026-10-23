@@ -1,0 +1,66 @@
+{
+  "integrity": {
+    "checkpoint_path": "checkpoints/RQ1-TRN-01B0/rq1_trn_01b0_checkpoint_step_100.pt",
+    "num_model_parameters": 232,
+    "optimizer_parameter_states": 221,
+    "grad_scaler_scale": 64.0,
+    "scheduler_last_epoch": 100,
+    "inference_numerical_equivalence": "BIT_IDENTICAL (diff = 0.0)"
+  },
+  "resume": {
+    "seed": 1337,
+    "total_steps": 10,
+    "save_step": 5,
+    "step_loss_comparisons": [
+      {
+        "update": 6,
+        "loss_A": 17.784996032714844,
+        "loss_B": 17.784996032714844,
+        "loss_abs_diff": 0.0,
+        "ctc_abs_diff": 0.0,
+        "bin_abs_diff": 0.0,
+        "diag_abs_diff": 0.0
+      },
+      {
+        "update": 7,
+        "loss_A": 18.05662488937378,
+        "loss_B": 18.402310371398926,
+        "loss_abs_diff": 0.3456854820251465,
+        "ctc_abs_diff": 0.3199310302734375,
+        "bin_abs_diff": 0.0060027241706848145,
+        "diag_abs_diff": 0.0439453125
+      },
+      {
+        "update": 8,
+        "loss_A": 17.31068515777588,
+        "loss_B": 17.872804641723633,
+        "loss_abs_diff": 0.5621194839477539,
+        "ctc_abs_diff": 0.5891647338867188,
+        "bin_abs_diff": 0.0014324188232421875,
+        "diag_abs_diff": 0.018880128860473633
+      },
+      {
+        "update": 9,
+        "loss_A": 19.71224880218506,
+        "loss_B": 20.432069778442383,
+        "loss_abs_diff": 0.7198209762573242,
+        "ctc_abs_diff": 0.8288726806640625,
+        "bin_abs_diff": 0.00046563148498535156,
+        "diag_abs_diff": 0.00937509536743164
+      },
+      {
+        "update": 10,
+        "loss_A": 14.68427562713623,
+        "loss_B": 15.195425987243652,
+        "loss_abs_diff": 0.5111503601074219,
+        "ctc_abs_diff": 0.44326210021972656,
+        "bin_abs_diff": 0.0013239383697509766,
+        "diag_abs_diff": 0.0029296875
+      }
+    ],
+    "max_weight_difference": 0.00019710510969161987,
+    "mean_weight_difference": 0.0001048642848586865,
+    "is_bit_identical": false,
+    "is_strictly_equivalent_within_1e6": false
+  }
+}

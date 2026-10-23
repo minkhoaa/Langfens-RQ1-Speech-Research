@@ -119,6 +119,7 @@ class L2ArcticMDDDataset(Dataset):
             binary_labels = None
             ctc_target_indices = None
             diagnosis_target_indices = None
+            aux_phone_target_indices = None
         else:
             if self.policy == "strict":
                 bin_vals = [i.binary_label_strict for i in canonical_intervals]
@@ -129,12 +130,21 @@ class L2ArcticMDDDataset(Dataset):
             ctc_indices = [PHONE_TO_CTC_INDEX[p] for p in chronological_realized_phones]
             ctc_target_indices = torch.tensor(ctc_indices, dtype=torch.long)
             
+            # Primary substitution-only diagnosis target (correct phones, deletions, and 'err' tags masked as -100)
             diag_indices = [
                 PHONE_TO_INDEX[i.diagnosis_target] if (i.diagnosis_target is not None and i.diagnosis_target in PHONE_TO_INDEX)
                 else -100
                 for i in canonical_intervals
             ]
             diagnosis_target_indices = torch.tensor(diag_indices, dtype=torch.long)
+
+            # Auxiliary realized-phone classification target (evaluated over all valid canonical phones, including correct)
+            aux_indices = [
+                PHONE_TO_INDEX[i.realized_phone] if (i.error_type in ("correct", "substitution") and not i.has_err_tag and i.realized_phone in PHONE_TO_INDEX)
+                else -100
+                for i in canonical_intervals
+            ]
+            aux_phone_target_indices = torch.tensor(aux_indices, dtype=torch.long)
             
         return {
             "record_id": f"l2arctic_{speaker_id}_{utt_id}",
@@ -148,6 +158,7 @@ class L2ArcticMDDDataset(Dataset):
             "binary_labels": binary_labels,
             "ctc_target_indices": ctc_target_indices,
             "diagnosis_target_indices": diagnosis_target_indices,
+            "aux_phone_target_indices": aux_phone_target_indices,
             "is_blinded": self.blind_labels,
             "policy": self.policy,
             "duration_seconds": audio_metrics.duration_seconds

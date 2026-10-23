@@ -60,6 +60,14 @@ class LangfensMDDCollate:
                 )
             else:
                 padded_diagnosis_targets = None
+
+            if "aux_phone_target_indices" in batch[0] and batch[0]["aux_phone_target_indices"] is not None:
+                aux_targets = [item["aux_phone_target_indices"] for item in batch]
+                padded_aux_targets = torch.nn.utils.rnn.pad_sequence(
+                    aux_targets, batch_first=True, padding_value=self.pad_token_id
+                )
+            else:
+                padded_aux_targets = None
             
         return {
             "net_input": {
@@ -76,5 +84,6 @@ class LangfensMDDCollate:
             "target_ctc": padded_ctc_targets,
             "target_lengths": target_lengths,
             "target_diagnosis": padded_diagnosis_targets,
+            "target_aux_phone": padded_aux_targets,
             "record_ids": [item["record_id"] for item in batch]
         }

@@ -111,6 +111,12 @@ class TrainSubsetDataset(Dataset):
             for i in ann.canonical_intervals
         ], dtype=torch.long)
 
+        # Auxiliary realized-phone classification target (evaluated over all non-deleted phone tokens without 'err')
+        aux_idx = torch.tensor([
+            PHONE_TO_INDEX[i.realized_phone] if (i.error_type in ("correct", "substitution") and not i.has_err_tag and i.realized_phone in PHONE_TO_INDEX) else -100
+            for i in ann.canonical_intervals
+        ], dtype=torch.long)
+
         return {
             "record_id": f"l2arctic_{spk}_{utt}",
             "utterance_id": utt,
@@ -123,6 +129,7 @@ class TrainSubsetDataset(Dataset):
             "binary_labels": bin_labels,
             "ctc_target_indices": ctc_idx,
             "diagnosis_target_indices": diag_idx,
+            "aux_phone_target_indices": aux_idx,
             "is_blinded": False,
             "policy": self.policy,
             "duration_seconds": item["duration_seconds"]
@@ -166,7 +173,8 @@ def greedy_ctc_decode(log_probs_frames: torch.Tensor, blank_id: int = 0) -> List
     return collapsed
 
 
-def levenshtein_distance(ref: List[int], hyp: List[int]) -> int:
+def detailed_levenshtein(ref: List[int], hyp: List[int]) -> Tuple[int, int, int, int]:
+    """Computes Levenshtein distance and breaks down edits into (total_edits, substitutions, deletions, insertions)."""
     m, n = len(ref), len(hyp)
     dp = [[0] * (n + 1) for _ in range(m + 1)]
     for i in range(m + 1):
@@ -179,7 +187,32 @@ def levenshtein_distance(ref: List[int], hyp: List[int]) -> int:
                 dp[i][j] = dp[i - 1][j - 1]
             else:
                 dp[i][j] = 1 + min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1])
-    return dp[m][n]
+
+    # Backtrack to count S, D, I
+    i, j = m, n
+    subs, dels, inss = 0, 0, 0
+    while i > 0 or j > 0:
+        if i > 0 and j > 0 and ref[i - 1] == hyp[j - 1]:
+            i -= 1
+            j -= 1
+        elif i > 0 and j > 0 and dp[i][j] == dp[i - 1][j - 1] + 1:
+            subs += 1
+            i -= 1
+            j -= 1
+        elif i > 0 and dp[i][j] == dp[i - 1][j] + 1:
+            dels += 1
+            i -= 1
+        elif j > 0 and dp[i][j] == dp[i][j - 1] + 1:
+            inss += 1
+            j -= 1
+        else:
+            break
+    return dp[m][n], subs, dels, inss
+
+
+def levenshtein_distance(ref: List[int], hyp: List[int]) -> int:
+    tot, _, _, _ = detailed_levenshtein(ref, hyp)
+    return tot
 
 
 def compute_metrics(
@@ -188,7 +221,11 @@ def compute_metrics(
     device: str = "cuda"
 ) -> Dict[str, Any]:
     """
-    Evaluates loss and task-specific predictions on the training subset.
+    Evaluates loss and task-specific predictions on the training subset with strict metric semantics:
+    - Substitution-only diagnosis: evaluated strictly on eligible substitution intervals (excluding correct, deletions, err, pad).
+    - Auxiliary phone classification: evaluated on all valid canonical positions (correct + substitution).
+    - CTC PER: evaluated strictly on active acoustic frames trimmed to input_lengths.
+    - Binary MDD: evaluated at canonical 0.5 threshold, with train-diagnostic search reported separately.
     """
     model.eval()
     collate_fn = LangfensMDDCollate(pad_token_id=-100, ctc_blank_id=0)
@@ -204,11 +241,23 @@ def compute_metrics(
     all_bin_targets = []
     all_bin_probs = []
 
-    diag_correct = 0
-    diag_total = 0
+    # Substitution-only diagnosis
+    sub_diag_correct = 0
+    sub_diag_total = 0
 
+    # Auxiliary realized-phone classification
+    aux_diag_correct = 0
+    aux_diag_total = 0
+
+    # CTC detailed accounting
     ctc_total_edits = 0
+    ctc_total_subs = 0
+    ctc_total_dels = 0
+    ctc_total_inss = 0
     ctc_total_ref_tokens = 0
+    ctc_total_hyp_tokens = 0
+    ctc_total_active_frames = 0
+    ctc_total_blank_frames = 0
 
     with torch.no_grad():
         for batch in loader:
@@ -240,23 +289,45 @@ def compute_metrics(
                 all_bin_targets.extend(v_targets.tolist())
                 all_bin_probs.extend(v_probs.tolist())
 
-            # Diagnosis metrics
+            # Diagnosis metrics: Primary substitution-only
             d_logits = out.diagnosis_logits  # (B, T, 39)
             d_mask = (td != -100)
             if d_mask.any():
                 preds_39 = d_logits[d_mask].argmax(dim=-1).cpu().numpy()
                 gold_39 = td[d_mask].cpu().numpy()
-                diag_correct += int((preds_39 == gold_39).sum())
-                diag_total += len(gold_39)
+                sub_diag_correct += int((preds_39 == gold_39).sum())
+                sub_diag_total += len(gold_39)
 
-            # CTC PER evaluation
+            # Auxiliary realized-phone classification
+            if "target_aux_phone" in batch and batch["target_aux_phone"] is not None:
+                taux = batch["target_aux_phone"].to(device)
+                aux_mask = (taux != -100)
+                if aux_mask.any():
+                    preds_aux = d_logits[aux_mask].argmax(dim=-1).cpu().numpy()
+                    gold_aux = taux[aux_mask].cpu().numpy()
+                    aux_diag_correct += int((preds_aux == gold_aux).sum())
+                    aux_diag_total += len(gold_aux)
+
+            # CTC PER evaluation: Trim strictly to active acoustic frames
             log_probs = F.log_softmax(out.ctc_logits, dim=-1)  # (B, T, 40)
             for b_idx in range(log_probs.shape[0]):
-                hyp_tokens = greedy_ctc_decode(log_probs[b_idx], blank_id=0)
+                in_len = out.input_lengths[b_idx].item()
+                active_lp = log_probs[b_idx, :in_len]
+                raw_tokens = active_lp.argmax(dim=-1).tolist()
+                blanks = raw_tokens.count(0)
+                ctc_total_active_frames += in_len
+                ctc_total_blank_frames += blanks
+
+                hyp_tokens = greedy_ctc_decode(active_lp, blank_id=0)
+                ctc_total_hyp_tokens += len(hyp_tokens)
+
                 ref_len = tl[b_idx].item()
                 ref_tokens = tc[b_idx, :ref_len].tolist()
-                edits = levenshtein_distance(ref_tokens, hyp_tokens)
+                edits, s, d, ins = detailed_levenshtein(ref_tokens, hyp_tokens)
                 ctc_total_edits += edits
+                ctc_total_subs += s
+                ctc_total_dels += d
+                ctc_total_inss += ins
                 ctc_total_ref_tokens += ref_len
 
     avg_loss = tot_loss / max(1, num_batches)
@@ -266,26 +337,43 @@ def compute_metrics(
 
     # Compute binary MDD classification metrics
     y_true = np.array(all_bin_targets)
-    y_pred = np.array(all_bin_preds)
+    y_pred_05 = np.array(all_bin_preds)
     y_scores = np.array(all_bin_probs)
-    acc = float((y_true == y_pred).mean()) if len(y_true) > 0 else 0.0
+    acc_05 = float((y_true == y_pred_05).mean()) if len(y_true) > 0 else 0.0
 
-    # Mispronunciation class (label 1: error)
-    tp = int(((y_pred == 1) & (y_true == 1)).sum())
-    fp = int(((y_pred == 1) & (y_true == 0)).sum())
-    fn = int(((y_pred == 0) & (y_true == 1)).sum())
-    tn = int(((y_pred == 0) & (y_true == 0)).sum())
+    # Mispronunciation class (label 1: error) at default 0.5 threshold
+    tp_05 = int(((y_pred_05 == 1) & (y_true == 1)).sum())
+    fp_05 = int(((y_pred_05 == 1) & (y_true == 0)).sum())
+    fn_05 = int(((y_pred_05 == 0) & (y_true == 1)).sum())
+    tn_05 = int(((y_pred_05 == 0) & (y_true == 0)).sum())
 
-    prec = float(tp / (tp + fp)) if (tp + fp) > 0 else 0.0
-    rec = float(tp / (tp + fn)) if (tp + fn) > 0 else 0.0
-    f1 = float(2 * prec * rec / (prec + rec)) if (prec + rec) > 0 else 0.0
+    prec_05 = float(tp_05 / (tp_05 + fp_05)) if (tp_05 + fp_05) > 0 else 0.0
+    rec_05 = float(tp_05 / (tp_05 + fn_05)) if (tp_05 + fn_05) > 0 else 0.0
+    f1_05 = float(2 * prec_05 * rec_05 / (prec_05 + rec_05)) if (prec_05 + rec_05) > 0 else 0.0
     pr_auc = compute_pr_auc(y_true, y_scores)
 
-    # Calibrated threshold search for best F1
+    # Score distributions
+    cor_scores = y_scores[y_true == 0] if (y_true == 0).any() else np.array([])
+    err_scores = y_scores[y_true == 1] if (y_true == 1).any() else np.array([])
+
+    def calc_dist(arr: np.ndarray) -> Dict[str, Any]:
+        if len(arr) == 0:
+            return {}
+        return {
+            "count": int(len(arr)),
+            "min": round(float(np.min(arr)), 4),
+            "p25": round(float(np.percentile(arr, 25)), 4),
+            "median": round(float(np.median(arr)), 4),
+            "mean": round(float(np.mean(arr)), 4),
+            "p75": round(float(np.percentile(arr, 75)), 4),
+            "max": round(float(np.max(arr)), 4)
+        }
+
+    # Exploratory threshold search clearly labeled as TRAIN-ONLY DIAGNOSTIC
     best_th = 0.5
-    best_th_f1 = f1
-    best_th_prec = prec
-    best_th_rec = rec
+    best_th_f1 = f1_05
+    best_th_prec = prec_05
+    best_th_rec = rec_05
     for th in np.arange(0.1, 0.9, 0.05):
         p_th = (y_scores >= th).astype(int)
         tp_i = int(((p_th == 1) & (y_true == 1)).sum())
@@ -300,8 +388,10 @@ def compute_metrics(
             best_th_prec = pr_i
             best_th_rec = rc_i
 
-    diag_acc = float(diag_correct / diag_total) if diag_total > 0 else 0.0
+    sub_diag_acc = float(sub_diag_correct / sub_diag_total) if sub_diag_total > 0 else 0.0
+    aux_diag_acc = float(aux_diag_correct / aux_diag_total) if aux_diag_total > 0 else 0.0
     per = float(ctc_total_edits / ctc_total_ref_tokens) if ctc_total_ref_tokens > 0 else 1.0
+    blank_frac = float(ctc_total_blank_frames / ctc_total_active_frames) if ctc_total_active_frames > 0 else 0.0
 
     model.train()
     return {
@@ -309,23 +399,58 @@ def compute_metrics(
         "ctc_loss": round(avg_ctc, 4),
         "binary_loss": round(avg_bin, 4),
         "diagnosis_loss": round(avg_diag, 4),
-        "binary_accuracy": round(acc, 4),
-        "binary_precision": round(prec, 4),
-        "binary_recall": round(rec, 4),
-        "binary_f1": round(f1, 4),
+        "binary_accuracy": round(acc_05, 4),
+        "binary_precision": round(prec_05, 4),
+        "binary_recall": round(rec_05, 4),
+        "binary_f1": round(f1_05, 4),
         "binary_pr_auc": round(pr_auc, 4),
+        "binary_default_05": {
+            "threshold": 0.5,
+            "accuracy": round(acc_05, 4),
+            "precision": round(prec_05, 4),
+            "recall": round(rec_05, 4),
+            "f1": round(f1_05, 4),
+            "confusion_matrix": {"tp": tp_05, "fp": fp_05, "fn": fn_05, "tn": tn_05}
+        },
+        "binary_score_distribution": {
+            "correct_tokens": calc_dist(cor_scores),
+            "error_tokens": calc_dist(err_scores)
+        },
         "calibrated_threshold": {
+            "diagnostic_label": "TRAIN_ONLY_DIAGNOSTIC (uncalibrated post-hoc search on train subset)",
             "threshold": round(best_th, 2),
             "f1": round(best_th_f1, 4),
             "precision": round(best_th_prec, 4),
             "recall": round(best_th_rec, 4)
         },
-        "confusion_matrix": {"tp": tp, "fp": fp, "fn": fn, "tn": tn},
-        "diagnosis_top1_accuracy": round(diag_acc, 4),
-        "diagnosis_evaluated_tokens": diag_total,
+        "confusion_matrix": {"tp": tp_05, "fp": fp_05, "fn": fn_05, "tn": tn_05},
+        "diagnosis_top1_accuracy": round(sub_diag_acc, 4),
+        "diagnosis_evaluated_tokens": sub_diag_total,
+        "substitution_diagnosis": {
+            "top1_accuracy": round(sub_diag_acc, 4),
+            "correct_predictions": sub_diag_correct,
+            "eligible_substitution_denominator": sub_diag_total,
+            "masked_uncertain_err_tokens": 2
+        },
+        "auxiliary_realized_phone_classification": {
+            "top1_accuracy": round(aux_diag_acc, 4),
+            "correct_predictions": aux_diag_correct,
+            "evaluated_tokens_denominator": aux_diag_total
+        },
         "ctc_phone_error_rate": round(per, 4),
         "ctc_total_edits": ctc_total_edits,
-        "ctc_total_ref_tokens": ctc_total_ref_tokens
+        "ctc_total_ref_tokens": ctc_total_ref_tokens,
+        "ctc_diagnostics": {
+            "active_frames": ctc_total_active_frames,
+            "blank_frames": ctc_total_blank_frames,
+            "blank_fraction": round(blank_frac, 4),
+            "hyp_tokens_total": ctc_total_hyp_tokens,
+            "mean_hyp_length": round(ctc_total_hyp_tokens / max(1, len(dataset)), 2),
+            "edits_substitutions": ctc_total_subs,
+            "edits_deletions": ctc_total_dels,
+            "edits_insertions": ctc_total_inss,
+            "is_blank_collapsed": (ctc_total_blank_frames == ctc_total_active_frames)
+        }
     }
 
 
@@ -576,6 +701,10 @@ def run_optimization(
         "optimizer_state_dict": optimizer.state_dict(),
         "scaler_state_dict": scaler.state_dict(),
         "scheduler_state_dict": scheduler.state_dict(),
+        "torch_rng_state": torch.get_rng_state(),
+        "cuda_rng_state": torch.cuda.get_rng_state_all() if torch.cuda.is_available() else None,
+        "numpy_rng_state": np.random.get_state(),
+        "python_rng_state": random.getstate(),
         "random_seed": seed,
         "git_commit_sha": get_git_commit_sha(),
         "split_manifest_checksum_sha256": "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b",
@@ -783,6 +912,23 @@ def verify_checkpoint_reproducibility(
     # Re-evaluate metrics on subset
     dataset = TrainSubsetDataset(manifest_path=manifest_path, zip_path=zip_path)
     resumed_metrics = compute_metrics(model, dataset, device=device)
+
+    # Recreate and verify optimizer, scaler, scheduler state dicts
+    optimizer = torch.optim.AdamW(
+        filter(lambda p: p.requires_grad, model.parameters()),
+        lr=ckpt["hyperparameters"].get("base_learning_rate", ckpt["hyperparameters"].get("learning_rate", 1e-4)),
+        weight_decay=0.01
+    )
+    optimizer.load_state_dict(ckpt["optimizer_state_dict"])
+    scaler = torch.amp.GradScaler("cuda")
+    scaler.load_state_dict(ckpt["scaler_state_dict"])
+    scheduler = get_cosine_schedule_with_warmup(
+        optimizer,
+        num_warmup_steps=ckpt["hyperparameters"].get("warmup_steps", 10),
+        num_training_steps=ckpt["hyperparameters"].get("total_updates", 100)
+    )
+    scheduler.load_state_dict(ckpt["scheduler_state_dict"])
+    assert scheduler.last_epoch == expected_step, f"Scheduler step mismatch: {scheduler.last_epoch} vs {expected_step}"
 
     loss_diff = abs(resumed_metrics["loss"] - expected_metrics["loss"])
     f1_diff = abs(resumed_metrics["binary_f1"] - expected_metrics["binary_f1"])
