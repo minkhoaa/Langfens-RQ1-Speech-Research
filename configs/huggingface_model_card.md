@@ -40,7 +40,9 @@ model-index:
 
 # Langfens: Wav2Vec 2.0 for Phoneme-Level Mispronunciation Detection & Diagnosis (MDD)
 
+**Status:** PLANNED / NOT TRAINED (Architecture & Contract Smoke Testing Phase `RQ1-TRN-01A`)  
 **Model Identifier:** `langfens-wav2vec2-mdd`  
+**Visibility:** Private  
 **Base Backbone:** `facebook/wav2vec2-base-960h` (95M parameters)  
 **Research Framework:** Project Langfens (Phoneme-level Computer-Assisted Pronunciation Training)  
 **Evaluation Corpora:** L2-ARCTIC v5.0 & SpeechOcean762  
@@ -75,6 +77,10 @@ Evaluated on L2-ARCTIC v5.0 across 24 non-native speakers (Hindi, Korean, Mandar
 - **Primary Benchmark:** 4-Fold Balanced Speaker-Independent Cross-Validation
 - **Vietnamese Adaptation:** Leave-One-Vietnamese-Speaker-Out (LOSO Regime A)
 - **Vietnamese Zero-Shot:** Cross-lingual transfer from 20 non-Vietnamese speakers (Regime B)
+- **Phonemic Error Inventory:**
+  - Substitutions ($S = 14,098$; evaluable $S_{\text{eval}} = \mathbf{13,840}$, masking $258$ unalignable `'err'` tokens)
+  - Deletions ($D = 3,420$; Vietnamese cohort $D_{\text{Viet}} = \mathbf{1,566}$)
+  - Additions ($I = 1,092$, 50ms tolerance window matching)
 - **Evaluation Denominator:** $N_{\text{canonical}} = \mathbf{119,151}$ strictly invariant tokens ($C = 101,633$, $E_{\text{strict}} = 17,518$)
 
 ---

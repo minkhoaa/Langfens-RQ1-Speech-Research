@@ -61,6 +61,7 @@ runs/
 # 4. Python Environment, Build & Caches
 # ------------------------------------------------------------------------------
 .venv/
+.venv*/
 venv/
 env/
 ENV/

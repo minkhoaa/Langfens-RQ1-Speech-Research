@@ -6,7 +6,8 @@
 model_registry:
   repo_id: "langfens-wav2vec2-mdd"
   repo_type: "model"
-  private: false
+  private: true
+  status: "PLANNED / NOT TRAINED"
   license: "cc-by-nc-4.0"
 
 metadata:
@@ -40,7 +41,7 @@ evaluation_benchmarks:
       target_tokens: "Canonical Prompt Phonemes"
     - name: "Strict Binary F1-Score"
     - name: "Substitution Diagnosis Accuracy"
-      evaluable_substitutions: 13829
+      evaluable_substitutions: 13840
     - name: "Corpus Deletion Recall"
       total_deletions: 3420
     - name: "Vietnamese Deletion Recall"
