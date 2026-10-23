@@ -1,0 +1,67 @@
+{
+  "environment": {
+    "os_platform": "Linux-7.2.11-1-cachyos-x86_64-with-glibc2.44",
+    "cpu_model": "x86_64",
+    "cpu_logical_cores": 12,
+    "cpu_physical_cores": 8,
+    "ram_total_gb": 31.01,
+    "ram_available_gb": 15.24,
+    "python_version": "3.14.8",
+    "torch_version": "2.14.1+cpu",
+    "torchaudio_version": "2.11.0+cpu"
+  },
+  "wav_access_benchmark": {
+    "num_samples": 50,
+    "direct_archive_median_ms": 1.5042,
+    "direct_archive_p95_ms": 2.202,
+    "staged_nvme_median_ms": 0.0583,
+    "staged_nvme_p95_ms": 0.0854,
+    "speedup_ratio": 25.82
+  },
+  "resampling_benchmark": {
+    "num_samples": 50,
+    "median_latency_ms": 0.9921,
+    "p95_latency_ms": 1.6528,
+    "mean_latency_ms": 1.0491
+  },
+  "collation_benchmark": {
+    "batch_size_4": {
+      "median_latency_ms": 0.2387,
+      "p95_latency_ms": 0.2719
+    },
+    "batch_size_8": {
+      "median_latency_ms": 0.3723,
+      "p95_latency_ms": 0.4179
+    },
+    "batch_size_16": {
+      "median_latency_ms": 0.6833,
+      "p95_latency_ms": 0.7817
+    }
+  },
+  "dataloader_throughput": {
+    "workers_0": {
+      "num_workers": 0,
+      "total_utterances": 100,
+      "elapsed_seconds": 0.397,
+      "throughput_utts_per_sec": 251.8,
+      "median_time_per_utt_ms": 3.97,
+      "memory_rss_mb": 1002.57
+    },
+    "workers_2": {
+      "num_workers": 2,
+      "total_utterances": 100,
+      "elapsed_seconds": 1.632,
+      "throughput_utts_per_sec": 61.27,
+      "median_time_per_utt_ms": 16.32,
+      "memory_rss_mb": 1003.79
+    },
+    "workers_4": {
+      "num_workers": 4,
+      "total_utterances": 100,
+      "elapsed_seconds": 1.825,
+      "throughput_utts_per_sec": 54.8,
+      "median_time_per_utt_ms": 18.25,
+      "memory_rss_mb": 1004.07
+    }
+  }
+}
