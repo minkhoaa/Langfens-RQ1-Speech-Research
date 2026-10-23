@@ -25,19 +25,30 @@ class LangfensMDDCollate:
         # Check if labels are blinded
         if batch[0].get("is_blinded", False) or batch[0]["binary_labels"] is None:
             padded_binary_labels = None
+            target_binary_mask = None
             padded_ctc_targets = None
             target_lengths = None
+            padded_diagnosis_targets = None
         else:
             binary_labels = [item["binary_labels"] for item in batch]
             padded_binary_labels = torch.nn.utils.rnn.pad_sequence(
                 binary_labels, batch_first=True, padding_value=self.pad_token_id
             )
+            target_binary_mask = (padded_binary_labels != self.pad_token_id)
             
             ctc_targets = [item["ctc_target_indices"] for item in batch]
             target_lengths = torch.tensor([t.shape[0] for t in ctc_targets], dtype=torch.long)
             padded_ctc_targets = torch.nn.utils.rnn.pad_sequence(
                 ctc_targets, batch_first=True, padding_value=self.ctc_blank_id
             )
+            
+            if "diagnosis_target_indices" in batch[0] and batch[0]["diagnosis_target_indices"] is not None:
+                diag_targets = [item["diagnosis_target_indices"] for item in batch]
+                padded_diagnosis_targets = torch.nn.utils.rnn.pad_sequence(
+                    diag_targets, batch_first=True, padding_value=self.pad_token_id
+                )
+            else:
+                padded_diagnosis_targets = None
             
         return {
             "net_input": {
@@ -46,7 +57,9 @@ class LangfensMDDCollate:
                 "audio_lengths": audio_lengths
             },
             "target_binary": padded_binary_labels,
+            "target_binary_mask": target_binary_mask,
             "target_ctc": padded_ctc_targets,
             "target_lengths": target_lengths,
+            "target_diagnosis": padded_diagnosis_targets,
             "record_ids": [item["record_id"] for item in batch]
         }

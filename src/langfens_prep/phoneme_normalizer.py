@@ -14,6 +14,10 @@ PHONE_TO_CTC_INDEX: Dict[str, int] = {phone: idx + 1 for idx, phone in enumerate
 CTC_INDEX_TO_PHONE: Dict[int, str] = {idx + 1: phone for idx, phone in enumerate(STANDARD_39_ARPABET)}
 CTC_INDEX_TO_PHONE[0] = "<BLANK>"
 
+# Standard 0-indexed mapping for 39-class CrossEntropy phoneme diagnosis: indices 0..38
+PHONE_TO_INDEX: Dict[str, int] = {phone: idx for idx, phone in enumerate(STANDARD_39_ARPABET)}
+INDEX_TO_PHONE: Dict[int, str] = {idx: phone for idx, phone in enumerate(STANDARD_39_ARPABET)}
+
 SILENCE_SYMBOLS = {"", "sil", "sp", "spn", "silence", "<sil>", "<pau>"}
 
 ARPABET_TO_IPA: Dict[str, str] = {

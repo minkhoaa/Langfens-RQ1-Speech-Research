@@ -12,7 +12,7 @@ from langfens_prep.audio_loader import (
     get_l2arctic_reader
 )
 from langfens_prep.textgrid_parser import parse_gold_textgrid_content
-from langfens_prep.phoneme_normalizer import PHONE_TO_CTC_INDEX
+from langfens_prep.phoneme_normalizer import PHONE_TO_CTC_INDEX, PHONE_TO_INDEX
 
 class L2ArcticMDDDataset(Dataset):
     """
@@ -95,6 +95,7 @@ class L2ArcticMDDDataset(Dataset):
         if self.blind_labels:
             binary_labels = None
             ctc_target_indices = None
+            diagnosis_target_indices = None
         else:
             if self.policy == "strict":
                 bin_vals = [i.binary_label_strict for i in canonical_intervals]
@@ -105,6 +106,13 @@ class L2ArcticMDDDataset(Dataset):
             ctc_indices = [PHONE_TO_CTC_INDEX.get(p, 0) for p in realized_phones if p in PHONE_TO_CTC_INDEX]
             ctc_target_indices = torch.tensor(ctc_indices, dtype=torch.long)
             
+            diag_indices = [
+                PHONE_TO_INDEX[i.diagnosis_target] if (i.diagnosis_target is not None and i.diagnosis_target in PHONE_TO_INDEX)
+                else -100
+                for i in canonical_intervals
+            ]
+            diagnosis_target_indices = torch.tensor(diag_indices, dtype=torch.long)
+            
         return {
             "record_id": f"l2arctic_{speaker_id}_{utt_id}",
             "utterance_id": utt_id,
@@ -114,6 +122,7 @@ class L2ArcticMDDDataset(Dataset):
             "realized_phones_norm39": realized_phones,
             "binary_labels": binary_labels,
             "ctc_target_indices": ctc_target_indices,
+            "diagnosis_target_indices": diagnosis_target_indices,
             "is_blinded": self.blind_labels,
             "policy": self.policy,
             "duration_seconds": audio_metrics.duration_seconds
