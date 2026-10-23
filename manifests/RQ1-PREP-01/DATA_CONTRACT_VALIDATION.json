@@ -1,0 +1,257 @@
+{
+  "acceptance_gates": {
+    "ANNOTATION_PARSER_VALIDATED": "PASS",
+    "AUDIO_PIPELINE_VALIDATED": "PASS",
+    "DATALOADER_VALIDATED": "PASS",
+    "LABEL_SEMANTICS_VALIDATED": "PASS",
+    "MANIFEST_ISOLATION_VALIDATED": "PASS",
+    "PROVENANCE_DOCUMENTED": "PASS"
+  },
+  "frozen_manifest_integrity": {
+    "l2arctic_4fold_splits.json": {
+      "expected_sha256": "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b",
+      "verified": true
+    },
+    "l2arctic_loso_vietnamese_splits.json": {
+      "expected_sha256": "7a59b63ad73c7616af2ef583760b50253c973090c4c7c76aadc46029cfe69118",
+      "verified": true
+    },
+    "speechocean762_official_splits.json": {
+      "expected_sha256": "bc3f9ec97b5077402b3c67d89c857b9efe694649bef6e5d43776f07b528bad17",
+      "verified": true
+    }
+  },
+  "l2arctic_gold_census": {
+    "addition_intervals": 1092,
+    "canonical_tokens": 119151,
+    "correct_tokens": 101633,
+    "deletion_tokens": 3420,
+    "lenient_binary_errors": 16406,
+    "lenient_canonical_total": 119151,
+    "lenient_correct": 102745,
+    "lenient_error_rate_pct": 13.76908292838499,
+    "silence_intervals": 15647,
+    "speaker_breakdown": {
+      "ABA": {
+        "addition": 78,
+        "correct": 4502,
+        "deletion": 31,
+        "silence": 842,
+        "substitution": 402,
+        "total_intervals": 5855
+      },
+      "ASI": {
+        "addition": 26,
+        "correct": 4053,
+        "deletion": 120,
+        "silence": 523,
+        "substitution": 761,
+        "total_intervals": 5483
+      },
+      "BWC": {
+        "addition": 44,
+        "correct": 4045,
+        "deletion": 206,
+        "silence": 690,
+        "substitution": 696,
+        "total_intervals": 5681
+      },
+      "EBVS": {
+        "addition": 93,
+        "correct": 3939,
+        "deletion": 194,
+        "silence": 833,
+        "substitution": 876,
+        "total_intervals": 5935
+      },
+      "ERMS": {
+        "addition": 43,
+        "correct": 4102,
+        "deletion": 56,
+        "silence": 796,
+        "substitution": 855,
+        "total_intervals": 5852
+      },
+      "HJK": {
+        "addition": 7,
+        "correct": 4586,
+        "deletion": 4,
+        "silence": 457,
+        "substitution": 330,
+        "total_intervals": 5384
+      },
+      "HKK": {
+        "addition": 44,
+        "correct": 4498,
+        "deletion": 103,
+        "silence": 478,
+        "substitution": 318,
+        "total_intervals": 5441
+      },
+      "HQTV": {
+        "addition": 72,
+        "correct": 3752,
+        "deletion": 477,
+        "silence": 708,
+        "substitution": 809,
+        "total_intervals": 5818
+      },
+      "LXC": {
+        "addition": 58,
+        "correct": 4015,
+        "deletion": 216,
+        "silence": 671,
+        "substitution": 709,
+        "total_intervals": 5669
+      },
+      "MBMPS": {
+        "addition": 26,
+        "correct": 4424,
+        "deletion": 63,
+        "silence": 851,
+        "substitution": 530,
+        "total_intervals": 5894
+      },
+      "NCC": {
+        "addition": 31,
+        "correct": 4356,
+        "deletion": 55,
+        "silence": 609,
+        "substitution": 536,
+        "total_intervals": 5587
+      },
+      "NJS": {
+        "addition": 38,
+        "correct": 4370,
+        "deletion": 80,
+        "silence": 541,
+        "substitution": 561,
+        "total_intervals": 5590
+      },
+      "PNV": {
+        "addition": 16,
+        "correct": 4154,
+        "deletion": 246,
+        "silence": 692,
+        "substitution": 631,
+        "total_intervals": 5739
+      },
+      "RRBI": {
+        "addition": 47,
+        "correct": 4429,
+        "deletion": 65,
+        "silence": 635,
+        "substitution": 451,
+        "total_intervals": 5627
+      },
+      "SKA": {
+        "addition": 116,
+        "correct": 4328,
+        "deletion": 59,
+        "silence": 595,
+        "substitution": 571,
+        "total_intervals": 5669
+      },
+      "SVBI": {
+        "addition": 28,
+        "correct": 4113,
+        "deletion": 89,
+        "silence": 547,
+        "substitution": 717,
+        "total_intervals": 5494
+      },
+      "THV": {
+        "addition": 67,
+        "correct": 3698,
+        "deletion": 406,
+        "silence": 664,
+        "substitution": 926,
+        "total_intervals": 5761
+      },
+      "TLV": {
+        "addition": 43,
+        "correct": 3811,
+        "deletion": 437,
+        "silence": 863,
+        "substitution": 789,
+        "total_intervals": 5943
+      },
+      "TNI": {
+        "addition": 8,
+        "correct": 4380,
+        "deletion": 68,
+        "silence": 660,
+        "substitution": 491,
+        "total_intervals": 5607
+      },
+      "TXHC": {
+        "addition": 73,
+        "correct": 4324,
+        "deletion": 128,
+        "silence": 500,
+        "substitution": 492,
+        "total_intervals": 5517
+      },
+      "YBAA": {
+        "addition": 30,
+        "correct": 4572,
+        "deletion": 31,
+        "silence": 725,
+        "substitution": 331,
+        "total_intervals": 5689
+      },
+      "YDCK": {
+        "addition": 24,
+        "correct": 4421,
+        "deletion": 58,
+        "silence": 695,
+        "substitution": 450,
+        "total_intervals": 5648
+      },
+      "YKWK": {
+        "addition": 30,
+        "correct": 4327,
+        "deletion": 129,
+        "silence": 471,
+        "substitution": 462,
+        "total_intervals": 5419
+      },
+      "ZHAA": {
+        "addition": 50,
+        "correct": 4434,
+        "deletion": 99,
+        "silence": 601,
+        "substitution": 404,
+        "total_intervals": 5588
+      }
+    },
+    "strict_binary_errors": 17518,
+    "strict_canonical_total": 119151,
+    "strict_correct": 101633,
+    "strict_error_rate_pct": 14.70235247710888,
+    "sub_base_preserving_allophone": 1112,
+    "sub_category_shifting_accented": 360,
+    "sub_clean_diff_base": 12364,
+    "sub_clean_same_base": 4,
+    "sub_distorted_err": 258,
+    "substitution_tokens": 14098,
+    "total_gold_utterances": 3599,
+    "total_intervals_all": 135890
+  },
+  "raw_archive_integrity": {
+    "l2arctic_release_v5.0.zip": "490d5a43e48b0af84f6bce8e766ad453e8cd670521d5876bb4d0741cca304fda",
+    "speechocean762.tar.gz": "876c34b828c2ebcc35ba2ff1ba5947d50e6b0162fc4a4af91db0942422b3bdd5"
+  },
+  "schema_version": "1.0.0",
+  "speechocean762_validation": {
+    "partition_overlap_count": 0,
+    "test_utts": 2500,
+    "total_manifested_utts": 5000,
+    "train_utts": 2000,
+    "unmanifested_excluded_count": 245,
+    "unmanifested_leakage_count": 0,
+    "val_utts": 500
+  },
+  "status": "PASS",
+  "validation_timestamp_utc": "2026-10-23T07:46:00Z"
+}
