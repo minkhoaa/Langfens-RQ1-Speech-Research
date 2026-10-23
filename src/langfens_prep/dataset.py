@@ -68,14 +68,13 @@ class L2ArcticMDDDataset(Dataset):
         
         if max_samples is not None:
             self.utterance_entries = self.utterance_entries[:max_samples]
-            
-        self.reader = get_l2arctic_reader(self.zip_path)
 
     def __len__(self) -> int:
         return len(self.utterance_entries)
 
     def __getitem__(self, idx: int) -> Dict[str, Any]:
         speaker_id, utt_id = self.utterance_entries[idx]
+        reader = get_l2arctic_reader(self.zip_path)
         
         # 1. Load audio safely from nested zip
         waveform, sr, audio_metrics = load_l2arctic_audio_from_zip(
@@ -86,7 +85,7 @@ class L2ArcticMDDDataset(Dataset):
         )
         
         # 2. Load and parse TextGrid
-        tg_text = self.reader.read_annotation_text(speaker_id, utt_id)
+        tg_text = reader.read_annotation_text(speaker_id, utt_id)
         annotation = parse_gold_textgrid_content(tg_text, f"{utt_id}.TextGrid")
         
         canonical_intervals = annotation.canonical_intervals
