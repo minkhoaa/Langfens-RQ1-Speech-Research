@@ -71,13 +71,17 @@ def test_mdd_batch_collation():
     assert "padding_mask" in batch["net_input"]
     assert "audio_lengths" in batch["net_input"]
     assert "target_binary" in batch
+    assert "target_binary_mask" in batch
     assert "target_ctc" in batch
     assert "target_lengths" in batch
+    assert "target_diagnosis" in batch
     
     assert batch["net_input"]["source"].shape[0] == 4
     assert batch["target_binary"].shape[0] == 4
+    assert batch["target_binary_mask"].shape == batch["target_binary"].shape
     # Check padding value for binary targets is -100
     assert (batch["target_binary"] == -100).any()
+    assert (batch["target_binary_mask"] == (batch["target_binary"] != -100)).all()
 
 def test_speechocean_score_dataset():
     from langfens_prep.dataset import SpeechOcean762ScoreDataset
