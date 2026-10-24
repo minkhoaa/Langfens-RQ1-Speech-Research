@@ -165,20 +165,56 @@ def test_variant_d_frozen_backbone_prevents_blank_collapse():
 
 
 def test_multitask_diagnosis_majority_and_chance_baselines():
-    """Verify that Variant D substitution diagnosis exceeds both chance and majority baselines on N=124."""
+    """Verify that Variant D substitution diagnosis exceeds both chance and dynamic majority baselines on N=124."""
     metrics_path = Path("manifests/RQ1-TRN-01B1/CTC_PILOT_METRICS.json")
     with open(metrics_path, "r", encoding="utf-8") as f:
         data = json.load(f)
 
     vd_diag = data["Variant_D"]["final_metrics"]["substitution_diagnosis"]
     acc = vd_diag["top1_accuracy"]
-    majority_baseline = vd_diag["majority_class_baseline"]  # 14.52%
     chance_baseline = vd_diag["uniform_chance_baseline"]    # 2.56%
 
+    # Reconciled dynamic majority baseline from confusion matrix
+    cm = np.array(vd_diag["confusion_matrix_39x39"])
+    assert cm.sum() == 124, f"Confusion matrix total {cm.sum()} must equal eligible denominator 124"
+    row_sums = cm.sum(axis=1)
+    col_sums = cm.sum(axis=0)
+
+    # Assert exactly 29 classes have gold support
+    supported_classes = np.where(row_sums > 0)[0]
+    assert len(supported_classes) == 29, f"Supported classes count {len(supported_classes)} must be 29"
+
+    # Assert majority class is D (index 8) with count 20, and S (index 28) has count 18
+    maj_idx = int(np.argmax(row_sums))
+    assert maj_idx == 8, f"Majority class index must be 8 (D), got {maj_idx}"
+    assert row_sums[8] == 20, f"Gold count for D must be 20, got {row_sums[8]}"
+    assert row_sums[28] == 18, f"Gold count for S must be 18, got {row_sums[28]}"
+
+    # True dynamic majority baseline is 20 / 124 = 0.16129
+    dynamic_majority = float(row_sums[maj_idx] / cm.sum())
+    assert abs(dynamic_majority - 0.16129) < 1e-4
+
     assert vd_diag["eligible_denominator"] == 124
-    assert acc > majority_baseline, f"Variant D accuracy ({acc}) must exceed majority baseline ({majority_baseline})"
+    assert acc > dynamic_majority, f"Variant D accuracy ({acc}) must exceed dynamic majority baseline ({dynamic_majority})"
     assert acc > chance_baseline, f"Variant D accuracy ({acc}) must exceed chance baseline ({chance_baseline})"
     assert vd_diag["classes_with_correct_hits"] >= 10, "Should have hits across multiple phoneme classes"
+
+
+def test_variant_a_majority_collapse_verification():
+    """Verify that Variant A collapsed completely to predicting the majority class D (20/124)."""
+    metrics_path = Path("manifests/RQ1-TRN-01B1/CTC_PILOT_METRICS.json")
+    with open(metrics_path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    va_diag = data["Variant_A"]["final_metrics"]["substitution_diagnosis"]
+    cm_a = np.array(va_diag["confusion_matrix_39x39"])
+    col_sums = cm_a.sum(axis=0)
+
+    # Column 8 (D) should have all 124 predictions
+    assert col_sums[8] == 124, f"Variant A must predict class D for all 124 tokens, got {col_sums[8]}"
+    # Top1 accuracy is exactly 20 / 124 = 0.1613
+    assert va_diag["top1_accuracy"] == 0.1613
+    assert va_diag["correct_predictions"] == 20
 
 
 def test_train_subset_zero_leakage_assertion():

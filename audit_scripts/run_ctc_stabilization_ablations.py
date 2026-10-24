@@ -235,6 +235,24 @@ def evaluate_full_multitask(
     blank_frac = float(ctc_total_blank_frames / ctc_total_active_frames) if ctc_total_active_frames > 0 else 0.0
     non_empty_count = sum(1 for u in decoded_utterances if u["hyp_len"] > 0)
 
+    # Dynamic baseline calculations & strict integrity assertions
+    max_gold_count = int(np.max(sub_class_gold_counts)) if sub_diag_total > 0 else 0
+    maj_class_idx = int(np.argmax(sub_class_gold_counts)) if sub_diag_total > 0 else 0
+    majority_phone = STANDARD_39_ARPABET[maj_class_idx] if sub_diag_total > 0 else None
+    dynamic_majority_baseline = round(max_gold_count / sub_diag_total, 4) if sub_diag_total > 0 else 0.0
+    uniform_chance = round(1.0 / len(STANDARD_39_ARPABET), 4)
+
+    if sub_diag_total > 0:
+        assert int(np.sum(sub_class_gold_counts)) == sub_diag_total, (
+            f"Gold class sum {int(np.sum(sub_class_gold_counts))} != sub_diag_total {sub_diag_total}"
+        )
+        assert int(np.sum(sub_confusion_matrix)) == sub_diag_total, (
+            f"Confusion matrix sum {int(np.sum(sub_confusion_matrix))} != sub_diag_total {sub_diag_total}"
+        )
+        assert int(np.sum(sub_confusion_matrix[maj_class_idx, :])) == max_gold_count, (
+            f"Majority row sum != max_gold_count ({max_gold_count})"
+        )
+
     # Per-class diagnosis coverage
     per_class_diagnosis = {}
     classes_with_support = 0
@@ -282,8 +300,10 @@ def evaluate_full_multitask(
             "top1_accuracy": round(sub_diag_acc, 4),
             "correct_predictions": sub_diag_correct,
             "eligible_denominator": sub_diag_total,
-            "uniform_chance_baseline": 0.0256,
-            "majority_class_baseline": 0.1452,
+            "uniform_chance_baseline": uniform_chance,
+            "majority_class_baseline": dynamic_majority_baseline,
+            "majority_class_phone": majority_phone,
+            "majority_class_count": max_gold_count,
             "classes_with_gold_support": classes_with_support,
             "classes_predicted": classes_predicted,
             "classes_with_correct_hits": classes_correct,
