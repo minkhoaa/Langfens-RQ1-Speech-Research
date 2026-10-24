@@ -1,0 +1,63 @@
+{
+  "bias_evolution": {
+    "step_0": {
+      "blank": -0.013195141218602657,
+      "nonblank_mean": 0.003408328164368868,
+      "margin": -0.016603469848632812
+    },
+    "step_5": {
+      "blank": -0.0019495554734021425,
+      "nonblank_mean": 0.0012552830157801509,
+      "margin": -0.0032048383727669716
+    },
+    "step_100": {
+      "blank": 0.0009651434957049787,
+      "nonblank_mean": -0.0007630691980011761,
+      "margin": 0.0017282126937061548
+    },
+    "repeat_100": {
+      "blank": 0.0009574868017807603,
+      "nonblank_mean": -0.0008177378913387656,
+      "margin": 0.001775224693119526
+    }
+  },
+  "target_distribution": {
+    "target_lengths_mean": 31.625,
+    "target_lengths_min": 13,
+    "target_lengths_max": 51,
+    "input_lengths_mean": 183.9375,
+    "input_lengths_min": 76,
+    "input_lengths_max": 329,
+    "t_over_l_mean": 5.875851762250416,
+    "t_over_l_min": 3.75,
+    "t_over_l_max": 8.891891891891891
+  },
+  "blank_probabilities": {
+    "mean": 0.8689510696727404,
+    "std": 0.0003017535882812357,
+    "min": 0.86767578125,
+    "max": 0.86962890625,
+    "p10": 0.86865234375,
+    "p50": 0.869140625,
+    "p90": 0.869140625,
+    "p99": 0.86962890625
+  },
+  "top_nonblank_probabilities": {
+    "mean": 0.012546569119089523,
+    "max": 0.01268768310546875,
+    "p90": 0.0125885009765625,
+    "p99": 0.01262664794921875
+  },
+  "logit_margin": {
+    "mean": 4.237796121092423,
+    "min": 4.2265625,
+    "max": 4.24609375
+  },
+  "gradients": {
+    "ctc_head_weight_grad_norm": 1.916030764579773,
+    "ctc_head_bias_grad_norm": 0.1649451106786728,
+    "encoder_mean_grad_norm": 0.07064176153236312,
+    "d_loss_d_blank_bias": -0.1148681640625,
+    "is_mathematical_minimum": false
+  }
+}
