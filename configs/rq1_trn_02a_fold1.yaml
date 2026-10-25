@@ -24,4 +24,5 @@ gradient_clip_norm: 1.0
 amp: fp16
 grad_scaler_initial_scale: 4096
 output_dir: checkpoints/RQ1-TRN-02A
-zip_path: datasets/L2-ARCTIC/original/l2arctic_release_v5.0.zip
+drive_output_dir: /content/drive/MyDrive/KLTN-Dataset/manifests/RQ1-TRN-02A/checkpoints
+zip_path: datasets/L2-ARCTIC/authorized_RQ1-TRN-02A_fold1_train_val_only.zip

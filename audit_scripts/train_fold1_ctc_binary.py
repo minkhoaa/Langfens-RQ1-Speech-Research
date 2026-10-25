@@ -257,6 +257,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--config", default="configs/rq1_trn_02a_fold1.yaml")
     ap.add_argument("--resume", default=None)
+    ap.add_argument("--zip-path", default=None, help="Path to zip archive containing authorized audio/TextGrids")
     ap.add_argument("--drive-output-dir", default=None, help="Google Drive destination for remote checkpoint persistence")
     ap.add_argument("--max-train-batches", type=int, default=None, help="Bounded diagnostic run only; not a full experiment")
     ap.add_argument("--num-epochs", type=int, default=None, help="Maximum epochs this invocation; useful for epoch-wise artifact sync")
@@ -279,8 +280,9 @@ def main():
         raise RuntimeError("Full training requires CUDA; refusing silent CPU execution")
 
     seed_all(cfg["seed"])
-    train = L2ArcticMDDDataset(str(manifest), 1, "train", policy="strict", zip_path=cfg["zip_path"])
-    val = L2ArcticMDDDataset(str(manifest), 1, "val", policy="strict", zip_path=cfg["zip_path"])
+    zip_path = args.zip_path or cfg.get("zip_path", "datasets/L2-ARCTIC/original/l2arctic_release_v5.0.zip")
+    train = L2ArcticMDDDataset(str(manifest), 1, "train", policy="strict", zip_path=zip_path)
+    val = L2ArcticMDDDataset(str(manifest), 1, "val", policy="strict", zip_path=zip_path)
     if len(train) != 2399 or len(val) != 300:
         raise RuntimeError(f"Unexpected split sizes train={len(train)} val={len(val)}")
 
