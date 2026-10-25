@@ -1,0 +1,18 @@
+{
+  "utterances_evaluated": 3599,
+  "total_intervals": 135890,
+  "silence_intervals": 15647,
+  "canonical_tokens_total": 119151,
+  "correct_tokens": 101633,
+  "total_substitutions": 14098,
+  "clean_substitutions_eval": 13840,
+  "err_substitutions": 258,
+  "deletions_total": 3420,
+  "total_additions": 1092,
+  "clean_additions": 1081,
+  "err_additions": 11,
+  "total_chronological_ctc_tokens": 116554,
+  "min_ctc_len": 9,
+  "max_ctc_len": 72,
+  "blank_violations": 0
+}

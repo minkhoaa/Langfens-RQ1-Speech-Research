@@ -33,11 +33,21 @@ def test_asterisk_and_err_flags():
     assert res_err.is_err is True
     assert res_err.normalized_phone == "<ERR>"
 
-def test_typo_correction_v8():
-    res = normalize_phoneme("V8", correct_typos=True)
-    assert res.normalized_phone == "V"
-    assert res.is_typo_correction is True
-    assert res.raw_token == "V8"
+def test_typo_correction_cataloged_slips():
+    for raw, expected in [
+        ("V8", "V"),
+        ("ER)", "ER"),
+        ("AH)", "AH"),
+        ("D_", "D"),
+        ("Z_", "Z"),
+        ("Y_", "Y"),
+        ("W`", "W"),
+        ("V``", "V")
+    ]:
+        res = normalize_phoneme(raw, correct_typos=True)
+        assert res.normalized_phone == expected
+        assert res.is_typo_correction is True
+        assert res.raw_token == raw
 
 def test_reversibility():
     original = "ER0*"

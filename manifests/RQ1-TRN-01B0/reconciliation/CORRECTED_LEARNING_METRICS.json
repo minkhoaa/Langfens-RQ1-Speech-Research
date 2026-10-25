@@ -1,0 +1,225 @@
+{
+  "metadata": {
+    "experiment_id": "RQ1-TRN-01B0-R",
+    "gate_description": "Real-Data Learning Diagnostics & Evidence Reconciliation",
+    "timestamp_utc": "2026-10-23T16:45:00Z",
+    "git_commit_sha": "1c5dc61c0afb9510b7041984f5170576473a4ab6",
+    "target_partition": "Fold 1 train-only deterministic subset",
+    "source_manifest_checksum": "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b",
+    "status": "PASS"
+  },
+  "hardware_accounting_reconciled": {
+    "gpu_model": "NVIDIA GeForce GTX 1650",
+    "peak_allocated_mb_decimal": 1910.69,
+    "peak_allocated_mib_binary": 1822.18,
+    "peak_reserved_mb_decimal": 2262.83,
+    "peak_reserved_mib_binary": 2158.0,
+    "unit_clarification": "Peak allocated is 1,909.38 MB (decimal 10^6) = 1,820.93 MiB (binary 2^20). The previously cited 1,535.7 figure was instantaneous allocation at step completion."
+  },
+  "optimization_step_accounting": {
+    "total_micro_steps_attempted": 214,
+    "successful_optimizer_updates": 100,
+    "amp_overflow_skipped_updates": 7,
+    "attempted_sample_exposures": 428,
+    "successful_update_equivalent_sample_exposures": 400,
+    "epochs_completed": 12.5
+  },
+  "learning_metrics_corrected": {
+    "initial_metrics": {
+      "loss": 20.1761,
+      "ctc_loss": 17.7497,
+      "binary_loss": 0.6096,
+      "diagnosis_loss": 3.6336,
+      "binary_accuracy": 0.8311,
+      "binary_precision": 0.0,
+      "binary_recall": 0.0,
+      "binary_f1": 0.0,
+      "binary_pr_auc": 0.1762,
+      "binary_default_05": {
+        "threshold": 0.5,
+        "accuracy": 0.8311,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "confusion_matrix": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 178,
+          "tn": 876
+        }
+      },
+      "binary_score_distribution": {
+        "correct_tokens": {
+          "count": 876,
+          "min": 0.3608,
+          "p25": 0.4158,
+          "median": 0.428,
+          "mean": 0.4277,
+          "p75": 0.4397,
+          "max": 0.4729
+        },
+        "error_tokens": {
+          "count": 178,
+          "min": 0.374,
+          "p25": 0.415,
+          "median": 0.4279,
+          "mean": 0.427,
+          "p75": 0.4401,
+          "max": 0.4814
+        }
+      },
+      "calibrated_threshold": {
+        "diagnostic_label": "TRAIN_ONLY_DIAGNOSTIC (uncalibrated post-hoc search on train subset)",
+        "threshold": 0.1,
+        "f1": 0.289,
+        "precision": 0.1689,
+        "recall": 1.0
+      },
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 178,
+        "tn": 876
+      },
+      "diagnosis_top1_accuracy": 0.0968,
+      "diagnosis_evaluated_tokens": 124,
+      "substitution_diagnosis": {
+        "top1_accuracy": 0.0968,
+        "correct_predictions": 12,
+        "eligible_substitution_denominator": 124,
+        "masked_uncertain_err_tokens": 2
+      },
+      "auxiliary_realized_phone_classification": {
+        "top1_accuracy": 0.027,
+        "correct_predictions": 27,
+        "evaluated_tokens_denominator": 1000
+      },
+      "ctc_phone_error_rate": 3.0899,
+      "ctc_total_edits": 3127,
+      "ctc_total_ref_tokens": 1012,
+      "ctc_diagnostics": {
+        "active_frames": 5886,
+        "blank_frames": 77,
+        "blank_fraction": 0.0131,
+        "hyp_tokens_total": 3418,
+        "mean_hyp_length": 106.81,
+        "edits_substitutions": 721,
+        "edits_deletions": 0,
+        "edits_insertions": 2406,
+        "is_blank_collapsed": false
+      }
+    },
+    "final_metrics": {
+      "loss": 5.5381,
+      "ctc_loss": 3.5631,
+      "binary_loss": 0.4269,
+      "diagnosis_loss": 3.0961,
+      "binary_accuracy": 0.8311,
+      "binary_precision": 0.0,
+      "binary_recall": 0.0,
+      "binary_f1": 0.0,
+      "binary_pr_auc": 0.3792,
+      "binary_default_05": {
+        "threshold": 0.5,
+        "accuracy": 0.8311,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "confusion_matrix": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 178,
+          "tn": 876
+        }
+      },
+      "binary_score_distribution": {
+        "correct_tokens": {
+          "count": 876,
+          "min": 0.0944,
+          "p25": 0.1266,
+          "median": 0.137,
+          "mean": 0.1473,
+          "p75": 0.1658,
+          "max": 0.3262
+        },
+        "error_tokens": {
+          "count": 178,
+          "min": 0.0944,
+          "p25": 0.1393,
+          "median": 0.1696,
+          "mean": 0.1942,
+          "p75": 0.2096,
+          "max": 0.3259
+        }
+      },
+      "calibrated_threshold": {
+        "diagnostic_label": "TRAIN_ONLY_DIAGNOSTIC (uncalibrated post-hoc search on train subset)",
+        "threshold": 0.15,
+        "f1": 0.394,
+        "precision": 0.2793,
+        "recall": 0.6685
+      },
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 178,
+        "tn": 876
+      },
+      "diagnosis_top1_accuracy": 0.1613,
+      "diagnosis_evaluated_tokens": 124,
+      "substitution_diagnosis": {
+        "top1_accuracy": 0.1613,
+        "correct_predictions": 20,
+        "eligible_substitution_denominator": 124,
+        "masked_uncertain_err_tokens": 2
+      },
+      "auxiliary_realized_phone_classification": {
+        "top1_accuracy": 0.06,
+        "correct_predictions": 60,
+        "evaluated_tokens_denominator": 1000
+      },
+      "ctc_phone_error_rate": 1.0,
+      "ctc_total_edits": 1012,
+      "ctc_total_ref_tokens": 1012,
+      "ctc_diagnostics": {
+        "active_frames": 5886,
+        "blank_frames": 5886,
+        "blank_fraction": 1.0,
+        "hyp_tokens_total": 0,
+        "mean_hyp_length": 0.0,
+        "edits_substitutions": 0,
+        "edits_deletions": 1012,
+        "edits_insertions": 0,
+        "is_blank_collapsed": true
+      }
+    },
+    "loss_delta": {
+      "total_loss_initial": 20.1761,
+      "total_loss_final": 5.5381,
+      "total_loss_relative_reduction_pct": 72.55,
+      "ctc_loss_initial": 17.7497,
+      "ctc_loss_final": 3.5631,
+      "ctc_loss_relative_reduction_pct": 79.93,
+      "binary_loss_initial": 0.6096,
+      "binary_loss_final": 0.4269,
+      "binary_loss_relative_reduction_pct": 29.97,
+      "diagnosis_loss_initial": 3.6336,
+      "diagnosis_loss_final": 3.0961,
+      "diagnosis_loss_relative_reduction_pct": 14.79
+    },
+    "task_performance_delta": {
+      "binary_pr_auc_initial": 0.1762,
+      "binary_pr_auc_final": 0.3792,
+      "binary_f1_default_05_initial": 0.0,
+      "binary_f1_default_05_final": 0.0,
+      "binary_f1_train_diagnostic_initial": 0.289,
+      "binary_f1_train_diagnostic_final": 0.394,
+      "substitution_diagnosis_acc_initial": 0.0968,
+      "substitution_diagnosis_acc_final": 0.1613,
+      "auxiliary_phone_classification_acc_initial": 0.027,
+      "auxiliary_phone_classification_acc_final": 0.06,
+      "ctc_phone_error_rate_initial": 3.0899,
+      "ctc_phone_error_rate_final": 1.0
+    }
+  }
+}

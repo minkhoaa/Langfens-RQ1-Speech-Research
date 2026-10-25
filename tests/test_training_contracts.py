@@ -17,6 +17,30 @@ from langfens_prep.losses import (
 from langfens_prep.collate import LangfensMDDCollate
 from langfens_prep.textgrid_parser import parse_gold_textgrid_content
 
+def test_binary_average_precision_matches_rank_definition_and_ties():
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("train_fold1", "audit_scripts/train_fold1_ctc_binary.py")
+    module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
+    assert module.average_precision_binary([1, 0, 1], [0.9, 0.8, 0.7]) == pytest.approx(5/6)
+    assert module.average_precision_binary([0, 1], [0.5, 0.5]) == pytest.approx(0.5)
+
+
+def test_two_head_freeze_optimizer_and_diagnosis_exclusion():
+    from langfens_prep.model import LangfensWav2Vec2MDD
+    model = LangfensWav2Vec2MDD(hidden_dim=32, conv_dim=16, num_transformer_layers=1,
+                                num_attention_heads=4, intermediate_dim=64, dropout=0.2)
+    params = model.configure_two_head_training()
+    intended = [p for m in (model.ctc_head, model.cross_attention_module, model.binary_head) for p in m.parameters()]
+    assert {id(p) for p in params} == {id(p) for p in intended}
+    assert all(not p.requires_grad for p in model.wav2vec2.parameters())
+    assert all(not p.requires_grad for p in model.diagnosis_head.parameters())
+    optimizer = torch.optim.AdamW(params)
+    assert {id(p) for group in optimizer.param_groups for p in group["params"]} == {id(p) for p in intended}
+    model.train()
+    assert not model.wav2vec2.training
+    assert model.ctc_head.training and model.binary_head.training
+
+
 def test_binary_mdd_targets_distinguish_valid_from_padding():
     """Verify that binary labels are strictly 0 or 1, and padding is strictly distinct (-100)."""
     valid_labels = torch.tensor([0, 1, 0, 1], dtype=torch.long)
@@ -258,3 +282,78 @@ def test_collate_with_masks_and_diagnosis():
     # Diagnosis: pos 2 of utt 1 is -100 (masked deletion/err); pos 1 and 2 of utt 2 are -100 (padded)
     assert batch["target_diagnosis"][0, 2].item() == -100
     assert batch["target_diagnosis"][1, 1].item() == -100
+
+def test_masked_bce_all_masked_gradient_connectivity():
+    """Verify that when an entire batch is masked (-100), loss is 0.0 and logits.grad is populated with 0.0."""
+    logits = torch.tensor([[1.0, 2.0, -1.0]], requires_grad=True)
+    all_masked_targets = torch.tensor([[-100, -100, -100]], dtype=torch.long)
+
+    loss_fn = MaskedBCEWithLogitsLoss(ignore_index=-100)
+    loss = loss_fn(logits, all_masked_targets)
+
+    assert loss.item() == 0.0
+    loss.backward()
+    assert logits.grad is not None
+    assert torch.equal(logits.grad, torch.zeros_like(logits))
+
+def test_masked_ce_all_masked_avoids_nan():
+    """Verify that when an entire batch is masked (-100), MaskedCrossEntropyLoss returns 0.0 instead of NaN."""
+    logits = torch.randn(2, 39, requires_grad=True)
+    all_masked_targets = torch.tensor([-100, -100], dtype=torch.long)
+
+    loss_fn = MaskedCrossEntropyLoss(ignore_index=-100)
+    loss = loss_fn(logits, all_masked_targets)
+
+    assert not torch.isnan(loss)
+    assert loss.item() == 0.0
+    loss.backward()
+    assert logits.grad is not None
+    assert torch.equal(logits.grad, torch.zeros_like(logits))
+
+def test_ctc_contract_adjacent_repeated_tokens():
+    """Verify validate_ctc_contract catches impossible alignments with adjacent repeated tokens."""
+    N, T, C = 1, 2, 40
+    log_probs = F.log_softmax(torch.randn(N, T, C), dim=-1)
+
+    # Target sequence with adjacent repeated tokens: [5, 5] (L = 2)
+    # Since adjacent tokens are identical, CTC requires intervening blank, so min frames = 3!
+    targets = torch.tensor([[5, 5]], dtype=torch.long)
+    input_lengths = torch.tensor([2], dtype=torch.long) # T = 2 < 3!
+    target_lengths = torch.tensor([2], dtype=torch.long)
+
+    valid, msg = validate_ctc_contract(log_probs, targets, input_lengths, target_lengths, blank_id=0)
+    assert valid is False
+    assert "adjacent identical tokens" in msg
+
+    # With T = 3, it must become valid
+    input_lengths_3 = torch.tensor([3], dtype=torch.long)
+    log_probs_3 = F.log_softmax(torch.randn(1, 3, C), dim=-1)
+    valid_3, msg_3 = validate_ctc_contract(log_probs_3, targets, input_lengths_3, target_lengths, blank_id=0)
+    assert valid_3 is True
+    assert msg_3 is None
+
+def test_frame_to_phone_pooling_guarantees():
+    """Verify frame-to-phone pooling guarantees non-empty slices and proper clamping."""
+    from langfens_prep.alignment import pool_frames_to_canonical_phones
+
+    batch_size = 1
+    T_frames = 10
+    hidden_dim = 16
+    frame_features = torch.randn(batch_size, T_frames, hidden_dim)
+
+    # Interval with duration < 1 frame stride (0.001s < 0.02s)
+    intervals = [[(0.010, 0.011), (0.05, 0.15)]]
+
+    pooled, mask = pool_frames_to_canonical_phones(
+        frame_features=frame_features,
+        intervals_per_batch=intervals,
+        sample_rate=16000,
+        frame_stride_samples=320,
+        pooling_mode="mean"
+    )
+
+    assert pooled.shape == (1, 2, hidden_dim)
+    assert mask.shape == (1, 2)
+    assert mask.all()
+    assert torch.isfinite(pooled).all()
+

@@ -1,0 +1,52 @@
+{
+  "metadata": {
+    "evaluation_date": "2026-10-25",
+    "protocol": "RQ1-TRN-01B1-R2 Canonical-Only Baselines",
+    "train_probe_substitutions": 936,
+    "holdout_probe_substitutions": 252,
+    "train_probe_binary_tokens": 9485,
+    "holdout_probe_binary_tokens": 2081
+  },
+  "substitution_baselines": {
+    "uniform_chance": {
+      "description": "Uniform random choice over 39 ARPAbet classes (1/39)",
+      "holdout_accuracy": 0.0256
+    },
+    "majority_class": {
+      "description": "Constant majority class (S) from train probe",
+      "class_index": 28,
+      "class_phone": "S",
+      "train_accuracy": 0.1613,
+      "holdout_accuracy": 0.1984
+    },
+    "canonical_empirical_prior": {
+      "description": "Bayesian lookup P(realized | canonical) computed directly from train probe",
+      "train_accuracy": 0.7179,
+      "holdout_accuracy": 0.5635,
+      "holdout_top3_accuracy": 0.6905,
+      "holdout_nll_loss": 2.1321
+    },
+    "canonical_learned_mlp": {
+      "description": "Learned MLP (Embedding -> 2x Linear GELU) taking purely canonical tokens",
+      "train_accuracy": 0.7179,
+      "holdout_accuracy": 0.5635,
+      "holdout_top3_accuracy": 0.6865,
+      "holdout_ce_loss": 2.0808
+    }
+  },
+  "binary_mdd_baselines": {
+    "empirical_prevalence": {
+      "description": "Constant prediction of empirical positive rate",
+      "train_rate": 0.1253,
+      "holdout_rate": 0.1278
+    },
+    "canonical_learned_mlp": {
+      "description": "Learned MLP taking purely canonical tokens to predict error probability",
+      "holdout_pr_auc": 0.4745,
+      "holdout_bce_loss": 0.3039,
+      "holdout_precision_at_05": 0.7059,
+      "holdout_recall_at_05": 0.1353,
+      "holdout_f1_at_05": 0.2271
+    }
+  }
+}

@@ -6,13 +6,16 @@
 model_registry:
   repo_id: "langfens-wav2vec2-mdd"
   repo_type: "model"
-  private: false
+  private: true
+  status: "ARCHITECTURE & INFERENCE VALIDATED / PRE-TRAINING GATE CLEARED"
   license: "cc-by-nc-4.0"
 
 metadata:
-  model_name: "Langfens Wav2Vec 2.0 Phoneme Mispronunciation Detection & Diagnosis"
+  model_name: "Langfens Pretrained Wav2Vec 2.0 Multi-Task MDD"
   base_model: "facebook/wav2vec2-base-960h"
-  architecture: "Wav2Vec2ForPreTraining / Custom Multi-Task MDD Head"
+  architecture: "Wav2Vec2Model / Cross-Attention MDD & Realized CTC Heads"
+  total_parameters: 97405648
+  backbone_parameters: 94371712
   tasks:
     - "automatic-speech-recognition"
     - "audio-classification"
@@ -25,6 +28,7 @@ metadata:
     - "mdd"
     - "computer-assisted-pronunciation-training"
     - "capt"
+    - "cross-attention"
     - "phoneme-recognition"
     - "l2-arctic"
     - "speechocean762"
@@ -36,20 +40,29 @@ evaluation_benchmarks:
   primary_protocol: "4-Fold Speaker-Independent Cross-Validation"
   metrics:
     - name: "Strict Binary PR-AUC"
-      denominator: 119151
+      aggregate_denominator: 119151
+      fold1_denominator: 29769
+      fold2_denominator: 29798
+      fold3_denominator: 29798
+      fold4_denominator: 29786
       target_tokens: "Canonical Prompt Phonemes"
     - name: "Strict Binary F1-Score"
     - name: "Substitution Diagnosis Accuracy"
-      evaluable_substitutions: 13829
+      evaluable_substitutions: 13840
     - name: "Corpus Deletion Recall"
       total_deletions: 3420
     - name: "Vietnamese Deletion Recall"
       vietnamese_deletions: 1566
+  specialization_regimes:
+    - name: "Vietnamese In-Domain Adaptation (LOSO Regime A)"
+      rounds: 4
+      partition: "21 train / 2 val / 1 test speakers"
+    - name: "Vietnamese Zero-Shot Generalization (Regime B)"
+      partition: "18 train / 2 val / 4 test speakers"
 
 artifacts_to_publish:
-  - "pytorch_model.bin" # or model.safetensors
+  - "model.safetensors"
   - "config.json"
-  - "preprocessor_config.json"
   - "vocab.json"
-  - "README.md" # Model Card
+  - "README.md"
   - "metrics_summary.json"

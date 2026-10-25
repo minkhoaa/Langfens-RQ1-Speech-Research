@@ -75,11 +75,23 @@ def normalize_phoneme(
             is_typo_correction=False
         )
     
-    # Check typo correction: e.g. SVBI keyboard slip 'V8' for 'V*' or 'V'
+    # Known typographical slips cataloged in MDD_LABEL_ACCOUNTING_SPEC
+    TYPO_CORRECTIONS = {
+        "V8": "V",
+        "ER)": "ER",
+        "AH)": "AH",
+        "D_": "D",
+        "Z_": "Z",
+        "Y_": "Y",
+        "W`": "W",
+        "V``": "V"
+    }
+
+    # Check typo correction
     is_typo = False
-    if correct_typos and trimmed == "V8":
+    if correct_typos and trimmed in TYPO_CORRECTIONS:
         is_typo = True
-        trimmed = "V"
+        trimmed = TYPO_CORRECTIONS[trimmed]
         
     has_asterisk = "*" in trimmed
     cleaned = trimmed.replace("*", "")

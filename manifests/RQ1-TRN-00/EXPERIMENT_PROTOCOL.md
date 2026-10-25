@@ -31,12 +31,13 @@ Project Langfens Evaluation Partitions
 ├── 2. Vietnamese Specialization: LOSO Regime A (In-Domain Adaptation)
 │   ├── Target: L2-ARCTIC Vietnamese cohort (HQTV, PNV, THV, TLV)
 │   ├── Partition: 4 leave-one-Vietnamese-speaker-out rounds
-│   └── Training: 23 speakers (including 3 Vietnamese); Test: Held-out Vietnamese speaker
+│   └── Allocation: 21 train / 2 validation / 1 held-out test speaker per round
 │
 ├── 3. Vietnamese Specialization: Zero-Shot Regime B (Cross-Lingual Generalization)
 │   ├── Target: L2-ARCTIC Vietnamese cohort (HQTV, PNV, THV, TLV)
-│   ├── Training: Strictly 20 non-Vietnamese speakers (Arabic, Chinese, Hindi, Korean, Spanish)
-│   └── Test: Zero-shot transfer evaluated on all 4 Vietnamese speakers
+│   ├── Training: Strictly 18 non-Vietnamese speakers (Arabic, Chinese, Hindi, Korean, Spanish)
+│   ├── Validation: 2 non-Vietnamese speakers
+│   └── Test: Zero-shot transfer evaluated on all 4 held-out Vietnamese speakers
 │
 └── 4. Multi-Aspect Pronunciation Scoring Benchmark
     ├── Target: SpeechOcean762 (5,000 manifested utterances)
@@ -48,11 +49,16 @@ Project Langfens Evaluation Partitions
 ## 3. Metric Policies & Error Taxonomy Accounting
 
 ### 3.1 Primary Metric Policy: Strict Binary MDD
-- **Target Invariant Denominator:**
+- **Target Invariant Denominator (Corpus Aggregate):**
   $$N_{\text{canonical}} = C + S + D = 101,633 + 14,098 + 3,420 = \mathbf{119,151} \quad (\text{Strict Invariance})$$
-- **Positive Class (Errors):**
+- **Fold-Specific Test Denominators (Must Not Be Conflated with Aggregate):**
+  - **Fold 1 Test:** $N = \mathbf{29,769}$ ($C = 25,249$, $S = 3,744$, $D = 776$, $E = 4,520$; Error Rate: $15.18\%$)
+  - **Fold 2 Test:** $N = \mathbf{29,798}$ ($C = 25,160$, $S = 3,649$, $D = 989$, $E = 4,638$; Error Rate: $15.56\%$)
+  - **Fold 3 Test:** $N = \mathbf{29,798}$ ($C = 25,578$, $S = 3,467$, $D = 753$, $E = 4,220$; Error Rate: $14.16\%$)
+  - **Fold 4 Test:** $N = \mathbf{29,786}$ ($C = 25,646$, $S = 3,238$, $D = 902$, $E = 4,140$; Error Rate: $13.90\%$)
+- **Positive Class (Errors, 4-Fold Aggregate):**
   $$E_{\text{strict}} = S + D = 14,098 + 3,420 = \mathbf{17,518} \quad (14.702\% \text{ error rate})$$
-- **Negative Class (Correct):**
+- **Negative Class (Correct, 4-Fold Aggregate):**
   $$C_{\text{strict}} = \mathbf{101,633} \quad (85.298\%)$$
 - **Primary Metric:** **Precision-Recall Area Under Curve (PR-AUC)**.
   Because of the $5.80 : 1$ class imbalance, PR-AUC evaluates ranking discrimination across all thresholds without arbitrary operating cutoffs.
@@ -69,7 +75,7 @@ Project Langfens Evaluation Partitions
 ### 3.3 Disaggregated Error-Type Evaluation
 Every published experiment must report disaggregated performance across the three phonological error categories:
 1. **Phoneme Substitution Diagnosis Accuracy ($\text{Diag-Acc}$):**
-   Evaluated strictly over the $S_{\text{eval}} = 13,829$ clean substitutions (masking the $258$ unalignable `'err'` tokens):
+   Evaluated strictly over the $S_{\text{eval}} = \mathbf{13,840}$ clean substitutions (masking the $258$ unalignable `'err'` tokens: $14,098 - 258 = 13,840$):
    $$\text{Diag-Acc} = \frac{\sum_{i=1}^{S_{\text{eval}}} \mathbb{I}(\hat{p}_i = p_i)}{S_{\text{eval}}}$$
 2. **Corpus Deletion Detection Recall ($\text{Rec}_{\text{del}}$):**
    $$\text{Rec}_{\text{del}} = \frac{TP_{\text{del}}}{3,420}$$

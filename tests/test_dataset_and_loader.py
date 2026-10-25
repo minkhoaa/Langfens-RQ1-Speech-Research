@@ -82,6 +82,58 @@ def test_mdd_batch_collation():
     # Check padding value for binary targets is -100
     assert (batch["target_binary"] == -100).any()
     assert (batch["target_binary_mask"] == (batch["target_binary"] != -100)).all()
+    # Check canonical phone prompt indices are collated
+    assert "canonical_phone_indices" in batch["net_input"]
+    assert batch["net_input"]["canonical_phone_indices"].shape[0] == 4
+
+
+def test_end_to_end_dataset_to_model_forward_and_loss():
+    """Verify seamless end-to-end integration: Dataset -> Collate -> Model Forward & Loss."""
+    from langfens_prep.dataset import L2ArcticMDDDataset
+    from langfens_prep.collate import LangfensMDDCollate
+    from langfens_prep.model import LangfensWav2Vec2MDD
+
+    manifest_path = "manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json"
+    ds = L2ArcticMDDDataset(
+        split_manifest_path=manifest_path,
+        fold=1,
+        split="val",
+        policy="strict",
+        max_samples=2
+    )
+
+    loader = DataLoader(ds, batch_size=2, collate_fn=LangfensMDDCollate())
+    batch = next(iter(loader))
+
+    model = LangfensWav2Vec2MDD(hidden_dim=256, num_transformer_layers=2)
+    model.train()
+
+    out = model(
+        waveforms=batch["net_input"]["source"],
+        audio_lengths=batch["net_input"]["audio_lengths"],
+        canonical_phone_indices=batch["net_input"]["canonical_phone_indices"],
+        canonical_phone_lengths=batch["net_input"]["canonical_phone_lengths"],
+        target_binary=batch["target_binary"],
+        target_ctc=batch["target_ctc"],
+        target_lengths=batch["target_lengths"],
+        target_diagnosis=batch["target_diagnosis"]
+    )
+
+    assert out.loss is not None
+    assert torch.isfinite(out.loss)
+    assert out.ctc_logits.shape[0] == 2
+    assert out.binary_logits.shape[0] == 2
+    assert out.diagnosis_logits.shape[0] == 2
+
+    # Verify predict() in deployable mode on the same batch without any labels
+    preds = model.predict(
+        waveforms=batch["net_input"]["source"],
+        canonical_phone_indices=batch["net_input"]["canonical_phone_indices"],
+        audio_lengths=batch["net_input"]["audio_lengths"],
+        canonical_phone_lengths=batch["net_input"]["canonical_phone_lengths"]
+    )
+    assert preds["binary_probs"].shape == out.binary_logits.shape
+    assert preds["diagnosis_probs"].shape == out.diagnosis_logits.shape
 
 def test_speechocean_score_dataset():
     from langfens_prep.dataset import SpeechOcean762ScoreDataset

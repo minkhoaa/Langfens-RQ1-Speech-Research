@@ -12,7 +12,11 @@ from langfens_prep.audio_loader import (
     get_l2arctic_reader
 )
 from langfens_prep.textgrid_parser import parse_gold_textgrid_content
-from langfens_prep.phoneme_normalizer import PHONE_TO_CTC_INDEX, PHONE_TO_INDEX
+from langfens_prep.phoneme_normalizer import (
+    PHONE_TO_CTC_INDEX,
+    PHONE_TO_INDEX,
+    STANDARD_39_ARPABET
+)
 
 class L2ArcticMDDDataset(Dataset):
     """
@@ -88,14 +92,34 @@ class L2ArcticMDDDataset(Dataset):
         tg_text = reader.read_annotation_text(speaker_id, utt_id)
         annotation = parse_gold_textgrid_content(tg_text, f"{utt_id}.TextGrid")
         
+        # 3. Canonical prompt tokens (available at test/deployment time)
         canonical_intervals = annotation.canonical_intervals
         canonical_phones = [i.canonical_phone for i in canonical_intervals]
-        realized_phones = [i.realized_phone for i in canonical_intervals]
+        canonical_phone_indices = torch.tensor(
+            [PHONE_TO_CTC_INDEX[p] for p in canonical_phones if p in PHONE_TO_CTC_INDEX],
+            dtype=torch.long
+        )
+
+        # 4. Chronological Realized Phone Reconstruction (Task C)
+        # Includes: valid 39-ARPAbet correct productions, substitutions, and epenthetic additions.
+        # Excludes: physical silence, acoustic deletions, unaligned 'err' tokens, non-standard symbols.
+        chronological_realized_phones = []
+        for i in annotation.intervals:
+            if i.error_type == "silence":
+                continue
+            elif i.error_type == "deletion":
+                continue
+            elif i.has_err_tag:
+                continue
+            p = i.realized_phone
+            if p and p in STANDARD_39_ARPABET:
+                chronological_realized_phones.append(p)
         
         if self.blind_labels:
             binary_labels = None
             ctc_target_indices = None
             diagnosis_target_indices = None
+            aux_phone_target_indices = None
         else:
             if self.policy == "strict":
                 bin_vals = [i.binary_label_strict for i in canonical_intervals]
@@ -103,15 +127,24 @@ class L2ArcticMDDDataset(Dataset):
                 bin_vals = [i.binary_label_lenient for i in canonical_intervals]
             binary_labels = torch.tensor(bin_vals, dtype=torch.long)
             
-            ctc_indices = [PHONE_TO_CTC_INDEX.get(p, 0) for p in realized_phones if p in PHONE_TO_CTC_INDEX]
+            ctc_indices = [PHONE_TO_CTC_INDEX[p] for p in chronological_realized_phones]
             ctc_target_indices = torch.tensor(ctc_indices, dtype=torch.long)
             
+            # Primary substitution-only diagnosis target (correct phones, deletions, and 'err' tags masked as -100)
             diag_indices = [
                 PHONE_TO_INDEX[i.diagnosis_target] if (i.diagnosis_target is not None and i.diagnosis_target in PHONE_TO_INDEX)
                 else -100
                 for i in canonical_intervals
             ]
             diagnosis_target_indices = torch.tensor(diag_indices, dtype=torch.long)
+
+            # Auxiliary realized-phone classification target (evaluated over all valid canonical phones, including correct)
+            aux_indices = [
+                PHONE_TO_INDEX[i.realized_phone] if (i.error_type in ("correct", "substitution") and not i.has_err_tag and i.realized_phone in PHONE_TO_INDEX)
+                else -100
+                for i in canonical_intervals
+            ]
+            aux_phone_target_indices = torch.tensor(aux_indices, dtype=torch.long)
             
         return {
             "record_id": f"l2arctic_{speaker_id}_{utt_id}",
@@ -119,10 +152,13 @@ class L2ArcticMDDDataset(Dataset):
             "speaker_id": speaker_id,
             "audio_waveform_16k": waveform,
             "canonical_phones_norm39": canonical_phones,
-            "realized_phones_norm39": realized_phones,
+            "canonical_phone_indices": canonical_phone_indices,
+            "realized_phones_norm39": chronological_realized_phones,
+            "chronological_realized_phones": chronological_realized_phones,
             "binary_labels": binary_labels,
             "ctc_target_indices": ctc_target_indices,
             "diagnosis_target_indices": diagnosis_target_indices,
+            "aux_phone_target_indices": aux_phone_target_indices,
             "is_blinded": self.blind_labels,
             "policy": self.policy,
             "duration_seconds": audio_metrics.duration_seconds

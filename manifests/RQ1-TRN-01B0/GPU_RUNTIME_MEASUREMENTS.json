@@ -1,0 +1,145 @@
+{
+  "metadata": {
+    "experiment_id": "RQ1-TRN-01B0",
+    "gate_description": "Controlled Real-Data Training Sanity Gate",
+    "timestamp_utc": "2026-10-23T15:33:41Z",
+    "git_commit_sha": "1549edd539299d5d0027734ff78cc889090b4d67",
+    "target_partition": "Fold 1 train-only deterministic subset",
+    "source_manifest_checksum": "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b",
+    "optimization_mode": "train",
+    "status": "PASS"
+  },
+  "hardware_environment": {
+    "gpu_model": "NVIDIA GeForce GTX 1650",
+    "total_physical_vram_mb": 3911.58,
+    "driver_version": "615.78.08",
+    "cuda_version": "13.4",
+    "pytorch_version": "2.14.1+cu130",
+    "amp_dtype": "torch.float16",
+    "gradient_checkpointing": true,
+    "feature_extractor_frozen": true
+  },
+  "hyperparameters": {
+    "pretrained_backbone": "facebook/wav2vec2-base-960h",
+    "backbone_revision": "22aad52d435eb6dbaf354bdad9b0da84ce7d6156",
+    "optimizer": "AdamW",
+    "base_learning_rate": 0.0001,
+    "weight_decay": 0.01,
+    "max_grad_norm": 1.0,
+    "lr_scheduler": "cosine_with_warmup",
+    "warmup_steps": 10,
+    "total_optimizer_updates": 100,
+    "micro_batch_size": 2,
+    "gradient_accumulation_steps": 2,
+    "effective_batch_size": 4,
+    "num_training_utterances": 32,
+    "epochs_completed": 12.5,
+    "loss_weights": {
+      "ctc_loss": 1.0,
+      "binary_bce_loss": 1.0,
+      "diagnosis_ce_loss": 0.5
+    }
+  },
+  "runtime_performance": {
+    "wall_clock_time_seconds": 269.08,
+    "wall_clock_time_minutes": 4.48,
+    "mean_time_per_optimizer_update_ms": 2490.28,
+    "mean_time_per_micro_batch_ms": 1245.14,
+    "total_micro_steps": 216,
+    "total_optimizer_updates": 100,
+    "skipped_amp_steps": 8
+  },
+  "vram_utilization": {
+    "peak_allocated_mb": 1909.38,
+    "peak_reserved_mb": 2225.08,
+    "available_headroom_mb": 1686.5,
+    "headroom_percentage": 43.12
+  },
+  "evidence_of_learning": {
+    "initial_metrics": {
+      "loss": 20.2022,
+      "ctc_loss": 17.7497,
+      "binary_loss": 0.6096,
+      "diagnosis_loss": 3.6859,
+      "binary_accuracy": 0.8311,
+      "binary_precision": 0.0,
+      "binary_recall": 0.0,
+      "binary_f1": 0.0,
+      "binary_pr_auc": 0.1762,
+      "calibrated_threshold": {
+        "threshold": 0.1,
+        "f1": 0.289,
+        "precision": 0.1689,
+        "recall": 1.0
+      },
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 178,
+        "tn": 876
+      },
+      "diagnosis_top1_accuracy": 0.027,
+      "diagnosis_evaluated_tokens": 1000,
+      "ctc_phone_error_rate": 3.1038,
+      "ctc_total_edits": 3141,
+      "ctc_total_ref_tokens": 1012
+    },
+    "final_metrics": {
+      "loss": 5.6695,
+      "ctc_loss": 3.5488,
+      "binary_loss": 0.425,
+      "diagnosis_loss": 3.3913,
+      "binary_accuracy": 0.8311,
+      "binary_precision": 0.0,
+      "binary_recall": 0.0,
+      "binary_f1": 0.0,
+      "binary_pr_auc": 0.4066,
+      "calibrated_threshold": {
+        "threshold": 0.2,
+        "f1": 0.4126,
+        "precision": 0.3632,
+        "recall": 0.4775
+      },
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 178,
+        "tn": 876
+      },
+      "diagnosis_top1_accuracy": 0.08,
+      "diagnosis_evaluated_tokens": 1000,
+      "ctc_phone_error_rate": 1.0,
+      "ctc_total_edits": 1012,
+      "ctc_total_ref_tokens": 1012
+    },
+    "loss_delta": {
+      "total_loss_initial": 20.2022,
+      "total_loss_final": 5.6695,
+      "total_loss_relative_reduction_pct": 71.94,
+      "ctc_loss_initial": 17.7497,
+      "ctc_loss_final": 3.5488,
+      "ctc_loss_relative_reduction_pct": 80.01,
+      "binary_loss_initial": 0.6096,
+      "binary_loss_final": 0.425,
+      "binary_loss_relative_reduction_pct": 30.28,
+      "diagnosis_loss_initial": 3.6859,
+      "diagnosis_loss_final": 3.3913,
+      "diagnosis_loss_relative_reduction_pct": 7.99
+    },
+    "task_performance_delta": {
+      "binary_pr_auc_initial": 0.1762,
+      "binary_pr_auc_final": 0.4066,
+      "binary_f1_calibrated_initial": 0.289,
+      "binary_f1_calibrated_final": 0.4126,
+      "diagnosis_top1_accuracy_initial": 0.027,
+      "diagnosis_top1_accuracy_final": 0.08,
+      "ctc_phone_error_rate_initial": 3.1038,
+      "ctc_phone_error_rate_final": 1.0
+    }
+  },
+  "checkpoint": {
+    "path": "checkpoints/RQ1-TRN-01B0/rq1_trn_01b0_checkpoint_step_100.pt",
+    "file_size_bytes": 1135585639,
+    "verification_status": "PASS"
+  }
+}

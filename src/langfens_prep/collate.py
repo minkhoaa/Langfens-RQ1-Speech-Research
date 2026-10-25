@@ -22,6 +22,17 @@ class LangfensMDDCollate:
         time_indices = torch.arange(max_audio_len).unsqueeze(0)
         padding_mask = time_indices >= audio_lengths.unsqueeze(1)
         
+        # Canonical phone prompt tokens (available at train and deploy time)
+        if "canonical_phone_indices" in batch[0] and batch[0]["canonical_phone_indices"] is not None:
+            can_indices = [item["canonical_phone_indices"] for item in batch]
+            canonical_phone_lengths = torch.tensor([c.shape[0] for c in can_indices], dtype=torch.long)
+            padded_can_indices = torch.nn.utils.rnn.pad_sequence(
+                can_indices, batch_first=True, padding_value=0
+            )
+        else:
+            padded_can_indices = None
+            canonical_phone_lengths = None
+
         # Check if labels are blinded
         if batch[0].get("is_blinded", False) or batch[0]["binary_labels"] is None:
             padded_binary_labels = None
@@ -49,17 +60,30 @@ class LangfensMDDCollate:
                 )
             else:
                 padded_diagnosis_targets = None
+
+            if "aux_phone_target_indices" in batch[0] and batch[0]["aux_phone_target_indices"] is not None:
+                aux_targets = [item["aux_phone_target_indices"] for item in batch]
+                padded_aux_targets = torch.nn.utils.rnn.pad_sequence(
+                    aux_targets, batch_first=True, padding_value=self.pad_token_id
+                )
+            else:
+                padded_aux_targets = None
             
         return {
             "net_input": {
                 "source": padded_waveforms,
                 "padding_mask": padding_mask,
-                "audio_lengths": audio_lengths
+                "audio_lengths": audio_lengths,
+                "canonical_phone_indices": padded_can_indices,
+                "canonical_phone_lengths": canonical_phone_lengths
             },
+            "canonical_phone_indices": padded_can_indices,
+            "canonical_phone_lengths": canonical_phone_lengths,
             "target_binary": padded_binary_labels,
             "target_binary_mask": target_binary_mask,
             "target_ctc": padded_ctc_targets,
             "target_lengths": target_lengths,
             "target_diagnosis": padded_diagnosis_targets,
+            "target_aux_phone": padded_aux_targets,
             "record_ids": [item["record_id"] for item in batch]
         }

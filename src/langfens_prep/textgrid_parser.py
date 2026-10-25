@@ -26,7 +26,7 @@ class TextGridInterval:
     is_typo_correction: bool
     binary_label_strict: Optional[int]  # 0 or 1 for canonical tokens, None for non-canonical
     binary_label_lenient: Optional[int]
-    diagnosis_target: Optional[str]  # 39-ARPAbet phone or None if masked/deletion
+    diagnosis_target: Optional[str]  # 39-ARPAbet substitute phone for eligible substitutions; None for correct/deletion/err/masked
 
 @dataclass
 class L2ArcticUtteranceAnnotation:
@@ -281,7 +281,7 @@ def parse_gold_textgrid_content(text: str, filename: str) -> L2ArcticUtteranceAn
                 is_typo_correction=norm.is_typo_correction,
                 binary_label_strict=0,
                 binary_label_lenient=0,
-                diagnosis_target=base_phone
+                diagnosis_target=None  # Correct productions have no substitution diagnosis target
             ))
             canonical_token_idx += 1
             

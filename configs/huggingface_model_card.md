@@ -9,15 +9,18 @@ tags:
 - mdd
 - capt
 - phoneme-recognition
+- cross-attention
 - l2-arctic
 - speechocean762
 datasets:
 - L2-ARCTIC
 - speechocean762
 metrics:
+- pr_auc
 - f1
 - precision
 - recall
+- accuracy
 model-index:
 - name: langfens-wav2vec2-mdd
   results:
@@ -38,47 +41,67 @@ model-index:
       name: Deletion Recall
 ---
 
-# Langfens: Wav2Vec 2.0 for Phoneme-Level Mispronunciation Detection & Diagnosis (MDD)
+# Langfens: Pretrained Wav2Vec 2.0 Multi-Task Phoneme Mispronunciation Detection & Diagnosis (MDD)
 
+**Status:** ARCHITECTURE & INFERENCE VALIDATED / PRE-TRAINING GATE CLEARED (`RQ1-TRN-01A-R`)  
+**Real-Data Fine-Tuning Status:** UNAUTHORIZED IN THIS GATE (Deferred to Authorized Execution Phase `RQ1-TRN-01B`)  
 **Model Identifier:** `langfens-wav2vec2-mdd`  
-**Base Backbone:** `facebook/wav2vec2-base-960h` (95M parameters)  
+**Visibility:** Private  
+**Pretrained Backbone:** `facebook/wav2vec2-base-960h` (94.37M parameters, Apache-2.0)  
+**Custom MDD Heads:** Multihead Cross-Attention, Realized CTC (40 classes), Binary MDD (Masked BCE), Substitution Diagnosis (39 ARPAbet classes, Masked CE) (~3.03M parameters)  
+**Total Architecture Parameters:** 97,405,648 (~97.41M parameters)  
 **Research Framework:** Project Langfens (Phoneme-level Computer-Assisted Pronunciation Training)  
-**Evaluation Corpora:** L2-ARCTIC v5.0 & SpeechOcean762  
-**License:** Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)
+**Target Evaluation Corpora:** L2-ARCTIC v5.0 (TAMU PSI Lab) & SpeechOcean762  
+**Downstream Dataset License:** Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)  
+**Source Code License:** MIT License  
 
 ---
 
 ## Model Description
 
-`langfens-wav2vec2-mdd` is a fine-tuned Wav2Vec 2.0 acoustic model equipped with multi-task prediction heads designed for:
-1. **Binary Mispronunciation Detection:** Identifying whether a learner substituted, distorted, or deleted a canonical prompt phoneme (Strict binary error policy over $N = 119,151$ canonical tokens).
-2. **Phoneme Substitution Diagnosis:** Classifying the exact non-native substitution across 39 ARPAbet phoneme classes.
-3. **Phonemic Deletion Detection:** Detecting elisions and omissions, with specialized tracking on high-deletion accents (e.g. Vietnamese L1 speakers).
+`langfens-wav2vec2-mdd` integrates a genuine Hugging Face `facebook/wav2vec2-base-960h` acoustic backbone with multi-task CAPT prediction heads.
+
+### Core Architectural Guarantees:
+1. **Alignment-Free Deployable Inference:**
+   - Unlike legacy systems that require manual gold TextGrid timestamps, the deployable architecture maps continuous acoustic frame representations to canonical prompt phonemes via **differentiable Multihead Cross-Attention**.
+   - Test-time inference accepts strictly the raw speech waveform ($x$) and canonical prompt tokens ($p_{1..N}$), requiring zero external alignment files.
+   - An optional oracle TextGrid pooling baseline is retained strictly for ablation and scientific comparison (`alignment_mode="oracle"`).
+2. **Binary Mispronunciation Detection:**
+   - Detects whether a canonical phoneme was produced correctly ($0$) or mispronounced ($1$, substitution or deletion).
+   - Primary evaluation uses **Strict Policy**; sensitivity analysis reports **Lenient Policy** (reclassifying $1,112$ base-preserving allophonic variations `CPL,CPL*,s`).
+3. **Phoneme Substitution Diagnosis:**
+   - Evaluated strictly over the $S_{\text{eval}} = \mathbf{13,840}$ clean non-native substitutions (masking the 258 unalignable `'err'` tokens from the 39-class Cross-Entropy loss).
+4. **Realized-Phone CTC Recognition Head:**
+   - $40\text{ classes}$ ($0 = \text{<BLANK>}$, $1..39 = \text{standard ARPAbet}$).
+   - Supervised using chronological realized phone sequences reconstructing valid insertions (epenthetic additions) and clean substitutions, while strictly excluding acoustic deletions and non-speech silence pauses.
 
 ---
 
-## Architectural Details
+## Partition Protocols & Evaluation Denominators
 
-- **Waveform Input:** 16 kHz Mono Audio (linear PCM / float32)
-- **Feature Encoder:** 7-layer Convolutional Feature Extractor ($320\times$ temporal downsampling, $50\text{ Hz}$ frame rate)
-- **Transformer Encoder:** 12 Transformer blocks, 768 hidden dimension, 8 attention heads
-- **Supervision Heads:**
-  - Realized Phoneme CTC Head ($40\text{ classes}$: 39 ARPAbet + 1 `<BLANK>`)
-  - Canonical Token Binary Detection Head (Masked BCE with Logits)
-  - Phoneme Diagnosis Head ($39\text{ classes}$, Masked Cross-Entropy)
+All experiments strictly consume the frozen split manifests in `manifests/RQ1-SPLIT-01/`:
+
+1. **Primary Benchmark (4-Fold Speaker-Independent Cross-Validation):**
+   - 24 speakers (balanced 3M/3F per test fold, 1 speaker per L1).
+   - Total corpus canonical denominator: $N_{\text{canonical}} = \mathbf{119,151}$ tokens ($C = 101,633$, $S = 14,098$, $D = 3,420$, $E = 17,518$).
+   - **Fold-Specific Test Denominators (Must Not Be Conflated with Aggregate):**
+     - Fold 1 Test: $N = \mathbf{29,769}$ ($C = 25,249$, $S = 3,744$, $D = 776$, $E = 4,520$).
+     - Fold 2 Test: $N = \mathbf{29,798}$ ($C = 25,160$, $S = 3,649$, $D = 989$, $E = 4,638$).
+     - Fold 3 Test: $N = \mathbf{29,798}$ ($C = 25,578$, $S = 3,467$, $D = 753$, $E = 4,220$).
+     - Fold 4 Test: $N = \mathbf{29,786}$ ($C = 25,646$, $S = 3,238$, $D = 902$, $E = 4,140$).
+2. **Vietnamese In-Domain Adaptation (LOSO Regime A):**
+   - 4 rounds across Vietnamese speakers (`HQTV`, `PNV`, `THV`, `TLV`).
+   - Per-round partition: **21 train / 2 validation / 1 held-out test speaker**.
+3. **Vietnamese Zero-Shot Generalization (Regime B):**
+   - Partition: **18 non-Vietnamese train / 2 validation / 4 held-out Vietnamese test speakers**.
+4. **Confidence Intervals & Statistical Rigor:**
+   - 95% Confidence Intervals computed via **Speaker-Clustered Bootstrap** ($B = 1,000$ resamples clustered at the speaker level) to account for within-speaker phonetic correlation.
+   - Operating threshold $\theta^*$ calibrated strictly on validation splits.
 
 ---
 
-## Scientific Evaluation Protocol
+## Hardware & Deployment Feasibility
 
-Evaluated on L2-ARCTIC v5.0 across 24 non-native speakers (Hindi, Korean, Mandarin, Spanish, Arabic, Vietnamese) under:
-- **Primary Benchmark:** 4-Fold Balanced Speaker-Independent Cross-Validation
-- **Vietnamese Adaptation:** Leave-One-Vietnamese-Speaker-Out (LOSO Regime A)
-- **Vietnamese Zero-Shot:** Cross-lingual transfer from 20 non-Vietnamese speakers (Regime B)
-- **Evaluation Denominator:** $N_{\text{canonical}} = \mathbf{119,151}$ strictly invariant tokens ($C = 101,633$, $E_{\text{strict}} = 17,518$)
-
----
-
-## Ethical & Non-Commercial Compliance
-
-This model and derived weights are released strictly for **non-commercial educational and academic research** in accordance with the L2-ARCTIC CC BY-NC 4.0 license.
+- **Reference Verification GPU:** NVIDIA GeForce GTX 1650 Mobile (3.73 GB usable VRAM, 4.0 GB physical).
+- **Execution Limits:** Supports micro-batches $B \in [1, 16]$ with AMP fp16, gradient checkpointing, and frozen feature encoder (peak reserved VRAM $< 2.0\text{ GB}$).
+- **OOM Boundary:** Local GPU triggers out-of-memory at $B \ge 48$ on 4.0s speech; cloud GPUs ($\ge 16\text{ GB}$) recommended for full multi-fold training throughput.
