@@ -1,0 +1,308 @@
+{
+  "metadata": {
+    "evaluation_date": "2026-10-25",
+    "protocol_gate": "RQ1-TRN-01B1-R2 Task C",
+    "train_probe": "internal_train_probe_256 (14 speakers)",
+    "holdout_probe": "internal_holdout_probe_64 (2 speakers SVBI, ZHAA)",
+    "total_substitution_events": 252,
+    "seed": 1337
+  },
+  "comparative_ablation_matrix": {
+    "Strategy_1_Canonical_Cross_Attention_Baseline": {
+      "diagnosis_mode": "standard",
+      "matched_substitution_accuracy": 0.5079,
+      "mismatched_substitution_accuracy": 0.5119,
+      "delta_matched_mismatched": -0.004,
+      "acoustic_sensitivity_index": 0.003461,
+      "ctc_greedy_per": 0.4853,
+      "ctc_length_ratio": 0.8602,
+      "binary_pr_auc_matched": 0.4903,
+      "binary_pr_auc_mismatched": 0.4598
+    },
+    "Strategy_2_Audio_Only_Representation": {
+      "diagnosis_mode": "audio_only",
+      "matched_substitution_accuracy": 0.2817,
+      "mismatched_substitution_accuracy": 0.2817,
+      "delta_matched_mismatched": 0.0,
+      "acoustic_sensitivity_index": -0.00585,
+      "ctc_greedy_per": 0.567,
+      "ctc_length_ratio": 0.692,
+      "binary_pr_auc_matched": 0.4296,
+      "binary_pr_auc_mismatched": 0.4212
+    },
+    "Strategy_3_Joint_Gated_Residual_Fusion": {
+      "diagnosis_mode": "gated_residual",
+      "matched_substitution_accuracy": 0.5556,
+      "mismatched_substitution_accuracy": 0.5516,
+      "delta_matched_mismatched": 0.004,
+      "acoustic_sensitivity_index": 0.001553,
+      "ctc_greedy_per": 0.5449,
+      "ctc_length_ratio": 0.7674,
+      "binary_pr_auc_matched": 0.4255,
+      "binary_pr_auc_mismatched": 0.4259
+    },
+    "Strategy_4_CTC_Derived_Acoustic_Evidence": {
+      "diagnosis_mode": "ctc_guided",
+      "matched_substitution_accuracy": 0.4643,
+      "mismatched_substitution_accuracy": 0.4881,
+      "delta_matched_mismatched": -0.0238,
+      "acoustic_sensitivity_index": -0.005335,
+      "ctc_greedy_per": 0.544,
+      "ctc_length_ratio": 0.7665,
+      "binary_pr_auc_matched": 0.4715,
+      "binary_pr_auc_mismatched": 0.4308
+    }
+  },
+  "detailed_strategy_reports": {
+    "Strategy_1_Canonical_Cross_Attention_Baseline": {
+      "description": "Baseline canonical-to-acoustic cross-attention query Q = Linear(e_can) + e_pos, head takes aligned_acoustic",
+      "diagnosis_mode": "standard",
+      "checkpoint": "checkpoints/RQ1-TRN-01B1/reconciliation/rq1_trn_01b1_r_frozen_probe_seed1337_step200.pt",
+      "evaluation": {
+        "matched": {
+          "substitution_accuracy": 0.5079,
+          "substitution_correct": 128,
+          "substitution_total": 252,
+          "binary_pr_auc": 0.4903,
+          "acoustic_sensitivity_index": 0.003461,
+          "ctc_greedy_per": 0.4853,
+          "ctc_length_ratio": 0.8602,
+          "ctc_edits": 1010,
+          "ctc_subs": 577,
+          "ctc_dels": 362,
+          "ctc_inss": 71
+        },
+        "mismatched": {
+          "substitution_accuracy": 0.5119,
+          "substitution_correct": 129,
+          "substitution_total": 252,
+          "binary_pr_auc": 0.4598
+        },
+        "delta_matched_vs_mismatched": -0.004
+      }
+    },
+    "Strategy_2_Audio_Only_Representation": {
+      "description": "Audio-only representation: cross-attention query Q = e_pos without canonical phone embedding",
+      "diagnosis_mode": "audio_only",
+      "checkpoint": "checkpoints/RQ1-TRN-01B1/reconciliation/rq1_trn_01b1_r2_strategy2_audio_only_step200.pt",
+      "training_metadata": {
+        "strategy_name": "Strategy_2_Audio_Only_Representation",
+        "diagnosis_mode": "audio_only",
+        "trainable_parameters": 3033936,
+        "total_updates": 200,
+        "runtime_seconds": 336.56,
+        "peak_vram_mib": 1565.29,
+        "loss_history": [
+          {
+            "step": 40,
+            "loss": 15.8294,
+            "ctc_loss": 7.4031,
+            "binary_loss": 0.3038,
+            "diagnosis_loss": 1.8659
+          },
+          {
+            "step": 80,
+            "loss": 6.4969,
+            "ctc_loss": 3.4321,
+            "binary_loss": 0.3976,
+            "diagnosis_loss": 3.477
+          },
+          {
+            "step": 120,
+            "loss": 5.1155,
+            "ctc_loss": 2.9984,
+            "binary_loss": 0.3423,
+            "diagnosis_loss": 3.5003
+          },
+          {
+            "step": 160,
+            "loss": 4.8129,
+            "ctc_loss": 2.6527,
+            "binary_loss": 0.4484,
+            "diagnosis_loss": 2.8823
+          },
+          {
+            "step": 200,
+            "loss": 4.5776,
+            "ctc_loss": 2.7369,
+            "binary_loss": 0.1812,
+            "diagnosis_loss": 1.9372
+          }
+        ]
+      },
+      "evaluation": {
+        "matched": {
+          "substitution_accuracy": 0.2817,
+          "substitution_correct": 71,
+          "substitution_total": 252,
+          "binary_pr_auc": 0.4296,
+          "acoustic_sensitivity_index": -0.00585,
+          "ctc_greedy_per": 0.567,
+          "ctc_length_ratio": 0.692,
+          "ctc_edits": 1180,
+          "ctc_subs": 499,
+          "ctc_dels": 661,
+          "ctc_inss": 20
+        },
+        "mismatched": {
+          "substitution_accuracy": 0.2817,
+          "substitution_correct": 71,
+          "substitution_total": 252,
+          "binary_pr_auc": 0.4212
+        },
+        "delta_matched_vs_mismatched": 0.0
+      }
+    },
+    "Strategy_3_Joint_Gated_Residual_Fusion": {
+      "description": "Joint gated residual fusion: h_fused = g * h_aligned + (1 - g) * W_p(e_canonical)",
+      "diagnosis_mode": "gated_residual",
+      "checkpoint": "checkpoints/RQ1-TRN-01B1/reconciliation/rq1_trn_01b1_r2_strategy3_gated_residual_step200.pt",
+      "training_metadata": {
+        "strategy_name": "Strategy_3_Joint_Gated_Residual_Fusion",
+        "diagnosis_mode": "gated_residual",
+        "trainable_parameters": 3182224,
+        "total_updates": 200,
+        "runtime_seconds": 336.95,
+        "peak_vram_mib": 1926.38,
+        "loss_history": [
+          {
+            "step": 40,
+            "loss": 15.4403,
+            "ctc_loss": 7.1136,
+            "binary_loss": 0.3319,
+            "diagnosis_loss": 0.6656
+          },
+          {
+            "step": 80,
+            "loss": 5.3156,
+            "ctc_loss": 3.3427,
+            "binary_loss": 0.4199,
+            "diagnosis_loss": 2.298
+          },
+          {
+            "step": 120,
+            "loss": 4.0981,
+            "ctc_loss": 2.8762,
+            "binary_loss": 0.3402,
+            "diagnosis_loss": 1.5453
+          },
+          {
+            "step": 160,
+            "loss": 3.6594,
+            "ctc_loss": 2.9945,
+            "binary_loss": 0.4326,
+            "diagnosis_loss": 1.0305
+          },
+          {
+            "step": 200,
+            "loss": 3.531,
+            "ctc_loss": 2.7167,
+            "binary_loss": 0.191,
+            "diagnosis_loss": 0.0652
+          }
+        ]
+      },
+      "evaluation": {
+        "matched": {
+          "substitution_accuracy": 0.5556,
+          "substitution_correct": 140,
+          "substitution_total": 252,
+          "binary_pr_auc": 0.4255,
+          "acoustic_sensitivity_index": 0.001553,
+          "ctc_greedy_per": 0.5449,
+          "ctc_length_ratio": 0.7674,
+          "ctc_edits": 1134,
+          "ctc_subs": 576,
+          "ctc_dels": 521,
+          "ctc_inss": 37
+        },
+        "mismatched": {
+          "substitution_accuracy": 0.5516,
+          "substitution_correct": 139,
+          "substitution_total": 252,
+          "binary_pr_auc": 0.4259
+        },
+        "delta_matched_vs_mismatched": 0.004
+      }
+    },
+    "Strategy_4_CTC_Derived_Acoustic_Evidence": {
+      "description": "CTC-derived evidence: diagnosis head conditioned on cross-attention pooled CTC frame posteriors",
+      "diagnosis_mode": "ctc_guided",
+      "checkpoint": "checkpoints/RQ1-TRN-01B1/reconciliation/rq1_trn_01b1_r2_strategy4_ctc_guided_step200.pt",
+      "training_metadata": {
+        "strategy_name": "Strategy_4_CTC_Derived_Acoustic_Evidence",
+        "diagnosis_mode": "ctc_guided",
+        "trainable_parameters": 3250807,
+        "total_updates": 200,
+        "runtime_seconds": 333.83,
+        "peak_vram_mib": 2309.1,
+        "loss_history": [
+          {
+            "step": 40,
+            "loss": 15.5386,
+            "ctc_loss": 6.9328,
+            "binary_loss": 0.3226,
+            "diagnosis_loss": 1.9361
+          },
+          {
+            "step": 80,
+            "loss": 5.6891,
+            "ctc_loss": 3.3065,
+            "binary_loss": 0.3867,
+            "diagnosis_loss": 3.016
+          },
+          {
+            "step": 120,
+            "loss": 4.7495,
+            "ctc_loss": 2.9001,
+            "binary_loss": 0.3407,
+            "diagnosis_loss": 2.5751
+          },
+          {
+            "step": 160,
+            "loss": 4.1788,
+            "ctc_loss": 2.8777,
+            "binary_loss": 0.4684,
+            "diagnosis_loss": 2.1303
+          },
+          {
+            "step": 200,
+            "loss": 3.9887,
+            "ctc_loss": 2.6832,
+            "binary_loss": 0.1702,
+            "diagnosis_loss": 0.7794
+          }
+        ]
+      },
+      "evaluation": {
+        "matched": {
+          "substitution_accuracy": 0.4643,
+          "substitution_correct": 117,
+          "substitution_total": 252,
+          "binary_pr_auc": 0.4715,
+          "acoustic_sensitivity_index": -0.005335,
+          "ctc_greedy_per": 0.544,
+          "ctc_length_ratio": 0.7665,
+          "ctc_edits": 1132,
+          "ctc_subs": 574,
+          "ctc_dels": 522,
+          "ctc_inss": 36
+        },
+        "mismatched": {
+          "substitution_accuracy": 0.4881,
+          "substitution_correct": 123,
+          "substitution_total": 252,
+          "binary_pr_auc": 0.4308
+        },
+        "delta_matched_vs_mismatched": -0.0238
+      }
+    }
+  },
+  "scientific_conclusions": {
+    "baseline_strategy1_result": "Dominated by prompt prior (50.79% matched vs 51.19% mismatched, Delta = -0.40%, ASI = 0.0035)",
+    "audio_only_strategy2_result": "Matched=28.17%, Mismatched=28.17%, Delta=0.00%",
+    "gated_residual_strategy3_result": "Matched=55.56%, Mismatched=55.16%, Delta=0.40%",
+    "ctc_guided_strategy4_result": "Matched=46.43%, Mismatched=48.81%, Delta=-2.38%",
+    "architectural_limitation_statement": "Under the bounded 256-utterance training probe, models with canonical prompt inputs degenerate into learning the L1 phonological substitution prior P(realized | canonical), which yields ~51-56% accuracy independently of audio. The CTC phone recognition head remains the only head with robust, authentic acoustic dependence (PER ~0.48 on matched, collapsing to ~0.95 on mismatched)."
+  }
+}

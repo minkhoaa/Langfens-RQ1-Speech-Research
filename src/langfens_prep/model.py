@@ -41,6 +41,8 @@ class LangfensMDDOutput:
     loss: Optional[torch.Tensor] = None
     loss_dict: Optional[Dict[str, torch.Tensor]] = None
     alignment_weights: Optional[torch.Tensor] = None
+    aligned_acoustic: Optional[torch.Tensor] = None
+    phone_embeds: Optional[torch.Tensor] = None
 
 
 class CanonicalAcousticCrossAttention(nn.Module):
@@ -59,11 +61,13 @@ class CanonicalAcousticCrossAttention(nn.Module):
         num_canonical_phones: int = 40,
         num_heads: int = 4,
         max_canonical_len: int = 128,
-        dropout: float = 0.1
+        dropout: float = 0.1,
+        audio_only_queries: bool = False
     ):
         super().__init__()
         self.hidden_dim = hidden_dim
         self.max_canonical_len = max_canonical_len
+        self.audio_only_queries = audio_only_queries
         self.canonical_phone_embedding = nn.Embedding(
             num_embeddings=num_canonical_phones,
             embedding_dim=phone_embed_dim,
@@ -104,7 +108,11 @@ class CanonicalAcousticCrossAttention(nn.Module):
 
         # 2. Add sequence positional embeddings
         pos_indices = torch.arange(num_phones, device=device).clamp(max=self.max_canonical_len - 1).unsqueeze(0)
-        canonical_queries = self.phone_projection(phone_embeds) + self.canonical_pos_embedding(pos_indices)
+        pos_embeds = self.canonical_pos_embedding(pos_indices)
+        if self.audio_only_queries:
+            canonical_queries = pos_embeds.expand(batch_size, -1, -1)
+        else:
+            canonical_queries = self.phone_projection(phone_embeds) + pos_embeds
 
         # 3. Cross-attention
         attn_out, attn_weights = self.cross_attention(
@@ -151,9 +159,14 @@ class LangfensWav2Vec2MDD(nn.Module):
         alignment_mode: str = "cross_attention",  # "cross_attention" (deployable) or "oracle"
         cross_attention_heads: int = 4,
         max_canonical_len: int = 128,
-        ctc_zero_infinity_policy: str = "raise"  # "raise" (strict runtime contract) or "warn_and_zero"
+        ctc_zero_infinity_policy: str = "raise",  # "raise" (strict runtime contract) or "warn_and_zero"
+        diagnosis_mode: str = "standard"  # "standard", "audio_only", "gated_residual", "ctc_guided"
     ):
         super().__init__()
+        valid_diag_modes = ("standard", "audio_only", "gated_residual", "ctc_guided")
+        if diagnosis_mode not in valid_diag_modes:
+            raise ValueError(f"diagnosis_mode must be one of {valid_diag_modes}, got '{diagnosis_mode}'")
+        self.diagnosis_mode = diagnosis_mode
         self.ctc_weight = ctc_weight
         self.binary_weight = binary_weight
         self.diagnosis_weight = diagnosis_weight
@@ -226,7 +239,8 @@ class LangfensWav2Vec2MDD(nn.Module):
             num_canonical_phones=num_canonical_phones,
             num_heads=cross_attention_heads,
             max_canonical_len=max_canonical_len,
-            dropout=dropout
+            dropout=dropout,
+            audio_only_queries=(diagnosis_mode == "audio_only")
         )
 
         # Embedding for oracle baseline fallback
@@ -251,6 +265,22 @@ class LangfensWav2Vec2MDD(nn.Module):
             nn.Dropout(dropout),
             nn.Linear(256, num_diagnosis_classes)
         )
+
+        # Optional architecture variants for Task C acoustic conditioning ablations
+        if diagnosis_mode == "gated_residual":
+            self.gate_net = nn.Sequential(
+                nn.Linear(self.hidden_dim * 2, 64),
+                nn.GELU(),
+                nn.Linear(64, self.hidden_dim),
+                nn.Sigmoid()
+            )
+        elif diagnosis_mode == "ctc_guided":
+            self.ctc_diag_head = nn.Sequential(
+                nn.Linear(self.hidden_dim + 39, 256),
+                nn.GELU(),
+                nn.Dropout(dropout),
+                nn.Linear(256, num_diagnosis_classes)
+            )
 
         # 4. Dedicated Loss Functions
         self.ctc_zero_infinity_policy = ctc_zero_infinity_policy
@@ -383,6 +413,8 @@ class LangfensWav2Vec2MDD(nn.Module):
         binary_logits = None
         diagnosis_logits = None
         alignment_weights = None
+        aligned_acoustic = None
+        phone_embeds = None
 
         if canonical_phone_indices is not None:
             if self.alignment_mode == "oracle" and phone_intervals is not None:
@@ -415,8 +447,19 @@ class LangfensWav2Vec2MDD(nn.Module):
             binary_input = torch.cat([aligned_acoustic, phone_embeds], dim=-1)
             binary_logits = self.binary_head(binary_input).squeeze(-1)  # (B, num_phones)
 
-            # Diagnosis Head: Phone-level acoustic representation mapped to 39 phone classes
-            diagnosis_logits = self.diagnosis_head(aligned_acoustic)  # (B, num_phones, 39)
+            # Diagnosis Head:
+            if self.diagnosis_mode in ("standard", "audio_only"):
+                diagnosis_logits = self.diagnosis_head(aligned_acoustic)  # (B, num_phones, 39)
+            elif self.diagnosis_mode == "gated_residual":
+                phone_proj = self.cross_attention_module.phone_projection(phone_embeds)
+                g = self.gate_net(torch.cat([aligned_acoustic, phone_proj], dim=-1))
+                fused = g * aligned_acoustic + (1.0 - g) * phone_proj
+                diagnosis_logits = self.diagnosis_head(fused)
+            elif self.diagnosis_mode == "ctc_guided":
+                ctc_probs = F.softmax(ctc_logits.float(), dim=-1)[:, :, 1:]  # (B, T, 39) ARPAbet phone posteriors
+                ctc_aligned = torch.bmm(alignment_weights.float(), ctc_probs)  # (B, num_phones, 39)
+                diag_in = torch.cat([aligned_acoustic, ctc_aligned], dim=-1)
+                diagnosis_logits = self.ctc_diag_head(diag_in)
 
         # 4. Multi-Task Loss Calculation
         loss = None
@@ -537,7 +580,9 @@ class LangfensWav2Vec2MDD(nn.Module):
             input_lengths=frame_output_lengths,
             loss=loss,
             loss_dict=loss_dict if loss_dict else None,
-            alignment_weights=alignment_weights
+            alignment_weights=alignment_weights,
+            aligned_acoustic=aligned_acoustic,
+            phone_embeds=phone_embeds
         )
 
     @torch.no_grad()
