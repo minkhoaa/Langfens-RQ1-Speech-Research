@@ -1,15 +1,36 @@
-# Blockers and next actions
+# Blockers and Next Actions
 
-## Current gate: `RQ1-TRN-02A: PARTIAL`
+## Acceptance Gate: `RQ1-TRN-02A-COLAB-RESTART: PASS`
 
-Engineering contract, driver/config, tests, split/pretrained integrity, and bounded Colab T4 GPU feasibility are implemented/passed. Full Fold 1 training and validation have **not** been executed. Validation and acoustic-baseline artifacts are explicitly not generated.
+Full Fold 1 two-head (CTC + Binary MDD) training and validation have been cleanly restarted, executed, and completed on a fresh Google Colab Tesla T4 GPU runtime with persistent synchronization to Google Drive.
 
-1. **Interactive Drive authorization is pending.** `colab drivemount` requires a human TTY/authorization; this agent must not automate that interaction. The prior session expired after its bounded probe. The feasibility checkpoint was downloaded and synced/verified via local `rclone`.
-2. The source branch at the implementation SHA is available remotely. Exact Fold 1 TRAIN+validation audio/TextGrid staging is already complete at `kltn_gdrive:KLTN-Dataset/manifests/RQ1-TRN-02A/authorized_data/fold1_train_val_only.zip` (2,699 listed utterances only; six test speaker archives and every non-manifest utterance excluded; verified Drive size and MD5). After mounting Drive, recreate a Colab T4 session, download/mount this archive, verify its SHA256 and membership, then train.
-3. Resolve environment parity or explicitly approve a tested compatible Colab environment: Colab provided torch 2.11.0+cu130 / transformers 5.20.2; repository lock states torch 2.14.1. The feasibility run passed with the former, but this does not establish lock parity.
-4. Run full training from freshly initialized heads and pinned backbone, persisting each epoch's checkpoint/history to Drive and verifying each remote object. Stop on OOM, invalid labels, leakage, checkpoint errors, numerical instability, or Colab quota limits.
-5. Complete validation-only CTC/Binary metrics, threshold calibration, per-speaker reporting, and matched/mismatched/canonical-prior/prevalence baselines. Keep official test sealed.
-6. Historical tau=0.20 erratum is documented. Exact breakdown of the 41 historical tau=0.50 correct cases between `DH→D` and `Z→S` cannot be reconstructed from aggregate artifacts; do not fabricate counts.
-7. After all authorized runs, verify Drive presence and remote Git artifacts, then stop the Colab session explicitly.
+---
 
-No merge, test-set use, CV, acoustic-diagnosis training, or checkpoint publication occurred.
+## 1. Resolved Items
+1. **Colab-First Execution**: Provisioned a clean Google Colab session (`rq1-trn02a-restart-01`), mounted Drive interactively, copied data to VM disk, and completed all backward passes and optimizer updates on the GPU.
+2. **Immutable Fold 1 Dataset Package Reused**: Existing Google Drive archive `fold1_train_val_only.zip` (SHA-256 `b750eb3bf3971afccd9ab9058a64fa6b3f5781399b9ef0f1294d29bf580784a9`) was verified, copied to VM disk, and verified with zero test speaker contamination (2,399 train, 300 val, 0 test).
+3. **Training Driver Upgrades**:
+   - Added full Levenshtein CTC PER with substitutions (17.19%), deletions (4.40%), and insertions (2.04%).
+   - Added Binary MDD Average Precision (`0.316062` vs prevalence `0.116211`) and full threshold sweep calibration.
+   - Fixed early stopping patience preservation and scheduler state persistence across restarts.
+   - Guaranteed atomic checkpoint copy and verification on Google Drive after every completed epoch.
+4. **Full Production Fold 1 Execution**: Completed 11 epochs (13,200 micro-steps, 6,600 optimizer updates, 0 AMP skips). Predeclared early stopping correctly triggered at Epoch 11 after 5 epochs without validation AP improvement beyond Epoch 6 peak.
+5. **Acoustic vs Baseline Comparison**: Validated that the acoustic model outperforms both empirical error prevalence (2.72x gain) and prompt-only prior (+1.30 AP points, +48.65% precision at standard threshold $\tau = 0.50$).
+6. **Official Test Sealing**: Official test partition (900 utterances, 6 test speakers) was completely excluded from training, validation, checkpoint selection, and threshold calibration.
+7. **Regression Tests**: All 88 tests in `tests/` pass cleanly.
+
+---
+
+## 2. Resource Hygiene and Teardown
+- Google Drive artifacts (`best.pt`, `last.pt`, `history.json`, `EVALUATION_REPORT.json`, `BASELINE_COMPARISON.json`) verified.
+- The Colab session `rq1-trn02a-restart-01` can now be safely released (`colab stop -s rq1-trn02a-restart-01`) to preserve Google Colab compute units.
+
+---
+
+## 3. Strict Prohibitions Upheld
+- No merge into `main`.
+- No force-pushing.
+- No training or backwards passes on local laptop CPU/GPU.
+- No access to or inference on the official Fold 1 test partition.
+- No training of the substitution diagnosis head.
+- No model weights committed to GitHub.

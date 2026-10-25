@@ -1,0 +1,270 @@
+{
+  "evaluation_checkpoint": "best.pt",
+  "best_epoch": 6,
+  "total_training_updates": 3600,
+  "binary_mdd": {
+    "average_precision": 0.316062,
+    "prevalence_baseline": 0.116211,
+    "total_phone_tokens": 9956,
+    "total_error_tokens": 1157,
+    "ap_over_prevalence_ratio": 2.72,
+    "operating_point_standard_05": {
+      "threshold": 0.5,
+      "precision": 0.4865,
+      "recall": 0.1711,
+      "f1": 0.2532,
+      "tp": 198,
+      "fp": 209,
+      "fn": 959,
+      "tn": 8590
+    },
+    "operating_point_optimal_f1": {
+      "threshold": 0.2,
+      "precision": 0.2911,
+      "recall": 0.5367,
+      "f1": 0.3775,
+      "tp": 621,
+      "fp": 1512,
+      "fn": 536,
+      "tn": 7287
+    },
+    "threshold_calibration_sweep": [
+      {
+        "threshold": 0.05,
+        "precision": 0.1446,
+        "recall": 0.9196,
+        "f1": 0.2499,
+        "tp": 1064,
+        "fp": 6296,
+        "fn": 93,
+        "tn": 2503
+      },
+      {
+        "threshold": 0.1,
+        "precision": 0.1794,
+        "recall": 0.8358,
+        "f1": 0.2954,
+        "tp": 967,
+        "fp": 4422,
+        "fn": 190,
+        "tn": 4377
+      },
+      {
+        "threshold": 0.15,
+        "precision": 0.2354,
+        "recall": 0.6525,
+        "f1": 0.346,
+        "tp": 755,
+        "fp": 2452,
+        "fn": 402,
+        "tn": 6347
+      },
+      {
+        "threshold": 0.2,
+        "precision": 0.2911,
+        "recall": 0.5367,
+        "f1": 0.3775,
+        "tp": 621,
+        "fp": 1512,
+        "fn": 536,
+        "tn": 7287
+      },
+      {
+        "threshold": 0.25,
+        "precision": 0.3566,
+        "recall": 0.3846,
+        "f1": 0.3701,
+        "tp": 445,
+        "fp": 803,
+        "fn": 712,
+        "tn": 7996
+      },
+      {
+        "threshold": 0.3,
+        "precision": 0.4129,
+        "recall": 0.3258,
+        "f1": 0.3643,
+        "tp": 377,
+        "fp": 536,
+        "fn": 780,
+        "tn": 8263
+      },
+      {
+        "threshold": 0.35,
+        "precision": 0.4512,
+        "recall": 0.3077,
+        "f1": 0.3659,
+        "tp": 356,
+        "fp": 433,
+        "fn": 801,
+        "tn": 8366
+      },
+      {
+        "threshold": 0.4,
+        "precision": 0.4583,
+        "recall": 0.2947,
+        "f1": 0.3588,
+        "tp": 341,
+        "fp": 403,
+        "fn": 816,
+        "tn": 8396
+      },
+      {
+        "threshold": 0.45,
+        "precision": 0.4666,
+        "recall": 0.2532,
+        "f1": 0.3283,
+        "tp": 293,
+        "fp": 335,
+        "fn": 864,
+        "tn": 8464
+      },
+      {
+        "threshold": 0.5,
+        "precision": 0.4865,
+        "recall": 0.1711,
+        "f1": 0.2532,
+        "tp": 198,
+        "fp": 209,
+        "fn": 959,
+        "tn": 8590
+      },
+      {
+        "threshold": 0.55,
+        "precision": 0.4678,
+        "recall": 0.0691,
+        "f1": 0.1205,
+        "tp": 80,
+        "fp": 91,
+        "fn": 1077,
+        "tn": 8708
+      },
+      {
+        "threshold": 0.6,
+        "precision": 0.44,
+        "recall": 0.019,
+        "f1": 0.0365,
+        "tp": 22,
+        "fp": 28,
+        "fn": 1135,
+        "tn": 8771
+      },
+      {
+        "threshold": 0.65,
+        "precision": 0.25,
+        "recall": 0.0009,
+        "f1": 0.0017,
+        "tp": 1,
+        "fp": 3,
+        "fn": 1156,
+        "tn": 8796
+      },
+      {
+        "threshold": 0.7,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 1157,
+        "tn": 8799
+      },
+      {
+        "threshold": 0.75,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 1157,
+        "tn": 8799
+      },
+      {
+        "threshold": 0.8,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 1157,
+        "tn": 8799
+      },
+      {
+        "threshold": 0.85,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 1157,
+        "tn": 8799
+      },
+      {
+        "threshold": 0.9,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 1157,
+        "tn": 8799
+      },
+      {
+        "threshold": 0.95,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 1157,
+        "tn": 8799
+      }
+    ]
+  },
+  "ctc_recognition": {
+    "greedy_per": 0.236413,
+    "substitutions": 1699,
+    "deletions": 435,
+    "insertions": 202,
+    "total_edits": 2336,
+    "ref_tokens": 9881,
+    "hyp_tokens": 9648,
+    "substitution_rate": 0.171946,
+    "deletion_rate": 0.044024,
+    "insertion_rate": 0.020443,
+    "decoded_length_ratio": 0.976419,
+    "blank_fraction": 0.78939
+  },
+  "per_speaker_validation_breakdown": {
+    "NJS": {
+      "utterances": 150,
+      "phone_tokens": 5011,
+      "error_tokens": 641,
+      "prevalence": 0.1279,
+      "binary_ap": 0.395,
+      "f1_at_05": 0.3104,
+      "precision_at_05": 0.6453,
+      "recall_at_05": 0.2044,
+      "ctc_per": 0.2327,
+      "ctc_sub_rate": 0.1708,
+      "ctc_del_rate": 0.0399,
+      "ctc_ins_rate": 0.022,
+      "ctc_decoded_length_ratio": 0.9821
+    },
+    "RRBI": {
+      "utterances": 150,
+      "phone_tokens": 4945,
+      "error_tokens": 516,
+      "prevalence": 0.1043,
+      "binary_ap": 0.2503,
+      "f1_at_05": 0.1861,
+      "precision_at_05": 0.3284,
+      "recall_at_05": 0.1298,
+      "ctc_per": 0.2401,
+      "ctc_sub_rate": 0.1731,
+      "ctc_del_rate": 0.0482,
+      "ctc_ins_rate": 0.0189,
+      "ctc_decoded_length_ratio": 0.9707
+    }
+  }
+}
