@@ -210,6 +210,7 @@ def test_ctc_framewise_trimming_and_detailed_levenshtein():
     assert trimmed == [1, 2]  # Correctly ignores trailing padding frames
 
 
+@pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA-only pretrained inference regression")
 def test_existing_checkpoint_binary_and_diagnosis_metrics():
     """Verify that existing checkpoint step 100 reflects the reconciled metric semantics."""
     ckpt_path = "checkpoints/RQ1-TRN-01B0/rq1_trn_01b0_checkpoint_step_100.pt"

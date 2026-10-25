@@ -173,6 +173,7 @@ class LangfensWav2Vec2MDD(nn.Module):
         self.alignment_mode = alignment_mode
         self.max_canonical_len = max_canonical_len
         self.gradient_checkpointing = False
+        self._frozen_backbone_eval = False
 
         # 1. Instantiate Wav2Vec2 Backbone
         if pretrained_model_name_or_path is not None:
@@ -303,6 +304,30 @@ class LangfensWav2Vec2MDD(nn.Module):
             revision=revision,
             **kwargs
         )
+
+    def configure_two_head_training(self) -> List[nn.Parameter]:
+        """Freeze backbone/diagnosis and return exact two-head trainable parameters.
+
+        The CTC head, cross-attention module (including canonical embeddings), and
+        Binary MDD head remain trainable. The three-head architecture is preserved.
+        """
+        for parameter in self.wav2vec2.parameters():
+            parameter.requires_grad_(False)
+        for parameter in self.diagnosis_head.parameters():
+            parameter.requires_grad_(False)
+        for module in (self.ctc_head, self.cross_attention_module, self.binary_head):
+            for parameter in module.parameters():
+                parameter.requires_grad_(True)
+        self._frozen_backbone_eval = True
+        self.wav2vec2.eval()
+        return [parameter for parameter in self.parameters() if parameter.requires_grad]
+
+    def train(self, mode: bool = True):
+        """Keep a frozen pretrained backbone in eval mode during head training."""
+        super().train(mode)
+        if self._frozen_backbone_eval:
+            self.wav2vec2.eval()
+        return self
 
     @property
     def feature_extractor(self):
@@ -498,6 +523,8 @@ class LangfensWav2Vec2MDD(nn.Module):
                     ctc_loss = self.ctc_loss_fn(
                         log_probs, target_ctc, frame_output_lengths, target_lengths
                     )
+                if not torch.isfinite(ctc_loss):
+                    raise FloatingPointError("CTC loss is non-finite")
                 loss_dict["ctc_loss"] = ctc_loss
 
         if target_binary is not None and binary_logits is not None:
@@ -528,7 +555,12 @@ class LangfensWav2Vec2MDD(nn.Module):
                             f"canonical_phone_length ({valid_len}) at offset {invalid_pos[0].item()}. "
                             f"Padding dimensions must contain strictly ignore_index={self.binary_loss_fn.ignore_index}."
                         )
+            valid_binary = target_binary[target_binary != self.binary_loss_fn.ignore_index]
+            if valid_binary.numel() and not torch.all((valid_binary == 0) | (valid_binary == 1)):
+                raise ValueError("target_binary values must be 0, 1, or ignore_index=-100")
             b_loss = self.binary_loss_fn(binary_logits, target_binary)
+            if not torch.isfinite(b_loss):
+                raise FloatingPointError("Binary BCE loss is non-finite")
             loss_dict["binary_loss"] = b_loss
 
         if target_diagnosis is not None and diagnosis_logits is not None:

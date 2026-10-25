@@ -17,6 +17,30 @@ from langfens_prep.losses import (
 from langfens_prep.collate import LangfensMDDCollate
 from langfens_prep.textgrid_parser import parse_gold_textgrid_content
 
+def test_binary_average_precision_matches_rank_definition_and_ties():
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("train_fold1", "audit_scripts/train_fold1_ctc_binary.py")
+    module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
+    assert module.average_precision_binary([1, 0, 1], [0.9, 0.8, 0.7]) == pytest.approx(5/6)
+    assert module.average_precision_binary([0, 1], [0.5, 0.5]) == pytest.approx(0.5)
+
+
+def test_two_head_freeze_optimizer_and_diagnosis_exclusion():
+    from langfens_prep.model import LangfensWav2Vec2MDD
+    model = LangfensWav2Vec2MDD(hidden_dim=32, conv_dim=16, num_transformer_layers=1,
+                                num_attention_heads=4, intermediate_dim=64, dropout=0.2)
+    params = model.configure_two_head_training()
+    intended = [p for m in (model.ctc_head, model.cross_attention_module, model.binary_head) for p in m.parameters()]
+    assert {id(p) for p in params} == {id(p) for p in intended}
+    assert all(not p.requires_grad for p in model.wav2vec2.parameters())
+    assert all(not p.requires_grad for p in model.diagnosis_head.parameters())
+    optimizer = torch.optim.AdamW(params)
+    assert {id(p) for group in optimizer.param_groups for p in group["params"]} == {id(p) for p in intended}
+    model.train()
+    assert not model.wav2vec2.training
+    assert model.ctc_head.training and model.binary_head.training
+
+
 def test_binary_mdd_targets_distinguish_valid_from_padding():
     """Verify that binary labels are strictly 0 or 1, and padding is strictly distinct (-100)."""
     valid_labels = torch.tensor([0, 1, 0, 1], dtype=torch.long)
