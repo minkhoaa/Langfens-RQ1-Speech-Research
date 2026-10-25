@@ -1,36 +1,34 @@
 # AGENTS.md — LANGFENS
-Read this file before repository work. Verify evidence before reporting PASS.
+Read before repository work. Verify evidence before reporting PASS.
 
-## Where work runs
-- Local laptop: develop code, run unit tests, audit manifests, analyze metrics, and do lightweight inference/validation.
-- Google Colab GPU via official Colab CLI: ALL training, fine-tuning, backward passes, optimizer updates, and GPU ablations.
-- Validate each epoch on the Colab training runtime; local validation is allowed only for light, authorized inference.
-- Never silently fall back to local training. If Colab, GPU, quota, or credentials are unavailable, stop and report the blocker.
-- Confirm actual GPU, free disk, packages, pinned model revision, and license constraints before execution.
+## Execution Boundaries
+- Local laptop: Code development, unit/regression tests, manifest audits, metric analysis, and lightweight validation.
+- Google Colab GPU (official Colab CLI): ALL training, fine-tuning, backward passes, optimizer updates, and GPU ablations.
+- Google Drive: Persistent storage for original datasets, reusable fold packages, checkpoints, and experiment logs.
+- GitHub: Version-controlled source code, configurations, tests, and lightweight audit artifacts only.
+- Strict fallback prohibition: Never fall back to local GPU/CPU training when Colab is unavailable. Stop and report blockers.
 
-## Reusable data staging
-- Google Drive holds persistent datasets, fold packages, checkpoints, and reports; Colab VM storage is temporary.
-- Preserve the original L2-ARCTIC v5.0 ZIP unchanged on Drive; do not upload it again from the laptop every run.
-- Build each immutable fold-specific package once using frozen manifest IDs; include only needed WAV, TextGrid, and metadata.
-- For RQ1-TRN-02A stage train/validation only; never stage official Fold 1 test audio or test labels.
-- Preserve expected internal archive paths and record IDs; validate speaker isolation and exact file counts.
-- Record original ZIP hash, package SHA-256, manifest hash, package size, and build provenance.
-- Each new Colab runtime copies the reusable package from Drive to local VM disk and verifies its SHA-256.
-- Read audio from VM disk during training; do not stream thousands of small files from a Drive mount.
+## Reusable Data Staging & Storage
+- Keep original dataset archives (`l2arctic_release_v5.0.zip`) unchanged on Google Drive; do not re-upload from laptop.
+- Reusable fold packages: Build once per fold from frozen manifests containing ONLY authorized train/validation WAV and TextGrid.
+- Official test sealing: Never stage or extract official test audio/labels. Maintain strict speaker-disjoint isolation.
+- Colab VM storage (`/content`) is ephemeral: Copy reusable fold package from Drive to VM disk and verify SHA-256 before training.
+- Read audio directly from local VM disk during training; never stream training audio across a Google Drive mount.
 
-## Fold 1 research contract
-- Frozen split manifest: `manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json`.
-- Fold 1: 2,399 train utterances, 300 validation utterances (NJS/RRBI), 900 test utterances SEALED.
-- Two-task training: CTC + Binary MDD only; exclude diagnosis loss and diagnosis optimizer parameters.
-- Keep pretrained Wav2Vec2 backbone frozen/eval in the primary protocol; verify no parameter drift.
-- Start CTC evaluation with greedy decoding (beta=0); use validation only for model and threshold selection.
-- Never use gold TextGrid intervals as model inference inputs or claim acoustic diagnosis readiness.
+## Colab CLI & Operational Safety
+- Provision GPU runtimes via official Colab CLI (`colab new -s <name> --gpu T4` or `colab run`).
+- Colab non-interactive rule: Never execute interactive commands (`colab drivemount`, `colab auth`, `colab repl`) in automation.
+- Monitor compute units via `colab usage`. If GPU quota is exhausted or auth is missing, STOP and report.
+- Resource hygiene: Always release idle runtimes promptly (`colab stop -s <name>`) to preserve compute units.
 
-## Execution and provenance
-- Use `configs/rq1_trn_02a_fold1.yaml` and `audit_scripts/train_fold1_ctc_binary.py` as the training entrypoints.
-- Run real-audio Colab GPU smoke tests before full epochs (lengths, loss, gradients, AMP, VRAM, resume).
-- Save complete checkpoints after each epoch; sync to Drive and verify before relying on them.
-- A resume checkpoint needs weights, optimizer, scheduler, scaler, RNG, counters, config, Git SHA, and split/package hashes.
-- Keep raw audio, fold archives, credentials, and model weights out of GitHub; commit only source, tests, configs, and safe reports.
-- Use reviewable feature branches; do not auto-merge, publish checkpoints, open official test, or launch 4-fold/LOSO without authorization.
-- Report measured results, failures, VRAM in MiB, and remaining blockers; never invent completed runs.
+## Training Contract & Provenance
+- Split manifest: `manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json` (SHA-256 `7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b`).
+- Fold 1 contract: 2,399 train, 300 val (NJS/RRBI), 900 test SEALED. Two-head objective: CTC + Binary MDD only.
+- Backbone integrity: Pretrained `facebook/wav2vec2-base-960h` (rev `22aad52d435eb6dbaf354bdad9b0da84ce7d6156`) kept frozen in eval.
+- Start CTC decoding with greedy evaluation; use validation only for checkpoint and threshold selection.
+- Never use gold TextGrid timestamps as model inference inputs or claim acoustic diagnosis readiness.
+- Training entrypoints: `configs/rq1_trn_02a_fold1.yaml` and `audit_scripts/train_fold1_ctc_binary.py`.
+- Atomic checkpointing: Save each epoch (`last.pt`, `best.pt`) with weights, optimizer, scheduler, scaler, RNG, and metadata.
+- Sync each epoch checkpoint to Google Drive immediately; verify remote presence.
+- Keep datasets, archives, checkpoints, model weights, and credentials out of Git.
+- Work on reviewable feature branches. Never force-push, merge into main, or start training without explicit user authorization.
