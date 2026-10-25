@@ -1,0 +1,11 @@
+{
+  "status": "NOT GENERATED — full Fold 1 training was not started",
+  "reason": "Drive authorization/staging gate pending; user explicitly switched execution backend to Colab",
+  "full_epochs": [],
+  "completed_full_epochs": 0,
+  "micro_steps": 0,
+  "successful_optimizer_updates": 0,
+  "skipped_amp_attempts": 0,
+  "validation_history": [],
+  "note": "Separate bounded Colab T4 feasibility probes are recorded in GPU_FEASIBILITY_REPORT.md and are not Fold 1 training epochs."
+}
