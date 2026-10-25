@@ -1,0 +1,7 @@
+# Historical metric erratum and audit status
+
+Historical RQ1-TRN-01B1-R2 material is preserved unchanged. Its threshold `tau=0.20` was selected by **Binary F1**, not end-to-end F1. The historical matched-audio E2E F1 was **0.4587 at tau=0.40** and **0.3431 at tau=0.20**; it is incorrect to describe tau=0.20 as the E2E optimum.
+
+At historical `tau=0.50`, the dossier reports 41/252 correctly detected-and-diagnosed substitutions and 100% diagnosis accuracy on the detected set. It describes all 41 as canonical `DH→D` and `Z→S` cases and separately reports these two canonical-prior patterns are highly frequent in the historical holdout. The preserved aggregate report does not provide per-example predictions or the exact count split between `DH→D` and `Z→S`. Therefore the exact class composition is **not independently recomputed here**; assigning a per-class count would fabricate detail. The available evidence flags strong canonical-prior selection: 41 selected cases are a narrow, prior-dominated subset, and matched audio did not outperform mismatched audio at tau 0.50 (41 vs 46 E2E correct substitutions). Historical holdout threshold comparisons remain exploratory and do not select Fold 1's official validation threshold.
+
+A reproducible per-example historical audit requires the original checkpoint plus retained per-token binary scores, diagnosis predictions, canonical phones and realized labels. These are not included in the preserved Task D aggregate artifact; no missing values are inferred.

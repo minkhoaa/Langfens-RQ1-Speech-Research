@@ -73,6 +73,7 @@ def main():
     ap.add_argument("--config",default="configs/rq1_trn_02a_fold1.yaml")
     ap.add_argument("--resume",default=None)
     ap.add_argument("--max-train-batches",type=int,default=None,help="Bounded diagnostic run only; not a full experiment")
+    ap.add_argument("--num-epochs",type=int,default=None,help="Maximum epochs this invocation; useful for epoch-wise artifact sync")
     args=ap.parse_args()
     try: import yaml
     except ImportError as e: raise RuntimeError("PyYAML is required to read explicit config") from e
@@ -111,7 +112,8 @@ def main():
         start_epoch=ck["epoch"]+1; updates=ck["successful_updates"]; micro=ck["micro_steps"]
         best=ck["best_ap"]; history=ck["history"]; restore_rng(ck["rng"]); model.train()
     patience=0; skipped_amp=0; consecutive_skips=0; outdir=Path(cfg["output_dir"]); outdir.mkdir(parents=True,exist_ok=True)
-    for epoch in range(start_epoch,cfg["max_epochs"]):
+    epoch_limit=cfg["max_epochs"] if args.num_epochs is None else min(cfg["max_epochs"],start_epoch+args.num_epochs)
+    for epoch in range(start_epoch,epoch_limit):
         model.train(); optimizer.zero_grad(set_to_none=True); sums={"ctc":0.,"binary":0.}; n=0; t0=time.monotonic()
         for bi,batch in enumerate(train_loader):
             if args.max_train_batches is not None and bi>=args.max_train_batches: break
