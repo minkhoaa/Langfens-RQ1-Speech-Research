@@ -27,3 +27,11 @@
 ## Immutable baseline rule
 
 Do not edit, replace, or re-label historical prediction records, checkpoint, split, evaluator outputs, or reports. Any new model/checkpoints/metrics belong under a new RQ1-TRN-02B output location, carry source/config/data/checkpoint hashes, and identify fresh evaluation executions separately. Fresh local SHA-256 verification during this design task matched both the production checkpoint (`a2445c8d17910bf3c03101f50fc419675e8d1bc012af43af10267a28dbba948b`) and split manifest (`7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b`). This verifies file identity only; no weights were loaded or altered.
+
+## Additive clarification for DESIGN-R1
+
+Under DESIGN-R1 (`docs/rq1-trn-02b-acoustic-conditioning-design`), the immutable production checkpoint above (`checkpoints/RQ1-TRN-02A/recovered/best.pt`, SHA-256 `a2445c8d17910bf3c03101f50fc419675e8d1bc012af43af10267a28dbba948b`) serves two distinct roles:
+1. **Reference R**: The frozen historical research anchor (no optimizer updates, no model modifications, retaining historical Protocol O and Protocol Z evaluation results).
+2. **Initial Model Weights**: The common weight initialization for both **Control C0** (`p=0.00` fine-tuning) and **Treatment C1** (`p=0.25` prompt dropout fine-tuning).
+
+All frozen split definitions, checkpoint weights, SHA-256 hashes, evaluator contracts, and historical baseline metrics remain completely unmodified.
