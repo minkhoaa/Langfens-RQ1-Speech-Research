@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "evaluation_date": "2026-10-26 11:52:09",
-    "git_sha": "9ac869e798af8cd8862b15f29e3f9e76bd0a8e23",
+    "evaluation_date": "2026-10-26 13:51:13",
+    "git_sha": "3e2bc1d4bdb912805e18dd3aa3f22764a786f439",
     "checkpoint_path": "checkpoints/RQ1-TRN-02A/recovered/best.pt",
     "checkpoint_sha256": "a2445c8d17910bf3c03101f50fc419675e8d1bc012af43af10267a28dbba948b",
     "checkpoint_epoch_stored": 5,
@@ -18,9 +18,9 @@
     "evaluated_utterances": 300,
     "model_weights_fingerprint": "32d12bdf3524508bd891605a728c9207be588d0ce8a1a16bca2f65cab12ae60d",
     "runtime_performance": {
-      "total_wall_seconds": 77.32,
-      "seconds_per_utterance": 0.2577,
-      "peak_process_ram_mb": 1607.02
+      "total_wall_seconds": 67.18,
+      "seconds_per_utterance": 0.2239,
+      "peak_process_ram_mb": 1583.85
     }
   },
   "binary_mdd": {
@@ -294,28 +294,236 @@
       "condition_1_matched_audio": {
         "description": "True paired acoustic waveform with true canonical prompt",
         "binary_ap": 0.317021,
-        "optimal_f1": 0.3785,
-        "optimal_threshold": 0.2,
+        "optimal_f1_step_05": 0.3785,
+        "optimal_threshold_step_05": 0.2,
+        "optimal_f1_step_01": 0.3828,
+        "optimal_threshold_step_01": 0.21,
         "f1_at_05": 0.2567
       },
       "condition_2_mismatched_audio": {
-        "description": "Deterministic deranged within-speaker acoustic waveform with original prompt and labels",
+        "description": "Deterministic deranged within-speaker acoustic waveform (shift_1) with original prompt and labels",
         "binary_ap": 0.294722,
-        "optimal_f1": 0.3667,
-        "optimal_threshold": 0.25,
+        "optimal_f1_step_05": 0.3667,
+        "optimal_threshold_step_05": 0.25,
         "f1_at_05": 0.2179
       },
       "condition_3_canonical_empirical_prior": {
         "description": "Prompt-only Bayesian lookup P_train(error | canonical_phone) computed from 2,399 Fold 1 train utterances",
         "binary_ap": 0.303063,
-        "optimal_f1": 0.3756,
-        "optimal_threshold": 0.25,
+        "optimal_f1_step_05": 0.3756,
+        "optimal_threshold_step_05": 0.25,
+        "optimal_f1_step_01": 0.3879,
+        "optimal_threshold_step_01": 0.22,
         "f1_at_05": 0.3348
       },
       "condition_4_constant_prevalence": {
         "description": "Constant trivial baseline predicting validation base rate",
         "binary_ap": 0.116211,
         "prevalence": 0.116211
+      }
+    },
+    "permutation_sensitivity": {
+      "shift_1": {
+        "overall_ap": 0.294722,
+        "njs_ap": 0.378744,
+        "rrbi_ap": 0.234979,
+        "delta_ap_over_matched": 0.022299
+      },
+      "shift_2": {
+        "overall_ap": 0.302581,
+        "njs_ap": 0.375729,
+        "rrbi_ap": 0.246302,
+        "delta_ap_over_matched": 0.01444
+      },
+      "shift_75": {
+        "overall_ap": 0.300112,
+        "njs_ap": 0.392248,
+        "rrbi_ap": 0.238779,
+        "delta_ap_over_matched": 0.016909
+      },
+      "reverse": {
+        "overall_ap": 0.314003,
+        "njs_ap": 0.404422,
+        "rrbi_ap": 0.248592,
+        "delta_ap_over_matched": 0.003018
+      }
+    },
+    "fine_grained_sweeps": {
+      "neural_model": {
+        "optimal_f1": 0.3828,
+        "optimal_threshold": 0.21,
+        "precision": 0.3068,
+        "recall": 0.5091
+      },
+      "canonical_prior": {
+        "optimal_f1": 0.3879,
+        "optimal_threshold": 0.22,
+        "precision": 0.3156,
+        "recall": 0.503
+      }
+    },
+    "fixed_thresholds_comparison": {
+      "0.1": {
+        "neural_model": {
+          "precision": 0.1796,
+          "recall": 0.8358,
+          "f1": 0.2956,
+          "tp": 967,
+          "fp": 4418,
+          "fn": 190
+        },
+        "canonical_prior": {
+          "precision": 0.1672,
+          "recall": 0.8686,
+          "f1": 0.2804,
+          "tp": 1005,
+          "fp": 5007,
+          "fn": 152
+        }
+      },
+      "0.15": {
+        "neural_model": {
+          "precision": 0.2356,
+          "recall": 0.6525,
+          "f1": 0.3463,
+          "tp": 755,
+          "fp": 2449,
+          "fn": 402
+        },
+        "canonical_prior": {
+          "precision": 0.204,
+          "recall": 0.637,
+          "f1": 0.3091,
+          "tp": 737,
+          "fp": 2875,
+          "fn": 420
+        }
+      },
+      "0.2": {
+        "neural_model": {
+          "precision": 0.2918,
+          "recall": 0.5385,
+          "f1": 0.3785,
+          "tp": 623,
+          "fp": 1512,
+          "fn": 534
+        },
+        "canonical_prior": {
+          "precision": 0.2803,
+          "recall": 0.5601,
+          "f1": 0.3736,
+          "tp": 648,
+          "fp": 1664,
+          "fn": 509
+        }
+      },
+      "0.22": {
+        "neural_model": {
+          "precision": 0.3173,
+          "recall": 0.4745,
+          "f1": 0.3803,
+          "tp": 549,
+          "fp": 1181,
+          "fn": 608
+        },
+        "canonical_prior": {
+          "precision": 0.3156,
+          "recall": 0.503,
+          "f1": 0.3879,
+          "tp": 582,
+          "fp": 1262,
+          "fn": 575
+        }
+      },
+      "0.25": {
+        "neural_model": {
+          "precision": 0.3558,
+          "recall": 0.3838,
+          "f1": 0.3692,
+          "tp": 444,
+          "fp": 804,
+          "fn": 713
+        },
+        "canonical_prior": {
+          "precision": 0.3594,
+          "recall": 0.3933,
+          "f1": 0.3756,
+          "tp": 455,
+          "fp": 811,
+          "fn": 702
+        }
+      },
+      "0.3": {
+        "neural_model": {
+          "precision": 0.414,
+          "recall": 0.3267,
+          "f1": 0.3652,
+          "tp": 378,
+          "fp": 535,
+          "fn": 779
+        },
+        "canonical_prior": {
+          "precision": 0.4536,
+          "recall": 0.3086,
+          "f1": 0.3673,
+          "tp": 357,
+          "fp": 430,
+          "fn": 800
+        }
+      },
+      "0.35": {
+        "neural_model": {
+          "precision": 0.4524,
+          "recall": 0.3077,
+          "f1": 0.3663,
+          "tp": 356,
+          "fp": 431,
+          "fn": 801
+        },
+        "canonical_prior": {
+          "precision": 0.4536,
+          "recall": 0.3086,
+          "f1": 0.3673,
+          "tp": 357,
+          "fp": 430,
+          "fn": 800
+        }
+      },
+      "0.4": {
+        "neural_model": {
+          "precision": 0.4576,
+          "recall": 0.2939,
+          "f1": 0.3579,
+          "tp": 340,
+          "fp": 403,
+          "fn": 817
+        },
+        "canonical_prior": {
+          "precision": 0.4536,
+          "recall": 0.3086,
+          "f1": 0.3673,
+          "tp": 357,
+          "fp": 430,
+          "fn": 800
+        }
+      },
+      "0.5": {
+        "neural_model": {
+          "precision": 0.4914,
+          "recall": 0.1737,
+          "f1": 0.2567,
+          "tp": 201,
+          "fp": 208,
+          "fn": 956
+        },
+        "canonical_prior": {
+          "precision": 0.4724,
+          "recall": 0.2593,
+          "f1": 0.3348,
+          "tp": 300,
+          "fp": 335,
+          "fn": 857
+        }
       }
     },
     "paired_matched_vs_mismatched": {

@@ -549,10 +549,7 @@ def main():
                 source=ni["source"].to(device),
                 audio_lengths=ni["audio_lengths"].to(device),
                 canonical_phone_indices=ni["canonical_phone_indices"].to(device),
-                canonical_phone_lengths=ni["canonical_phone_lengths"].to(device),
-                target_ctc=batch["target_ctc"].to(device),
-                target_lengths=batch["target_lengths"].to(device),
-                target_binary=batch["target_binary"].to(device)
+                canonical_phone_lengths=ni["canonical_phone_lengths"].to(device)
             )
 
             out = model(**args_fwd)
@@ -754,27 +751,131 @@ def main():
         print("[CONTROLS] Running 1,000 utterance-clustered bootstrap resamples...")
         boot_results = run_utterance_clustered_bootstrap(utterance_results, n_bootstraps=1000, seed=cfg.get("seed", 1337))
 
+        # Multiple within-speaker derangement comparison
+        print("[CONTROLS] Evaluating multiple within-speaker permutations for sensitivity analysis...")
+        def make_within_speaker_perm(mode: str, boundaries: List[int], total: int) -> List[int]:
+            bounds = [0] + boundaries + [total]
+            res = [0] * total
+            for b_idx in range(len(bounds) - 1):
+                start, end = bounds[b_idx], bounds[b_idx + 1]
+                seg_len = end - start
+                for local_i in range(seg_len):
+                    if mode == "shift_1":
+                        target_i = (local_i + 1) % seg_len
+                    elif mode == "shift_2":
+                        target_i = (local_i + 2) % seg_len
+                    elif mode == "shift_75":
+                        target_i = (local_i + seg_len // 2) % seg_len
+                    elif mode == "reverse":
+                        target_i = (seg_len - 1) - local_i
+                    else:
+                        raise ValueError(f"Unknown mode {mode}")
+                    res[start + local_i] = start + target_i
+            return res
+
+        permutation_sensitivity = {}
+        with torch.inference_mode():
+            for p_mode in ["shift_1", "shift_2", "shift_75", "reverse"]:
+                p_indices = make_within_speaker_perm(p_mode, spk_counts if spk_counts[0] < n_eval else [], n_eval)
+                p_scores_all = []
+                p_scores_njs = []
+                p_scores_rrbi = []
+
+                for idx, p_donor in enumerate(p_indices):
+                    orig_item = val_dataset[idx]
+                    donor_item = val_dataset[p_donor]
+                    can_idx = orig_item["canonical_phone_indices"].unsqueeze(0).to(device)
+                    can_l = torch.tensor([len(orig_item["canonical_phone_indices"])], device=device)
+                    audio_w = donor_item["audio_waveform_16k"].unsqueeze(0).to(device)
+                    audio_l = torch.tensor([len(donor_item["audio_waveform_16k"])], device=device)
+
+                    out_p = model(source=audio_w, audio_lengths=audio_l, canonical_phone_indices=can_idx, canonical_phone_lengths=can_l)
+                    v_mask = orig_item["binary_labels"] != -100
+                    sc_p = torch.sigmoid(out_p.binary_logits[0]).cpu()[v_mask].tolist()
+                    p_scores_all.extend(sc_p)
+
+                    if orig_item["speaker_id"] == "NJS":
+                        p_scores_njs.extend(sc_p)
+                    else:
+                        p_scores_rrbi.extend(sc_p)
+
+                ap_p_all = average_precision_binary(matched_labels, p_scores_all)
+                ap_p_njs = average_precision_binary(per_speaker_matched["NJS"]["labels"], p_scores_njs)
+                ap_p_rrbi = average_precision_binary(per_speaker_matched["RRBI"]["labels"], p_scores_rrbi)
+                permutation_sensitivity[p_mode] = {
+                    "overall_ap": round(float(ap_p_all), 6),
+                    "njs_ap": round(float(ap_p_njs), 6),
+                    "rrbi_ap": round(float(ap_p_rrbi), 6),
+                    "delta_ap_over_matched": round(float(matched_binary_metrics["average_precision"] - ap_p_all), 6)
+                }
+
+        # Fine-grained threshold sweep (0.01 step) for fair baseline comparison
+        print("[CONTROLS] Computing unified threshold sweep (step 0.01) for neural vs canonical prior...")
+        def fine_sweep(y_true, s_pred):
+            y_arr = np.array(y_true)
+            s_arr = np.array(s_pred)
+            best_f1, best_th, best_p, best_r = -1.0, None, None, None
+            th_results = {}
+            for th_f in np.arange(0.01, 1.0, 0.01):
+                th_f = round(float(th_f), 2)
+                pred = (s_arr >= th_f).astype(int)
+                tp = int(((pred == 1) & (y_arr == 1)).sum())
+                fp = int(((pred == 1) & (y_arr == 0)).sum())
+                fn = int(((pred == 0) & (y_arr == 1)).sum())
+                p = tp / (tp + fp) if (tp + fp) > 0 else 0.0
+                r = tp / (tp + fn) if (tp + fn) > 0 else 0.0
+                f1 = 2 * p * r / (p + r) if (p + r) > 0 else 0.0
+                th_results[th_f] = {"precision": round(p, 4), "recall": round(r, 4), "f1": round(f1, 4), "tp": tp, "fp": fp, "fn": fn}
+                if f1 > best_f1:
+                    best_f1 = f1
+                    best_th = th_f
+                    best_p = p
+                    best_r = r
+            return {
+                "best_f1": round(best_f1, 4),
+                "best_threshold": best_th,
+                "precision_at_best": round(best_p, 4),
+                "recall_at_best": round(best_r, 4),
+                "threshold_points": th_results
+            }
+
+        neural_fine_sweep = fine_sweep(matched_labels, matched_scores)
+        prior_fine_sweep = fine_sweep(matched_labels, canonical_prior_metrics["scores"])
+
+        # Unified fixed thresholds comparison
+        fixed_thresholds_comparison = {}
+        for fixed_t in [0.10, 0.15, 0.20, 0.22, 0.25, 0.30, 0.35, 0.40, 0.50]:
+            fixed_t = round(float(fixed_t), 2)
+            fixed_thresholds_comparison[str(fixed_t)] = {
+                "neural_model": neural_fine_sweep["threshold_points"].get(fixed_t),
+                "canonical_prior": prior_fine_sweep["threshold_points"].get(fixed_t)
+            }
+
         controls_results = {
             "conditions": {
                 "condition_1_matched_audio": {
                     "description": "True paired acoustic waveform with true canonical prompt",
                     "binary_ap": matched_binary_metrics["average_precision"],
-                    "optimal_f1": matched_binary_metrics["operating_point_optimal_f1"]["f1"],
-                    "optimal_threshold": matched_binary_metrics["operating_point_optimal_f1"]["threshold"],
+                    "optimal_f1_step_05": matched_binary_metrics["operating_point_optimal_f1"]["f1"],
+                    "optimal_threshold_step_05": matched_binary_metrics["operating_point_optimal_f1"]["threshold"],
+                    "optimal_f1_step_01": neural_fine_sweep["best_f1"],
+                    "optimal_threshold_step_01": neural_fine_sweep["best_threshold"],
                     "f1_at_05": matched_binary_metrics["operating_point_standard_05"]["f1"]
                 },
                 "condition_2_mismatched_audio": {
-                    "description": "Deterministic deranged within-speaker acoustic waveform with original prompt and labels",
+                    "description": "Deterministic deranged within-speaker acoustic waveform (shift_1) with original prompt and labels",
                     "binary_ap": mismatched_binary_metrics["average_precision"],
-                    "optimal_f1": mismatched_binary_metrics["operating_point_optimal_f1"]["f1"],
-                    "optimal_threshold": mismatched_binary_metrics["operating_point_optimal_f1"]["threshold"],
+                    "optimal_f1_step_05": mismatched_binary_metrics["operating_point_optimal_f1"]["f1"],
+                    "optimal_threshold_step_05": mismatched_binary_metrics["operating_point_optimal_f1"]["threshold"],
                     "f1_at_05": mismatched_binary_metrics["operating_point_standard_05"]["f1"]
                 },
                 "condition_3_canonical_empirical_prior": {
                     "description": "Prompt-only Bayesian lookup P_train(error | canonical_phone) computed from 2,399 Fold 1 train utterances",
                     "binary_ap": canonical_prior_metrics["average_precision"],
-                    "optimal_f1": canonical_prior_metrics["operating_point_optimal_f1"]["f1"],
-                    "optimal_threshold": canonical_prior_metrics["operating_point_optimal_f1"]["threshold"],
+                    "optimal_f1_step_05": canonical_prior_metrics["operating_point_optimal_f1"]["f1"],
+                    "optimal_threshold_step_05": canonical_prior_metrics["operating_point_optimal_f1"]["threshold"],
+                    "optimal_f1_step_01": prior_fine_sweep["best_f1"],
+                    "optimal_threshold_step_01": prior_fine_sweep["best_threshold"],
                     "f1_at_05": canonical_prior_metrics["operating_point_standard_05"]["f1"]
                 },
                 "condition_4_constant_prevalence": {
@@ -783,6 +884,22 @@ def main():
                     "prevalence": prevalence_metrics["prevalence"]
                 }
             },
+            "permutation_sensitivity": permutation_sensitivity,
+            "fine_grained_sweeps": {
+                "neural_model": {
+                    "optimal_f1": neural_fine_sweep["best_f1"],
+                    "optimal_threshold": neural_fine_sweep["best_threshold"],
+                    "precision": neural_fine_sweep["precision_at_best"],
+                    "recall": neural_fine_sweep["recall_at_best"]
+                },
+                "canonical_prior": {
+                    "optimal_f1": prior_fine_sweep["best_f1"],
+                    "optimal_threshold": prior_fine_sweep["best_threshold"],
+                    "precision": prior_fine_sweep["precision_at_best"],
+                    "recall": prior_fine_sweep["recall_at_best"]
+                }
+            },
+            "fixed_thresholds_comparison": fixed_thresholds_comparison,
             "paired_matched_vs_mismatched": {
                 "delta_ap (matched - mismatched)": round(float(matched_binary_metrics["average_precision"] - mismatched_binary_metrics["average_precision"]), 6),
                 "mean_score_diff": round(float(np.mean(score_diff)), 6),
@@ -847,6 +964,55 @@ def main():
         json.dump(report, f, indent=2)
 
     print(f"\n[REPORT] Successfully saved evaluation report to: {out_file}")
+
+    # Export paired prediction records for independent statistical verification (Task D)
+    if args.max_eval_utterances is None or args.max_eval_utterances >= 300:
+        corrections_dir = out_dir / "corrections"
+        corrections_dir.mkdir(parents=True, exist_ok=True)
+        pred_export = {
+            "metadata": {
+                "description": "Per-utterance matched and mismatched prediction records for Fold 1 validation",
+                "split": "val",
+                "fold": 1,
+                "total_utterances": len(utterance_results),
+                "total_phone_tokens": len(matched_labels),
+                "total_error_tokens": sum(matched_labels),
+                "evaluator_source_sha": os.popen("git rev-parse HEAD").read().strip(),
+                "checkpoint_sha256": ckpt_info["sha256"],
+                "schema": {
+                    "record_id": "L2-ARCTIC utterance record identifier (e.g. l2arctic_NJS_arctic_a0003)",
+                    "speaker": "Speaker code (NJS or RRBI)",
+                    "utterance_id": "ARCTIC utterance ID",
+                    "mismatched_audio_record_id": "Utterance record ID of the donor audio under shift_1 derangement",
+                    "canonical_phone_indices": "Canonical ARPAbet phoneme indices fed to model cross-attention",
+                    "binary_reference_labels": "Ground-truth binary MDD reference labels (0=correct, 1=error)",
+                    "matched_binary_scores": "Predicted error probabilities from matched acoustic inference",
+                    "mismatched_binary_scores": "Predicted error probabilities from mismatched audio inference (shift_1)",
+                    "matched_ctc_reference": "Ground-truth CTC reference phone token indices",
+                    "matched_ctc_hypothesis": "Greedy decoded CTC hypothesis phone token indices"
+                }
+            },
+            "utterances": [
+                {
+                    "record_id": u["record_id"],
+                    "speaker": u["speaker"],
+                    "utterance_id": u["record_id"].split("_")[-1],
+                    "mismatched_audio_record_id": val_dataset[derange_indices[idx]]["record_id"],
+                    "canonical_phone_indices": val_dataset[idx]["canonical_phone_indices"].tolist(),
+                    "binary_reference_labels": u["labels"],
+                    "matched_binary_scores": [float(s) for s in u["matched_scores"]],
+                    "mismatched_binary_scores": [float(s) for s in u["mismatched_scores"]],
+                    "matched_ctc_reference": u["ctc_ref"],
+                    "matched_ctc_hypothesis": u["ctc_hyp"]
+                }
+                for idx, u in enumerate(utterance_results)
+            ]
+        }
+        pred_out_file = corrections_dir / "PAIRED_PREDICTION_RECORDS.json"
+        with open(pred_out_file, "w", encoding="utf-8") as f:
+            json.dump(pred_export, f, indent=2)
+        print(f"[RECORDS] Successfully exported paired prediction records to: {pred_out_file}")
+
     return report
 
 
