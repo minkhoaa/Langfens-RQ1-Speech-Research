@@ -31,7 +31,7 @@ As demonstrated in `CORRECTED_PER_SPEAKER_CONTROLS.md`, the observed $\Delta \te
 - `shift_75`: $\Delta \text{AP} = +0.0169$
 - `reverse`: $\Delta \text{AP} = +0.0030$
 
-The 1,000-iteration bootstrap evaluated only a single fixed permutation (`shift_1`). A comprehensive bootstrap over permutations would reveal a confidence interval that spans down toward zero (e.g. $[+0.000, +0.039]$), significantly weakening claims of a robust acoustic benefit.
+The 1,000-iteration bootstrap evaluated only a single fixed permutation (`shift_1`). Evaluating across permutations reveals that the acoustic lift $\Delta \text{AP}$ drops as low as $+0.0030$ under `reverse` (and is negative on Speaker NJS), significantly weakening claims of a uniformly robust acoustic benefit across all acoustic mismatch conditions.
 
 ### Limitation 3: The Two-Speaker Ecological Fallacy
 The most critical limitation is that **Fold 1 validation contains only two speakers** (`NJS`, Spanish L1; `RRBI`, Russian L1):

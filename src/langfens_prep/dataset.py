@@ -2,6 +2,8 @@ import json
 import os
 import tarfile
 from typing import Optional, List, Dict, Any, Tuple
+from pathlib import Path
+import re
 
 import torch
 from torch.utils.data import Dataset
@@ -251,3 +253,140 @@ class SpeechOcean762ScoreDataset(Dataset):
             "words": score_data.get("words", []),
             "duration_seconds": audio_metrics.duration_seconds
         }
+
+
+def load_arctic_prompts(prompts_source: str | Dict[str, str] = "resources/L2-ARCTIC/prompts.json") -> Dict[str, str]:
+    """
+    Loads CMU ARCTIC written prompts mapping utterance_id -> prompt_text.
+    Supports JSON prompt mapping, raw PROMPTS text file, or master ZIP archive.
+    """
+    if isinstance(prompts_source, dict):
+        return dict(prompts_source)
+    
+    p = Path(prompts_source)
+    if not p.is_file():
+        raise FileNotFoundError(f"Prompts source not found: {p}")
+        
+    if p.suffix == ".json":
+        with open(p, "r", encoding="utf-8") as f:
+            return json.load(f)
+            
+    if p.suffix == ".zip":
+        import zipfile
+        with zipfile.ZipFile(p, "r") as zf:
+            raw = zf.read("PROMPTS").decode("utf-8")
+    else:
+        with open(p, "r", encoding="utf-8") as f:
+            raw = f.read()
+            
+    prompts = {}
+    for line in raw.splitlines():
+        m = re.match(r'^\(\s*(\S+)\s+"([^"]+)"\s*\)$', line.strip())
+        if m:
+            prompts[m.group(1)] = m.group(2)
+    return prompts
+
+
+class ZeroOracleL2ArcticDataset(Dataset):
+    """
+    Zero-Oracle Dataset for Protocol Z evaluation.
+    Guarantees:
+    1. Zero TextGrid access. TextGrids are NEVER opened, read, or referenced.
+    2. Model inputs are derived strictly from raw audio waveform and written English prompt text.
+    3. Pinned CMUdict G2P frontend produces canonical phone indices.
+    4. Target/reference labels are strictly absent (set to None).
+    """
+    def __init__(
+        self,
+        split_manifest_path: str,
+        fold: int,
+        split: str,
+        prompts_source: str | Dict[str, str] = "resources/L2-ARCTIC/prompts.json",
+        g2p_frontend: Optional[Any] = None,
+        target_sr: int = 16000,
+        zip_path: str = "datasets/L2-ARCTIC/authorized_RQ1-TRN-02A_fold1_train_val_only.zip",
+        max_samples: Optional[int] = None
+    ):
+        super().__init__()
+        assert split in ("train", "val", "test"), f"Invalid split: {split}"
+        
+        self.split_manifest_path = split_manifest_path
+        self.fold = fold
+        self.split = split
+        self.target_sr = target_sr
+        self.zip_path = zip_path
+        
+        # Load prompts
+        self.prompts = load_arctic_prompts(prompts_source)
+        
+        # Load G2P frontend
+        if g2p_frontend is None:
+            from langfens_prep.g2p import CMUDictG2P
+            self.g2p = CMUDictG2P(oov_policy="strict")
+        else:
+            self.g2p = g2p_frontend
+            
+        with open(split_manifest_path, "r", encoding="utf-8") as f:
+            manifest_data = json.load(f)
+            
+        target_fold = None
+        for f_entry in manifest_data["folds"]:
+            if f_entry["fold_index"] == fold:
+                target_fold = f_entry
+                break
+                
+        if target_fold is None:
+            raise KeyError(f"Fold with fold_index={fold} not found in manifest {split_manifest_path}")
+            
+        raw_utts: List[str] = target_fold[split]["utterances"]
+        self.utterance_entries: List[Tuple[str, str]] = []
+        for item in raw_utts:
+            parts = item.split("/")
+            if len(parts) == 2:
+                self.utterance_entries.append((parts[0], parts[1]))
+            else:
+                self.utterance_entries.append((parts[0], parts[0]))
+                
+        if max_samples is not None:
+            self.utterance_entries = self.utterance_entries[:max_samples]
+
+    def __len__(self) -> int:
+        return len(self.utterance_entries)
+
+    def __getitem__(self, idx: int) -> Dict[str, Any]:
+        speaker_id, utt_id = self.utterance_entries[idx]
+        
+        # 1. Load audio ONLY from zip (zero TextGrid read)
+        waveform, sr, audio_metrics = load_l2arctic_audio_from_zip(
+            zip_path=self.zip_path,
+            speaker=speaker_id,
+            utterance_id=utt_id,
+            target_sr=self.target_sr
+        )
+        
+        # 2. Derive canonical phone sequence from written prompt text via G2P
+        if utt_id not in self.prompts:
+            raise KeyError(f"Utterance '{utt_id}' not found in prompts dictionary.")
+        prompt_text = self.prompts[utt_id]
+        canonical_phones = self.g2p.phonemize(prompt_text)
+        canonical_phone_indices = torch.tensor(
+            [PHONE_TO_CTC_INDEX[p] for p in canonical_phones if p in PHONE_TO_CTC_INDEX],
+            dtype=torch.long
+        )
+        
+        # 3. Protocol Z guarantees: zero labels, zero TextGrid intervals
+        return {
+            "record_id": f"l2arctic_{speaker_id}_{utt_id}",
+            "speaker_id": speaker_id,
+            "utterance_id": utt_id,
+            "prompt_text": prompt_text,
+            "audio_waveform_16k": waveform,
+            "audio_lengths": torch.tensor(waveform.shape[0], dtype=torch.long),
+            "canonical_phones": canonical_phones,
+            "canonical_phone_indices": canonical_phone_indices,
+            "canonical_phone_lengths": torch.tensor(canonical_phone_indices.shape[0], dtype=torch.long),
+            "binary_labels": None,
+            "ctc_target_indices": None,
+            "is_blinded": True
+        }
+
