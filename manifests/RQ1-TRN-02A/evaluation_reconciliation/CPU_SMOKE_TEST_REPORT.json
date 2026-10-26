@@ -1,0 +1,405 @@
+{
+  "metadata": {
+    "evaluation_date": "2026-10-26 11:45:23",
+    "git_sha": "9ac869e798af8cd8862b15f29e3f9e76bd0a8e23",
+    "checkpoint_path": "checkpoints/RQ1-TRN-02A/recovered/best.pt",
+    "checkpoint_sha256": "a2445c8d17910bf3c03101f50fc419675e8d1bc012af43af10267a28dbba948b",
+    "checkpoint_epoch_stored": 5,
+    "checkpoint_epoch_display": 6,
+    "checkpoint_successful_updates": 3600,
+    "checkpoint_best_ap": 0.316062,
+    "training_execution_sha": "caa56783113d40eac438e5f458cdb313b8932218",
+    "manifest_path": "manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json",
+    "manifest_sha256": "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b",
+    "authorized_zip_path": "datasets/L2-ARCTIC/authorized_RQ1-TRN-02A_fold1_train_val_only.zip",
+    "authorized_zip_sha256": "b750eb3bf3971afccd9ab9058a64fa6b3f5781399b9ef0f1294d29bf580784a9",
+    "device": "cpu",
+    "eval_batch_size": 1,
+    "evaluated_utterances": 4,
+    "model_weights_fingerprint": "32d12bdf3524508bd891605a728c9207be588d0ce8a1a16bca2f65cab12ae60d",
+    "runtime_performance": {
+      "total_wall_seconds": 1.09,
+      "seconds_per_utterance": 0.2714,
+      "peak_process_ram_mb": 1314.9
+    }
+  },
+  "binary_mdd": {
+    "average_precision": 0.130163,
+    "prevalence": 0.090909,
+    "total_phone_tokens": 121,
+    "total_error_tokens": 11,
+    "operating_point_standard_05": {
+      "threshold": 0.5,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "tp": 0,
+      "fp": 2,
+      "fn": 11,
+      "tn": 108
+    },
+    "operating_point_optimal_f1": {
+      "threshold": 0.2,
+      "precision": 0.16,
+      "recall": 0.3636,
+      "f1": 0.2222,
+      "tp": 4,
+      "fp": 21,
+      "fn": 7,
+      "tn": 89
+    },
+    "threshold_calibration_sweep": [
+      {
+        "threshold": 0.05,
+        "precision": 0.1047,
+        "recall": 0.8182,
+        "f1": 0.1856,
+        "tp": 9,
+        "fp": 77,
+        "fn": 2,
+        "tn": 33
+      },
+      {
+        "threshold": 0.1,
+        "precision": 0.0984,
+        "recall": 0.5455,
+        "f1": 0.1667,
+        "tp": 6,
+        "fp": 55,
+        "fn": 5,
+        "tn": 55
+      },
+      {
+        "threshold": 0.15,
+        "precision": 0.129,
+        "recall": 0.3636,
+        "f1": 0.1905,
+        "tp": 4,
+        "fp": 27,
+        "fn": 7,
+        "tn": 83
+      },
+      {
+        "threshold": 0.2,
+        "precision": 0.16,
+        "recall": 0.3636,
+        "f1": 0.2222,
+        "tp": 4,
+        "fp": 21,
+        "fn": 7,
+        "tn": 89
+      },
+      {
+        "threshold": 0.25,
+        "precision": 0.1667,
+        "recall": 0.1818,
+        "f1": 0.1739,
+        "tp": 2,
+        "fp": 10,
+        "fn": 9,
+        "tn": 100
+      },
+      {
+        "threshold": 0.3,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "tp": 0,
+        "fp": 8,
+        "fn": 11,
+        "tn": 102
+      },
+      {
+        "threshold": 0.35,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "tp": 0,
+        "fp": 7,
+        "fn": 11,
+        "tn": 103
+      },
+      {
+        "threshold": 0.4,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "tp": 0,
+        "fp": 6,
+        "fn": 11,
+        "tn": 104
+      },
+      {
+        "threshold": 0.45,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "tp": 0,
+        "fp": 3,
+        "fn": 11,
+        "tn": 107
+      },
+      {
+        "threshold": 0.5,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "tp": 0,
+        "fp": 2,
+        "fn": 11,
+        "tn": 108
+      },
+      {
+        "threshold": 0.55,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "tp": 0,
+        "fp": 1,
+        "fn": 11,
+        "tn": 109
+      },
+      {
+        "threshold": 0.6,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 11,
+        "tn": 110
+      },
+      {
+        "threshold": 0.65,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 11,
+        "tn": 110
+      },
+      {
+        "threshold": 0.7,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 11,
+        "tn": 110
+      },
+      {
+        "threshold": 0.75,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 11,
+        "tn": 110
+      },
+      {
+        "threshold": 0.8,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 11,
+        "tn": 110
+      },
+      {
+        "threshold": 0.85,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 11,
+        "tn": 110
+      },
+      {
+        "threshold": 0.9,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 11,
+        "tn": 110
+      },
+      {
+        "threshold": 0.95,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 11,
+        "tn": 110
+      }
+    ]
+  },
+  "ctc_recognition": {
+    "greedy_per": 0.231405,
+    "substitutions": 20,
+    "deletions": 3,
+    "insertions": 5,
+    "total_edits": 28,
+    "total_ref_tokens": 121,
+    "total_hyp_tokens": 123,
+    "substitution_rate": 0.165289,
+    "deletion_rate": 0.024793,
+    "insertion_rate": 0.041322,
+    "decoded_length_ratio": 1.016529,
+    "blank_fraction": 0.785928
+  },
+  "per_speaker_validation_breakdown": {
+    "l2arctic_NJS_arctic_a0003": {
+      "utterances": 1,
+      "phone_tokens": 39,
+      "error_tokens": 2,
+      "prevalence": 0.051282,
+      "binary_ap": 0.048766,
+      "f1_at_05": 0.0,
+      "precision_at_05": 0.0,
+      "recall_at_05": 0.0,
+      "ctc_per": 0.205128,
+      "ctc_sub_rate": 0.153846,
+      "ctc_del_rate": 0.025641,
+      "ctc_ins_rate": 0.025641,
+      "ctc_decoded_length_ratio": 1.0,
+      "ctc_blank_fraction": 0.791855
+    },
+    "l2arctic_NJS_arctic_a0005": {
+      "utterances": 1,
+      "phone_tokens": 15,
+      "error_tokens": 0,
+      "prevalence": 0.0,
+      "binary_ap": NaN,
+      "f1_at_05": 0.0,
+      "precision_at_05": 0.0,
+      "recall_at_05": 0.0,
+      "ctc_per": 0.066667,
+      "ctc_sub_rate": 0.0,
+      "ctc_del_rate": 0.0,
+      "ctc_ins_rate": 0.066667,
+      "ctc_decoded_length_ratio": 1.066667,
+      "ctc_blank_fraction": 0.771084
+    },
+    "l2arctic_NJS_arctic_a0006": {
+      "utterances": 1,
+      "phone_tokens": 29,
+      "error_tokens": 6,
+      "prevalence": 0.206897,
+      "binary_ap": 0.293288,
+      "f1_at_05": 0.0,
+      "precision_at_05": 0.0,
+      "recall_at_05": 0.0,
+      "ctc_per": 0.419355,
+      "ctc_sub_rate": 0.290323,
+      "ctc_del_rate": 0.064516,
+      "ctc_ins_rate": 0.064516,
+      "ctc_decoded_length_ratio": 1.0,
+      "ctc_blank_fraction": 0.809524
+    },
+    "l2arctic_NJS_arctic_a0007": {
+      "utterances": 1,
+      "phone_tokens": 38,
+      "error_tokens": 3,
+      "prevalence": 0.078947,
+      "binary_ap": 0.197712,
+      "f1_at_05": 0.0,
+      "precision_at_05": 0.0,
+      "recall_at_05": 0.0,
+      "ctc_per": 0.166667,
+      "ctc_sub_rate": 0.138889,
+      "ctc_del_rate": 0.0,
+      "ctc_ins_rate": 0.027778,
+      "ctc_decoded_length_ratio": 1.027778,
+      "ctc_blank_fraction": 0.76
+    }
+  },
+  "acoustic_contribution_controls": {
+    "conditions": {
+      "condition_1_matched_audio": {
+        "description": "True paired acoustic waveform with true canonical prompt",
+        "binary_ap": 0.130163,
+        "optimal_f1": 0.2222,
+        "optimal_threshold": 0.2,
+        "f1_at_05": 0.0
+      },
+      "condition_2_mismatched_audio": {
+        "description": "Deterministic deranged within-speaker acoustic waveform with original prompt and labels",
+        "binary_ap": 0.108787,
+        "optimal_f1": 0.1818,
+        "optimal_threshold": 0.2,
+        "f1_at_05": 0.0
+      },
+      "condition_3_canonical_empirical_prior": {
+        "description": "Prompt-only Bayesian lookup P_train(error | canonical_phone) computed from 2,399 Fold 1 train utterances",
+        "binary_ap": 0.109395,
+        "optimal_f1": 0.2222,
+        "optimal_threshold": 0.2,
+        "f1_at_05": 0.0
+      },
+      "condition_4_constant_prevalence": {
+        "description": "Constant trivial baseline predicting validation base rate",
+        "binary_ap": 0.090909,
+        "prevalence": 0.090909
+      }
+    },
+    "paired_matched_vs_mismatched": {
+      "delta_ap (matched - mismatched)": 0.021376,
+      "mean_score_diff": 0.007706,
+      "std_score_diff": 0.04047,
+      "median_score_diff": 0.00551,
+      "iqr_score_diff": 0.023172,
+      "mean_absolute_difference": 0.02582,
+      "prediction_agreement_at_05": 0.9917,
+      "prediction_agreement_at_02": 0.8926,
+      "sensitivity_fractions": {
+        "abs_diff_gt_0.01": 0.6364,
+        "abs_diff_gt_0.05": 0.1322,
+        "abs_diff_gt_0.10": 0.0496
+      }
+    },
+    "per_speaker_controls": {
+      "l2arctic_NJS_arctic_a0003": {
+        "matched_ap": 0.048766,
+        "mismatched_ap": 0.048571
+      },
+      "l2arctic_NJS_arctic_a0005": {
+        "matched_ap": NaN,
+        "mismatched_ap": NaN
+      },
+      "l2arctic_NJS_arctic_a0006": {
+        "matched_ap": 0.293288,
+        "mismatched_ap": 0.339136
+      },
+      "l2arctic_NJS_arctic_a0007": {
+        "matched_ap": 0.197712,
+        "mismatched_ap": 0.163781
+      }
+    },
+    "utterance_clustered_bootstrap": {
+      "n_bootstraps": 999,
+      "matched_ap_mean": 0.14415,
+      "matched_ap_ci95": [
+        0.034314,
+        0.259905
+      ],
+      "mismatched_ap_mean": 0.122453,
+      "mismatched_ap_ci95": [
+        0.032821,
+        0.249933
+      ],
+      "delta_ap_mean": 0.021696,
+      "delta_ap_ci95": [
+        -0.015563,
+        0.089265
+      ]
+    }
+  }
+}
