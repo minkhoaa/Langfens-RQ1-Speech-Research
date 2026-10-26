@@ -50,7 +50,7 @@ This audit verifies that the evaluation pipeline for **Protocol Z (Zero-Oracle)*
 - [x] **No TextGrid Reads:** `read_annotation_text` is never called within `ZeroOracleL2ArcticDataset`.
 - [x] **No Target Labels:** `binary_labels` and `ctc_target_indices` are hardcoded to `None`, and `is_blinded = True`.
 - [x] **No Padding/Target Masks in Model Execution:** `LangfensWav2Vec2MDD` is invoked with `source`, `audio_lengths`, `canonical_phone_indices`, and `canonical_phone_lengths` only. No `target_ctc` or `target_binary` tensors are instantiated or passed.
-- [x] **Zero Test Set Contamination:** The evaluation entrypoint strictly requires `split="val"`, verifying against frozen manifest SHA-256 `7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b`. Official test speakers (`ABA`, `SKA`, `YDCK`, `ZHAA`) remain sealed.
+- [x] **Zero Test Set Contamination:** The evaluation entrypoint strictly requires `split="val"`, verifying against frozen manifest SHA-256 `7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b`. Official test speakers (`ABA`, `ASI`, `EBVS`, `HJK`, `LXC`, `PNV`) remain sealed.
 
 ---
 
@@ -59,8 +59,10 @@ This audit verifies that the evaluation pipeline for **Protocol Z (Zero-Oracle)*
 ### Checkpoint Provenance:
 - **Model Checkpoint:** `checkpoints/RQ1-TRN-02A/recovered/best.pt`
 - **Checkpoint SHA-256:** `a2445c8d17910bf3c03101f50fc419675e8d1bc012af43af10267a28dbba948b`
-- **Training Epoch Stored:** 18 (display epoch 19)
-- **Training Updates:** 14,300 gradient steps
+- **Training Epoch Stored:** 5 (display epoch 6)
+- **Training Updates:** 3,600 successful gradient updates
+- **Validation AP Stored:** 0.316062
+- **Training Git SHA:** `caa56783113d40eac438e5f458cdb313b8932218`
 
 ### Weights Fingerprint Immutability:
 A SHA-256 digest of all 210 parameter tensors in memory was computed before and after full inference across all 300 validation utterances:

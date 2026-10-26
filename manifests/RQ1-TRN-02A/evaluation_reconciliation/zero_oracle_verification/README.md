@@ -36,11 +36,13 @@ All work is bounded strictly to CPU-compatible evaluation, statistical verificat
 
 1. **Reproduction of Reported AP Claim:**
    The historical exploratory claim that Protocol Z achieved validation AP = **0.312467** reproduces within **0.000004** ($0.312471$) under the audited validation prevalence imputation policy.
-2. **Methodological Rectification of Imputation:**
-   Scoring unaligned gold tokens with validation prevalence leaked validation targets into the metric. Under the principled, predeclared train-only conditional prior lookup (Policy B1), Protocol Z achieves:
-   - **Full Gold Benchmark ($N = 9,956$):** $\text{AP} = \mathbf{0.314265}$ ($\Delta = -0.002756$ relative to Protocol O $0.317021$).
-   - **Aligned-Only Population ($N = 9,919$, $99.63\%$ coverage):** $\text{AP} = \mathbf{0.313530}$ ($\Delta = -0.002904$ relative to Protocol O on identical subset $0.316434$).
+2. **Methodological Rectification of Imputation & Metric Designation:**
+   Scoring unaligned gold tokens with validation prevalence leaked validation targets into the metric.
+   - **Primary Replay Metric (Aligned-Only Population, $N = 9,919$, $99.63\%$ coverage):** $\text{AP} = \mathbf{0.313530}$ ($\Delta = -0.002904$ relative to Protocol O on identical subset $0.316434$). Measures zero-oracle predictions on hypothesized queries without arbitrary score imputation.
+   - **Offline Benchmark Imputation (Policy B1 Full Gold, $N = 9,956$):** $\text{AP} = \mathbf{0.314265}$ ($\Delta = -0.002756$ relative to Protocol O $0.317021$). Oracle-referenced full-gold benchmark imputation, not a deployment-time inference policy.
    - **Exact Sequence Utterances ($N = 2,338$, 82 utts):** $\text{AP} = \mathbf{0.305362}$ ($\Delta = \mathbf{0.000000}$).
+   - **Sensitivity & Audit Results (Policies B2, B3, Val Prevalence):** Preserved as sensitivity controls (B2 AP: $0.313006$, B3 AP: $0.307811$, Val Prevalence AP: $0.312471$).
+   - **Final Errata Addendum:** See [`final_errata/FINAL_ERRATA_REPORT.md`](final_errata/FINAL_ERRATA_REPORT.md) for complete provenance corrections and tie-break sensitivity repairs.
 3. **Class-Separated Acoustic Conditioning:**
    While overall decision agreement at $\tau = 0.50$ is $96.76\%$, agreement on the **positive class (true errors)** is **86.60%** ($155$ decision flips). Matched audio increases error detection recall by $+16.86\%$ (201 vs 172 TP) and suppresses false alarms by $-16.80\%$ (208 vs 250 FP).
 4. **Statistical Generalization Limitations:**

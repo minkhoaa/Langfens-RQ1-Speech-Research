@@ -1,10 +1,14 @@
 {
   "metadata": {
-    "evaluation_date": "2026-10-26 14:52:12",
+    "evaluation_date": "2026-10-26 15:31:06",
     "evaluator_script": "audit_scripts/evaluate_protocol_z.py",
-    "git_sha": "613dc728b06cd50604c9fb902923b223671545b3",
+    "git_sha": "03854dca2dce81fbfcf1e2715eaf399af477dd62",
     "checkpoint_path": "checkpoints/RQ1-TRN-02A/recovered/best.pt",
     "checkpoint_sha256": "a2445c8d17910bf3c03101f50fc419675e8d1bc012af43af10267a28dbba948b",
+    "checkpoint_epoch": 5,
+    "checkpoint_successful_updates": 3600,
+    "checkpoint_best_ap": 0.316062,
+    "checkpoint_training_git_sha": "caa56783113d40eac438e5f458cdb313b8932218",
     "model_weights_fingerprint": "32d12bdf3524508bd891605a728c9207be588d0ce8a1a16bca2f65cab12ae60d",
     "cmudict_path": "resources/CMUDict/cmudict.dict",
     "cmudict_sha256": "81917843c7f44ce2b094ac63873c2c7a4cf802040792c455ba3ca406891c3d22",
@@ -17,8 +21,8 @@
     "evaluated_utterances": 300,
     "tie_break_selected": "sub_first",
     "runtime_performance": {
-      "wall_time_seconds": 71.69,
-      "seconds_per_utterance": 0.239
+      "wall_time_seconds": 70.27,
+      "seconds_per_utterance": 0.2342
     }
   },
   "frontend_token_census": {
@@ -1388,23 +1392,29 @@
     "sub_first": {
       "aligned_pairs": 9919,
       "unaligned_gold_tokens": 37,
+      "unaligned_g2p_tokens": 37,
       "aligned_only_ap": 0.31353,
       "policy_b1_ap": 0.314265,
+      "policy_b2_ap": 0.313006,
       "audit_val_prev_ap": 0.312471
     },
     "del_first": {
       "aligned_pairs": 9909,
       "unaligned_gold_tokens": 47,
+      "unaligned_g2p_tokens": 47,
       "aligned_only_ap": 0.31367,
-      "policy_b1_ap": 0.306266,
-      "audit_val_prev_ap": 0.303624
+      "policy_b1_ap": 0.314519,
+      "policy_b2_ap": 0.312997,
+      "audit_val_prev_ap": 0.31227
     },
     "ins_first": {
       "aligned_pairs": 9918,
       "unaligned_gold_tokens": 38,
+      "unaligned_g2p_tokens": 38,
       "aligned_only_ap": 0.313863,
-      "policy_b1_ap": 0.314425,
-      "audit_val_prev_ap": 0.312674
+      "policy_b1_ap": 0.31479,
+      "policy_b2_ap": 0.313319,
+      "audit_val_prev_ap": 0.312725
     }
   },
   "per_speaker_breakdown": {

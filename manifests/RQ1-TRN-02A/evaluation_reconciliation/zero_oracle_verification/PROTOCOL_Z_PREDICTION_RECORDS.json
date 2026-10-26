@@ -1,8 +1,12 @@
 {
   "metadata": {
     "description": "Per-utterance Protocol Z prediction scores and alignment traces",
-    "evaluator_git_sha": "613dc728b06cd50604c9fb902923b223671545b3",
+    "evaluator_git_sha": "03854dca2dce81fbfcf1e2715eaf399af477dd62",
     "checkpoint_sha256": "a2445c8d17910bf3c03101f50fc419675e8d1bc012af43af10267a28dbba948b",
+    "checkpoint_epoch": 5,
+    "checkpoint_successful_updates": 3600,
+    "checkpoint_best_ap": 0.316062,
+    "checkpoint_training_git_sha": "caa56783113d40eac438e5f458cdb313b8932218",
     "model_weights_fingerprint": "32d12bdf3524508bd891605a728c9207be588d0ce8a1a16bca2f65cab12ae60d",
     "cmudict_sha256": "81917843c7f44ce2b094ac63873c2c7a4cf802040792c455ba3ca406891c3d22",
     "manifest_sha256": "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b",

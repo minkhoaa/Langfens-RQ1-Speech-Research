@@ -25,10 +25,11 @@
 - Under the historical validation-prevalence imputation policy ($0.116211$), the recomputed AP across all 9,956 validation gold tokens is **0.312471**, reproducing the draft claim ($0.312467$) to within **0.000004** ($4 \times 10^{-6}$).
 - However, our audit identified that imputing scores with validation error prevalence is methodologically flawed because it leaks target prevalence into the scoring rule.
 
-### 2. Principled Train-Only Protocol Z Scoring:
-- When using a clean, predeclared train-only conditional prior lookup $P_{\text{train}}(\text{error} \mid g_j)$ (Policy B1), Protocol Z achieves an AP of **0.314265** across the full gold benchmark ($N = 9,956$), within **0.28 percentage points** (-0.002756) of Protocol O (0.317021).
-- On the aligned-only token population ($N = 9,919$, $99.63\%$ coverage), Protocol Z achieves **AP = 0.313530** vs Protocol O **AP = 0.316434** ($\Delta = -0.002904$).
-- On the 82 identical prompt utterances ($N = 2,338$), Protocol Z and Protocol O APs are **mathematically identical** ($0.305362$, $\Delta = 0.000000$).
+### 2. Primary Replay Metric & Scoring Policy Clarifications:
+- **Primary Replay Metric (Population 1 — Aligned-Only):** On the 9,919 phone tokens where G2P and Gold annotations align ($99.63\%$ coverage), Protocol Z achieves **AP = 0.313530** vs Protocol O **AP = 0.316434** ($\Delta = -0.002904$). This metric evaluates model prediction quality on queries without arbitrary imputation.
+- **Oracle-Referenced Full-Gold Benchmark Imputation (Policy B1):** Imputing omitted gold tokens with train conditional priors $P_{\text{train}}(\text{error} \mid g_j)$ achieves **AP = 0.314265** across all 9,956 gold tokens ($\Delta = -0.002756$ relative to Protocol O $0.317021$). This is strictly an offline oracle-assisted benchmarking analysis against Protocol O, not a deployment-time inference policy.
+- **Sensitivity & Audit Results (Policies B2, B3, Val Prevalence):** Preserved strictly as sensitivity controls (B2 AP: $0.313006$, B3 AP: $0.307811$, Val Prevalence AP: $0.312471$), not operational policies.
+- **Exact Sequence Utterances ($N = 2,338$, 82 utts):** Protocol Z and Protocol O APs are **mathematically identical** ($0.305362$, $\Delta = 0.000000$).
 
 ### 3. Acoustic Waveform Conditioning is Class-Asymmetric:
 - Overall prediction agreement at $\tau = 0.50$ ($96.76\%$) gave the false impression that audio swapping has almost no effect.

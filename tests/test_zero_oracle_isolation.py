@@ -92,8 +92,12 @@ def test_strict_no_test_split_boundary():
     fold1 = splits["folds"][0]
     test_speakers = fold1["test"]["speakers"]
     assert len(test_speakers) == 6
-    assert "ABA" in test_speakers
-    assert "PNV" in test_speakers
+    assert sorted(test_speakers) == ["ABA", "ASI", "EBVS", "HJK", "LXC", "PNV"]
+
+    # Verify SKA, YDCK, ZHAA are NOT test speakers (they belong to train)
+    for spk in ["SKA", "YDCK", "ZHAA"]:
+        assert spk not in test_speakers, f"{spk} falsely found in test_speakers"
+        assert spk in fold1["train"]["speakers"], f"{spk} missing from train_speakers"
 
     # Protocol Z dataset validation check: val split must strictly be NJS and RRBI
     ds = ZeroOracleL2ArcticDataset(
@@ -106,3 +110,15 @@ def test_strict_no_test_split_boundary():
     val_speakers = set(entry[0] for entry in ds.utterance_entries)
     assert val_speakers == {"NJS", "RRBI"}
     assert not val_speakers.intersection(set(test_speakers)), "Test speaker leakage detected in validation dataset!"
+
+    # Verify test split archive sealing: attempting to read test audio from the authorized zip
+    # raises KeyError because official test speakers (e.g. ABA) are sealed and excluded from the archive.
+    ds_test = ZeroOracleL2ArcticDataset(
+        split_manifest_path=manifest_path,
+        fold=1,
+        split="test",
+        prompts_source=prompts_path,
+        zip_path=zip_path
+    )
+    with pytest.raises(KeyError, match=r"There is no item named 'ABA\.zip' in the archive"):
+        _ = ds_test[0]

@@ -16,7 +16,9 @@ In Protocol Z, the model's canonical query sequence is derived from text using C
    - The previously reported count of **40 unaligned gold tokens and 37 extra G2P tokens** was an artifact of an earlier exploratory script that lacked compound decomposition for three ARCTIC words: `TOMFOOLERY`, `NIGHTGLOW`, and `PROMOTER'S`.
    - In the complete, version-controlled G2P frontend with deterministic compound decomposition, the true counts are **37 unaligned gold tokens (0.37%)** and **37 extra G2P tokens (0.37%)**.
 3. **Robustness to Tie-Breaking Ambiguity:**
-   - On the aligned-only population, Average Precision varies by less than **0.03 percentage points** across all tie-breaking strategies ($0.313530$ under `sub_first` vs $0.313863$ under `ins_first`).
+   - On the aligned-only population, Average Precision varies by less than **0.04 percentage points** across all tie-breaking strategies ($0.313530$ under `sub_first` vs $0.313863$ under `ins_first`, $\Delta = 0.000333$).
+   - Across all full-gold imputation policies, genuine recomputations with matched pair reconstruction show extreme AP stability across tie breaks (Policy B1 varies by $\pm 0.000525$, Policy B2 varies by $\pm 0.000322$, and Audit Val Prevalence varies by $\pm 0.000455$).
+   - The previously reported exploratory drop under `del_first` (down to $0.306266$) was an implementation artifact where `del_first` scores were evaluated against the `sub_first` gold label vector. Independent matched-pair reconstruction proves tie-break invariance across all policies.
    - The reported exploratory AP ($0.312467$) reproduces within **0.000004** ($0.312471$) under `sub_first` tie-breaking.
 
 ---
@@ -62,7 +64,7 @@ Manual inspection of the 37 unaligned positions reveals three distinct linguisti
 
 ## 4. Sensitivity to Dynamic Programming Tie-Breaking
 
-When computing minimum edit distance, paths with identical total cost can be resolved by preferring substitutions, deletions, or insertions during DP backtracing. We evaluated all three tie-breaking orders across the 300 validation utterances:
+When computing minimum edit distance, paths with identical total cost can be resolved by preferring substitutions, deletions, or insertions during DP backtracing. We evaluated all three tie-breaking orders across the 300 validation utterances with independent matched-pair label reconstruction:
 
 | Dimension | `sub_first` (Preferred Standard) | `del_first` | `ins_first` | Max Delta |
 |---|---:|---:|---:|---:|
@@ -71,11 +73,15 @@ When computing minimum edit distance, paths with identical total cost can be res
 | **Unaligned Gold (Deletions)** | **37** | 47 | 38 | 10 tokens |
 | **Extra G2P (Insertions)** | **37** | 47 | 38 | 10 tokens |
 | **Aligned-Only AP** | **0.313530** | **0.313670** | **0.313863** | $\pm 0.000333$ |
-| **Full Gold AP (Policy B1 Train Prior)** | **0.314265** | **0.306266** | **0.314425** | $\pm 0.008159$ |
-| **Full Gold AP (Audit Val Prev Impute)** | **0.312471** | **0.303624** | **0.312674** | $\pm 0.009050$ |
+| **Full Gold AP (Policy B1 Train Prior)** | **0.314265** | **0.314519** | **0.314790** | $\pm 0.000525$ |
+| **Full Gold AP (Policy B2 Train Prev)** | **0.313006** | **0.312997** | **0.313319** | $\pm 0.000322$ |
+| **Full Gold AP (Audit Val Prev Impute)** | **0.312471** | **0.312270** | **0.312725** | $\pm 0.000455$ |
 
-### Why `sub_first` is the Defensible Standard:
-1. **Phonetic Realism:** In parallel transcriptions of the same sentence, pronunciation differences represent phoneme substitutions (e.g. `DH AH` $\leftrightarrow$ `DH IY`), not two separate insertion and deletion events.
-2. `del_first` artificially splits a 1-token substitution into a deletion followed by an insertion when cost is tied, artificially inflating the count of unaligned tokens (from 37 to 47).
-3. Under both `sub_first` and `ins_first`, aligned-only AP is virtually identical ($0.313530$ vs $0.313863$, $\Delta = 0.000333$).
+### Resolution of Historical Tie-Break Discrepancy:
+1. **Root Cause of Artifactual Drop in Prior Draft:**
+   In an earlier exploratory sweep, `del_first` scores were evaluated against the gold label vector extracted under `sub_first` (`full_gold_labels`). Because `del_first` alters the aligned vs unaligned positions for 10 tokens across the corpus, evaluating misaligned arrays assigned scores to incorrect gold tokens, creating an artificial metric collapse ($0.306266$ for B1 and $0.303624$ for Audit Val Prev).
+2. **Mathematical Invariance Under Independent Matched Pairs:**
+   When gold labels and predicted scores are reconstructed as matched pairs for each alignment independently, AP across all policies varies by less than **0.06 percentage points** ($\Delta < 0.0006$).
+3. **Phonetic Realism of `sub_first`:**
+   In parallel transcriptions of the same sentence, pronunciation differences represent phoneme substitutions (e.g. `DH AH` $\leftrightarrow$ `DH IY`), not two separate insertion and deletion events. `del_first` artificially splits a 1-token substitution into a deletion followed by an insertion when cost is tied.
 4. The historical exploratory AP reported in EVAL-R2-CORR ($0.312467$) was computed under `sub_first` tie-breaking, reproducing at **0.312471** ($\Delta = 0.000004$).

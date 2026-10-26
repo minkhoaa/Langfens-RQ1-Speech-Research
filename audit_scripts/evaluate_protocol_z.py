@@ -198,11 +198,32 @@ def load_production_model(ckpt_path: Path, device: torch.device) -> Tuple[Langfe
         p.requires_grad = False
     model.eval()
 
+    # Strict provenance assertion: missing critical metadata must raise an exception
+    required_keys = ["epoch", "successful_updates", "best_ap", "metadata"]
+    for k in required_keys:
+        if k not in ckpt:
+            raise KeyError(f"Missing critical checkpoint metadata key: '{k}'")
+    if "git_sha" not in ckpt["metadata"]:
+        raise KeyError("Missing critical checkpoint metadata key: 'metadata.git_sha'")
+
+    stored_epoch = int(ckpt["epoch"])
+    stored_updates = int(ckpt["successful_updates"])
+    training_git_sha = str(ckpt["metadata"]["git_sha"])
+    stored_best_ap = round(float(ckpt["best_ap"]), 6)
+
+    # Assert genuine production checkpoint provenance
+    assert stored_epoch == 5, f"Provenance failure: expected epoch 5, got {stored_epoch}"
+    assert stored_updates == 3600, f"Provenance failure: expected 3600 updates, got {stored_updates}"
+    assert training_git_sha == "caa56783113d40eac438e5f458cdb313b8932218", (
+        f"Provenance failure: expected training git_sha caa56783113d40eac438e5f458cdb313b8932218, got {training_git_sha}"
+    )
+
     ckpt_metadata = {
         "sha256": ckpt_sha,
-        "epoch": ckpt.get("epoch", 18),
-        "successful_updates": ckpt.get("successful_updates", 14300),
-        "best_ap": ckpt.get("best_ap", 0.316139)
+        "epoch": stored_epoch,
+        "successful_updates": stored_updates,
+        "best_ap": stored_best_ap,
+        "training_git_sha": training_git_sha
     }
     return model, ckpt_metadata
 
@@ -211,6 +232,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description="LANGFENS Protocol Z Evaluation & Verification")
     parser.add_argument("--checkpoint", type=str, default="checkpoints/RQ1-TRN-02A/recovered/best.pt")
     parser.add_argument("--manifest", type=str, default="manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json")
+    parser.add_argument("--split", type=str, default="val", choices=["val"], help="Protocol Z strictly evaluates on 'val' split only")
     parser.add_argument("--authorized_zip", type=str, default="datasets/L2-ARCTIC/authorized_RQ1-TRN-02A_fold1_train_val_only.zip")
     parser.add_argument("--prompts", type=str, default="resources/L2-ARCTIC/prompts.json")
     parser.add_argument("--output_dir", type=str, default="manifests/RQ1-TRN-02A/evaluation_reconciliation/zero_oracle_verification")
@@ -222,6 +244,10 @@ def parse_args():
 
 def main():
     args = parse_args()
+    if args.split != "val":
+        raise PermissionError(
+            f"CRITICAL SAFETY VIOLATION: Protocol Z evaluator strictly prohibits official test evaluation. Got split='{args.split}'"
+        )
     device = torch.device(args.device)
     out_dir = Path(args.output_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -229,6 +255,15 @@ def main():
     print("=" * 80)
     print("LANGFENS — Protocol Z (Zero-Oracle) Independent Verification Entrypoint")
     print("=" * 80)
+
+    # 0. Split Integrity & Prohibition Safeguard
+    with open(args.manifest, "r", encoding="utf-8") as f_manifest:
+        splits_json = json.load(f_manifest)
+    fold1_info = splits_json["folds"][0]
+    fold1_val_spks = set(fold1_info["val"]["speakers"])
+    fold1_test_spks = set(fold1_info["test"]["speakers"])
+    assert fold1_val_spks == {"NJS", "RRBI"}, f"Manifest Fold 1 val mismatch: {fold1_val_spks}"
+    assert fold1_test_spks == {"ABA", "ASI", "EBVS", "HJK", "LXC", "PNV"}, f"Manifest Fold 1 test mismatch: {fold1_test_spks}"
 
     # 1. Verify G2P Frontend & Pinned CMUdict
     print("\n[FRONTEND] Initializing deterministic CMUdict G2P frontend...")
@@ -467,34 +502,57 @@ def main():
         }
 
     # Alignment sensitivity analysis across all tie-break policies
-    print("[SCORING] Performing alignment tie-break sensitivity sweep...")
+    print("[SCORING] Performing alignment tie-break sensitivity sweep (independent matched pairs)...")
     tie_break_sweep = {}
     for tb_mode in ["sub_first", "del_first", "ins_first"]:
-        tb_z_sc, tb_lbl, tb_b1_sc, tb_aud_sc = [], [], [], []
+        tb_aligned_z, tb_aligned_lbl = [], []
+        tb_full_labels, tb_b1_sc, tb_b2_sc, tb_aud_sc = [], [], [], []
         tb_unaligned_g = 0
+        tb_unaligned_z = 0
         for rec in per_utterance_records:
             g_lbls = rec["gold_labels"]
             g_ph = rec["gold_phones"]
             z_sc = rec["g2p_scores"]
             tb_align = align_canonical_sequences(g_ph, rec["g2p_phones"], tie_break=tb_mode)
+
+            # 1. Aligned pairs (reconstruct matched labels and scores)
             for g_i, z_i, op in tb_align["aligned_pairs"]:
-                tb_z_sc.append(z_sc[z_i])
-                tb_lbl.append(g_lbls[g_i])
-                tb_b1_sc.append(z_sc[z_i])
-                tb_aud_sc.append(z_sc[z_i])
+                lbl = g_lbls[g_i]
+                sc = z_sc[z_i]
+                tb_aligned_z.append(sc)
+                tb_aligned_lbl.append(lbl)
+
+                tb_full_labels.append(lbl)
+                tb_b1_sc.append(sc)
+                tb_b2_sc.append(sc)
+                tb_aud_sc.append(sc)
+
+            # 2. Unaligned gold tokens (reconstruct matched labels and imputed scores)
             for g_i, g_p in tb_align["unaligned_gold"]:
                 tb_unaligned_g += 1
+                lbl = g_lbls[g_i]
                 g_c = PHONE_TO_CTC_INDEX.get(g_p, 0)
-                tb_b1_sc.append(train_prior["phone_priors"].get(g_c, train_prior["overall_train_rate"]))
+                prior_val = train_prior["phone_priors"].get(g_c, train_prior["overall_train_rate"])
+
+                tb_full_labels.append(lbl)
+                tb_b1_sc.append(prior_val)
+                tb_b2_sc.append(train_prior["overall_train_rate"])
                 tb_aud_sc.append(0.116211)
-        tb_ap_aligned = average_precision_binary(tb_lbl, tb_z_sc)
-        tb_ap_b1 = average_precision_binary(full_gold_labels, tb_b1_sc)
-        tb_ap_aud = average_precision_binary(full_gold_labels, tb_aud_sc)
+
+            tb_unaligned_z += len(tb_align["unaligned_g2p"])
+
+        tb_ap_aligned = average_precision_binary(tb_aligned_lbl, tb_aligned_z)
+        tb_ap_b1 = average_precision_binary(tb_full_labels, tb_b1_sc)
+        tb_ap_b2 = average_precision_binary(tb_full_labels, tb_b2_sc)
+        tb_ap_aud = average_precision_binary(tb_full_labels, tb_aud_sc)
+
         tie_break_sweep[tb_mode] = {
-            "aligned_pairs": len(tb_lbl),
+            "aligned_pairs": len(tb_aligned_lbl),
             "unaligned_gold_tokens": tb_unaligned_g,
+            "unaligned_g2p_tokens": tb_unaligned_z,
             "aligned_only_ap": round(float(tb_ap_aligned), 6),
             "policy_b1_ap": round(float(tb_ap_b1), 6),
+            "policy_b2_ap": round(float(tb_ap_b2), 6),
             "audit_val_prev_ap": round(float(tb_ap_aud), 6)
         }
 
@@ -506,6 +564,10 @@ def main():
             "git_sha": os.popen("git rev-parse HEAD").read().strip(),
             "checkpoint_path": str(args.checkpoint),
             "checkpoint_sha256": ckpt_meta["sha256"],
+            "checkpoint_epoch": ckpt_meta["epoch"],
+            "checkpoint_successful_updates": ckpt_meta["successful_updates"],
+            "checkpoint_best_ap": ckpt_meta["best_ap"],
+            "checkpoint_training_git_sha": ckpt_meta["training_git_sha"],
             "model_weights_fingerprint": post_fingerprint,
             "cmudict_path": str(g2p.dict_path),
             "cmudict_sha256": cmudict_sha,
@@ -599,6 +661,10 @@ def main():
             "description": "Per-utterance Protocol Z prediction scores and alignment traces",
             "evaluator_git_sha": os.popen("git rev-parse HEAD").read().strip(),
             "checkpoint_sha256": ckpt_meta["sha256"],
+            "checkpoint_epoch": ckpt_meta["epoch"],
+            "checkpoint_successful_updates": ckpt_meta["successful_updates"],
+            "checkpoint_best_ap": ckpt_meta["best_ap"],
+            "checkpoint_training_git_sha": ckpt_meta["training_git_sha"],
             "model_weights_fingerprint": post_fingerprint,
             "cmudict_sha256": cmudict_sha,
             "manifest_sha256": compute_sha256(args.manifest),

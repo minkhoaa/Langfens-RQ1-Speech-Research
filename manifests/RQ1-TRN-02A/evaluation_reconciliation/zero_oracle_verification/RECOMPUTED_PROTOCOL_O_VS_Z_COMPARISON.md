@@ -83,20 +83,19 @@ This report establishes the verified empirical performance of the multi-task Wav
 
 ## 5. Methodological Evaluation of Scoring Policies
 
-### Policy B1 (Train Prior Lookup) — Scientifically Preferred:
-- Assigns $P_{\text{train}}(\text{error} \mid g_j)$ to unaligned gold tokens based strictly on Fold 1 train counts ($N=79,426$).
-- Zero validation label leakage.
-- Yields **AP = 0.314265**, demonstrating that zero-oracle inference achieves 99.1% of oracle performance.
+### Primary Replay Metric — Population 1 (Aligned-Only Protocol Z AP):
+- Evaluates strictly on aligned positions where the G2P frontend hypothesized a phone and a gold reference counterpart exists ($N = 9,919$, $99.63\%$ gold coverage).
+- Zero score imputation; reflects genuine model prediction capability on the queried phonemes.
+- Yields **AP = 0.313530** (vs Protocol O aligned counterpart $0.316434$, $\Delta = -0.002904$).
+- Must always be reported alongside reported gold coverage ($99.63\%$) and omission count ($37$ unaligned gold tokens) to ensure full population transparency.
 
-### Population 1 (Aligned-Only) — Reporting Precondition:
-- Evaluates only positions where the frontend actually hypothesized a phone.
-- Yields **AP = 0.313530** across 9,919 tokens ($99.63\%$ coverage).
-- Must always be reported alongside coverage ($99.63\%$) and omission count ($37$ tokens) to prevent silent denominator truncation.
+### Benchmark Analysis — Policy B1 (Train Prior Lookup Full-Gold Imputation):
+- Evaluates across all 9,956 gold tokens by imputing omitted gold positions with conditional train priors $P_{\text{train}}(\text{error} \mid g_j)$ derived from Fold 1 training items ($N=79,426$).
+- **Crucial Interpretation:** Policy B1 is an **oracle-referenced full-gold imputation analysis** designed solely for offline comparative benchmarking against Protocol O. It is **NOT** a deployment-time operating policy, because determining which gold tokens were omitted and looking up their priors requires the gold reference TextGrid, which is unavailable at deployment.
+- Yields **AP = 0.314265** ($\Delta = -0.002756$ relative to Protocol O $0.317021$).
 
-### Policy B3 (Abstention Penalty) — Stress Test:
-- Penalizes frontend omissions with maximum error score ($1.0$).
-- AP remains **0.307811**, showing the architecture remains robust even under conservative failure assumptions.
-
-### Audit Reference — Historical Erratum:
-- The historical report's use of $0.116211$ is verified as having achieved **0.312471** (reproducing $0.312467$ to $4 \times 10^{-6}$).
-- While numerically valid, it should be formally replaced by Policy B1 in all future official tables.
+### Sensitivity & Audit Analyses (Policies B2, B3, and Validation Prevalence):
+- **Policy B2 (Train Overall Prevalence Imputation):** Imputes unaligned gold tokens with the static train error rate ($0.149082$), yielding **AP = 0.313006**.
+- **Policy B3 (Abstention Penalty):** Stress-tests the pipeline by assigning maximum error confidence ($1.0$) to G2P omissions, yielding **AP = 0.307811**.
+- **Audit Reference (Validation Prevalence Imputation):** Re-evaluates the historical exploratory report ($0.116211$), reproducing **AP = 0.312471** (reproducing $0.312467$ to within $4 \times 10^{-6}$).
+- **Status:** Policies B2, B3, and historical validation prevalence are preserved strictly as sensitivity/audit reconciliation evidence, not production operating policies.

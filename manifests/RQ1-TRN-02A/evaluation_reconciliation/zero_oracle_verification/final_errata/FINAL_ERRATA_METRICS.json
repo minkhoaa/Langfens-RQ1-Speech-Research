@@ -1,0 +1,162 @@
+{
+  "audit_phase": "ZERO-ORACLE-FINAL-ERRATA",
+  "audit_date": "2026-10-26",
+  "auditor_role": "Independent ML Evaluation Auditor",
+  "status": "PASS",
+  "checkpoint_provenance": {
+    "checkpoint_path": "checkpoints/RQ1-TRN-02A/recovered/best.pt",
+    "checkpoint_sha256": "a2445c8d17910bf3c03101f50fc419675e8d1bc012af43af10267a28dbba948b",
+    "stored_epoch": 5,
+    "display_epoch": 6,
+    "stored_successful_updates": 3600,
+    "stored_best_ap": 0.316062,
+    "training_git_sha": "caa56783113d40eac438e5f458cdb313b8932218",
+    "split_manifest_sha256": "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b",
+    "retracted_fabricated_defaults": {
+      "epoch": 18,
+      "successful_updates": 14300,
+      "best_ap": 0.316139
+    }
+  },
+  "speaker_partition_census": {
+    "manifest_path": "manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json",
+    "fold": 1,
+    "validation_speakers": ["NJS", "RRBI"],
+    "validation_utterances": 300,
+    "official_test_speakers": ["ABA", "ASI", "EBVS", "HJK", "LXC", "PNV"],
+    "official_test_utterances": 900,
+    "official_test_status": "SEALED",
+    "corrected_training_speakers_falsely_claimed_as_test": ["SKA", "YDCK", "ZHAA"],
+    "training_speakers_total": 16,
+    "training_utterances": 2399
+  },
+  "tie_break_sensitivity_reconciliation": {
+    "root_cause_of_prior_discrepancy": "Exploratory script evaluated del_first and ins_first scores against sub_first gold label vector, causing vector misalignment and artificial AP degradation.",
+    "repair_methodology": "Independent reconstruction of matched pairs (score, label) for each alignment policy independently.",
+    "policies": {
+      "sub_first": {
+        "aligned_token_pairs": 9919,
+        "gold_coverage": 0.996284,
+        "unaligned_gold_tokens": 37,
+        "unaligned_g2p_tokens": 37,
+        "aligned_only_ap": 0.31353,
+        "policy_b1_train_prior_ap": 0.314265,
+        "policy_b2_train_prevalence_ap": 0.313006,
+        "policy_b3_penalty_ap": 0.307811,
+        "audit_val_prev_ap": 0.312471
+      },
+      "del_first": {
+        "aligned_token_pairs": 9909,
+        "gold_coverage": 0.995279,
+        "unaligned_gold_tokens": 47,
+        "unaligned_g2p_tokens": 47,
+        "aligned_only_ap": 0.31367,
+        "policy_b1_train_prior_ap": 0.314519,
+        "policy_b2_train_prevalence_ap": 0.312997,
+        "policy_b3_penalty_ap": 0.308147,
+        "audit_val_prev_ap": 0.31227
+      },
+      "ins_first": {
+        "aligned_token_pairs": 9918,
+        "gold_coverage": 0.996183,
+        "unaligned_gold_tokens": 38,
+        "unaligned_g2p_tokens": 38,
+        "aligned_only_ap": 0.313863,
+        "policy_b1_train_prior_ap": 0.31479,
+        "policy_b2_train_prevalence_ap": 0.313319,
+        "policy_b3_penalty_ap": 0.309224,
+        "audit_val_prev_ap": 0.312725
+      }
+    },
+    "maximum_delta_across_tie_breaks": {
+      "aligned_only_ap_delta": 0.000333,
+      "policy_b1_train_prior_ap_delta": 0.000525,
+      "policy_b2_train_prevalence_ap_delta": 0.000322,
+      "audit_val_prev_ap_delta": 0.000455
+    }
+  },
+  "scoring_population_definitions": {
+    "primary_replay_metric": {
+      "population": "Population 1: Aligned-Only",
+      "evaluated_tokens": 9919,
+      "gold_coverage": 0.996284,
+      "unaligned_omitted": 37,
+      "protocol_z_ap": 0.31353,
+      "protocol_o_counterpart_ap": 0.316434,
+      "delta_ap": -0.002904,
+      "justification": "Evaluates model predictions strictly on query phonemes where G2P matches human annotation without arbitrary score imputation."
+    },
+    "oracle_referenced_full_gold_benchmark": {
+      "policy": "Policy B1: Train Prior Conditional Lookup",
+      "total_gold_tokens": 9956,
+      "unaligned_gold_tokens": 37,
+      "imputation_source": "P_train(error | canonical_phone) on Fold 1 train items (N=79,426)",
+      "protocol_z_ap": 0.314265,
+      "protocol_o_counterpart_ap": 0.317021,
+      "delta_ap": -0.002756,
+      "classification": "Oracle-referenced offline comparative analysis, NOT deployment-time prediction policy."
+    },
+    "sensitivity_analyses": {
+      "policy_b2_train_prevalence": {
+        "ap": 0.313006,
+        "delta_vs_protocol_o": -0.004015,
+        "imputation": "Train overall error prevalence (0.149082)"
+      },
+      "policy_b3_abstention_penalty": {
+        "ap": 0.307811,
+        "delta_vs_protocol_o": -0.00921,
+        "imputation": "Maximum error penalty (1.0)"
+      },
+      "audit_validation_prevalence": {
+        "ap": 0.312471,
+        "reported_in_exploratory_draft": 0.312467,
+        "absolute_reproduction_error": 0.000004,
+        "imputation": "Validation error prevalence (0.116211)"
+      }
+    }
+  },
+  "operating_points": {
+    "standard_operating_point_05": {
+      "threshold": 0.5,
+      "aligned_only": {
+        "precision": 0.4941,
+        "recall": 0.1817,
+        "f1": 0.2656,
+        "tp": 208,
+        "fp": 213,
+        "fn": 937,
+        "tn": 8561
+      },
+      "policy_b1_full_gold": {
+        "precision": 0.4941,
+        "recall": 0.1798,
+        "f1": 0.2636,
+        "tp": 208,
+        "fp": 213,
+        "fn": 949,
+        "tn": 8586
+      }
+    },
+    "optimal_f1_operating_point": {
+      "threshold": 0.2,
+      "aligned_only": {
+        "precision": 0.2917,
+        "recall": 0.5362,
+        "f1": 0.378,
+        "tp": 614,
+        "fp": 1491,
+        "fn": 531,
+        "tn": 7283
+      },
+      "policy_b1_full_gold": {
+        "precision": 0.2884,
+        "recall": 0.5307,
+        "f1": 0.3737,
+        "tp": 614,
+        "fp": 1515,
+        "fn": 543,
+        "tn": 7284
+      }
+    }
+  }
+}

@@ -83,6 +83,6 @@ In `BOOTSTRAP_DESIGN_LIMITATIONS.md` (Section 2, Limitation 2), the text stated:
 In prior documentation, validation AP was occasionally described as providing an "unbiased" measurement of model capabilities.
 
 **Correction:**
-1. Checkpoint `checkpoints/RQ1-TRN-02A/recovered/best.pt` was chosen out of 25 training epochs specifically because it achieved the **highest validation AP** ($0.316139$ at epoch 18).
+1. Checkpoint `checkpoints/RQ1-TRN-02A/recovered/best.pt` was chosen out of 25 training epochs specifically because it achieved the **highest validation AP** ($0.316062$ at epoch 5, 3,600 successful updates, training Git SHA `caa56783113d40eac438e5f458cdb313b8932218`).
 2. Consequently, validation AP contains **checkpoint selection bias (optimism bias)**. The model weights are tuned to random fluctuations in the validation set.
-3. Neither Protocol O nor Protocol Z validation AP constitutes an unbiased estimate of generalization to unseen speakers. Unbiased generalization can only be measured on the sealed official test set (`ABA`, `SKA`, `YDCK`, `ZHAA`) or external corpora.
+3. Neither Protocol O nor Protocol Z validation AP constitutes an unbiased estimate of generalization to unseen speakers. Unbiased generalization can only be measured on the sealed official test set (`ABA`, `ASI`, `EBVS`, `HJK`, `LXC`, `PNV`) or external corpora. Note that speakers `SKA`, `YDCK`, and `ZHAA` belong to the Fold 1 training partition and are never official test speakers.
