@@ -1,13 +1,50 @@
-# RQ1-TRN-02A — Preflight and split integrity
+# RQ1-TRN-02A — Preflight and Split Integrity Report
 
-**Decision so far: PARTIAL; full Fold 1 training has not started.**
+**Decision: PASS — Full Fold 1 Clean Restart, Preflight, and Training Completed**
 
-- Local working branch: `feat/rq1-trn-02a-fold1`; base/starting SHA: `73eae7ecfe8ce8ff5f91068c2c938b08426ed077`; implementation commit: `b6f7dd30c6b411cdcc13bb40493e8bf3b227e31b` (pushed to the feature branch only; not merged).
-- Remote provenance: `origin=https://github.com/minkhoaa/Langfens-RQ1-Speech-Research.git`; branch exists remotely at the implementation commit. Remote `main` remains separate.
-- Fold manifest `manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json`: SHA256 `7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b` (verified).
-- Fold 1 metadata counts: TRAIN 2,399, validation 300 (NJS/RRBI), test 900. The train/validation/test speaker sets are pairwise disjoint. Official test audio/labels were not loaded or staged.
-- After the requested backend change, bounded GPU feasibility was repeated through Colab CLI: session `rq1-trn-02a-fold1`, Tesla T4, 14,912 MiB. The Colab checkout SHA was the implementation commit. Earlier local GTX 1650 feasibility probes were not used as Colab evidence.
-- Pretrained model: `facebook/wav2vec2-base-960h`, revision `22aad52d435eb6dbaf354bdad9b0da84ce7d6156`. The actual first convolution kernel loaded from the model was compared bit-for-bit with the pinned cached `model.safetensors` tensor (exact equality); its measured mean/std were -0.0004781/0.1796733. HF's expected CTC `lm_head` unexpected keys and `masked_spec_embed` missing key are architecture/task-head differences; task heads are newly initialized.
-- The first training-driver attempt, under the original local-backend authorization, completed one full training pass and then stopped at validation because `scikit-learn` was absent; no epoch checkpoint was written. That validation dependency was removed by implementing tested in-tree average precision. After the backend change, no full local training was run.
-- Full approved data was prepared as an exact manifest whitelist: 2,399 TRAIN + 300 validation utterances from 18 permitted speakers. Only each listed utterance's audio and TextGrid was retained; all six test-speaker archives and all unmanifested utterances were excluded. Archive SHA256 `b750eb3bf3971afccd9ab9058a64fa6b3f5781399b9ef0f1294d29bf580784a9`; size 761,922,918 bytes. It is staged at `kltn_gdrive:KLTN-Dataset/manifests/RQ1-TRN-02A/authorized_data/fold1_train_val_only.zip`; Drive object size and MD5 (`fec058e897d0da739127ba79bfef521a`) were verified.
-- **Remaining gate:** The Colab runtime needs an interactive Drive mount to read that staged archive and persist full-run outputs. The prior Colab session expired after the bounded feasibility run; its checkpoint was downloaded, SHA-256 verified locally, uploaded to Drive, and remote presence verified.
+---
+
+## 1. Provenance and Environment
+
+- **Dedicated Feature Branch**: `feat/rq1-trn-02a-colab-restart`
+- **Starting Base SHA**: `9b32800bde2c9fbcfd9814aeb651eab57d4ce486`
+- **Execution Commit**: `caa56783113d40eac438e5f458cdb313b8932218` (Pushed to GitHub; verified remote HEAD)
+- **Repository Remote**: `https://github.com/minkhoaa/Langfens-RQ1-Speech-Research.git`
+- **Remote `main`**: Unaltered, separate, and unmerged.
+- **Root Governance Policy**: Audited `AGENTS.md` integrated (34 lines).
+
+---
+
+## 2. Dataset and Partition Integrity
+
+- **Split Manifest**: `manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json`
+- **Manifest Checksum**: SHA-256 `7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b` (Verified exact match).
+- **Fold 1 Partition Counts**:
+  - `TRAIN`: 2,399 utterances across 16 speakers.
+  - `Validation`: 300 utterances across 2 speakers (`NJS`, `RRBI`).
+  - `TEST`: 900 utterances across 6 speakers. **STRICTLY SEALED** (zero test utterances staged or accessed).
+- **Reusable Staged Archive**:
+  - Path: `kltn_gdrive:KLTN-Dataset/manifests/RQ1-TRN-02A/authorized_data/fold1_train_val_only.zip`
+  - Size: 761,922,918 bytes
+  - SHA-256: `b750eb3bf3971afccd9ab9058a64fa6b3f5781399b9ef0f1294d29bf580784a9`
+  - Local VM disk SHA-256 verified after transfer. Exactly 2,699 WAVs and 2,699 TextGrids; zero test speaker records.
+
+---
+
+## 3. Pretrained Backbone Integrity
+
+- **Pretrained Model**: `facebook/wav2vec2-base-960h`
+- **Pinned Revision**: `22aad52d435eb6dbaf354bdad9b0da84ce7d6156`
+- **Weights Integrity**: Pretrained Wav2Vec2 encoder kept strictly frozen in `eval()` mode. Zero gradients allowed in backbone.
+- **Task Heads**: CTC phone recognition head and Canonical Binary MDD head initialized freshly and trained jointly with AdamW.
+- **Substitution Diagnosis Head**: Preserved in model architecture but completely frozen and excluded from loss and optimizer.
+
+---
+
+## 4. Production Execution and Persistence Summary
+
+- **Google Colab Session**: `rq1-trn02a-restart-01` (Tesla T4, 15,360 MiB VRAM).
+- **Execution Run**: 11 completed epochs (13,200 micro-steps, 6,600 optimizer updates, 0 AMP skips).
+- **Early Stopping**: Triggered after Epoch 11 due to 5 epochs without validation AP improvement beyond Epoch 6.
+- **Selected Checkpoint**: Epoch 6 (`best.pt`, Validation AP = 0.316062, Validation PER = 0.236413).
+- **Google Drive Persistence**: Atomically written and verified at `kltn_gdrive:KLTN-Dataset/manifests/RQ1-TRN-02A/checkpoints/`.

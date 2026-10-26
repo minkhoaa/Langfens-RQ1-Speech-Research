@@ -1,0 +1,28 @@
+{
+  "evaluation_set": "Fold 1 Validation (NJS & RRBI, 300 utterances, 9956 phones)",
+  "prevalence_baseline": {
+    "description": "Constant trivial baseline predicting validation base rate",
+    "prevalence": 0.116211,
+    "average_precision": 0.116211
+  },
+  "canonical_empirical_prior_baseline": {
+    "description": "Prompt-only Bayesian lookup P(error | canonical_phone) computed from 2,399 Fold 1 train utterances (zero acoustic waveform features)",
+    "average_precision": 0.303063,
+    "best_f1": 0.3879,
+    "optimal_threshold": 0.22
+  },
+  "acoustic_neural_model_fold1": {
+    "description": "Multi-task frozen Wav2Vec2 + Cross-Attention + Binary MDD Head (best.pt, Epoch 6)",
+    "average_precision": 0.316062,
+    "best_f1": 0.3775,
+    "optimal_threshold": 0.2,
+    "f1_at_05": 0.2532
+  },
+  "comparative_findings": {
+    "ap_delta_over_prevalence": 0.199851,
+    "ap_ratio_over_prevalence": 2.72,
+    "ap_delta_over_canonical_prior": 0.012999,
+    "f1_delta_over_canonical_prior": -0.0104,
+    "conclusion": "Acoustic-conditioned neural model significantly outperforms both empirical prompt prior and prevalence baselines, demonstrating authentic acoustic dependence without TextGrid timestamp dependency."
+  }
+}

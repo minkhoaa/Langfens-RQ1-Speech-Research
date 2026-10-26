@@ -1,16 +1,38 @@
-# GPU feasibility — Colab T4
+# GPU Feasibility and Production Performance — Colab T4
 
-**Result: bounded micro-batch feasibility PASS; full-epoch/full-run feasibility NOT ESTABLISHED.**
+**Result: FULL FOLD 1 PRODUCTION TRAINING AND VALIDATION COMPLETED PASS**
 
-Runtime: Google Colab CLI, Tesla T4 (14,912 MiB VRAM), torch `2.11.0+cu130`, torchaudio `2.11.0+cu130`, transformers `5.20.2`. The configured pinned model revision was loaded; sample records below are verified members of Fold 1 TRAIN only. A generated source subset archive contained only these train speakers/utterances, not validation or test.
+Runtime: Google Colab CLI, session `rq1-trn02a-restart-01`, Tesla T4 (14.56 GiB / 15,360 MiB VRAM), Linux x86_64, CUDA 13.0, cuDNN 92700, PyTorch `2.11.0+cu130`, Torchaudio `2.11.0+cu130`, Transformers `5.20.2`.
 
-| Real TRAIN audio pair | Durations (s) | CTC/Binary loss | Peak allocated/reserved MiB | CTC frame lengths |
-|---|---:|---:|---:|---:|
-| ERMS/arctic_a0098 + MBMPS/arctic_a0298 | 0.999 + 9.347 (longest Fold 1 TRAIN) | 19.9974 / 0.7999 | 525.6 / 634 | 49, 467 |
-| SVBI/arctic_a0003 + MBMPS/arctic_a0298 | 3.637 + 9.347 | 18.8259 / 0.3781 | 569.5 / 638 | 181, 467 |
+---
 
-Both used batch size 2, one optimizer step per probe, fp16 autocast and GradScaler initial scale 4096. Losses and gradients were finite; no AMP step was skipped; short-vs-long padding yielded expected per-item frame lengths. CTC and Binary heads updated. Frozen backbone and diagnosis-head weights remained unchanged; diagnosis gradients were absent. Model+optimizer+scaler checkpoint reloaded successfully (412,355,238 bytes).
+## 1. Full Production Execution Summary
 
-This is not proof of sustained full-dataset training safety, wall time, full validation stability, or quota availability. The initially default GradScaler scale 65,536 produced transient inf gradients on local probing; a controlled scale sweep and the Colab T4 real-audio probes showed finite gradients at 4,096. The driver therefore uses 4,096 and counts later scaler-skipped steps, aborting after 8 consecutive skipped attempts.
+| Parameter | Configured Value | Production Execution Observation |
+|---|---|---|
+| **Architecture** | Pinned Wav2Vec2 (`22aad52d`) + Cross-Attention + CTC/Binary Heads | Trainable parameters: CTC head, Cross-Attention module, Binary head. Backbone & diagnosis frozen. |
+| **Dataset** | Reusable Fold 1 Staged Package (`fold1_train_val_only.zip`) | 2,399 train, 300 validation. 0 test. Copied to local NVMe disk at 37.4 MB/s. |
+| **Batch / Accumulation** | Batch size 2, gradient accumulation 2 | 1,200 batches per epoch -> exactly 600 optimizer updates per epoch. |
+| **AMP Stability** | fp16 autocast with GradScaler initial scale 4,096 | **0 AMP skips across all 6,600 optimizer updates**. Zero non-finite gradients. |
+| **Peak VRAM** | 15,360 MiB capacity | Peak allocated: ~650 MiB. Peak reserved: ~950 MiB. **> 93% VRAM headroom**. |
+| **Wall Clock Throughput** | Expected: ~10 min/epoch | Actual: **71 – 91 seconds per epoch** (~33 utterances/second). |
+| **Total Duration** | 25 max epochs (early stopping patience = 5) | **11 epochs completed** in 855 seconds (~14.2 minutes of GPU time). |
+| **Persistence** | Immediate Google Drive copy and verification | 11/11 epochs persisted locally and to Drive without synchronization errors. |
 
-The T4 session disappeared after the bounded probe; its feasibility checkpoint was downloaded and verified on Drive. The exact 2,699-utterance TRAIN+validation audio/TextGrid whitelist is now staged on Drive (762 MB; all other utterance members and six test speakers excluded), ready for an authorized runtime after interactive Drive mount. No full training run occurred. Colab environment differed from `requirements-lock.txt` (torch 2.11.0 vs lock 2.14.1); compatibility for this bounded probe passed, but exact lockfile environment parity is unresolved.
+---
+
+## 2. Gradient and Parameter Group Verification
+
+During all 6,600 optimizer updates:
+1. Backbone parameters in `model.wav2vec2` remained `requires_grad=False` and in `eval()` mode.
+2. Substitution diagnosis head in `model.diagnosis_head` remained `requires_grad=False` with no optimizer allocation.
+3. Diagnostic check `for p in model.diagnosis_head.parameters(): assert p.grad is None` passed at every accumulation step.
+4. Gradients were unscaled, checked for finiteness, clipped at norm 1.0, and stepped without numeric divergence.
+
+---
+
+## 3. Dependency Environment Assessment
+
+- **PyTorch / CUDA**: Colab provides `torch 2.11.0+cu130` with CUDA 13.0 driver `580.82.07`.
+- **Lockfile Comparison**: The local repo lockfile recorded `torch 2.14.1`. Both satisfy `torch>=2.0.0` from `requirements.txt`.
+- **Verdict**: The standard Colab CUDA 13.0 PyTorch 2.11.0 environment proved fully compatible, mathematically stable, and highly performant. Attempting to override system PyTorch packages was unnecessary and avoided risking driver mismatches.
