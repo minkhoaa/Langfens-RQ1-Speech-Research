@@ -13,7 +13,7 @@
 
 ## 1. Executive Summary & Audit Clearance
 
-This erratum provides a bounded, definitive correction of all remaining scientific provenance, speaker split, tie-break sensitivity, and scoring interpretation errors identified in the Protocol Z verification dossier.
+This erratum provides a bounded correction of the scientific provenance, speaker split, tie-break sensitivity, and scoring interpretation errors identified in the Protocol Z verification dossier. The numerical closure below supersedes its original manually amended threshold-0.20 confusion counts.
 
 In strict compliance with execution boundaries:
 - **No model retraining or fine-tuning** was initiated or performed.
@@ -106,7 +106,7 @@ Genuine recalculated metrics across the full 300 validation utterances (9,956 go
 | **Audit Reference AP (Val Prev 0.116211)** | **0.312471** | **0.312270** | **0.312725** | $\mathbf{\pm 0.000455}$ |
 
 ### 4.3 Scientific Conclusion on Tie-Breaking
-Under mathematically correct matched-pair evaluation, Protocol Z performance is **virtually invariant** to dynamic programming tie-breaking:
+Under mathematically correct matched-pair evaluation, Protocol Z performance is policy-dependent: B3's AP range is 0.001413, exceeding 0.0006. The blanket claim that all imputation policies vary by less than 0.0006 is unsupported and retracted. Aligned-only, B1, B2, and audit-reference ranges remain below 0.0006:
 - Aligned-only AP varies by less than **0.034 percentage points** ($0.313530$ to $0.313863$).
 - Policy B1 AP varies by less than **0.053 percentage points** ($0.314265$ to $0.314790$).
 - Policy B2 AP varies by less than **0.033 percentage points** ($0.312997$ to $0.313319$).
@@ -159,8 +159,8 @@ Verified operating points on the primary populations:
 
 #### Optimal F1 Operating Point ($\tau = 0.20$):
 - **Aligned-Only Population ($N = 9,919$):**
-  $$\text{TP} = 614, \; \text{FP} = 1,491, \; \text{FN} = 531, \; \text{TN} = 7,283$$
-  $$\text{Precision} = 0.2917, \; \text{Recall} = 0.5362, \; \text{F1} = 0.3780$$
+  $$\text{TP} = 605, \; \text{FP} = 1,510, \; \text{FN} = 540, \; \text{TN} = 7,264$$
+  $$\text{Precision} = 0.2861, \; \text{Recall} = 0.5284, \; \text{F1} = 0.3712$$
 - **Policy B1 Full-Gold Benchmark ($N = 9,956$):**
   $$\text{TP} = 614, \; \text{FP} = 1,515, \; \text{FN} = 543, \; \text{TN} = 7,284$$
   $$\text{Precision} = 0.2884, \; \text{Recall} = 0.5307, \; \text{F1} = 0.3737$$
@@ -214,12 +214,16 @@ The full test suite was executed locally under `PYTHONPATH=src:. .venv/bin/pytes
 
 ---
 
-## 8. Final Acceptance Verdict
+## 8. Numerical Closure Addendum
+
+Reconstruction directly from the 9,919 aligned pairs in `PROTOCOL_Z_PREDICTION_RECORDS.json` yields at threshold 0.20: TP=605, FP=1,510, FN=540, TN=7,264, F1=0.3712. The original verification report is correct; the conflicting final errata counts (TP=614 etc.) were an incorrect manual amendment. At threshold 0.50 the reconstructed matrix remains TP=208, FP=213, FN=937, TN=8,561. The recorded evaluator execution SHA identifies the original execution, not the closure source commit. B3 values are independently reconstructed from exported predictions for each policy and were not outputs of that original evaluator execution.
+
+## 9. Final Acceptance Verdict
 
 All numerical errors, provenance discrepancies, and interpretation ambiguities identified in the Protocol Z verification audit have been demonstrably and mathematically repaired:
 1. **Stored provenance** is verified as epoch=5, 3600 updates, AP=0.316062, SHA=`caa56783...`. Fabricated defaults have been eliminated.
 2. **Official test speakers** are verified as `['ABA', 'ASI', 'EBVS', 'HJK', 'LXC', 'PNV']`. `SKA`, `YDCK`, and `ZHAA` are verified as training speakers.
-3. **Tie-break sensitivity** is mathematically resolved via independent matched-pair reconstruction; AP invariance ($\Delta < 0.0006$) is proven across all tie-break policies.
+3. **Tie-break sensitivity** is resolved via independent matched-pair reconstruction. B3 ranges by 0.001413; the former blanket variation claim below 0.0006 is retracted.
 4. **Primary replay metric** is unambiguously designated as Aligned-Only Protocol Z AP ($0.313530$, $99.63\%$ gold coverage).
 5. **Policy B1** is explicitly categorized as an oracle-referenced full-gold benchmark imputation, not a deployment operating policy.
 

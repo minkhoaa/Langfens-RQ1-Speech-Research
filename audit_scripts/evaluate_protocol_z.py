@@ -506,7 +506,7 @@ def main():
     tie_break_sweep = {}
     for tb_mode in ["sub_first", "del_first", "ins_first"]:
         tb_aligned_z, tb_aligned_lbl = [], []
-        tb_full_labels, tb_b1_sc, tb_b2_sc, tb_aud_sc = [], [], [], []
+        tb_full_labels, tb_b1_sc, tb_b2_sc, tb_b3_sc, tb_aud_sc = [], [], [], [], []
         tb_unaligned_g = 0
         tb_unaligned_z = 0
         for rec in per_utterance_records:
@@ -525,6 +525,7 @@ def main():
                 tb_full_labels.append(lbl)
                 tb_b1_sc.append(sc)
                 tb_b2_sc.append(sc)
+                tb_b3_sc.append(sc)
                 tb_aud_sc.append(sc)
 
             # 2. Unaligned gold tokens (reconstruct matched labels and imputed scores)
@@ -537,6 +538,7 @@ def main():
                 tb_full_labels.append(lbl)
                 tb_b1_sc.append(prior_val)
                 tb_b2_sc.append(train_prior["overall_train_rate"])
+                tb_b3_sc.append(1.0)
                 tb_aud_sc.append(0.116211)
 
             tb_unaligned_z += len(tb_align["unaligned_g2p"])
@@ -544,6 +546,7 @@ def main():
         tb_ap_aligned = average_precision_binary(tb_aligned_lbl, tb_aligned_z)
         tb_ap_b1 = average_precision_binary(tb_full_labels, tb_b1_sc)
         tb_ap_b2 = average_precision_binary(tb_full_labels, tb_b2_sc)
+        tb_ap_b3 = average_precision_binary(tb_full_labels, tb_b3_sc)
         tb_ap_aud = average_precision_binary(tb_full_labels, tb_aud_sc)
 
         tie_break_sweep[tb_mode] = {
@@ -553,6 +556,7 @@ def main():
             "aligned_only_ap": round(float(tb_ap_aligned), 6),
             "policy_b1_ap": round(float(tb_ap_b1), 6),
             "policy_b2_ap": round(float(tb_ap_b2), 6),
+            "policy_b3_ap": round(float(tb_ap_b3), 6),
             "audit_val_prev_ap": round(float(tb_ap_aud), 6)
         }
 

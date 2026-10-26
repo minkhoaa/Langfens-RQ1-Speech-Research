@@ -1396,7 +1396,8 @@
       "aligned_only_ap": 0.31353,
       "policy_b1_ap": 0.314265,
       "policy_b2_ap": 0.313006,
-      "audit_val_prev_ap": 0.312471
+      "audit_val_prev_ap": 0.312471,
+      "policy_b3_ap": 0.307811
     },
     "del_first": {
       "aligned_pairs": 9909,
@@ -1405,7 +1406,8 @@
       "aligned_only_ap": 0.31367,
       "policy_b1_ap": 0.314519,
       "policy_b2_ap": 0.312997,
-      "audit_val_prev_ap": 0.31227
+      "audit_val_prev_ap": 0.31227,
+      "policy_b3_ap": 0.308147
     },
     "ins_first": {
       "aligned_pairs": 9918,
@@ -1414,7 +1416,8 @@
       "aligned_only_ap": 0.313863,
       "policy_b1_ap": 0.31479,
       "policy_b2_ap": 0.313319,
-      "audit_val_prev_ap": 0.312725
+      "audit_val_prev_ap": 0.312725,
+      "policy_b3_ap": 0.309224
     }
   },
   "per_speaker_breakdown": {

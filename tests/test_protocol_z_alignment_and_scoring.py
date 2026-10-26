@@ -123,6 +123,28 @@ def test_reconstruction_of_protocol_z_ap_from_exported_records():
     assert pytest.approx(exact_ap, abs=1e-5) == 0.305362
 
 
+def test_aligned_only_confusion_matrix_reconstructed_at_thresholds():
+    """Reconstructs exact aligned-only confusion matrices from exported token predictions."""
+    data = json.loads(RECORDS_PATH.read_text(encoding="utf-8"))
+    labels, scores = [], []
+    for rec in data["utterances"]:
+        for gold_idx, score_idx, _ in rec["aligned_pairs"]:
+            labels.append(rec["gold_labels"][gold_idx])
+            scores.append(rec["g2p_scores"][score_idx])
+
+    assert len(labels) == 9919
+    assert sum(labels) == 1145
+    metrics = calculate_binary_metrics(labels, scores, thresholds=[0.20, 0.50])
+    points = {p["threshold"]: p for p in metrics["threshold_sweep_coarse"]}
+    assert {k: points[0.20][k] for k in ("tp", "fp", "fn", "tn")} == {
+        "tp": 605, "fp": 1510, "fn": 540, "tn": 7264
+    }
+    assert points[0.20]["f1"] == 0.3712
+    assert {k: points[0.50][k] for k in ("tp", "fp", "fn", "tn")} == {
+        "tp": 208, "fp": 213, "fn": 937, "tn": 8561
+    }
+
+
 def test_scoring_denominator_integrity():
     """Verifies that scoring population denominators are explicitly accounted for without truncation."""
     with open(REPORT_PATH, "r", encoding="utf-8") as f:
@@ -267,6 +289,7 @@ def test_tie_break_sweep_recomputed_metrics():
         assert "aligned_only_ap" in vals
         assert "policy_b1_ap" in vals
         assert "policy_b2_ap" in vals
+        assert "policy_b3_ap" in vals
         assert "audit_val_prev_ap" in vals
 
     # Numerical regression assertions for genuine metrics
@@ -284,6 +307,41 @@ def test_tie_break_sweep_recomputed_metrics():
     assert pytest.approx(sweep["ins_first"]["policy_b1_ap"], abs=1e-5) == 0.314790
     assert pytest.approx(sweep["ins_first"]["policy_b2_ap"], abs=1e-5) == 0.313319
     assert pytest.approx(sweep["ins_first"]["audit_val_prev_ap"], abs=1e-5) == 0.312725
+
+    # B3 is independently reconstructed for each policy; its spread exceeds 0.0006.
+    assert pytest.approx(sweep["sub_first"]["policy_b3_ap"], abs=1e-5) == 0.307811
+    assert pytest.approx(sweep["del_first"]["policy_b3_ap"], abs=1e-5) == 0.308147
+    assert pytest.approx(sweep["ins_first"]["policy_b3_ap"], abs=1e-5) == 0.309224
+    assert max(sweep[p]["policy_b3_ap"] for p in sweep) - min(
+        sweep[p]["policy_b3_ap"] for p in sweep
+    ) > 0.0006
+
+
+def test_b3_reconstructed_for_each_tie_break_policy():
+    """Rebuilds B3 label-score pairs independently from exported prediction records."""
+    records = json.loads(RECORDS_PATH.read_text(encoding="utf-8"))["utterances"]
+    report = json.loads(REPORT_PATH.read_text(encoding="utf-8"))
+    expected = {"sub_first": 0.307811, "del_first": 0.308147, "ins_first": 0.309224}
+
+    for policy, expected_ap in expected.items():
+        labels, scores = [], []
+        for rec in records:
+            alignment = align_canonical_sequences(
+                rec["gold_phones"], rec["g2p_phones"], tie_break=policy
+            )
+            for gold_idx, score_idx, _ in alignment["aligned_pairs"]:
+                labels.append(rec["gold_labels"][gold_idx])
+                scores.append(rec["g2p_scores"][score_idx])
+            for gold_idx, _ in alignment["unaligned_gold"]:
+                labels.append(rec["gold_labels"][gold_idx])
+                scores.append(1.0)
+
+        assert len(labels) == 9956
+        reconstructed = average_precision_binary(labels, scores)
+        assert reconstructed == pytest.approx(expected_ap, abs=1e-6)
+        assert report["tie_break_sensitivity_sweep"][policy]["policy_b3_ap"] == pytest.approx(
+            reconstructed, abs=1e-6
+        )
 
 
 def test_production_checkpoint_provenance_and_metadata_integrity():

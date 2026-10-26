@@ -21,12 +21,26 @@
   "speaker_partition_census": {
     "manifest_path": "manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json",
     "fold": 1,
-    "validation_speakers": ["NJS", "RRBI"],
+    "validation_speakers": [
+      "NJS",
+      "RRBI"
+    ],
     "validation_utterances": 300,
-    "official_test_speakers": ["ABA", "ASI", "EBVS", "HJK", "LXC", "PNV"],
+    "official_test_speakers": [
+      "ABA",
+      "ASI",
+      "EBVS",
+      "HJK",
+      "LXC",
+      "PNV"
+    ],
     "official_test_utterances": 900,
     "official_test_status": "SEALED",
-    "corrected_training_speakers_falsely_claimed_as_test": ["SKA", "YDCK", "ZHAA"],
+    "corrected_training_speakers_falsely_claimed_as_test": [
+      "SKA",
+      "YDCK",
+      "ZHAA"
+    ],
     "training_speakers_total": 16,
     "training_utterances": 2399
   },
@@ -72,7 +86,8 @@
       "aligned_only_ap_delta": 0.000333,
       "policy_b1_train_prior_ap_delta": 0.000525,
       "policy_b2_train_prevalence_ap_delta": 0.000322,
-      "audit_val_prev_ap_delta": 0.000455
+      "audit_val_prev_ap_delta": 0.000455,
+      "policy_b3_penalty_ap_delta": 0.001413
     }
   },
   "scoring_population_definitions": {
@@ -110,7 +125,7 @@
       "audit_validation_prevalence": {
         "ap": 0.312471,
         "reported_in_exploratory_draft": 0.312467,
-        "absolute_reproduction_error": 0.000004,
+        "absolute_reproduction_error": 4e-06,
         "imputation": "Validation error prevalence (0.116211)"
       }
     }
@@ -140,13 +155,13 @@
     "optimal_f1_operating_point": {
       "threshold": 0.2,
       "aligned_only": {
-        "precision": 0.2917,
-        "recall": 0.5362,
-        "f1": 0.378,
-        "tp": 614,
-        "fp": 1491,
-        "fn": 531,
-        "tn": 7283
+        "precision": 0.2861,
+        "recall": 0.5284,
+        "f1": 0.3712,
+        "tp": 605,
+        "fp": 1510,
+        "fn": 540,
+        "tn": 7264
       },
       "policy_b1_full_gold": {
         "precision": 0.2884,
@@ -158,5 +173,12 @@
         "tn": 7284
       }
     }
+  },
+  "numerical_closure": {
+    "threshold_0_20_source": "Reconstructed from exported PROTOCOL_Z_PREDICTION_RECORDS.json aligned_pairs; original evaluator report is consistent.",
+    "threshold_0_20_erratum": "The manually amended FINAL_ERRATA_METRICS.json and report had incorrect counts; this closure corrects them.",
+    "b3_source": "Independent label-score reconstruction from exported per-utterance predictions and alignment for each tie-break policy.",
+    "evaluator_execution_sha": "03854dca2dce81fbfcf1e2715eaf399af477dd62",
+    "method": "Source-level metric reconstruction from exported prediction records; no new model inference."
   }
 }
