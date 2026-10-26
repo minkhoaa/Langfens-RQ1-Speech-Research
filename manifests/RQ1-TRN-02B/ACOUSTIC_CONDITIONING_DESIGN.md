@@ -13,7 +13,7 @@ This design revision is established on branch `docs/rq1-trn-02b-acoustic-conditi
 ### 1.1 Frozen Baseline Anchors
 
 - **Fold 1 Split Contract:** `manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json` (SHA-256: `7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b`).
-  - TRAIN: 2,399 utterances across 14 speakers.
+  - TRAIN: 2,399 utterances across 16 speakers.
   - VALIDATION: 300 utterances across 2 speakers (`NJS`, `RRBI`).
   - SEALED TEST: 900 utterances across 6 speakers (`ABA`, `ASI`, `EBVS`, `HJK`, `LXC`, `PNV`). The official test set remains sealed, unstaged, and unextracted.
 - **Production Baseline Checkpoint:** `checkpoints/RQ1-TRN-02A/recovered/best.pt` (SHA-256: `a2445c8d17910bf3c03101f50fc419675e8d1bc012af43af10267a28dbba948b`).

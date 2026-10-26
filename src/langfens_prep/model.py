@@ -43,6 +43,7 @@ class LangfensMDDOutput:
     alignment_weights: Optional[torch.Tensor] = None
     aligned_acoustic: Optional[torch.Tensor] = None
     phone_embeds: Optional[torch.Tensor] = None
+    intervention_mask: Optional[torch.Tensor] = None
 
 
 class CanonicalAcousticCrossAttention(nn.Module):
@@ -160,12 +161,17 @@ class LangfensWav2Vec2MDD(nn.Module):
         cross_attention_heads: int = 4,
         max_canonical_len: int = 128,
         ctc_zero_infinity_policy: str = "raise",  # "raise" (strict runtime contract) or "warn_and_zero"
-        diagnosis_mode: str = "standard"  # "standard", "audio_only", "gated_residual", "ctc_guided"
+        diagnosis_mode: str = "standard",  # "standard", "audio_only", "gated_residual", "ctc_guided"
+        binary_prompt_dropout_p: float = 0.0
     ):
         super().__init__()
         valid_diag_modes = ("standard", "audio_only", "gated_residual", "ctc_guided")
         if diagnosis_mode not in valid_diag_modes:
             raise ValueError(f"diagnosis_mode must be one of {valid_diag_modes}, got '{diagnosis_mode}'")
+        if not (0.0 <= binary_prompt_dropout_p <= 1.0):
+            raise ValueError(f"binary_prompt_dropout_p must be in [0.0, 1.0], got {binary_prompt_dropout_p}")
+        self.binary_prompt_dropout_p = float(binary_prompt_dropout_p)
+        self.intervention_generator: Optional[torch.Generator] = None
         self.diagnosis_mode = diagnosis_mode
         self.ctc_weight = ctc_weight
         self.binary_weight = binary_weight
@@ -305,6 +311,19 @@ class LangfensWav2Vec2MDD(nn.Module):
             **kwargs
         )
 
+    def set_intervention_generator(self, generator: Optional[torch.Generator]) -> None:
+        """Set explicit PyTorch Generator for reproducible prompt dropout masking."""
+        self.intervention_generator = generator
+
+    def seed_intervention_generator(
+        self, seed: int, device: Optional[torch.device | str] = None
+    ) -> torch.Generator:
+        """Initialize and seed an isolated generator for prompt masking."""
+        gen = torch.Generator(device=device if device is not None else "cpu")
+        gen.manual_seed(seed)
+        self.intervention_generator = gen
+        return gen
+
     def configure_two_head_training(self) -> List[nn.Parameter]:
         """Freeze backbone/diagnosis and return exact two-head trainable parameters.
 
@@ -372,7 +391,9 @@ class LangfensWav2Vec2MDD(nn.Module):
         target_binary: Optional[torch.Tensor] = None,
         target_ctc: Optional[torch.Tensor] = None,
         target_lengths: Optional[torch.Tensor] = None,
-        target_diagnosis: Optional[torch.Tensor] = None
+        target_diagnosis: Optional[torch.Tensor] = None,
+        binary_prompt_dropout_p: Optional[float] = None,
+        intervention_generator: Optional[torch.Generator] = None
     ) -> LangfensMDDOutput:
         # Support both 'waveforms' and 'source' argument names seamlessly
         if waveforms is None:
@@ -440,6 +461,7 @@ class LangfensWav2Vec2MDD(nn.Module):
         alignment_weights = None
         aligned_acoustic = None
         phone_embeds = None
+        intervention_mask = None
 
         if canonical_phone_indices is not None:
             if self.alignment_mode == "oracle" and phone_intervals is not None:
@@ -468,8 +490,58 @@ class LangfensWav2Vec2MDD(nn.Module):
                     acoustic_padding_mask=acoustic_padding_mask
                 )
 
+            # Controlled Binary-only prompt embedding dropout (RQ1-TRN-02B):
+            # Mask only the direct canonical phone embedding entering the Binary MLP.
+            # Cross-attention queries and aligned acoustic representations are never masked.
+            eff_p = (
+                self.binary_prompt_dropout_p
+                if binary_prompt_dropout_p is None
+                else float(binary_prompt_dropout_p)
+            )
+            if not (0.0 <= eff_p <= 1.0):
+                raise ValueError(f"binary_prompt_dropout_p must be in [0.0, 1.0], got {eff_p}")
+
+            intervention_mask = None
+            if self.training and eff_p > 0.0:
+                num_phones = phone_embeds.shape[1]
+                if canonical_phone_lengths is not None:
+                    can_idx = torch.arange(num_phones, device=device).unsqueeze(0)
+                    valid_mask = can_idx < canonical_phone_lengths.to(device).unsqueeze(1)
+                else:
+                    valid_mask = (canonical_phone_indices != 0)
+
+                valid_indices = torch.nonzero(valid_mask, as_tuple=True)
+                num_valid = valid_indices[0].shape[0]
+
+                if num_valid > 0:
+                    gen = (
+                        intervention_generator
+                        if intervention_generator is not None
+                        else self.intervention_generator
+                    )
+                    if gen is not None:
+                        gen_device = gen.device
+                        probs = torch.full((num_valid,), eff_p, dtype=torch.float32, device=gen_device)
+                        drop_draws = torch.bernoulli(probs, generator=gen).to(
+                            device=device, dtype=phone_embeds.dtype
+                        )
+                    else:
+                        probs = torch.full((num_valid,), eff_p, dtype=torch.float32, device=device)
+                        drop_draws = torch.bernoulli(probs).to(device=device, dtype=phone_embeds.dtype)
+
+                    # 1.0 = kept, 0.0 = dropped (full-vector zero masking, no inverted scaling)
+                    intervention_mask = torch.ones(
+                        (batch_size, num_phones), device=device, dtype=phone_embeds.dtype
+                    )
+                    intervention_mask[valid_indices[0], valid_indices[1]] = 1.0 - drop_draws
+                    binary_phone_embeds = phone_embeds * intervention_mask.unsqueeze(-1)
+                else:
+                    binary_phone_embeds = phone_embeds
+            else:
+                binary_phone_embeds = phone_embeds
+
             # Binary Head: Concat phone-level acoustic representation with canonical phone embedding
-            binary_input = torch.cat([aligned_acoustic, phone_embeds], dim=-1)
+            binary_input = torch.cat([aligned_acoustic, binary_phone_embeds], dim=-1)
             binary_logits = self.binary_head(binary_input).squeeze(-1)  # (B, num_phones)
 
             # Diagnosis Head:
@@ -614,7 +686,8 @@ class LangfensWav2Vec2MDD(nn.Module):
             loss_dict=loss_dict if loss_dict else None,
             alignment_weights=alignment_weights,
             aligned_acoustic=aligned_acoustic,
-            phone_embeds=phone_embeds
+            phone_embeds=phone_embeds,
+            intervention_mask=intervention_mask
         )
 
     @torch.no_grad()
