@@ -97,14 +97,24 @@ python -m venv .venv
 
 ---
 
-## 4. Model Registry: `langfens-wav2vec2-mdd`
+## 4. Model Registry & Released Artifacts
 
-Model artifacts, checkpoints, and evaluations are managed via Hugging Face Hub under:
-- **Registry ID:** `langfens-wav2vec2-mdd`
-- **Visibility:** **Private**
-- **Status:** **`PLANNED / NOT TRAINED`** (Architecture & Contract Smoke Testing Phase `RQ1-TRN-01A`)
-- **Base Architecture:** `facebook/wav2vec2-base-960h` (95M parameters)
-- **Deployment & Export:** Scheduled for Phase `RQ1-TRN-01B+` following authorized 4-fold cross-validation.
+Model artifacts, checkpoints, and release manifests are managed across Hugging Face Hub, Google Drive, and GitHub:
+
+- **Hugging Face Private Model Repository:** [`https://huggingface.co/minkhoaa/langfens-rq1-fold1-baseline-r`](https://huggingface.co/minkhoaa/langfens-rq1-fold1-baseline-r)
+  - **Visibility:** **Private**
+  - **Release Version:** `baseline-r-v0.1.0` (Commit: `6c31f7196c2e03a6766c5525833de465a1a9345d`)
+  - **Format:** Native lossless FP32 `model.safetensors` (SHA-256: `a5b9d41f1431ad7a8b9718b4d84a7886e39fe5aff45fe742fbe572819f8babc1`)
+  - **Status:** **`RELEASED (RESEARCH BASELINE)`** — Multi-task CTC Recognition + Binary MDD (Fold 1 Baseline R)
+  - **Validation Performance:** Binary AP **0.316062** (2.72× prevalence), Greedy CTC PER **23.64%**
+- **Google Drive Baseline Archive:** [`https://drive.google.com/drive/folders/11g-5JI5u5JKHxV8u9kyCo4I-SF2JWJLx`](https://drive.google.com/drive/folders/11g-5JI5u5JKHxV8u9kyCo4I-SF2JWJLx)
+  - Stored under project root folder ID `1Zms4bwv3QYZcmDQAeYolbq-ovrZVRlnK` (`KLTN-Dataset`)
+  - Remote manifest: [`BASELINE_R_ARTIFACT_MANIFEST.json`](https://drive.google.com/file/d/1yrTbDR9ki0u-kv_TyaCfwqdJw20CbTKP/view) (SHA-256: `6222c92b63ea58f584267b39fb3ffc51394562086f90de21bbab8c8c1abe1e22`)
+  - Checkpoint: `best.pt` (SHA-256: `a2445c8d17910bf3c03101f50fc419675e8d1bc012af43af10267a28dbba948b`)
+- **Baseline Release Manifest:** [`manifests/RQ1-ARTIFACT-01/BASELINE_RELEASE_MANIFEST.md`](manifests/RQ1-ARTIFACT-01/BASELINE_RELEASE_MANIFEST.md)
+  - Detailed cross-platform cryptographic checksums, CPU parity verification, and sealed partition guarantees
+- **Base Architecture:** `facebook/wav2vec2-base-960h` (rev `22aad52d435eb6dbaf354bdad9b0da84ce7d6156`, 94.4M parameters, frozen)
+- **Official Test Status:** Strictly sealed (900 utterances held out across 6 speakers; zero test access)
 
 ---
 
