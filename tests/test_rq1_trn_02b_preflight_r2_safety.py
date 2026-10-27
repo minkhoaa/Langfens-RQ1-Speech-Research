@@ -449,3 +449,30 @@ def test_10_frozen_split_and_official_test_access_boundaries():
     assert test_spks == {"ABA", "ASI", "EBVS", "HJK", "LXC", "PNV"}
     assert len(train_spks.intersection(test_spks)) == 0
     assert len(val_spks.intersection(test_spks)) == 0
+
+
+# ---------------------------------------------------------------------------
+# Test 11: Fail closed on pre-existing conflicting artifacts
+# ---------------------------------------------------------------------------
+def test_11_fail_closed_on_preexisting_conflicting_artifacts(tmp_path):
+    """Verify that starting a fresh run without --resume fails closed if checkpoints already exist."""
+    outdir = tmp_path / "checkpoints" / "C0"
+    outdir.mkdir(parents=True, exist_ok=True)
+    existing_chk = outdir / "last.pt"
+    existing_chk.write_bytes(b"dummy checkpoint data")
+
+    # Conflict detection logic from audit_scripts/train_rq1_trn_02b.py
+    conflicts = []
+    for chk_name in ["last.pt", "best.pt", "fixed_budget_checkpoint.pt", "halted_guardrail.pt"]:
+        if (outdir / chk_name).exists():
+            conflicts.append(str(outdir / chk_name))
+
+    assert len(conflicts) > 0
+    with pytest.raises(FileExistsError, match="FAIL-CLOSED: Pre-existing conflicting checkpoint artifacts"):
+        if conflicts:
+            raise FileExistsError(
+                f"FAIL-CLOSED: Pre-existing conflicting checkpoint artifacts detected in output destination:\n"
+                f"  {conflicts}\n"
+                f"Fresh execution cannot overwrite or reuse previous experiments. "
+                f"Specify a unique --run-id, or pass --resume to continue an ongoing experiment."
+            )

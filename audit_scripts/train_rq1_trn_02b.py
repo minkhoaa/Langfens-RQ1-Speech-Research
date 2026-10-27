@@ -520,6 +520,7 @@ def main():
     ap.add_argument("--resume", default=None, help="Path to checkpoint for training resumption")
     ap.add_argument("--zip-path", default=None, help="Path to zip archive containing authorized audio/TextGrids")
     ap.add_argument("--drive-output-dir", default=None, help="Google Drive destination for remote checkpoint persistence")
+    ap.add_argument("--run-id", default=None, help="Unique execution run identifier to isolate output checkpoints")
     ap.add_argument("--eval-only", action="store_true", help="Run validation only without training")
     ap.add_argument("--dry-run", action="store_true", help="Validate config, hashes, and parameter setup on CPU then exit")
     args = ap.parse_args()
@@ -678,8 +679,30 @@ def main():
     accum = cfg["gradient_accumulation_steps"]
 
     outdir = Path(cfg["output_dir"])
-    outdir.mkdir(parents=True, exist_ok=True)
     drive_out = args.drive_output_dir or cfg.get("drive_output_dir")
+    run_id = args.run_id or cfg.get("run_id")
+    if run_id:
+        outdir = outdir / run_id
+        if drive_out:
+            drive_out = str(Path(drive_out) / run_id)
+
+    # Fail closed on pre-existing conflicting artifacts if not resuming
+    if not args.resume and not (args.dry_run or args.eval_only):
+        conflicts = []
+        for chk_name in ["last.pt", "best.pt", "fixed_budget_checkpoint.pt", "halted_guardrail.pt"]:
+            if (outdir / chk_name).exists():
+                conflicts.append(str(outdir / chk_name))
+            if drive_out and (Path(drive_out) / chk_name).exists():
+                conflicts.append(str(Path(drive_out) / chk_name))
+        if conflicts:
+            raise FileExistsError(
+                f"FAIL-CLOSED: Pre-existing conflicting checkpoint artifacts detected in output destination:\n"
+                f"  {conflicts}\n"
+                f"Fresh execution cannot overwrite or reuse previous experiments. "
+                f"Specify a unique --run-id, or pass --resume to continue an ongoing experiment."
+            )
+
+    outdir.mkdir(parents=True, exist_ok=True)
     if drive_out:
         Path(drive_out).mkdir(parents=True, exist_ok=True)
 
@@ -689,6 +712,7 @@ def main():
         "checkpoint_schema_version": CHECKPOINT_SCHEMA_VERSION,
         "arm": arm,
         "experiment": cfg["experiment"],
+        "run_id": run_id,
         "binary_prompt_dropout_p": binary_prompt_dropout_p,
         "git_sha": git_sha,
         "split_sha256": manifest_sha,
