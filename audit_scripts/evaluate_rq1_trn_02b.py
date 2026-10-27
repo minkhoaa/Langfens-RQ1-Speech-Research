@@ -212,33 +212,116 @@ def make_within_speaker_perm(boundaries: List[int], total: int, shift: int = 1) 
     return res
 
 
-def validate_endpoint_readiness(checkpoint_path: Path | str, arm_name: str, allow_incomplete: bool = False) -> Dict[str, Any]:
-    """Validates that a checkpoint is a verified completed endpoint (3,600 successful updates)."""
+HISTORICAL_REF_R_CTC_PER = 0.2364  # Fixed historical production baseline anchor (23.64%)
+
+
+def validate_endpoint_readiness(checkpoint_path: Path | str, expected_arm: str, allow_incomplete: bool = False) -> Dict[str, Any]:
+    """
+    Validates endpoint checkpoint integrity:
+    - Arm ID strictly matches expected_arm ('C0' or 'C1')
+    - Rejects guardrail-failed, halted, corrupted, or invalid checkpoints
+    - Verifies completed 3,600-successful-update primary endpoint (unless allow_incomplete=True)
+    """
     p = Path(checkpoint_path)
     if not p.is_file():
         raise FileNotFoundError(f"Checkpoint not found: {p}")
     ck = torch.load(p, map_location="cpu", weights_only=False)
     meta = ck.get("metadata", {})
+    if not isinstance(meta, dict):
+        raise ValueError(f"Checkpoint {p} has missing or malformed metadata.")
+
+    # 1. Arm verification
+    actual_arm = meta.get("arm")
+    if actual_arm != expected_arm:
+        raise ValueError(
+            f"Arm mismatch for checkpoint {p}: expected arm '{expected_arm}', but checkpoint metadata declares '{actual_arm}'."
+        )
+
+    # 2. Reject guardrail-failed or halted checkpoints unconditionally
+    if meta.get("guardrail_violation") is True or meta.get("experiment_status") == "HALTED_GUARDRAIL_VIOLATION":
+        raise RuntimeError(
+            f"FAIL-CLOSED: Checkpoint {p} is marked with guardrail violation (experiment_status={meta.get('experiment_status')}). Evaluation prohibited."
+        )
+    if meta.get("corrupted") is True:
+        raise RuntimeError(f"FAIL-CLOSED: Checkpoint {p} is marked corrupted.")
+
     successful_updates = ck.get("successful_updates", meta.get("successful_updates", 0))
     endpoint_reached = meta.get("primary_endpoint_reached", False)
+    primary_3600_completed = meta.get("primary_3600_updates_completed", False)
     status = meta.get("endpoint_status", "UNKNOWN")
+    epoch = ck.get("epoch", meta.get("epoch", -1))
+
+    # 3. Budget completion verification
+    is_completed_endpoint = (
+        successful_updates >= 3600
+        and endpoint_reached is True
+        and (status == "COMPLETED_3600_UPDATES" or primary_3600_completed is True)
+    )
 
     if not allow_incomplete:
-        if successful_updates < 3600 or not endpoint_reached:
+        if not is_completed_endpoint:
             raise RuntimeError(
-                f"FAIL-CLOSED: Checkpoint {p} for arm {arm_name} is NOT a completed 3,600-successful-update endpoint!\n"
+                f"FAIL-CLOSED: Checkpoint {p} for arm {expected_arm} is NOT an authorized completed 3,600-successful-update endpoint!\n"
                 f"  Successful updates: {successful_updates} / 3600\n"
                 f"  Primary endpoint reached flag: {endpoint_reached}\n"
+                f"  Primary 3600 completed flag: {primary_3600_completed}\n"
                 f"  Endpoint status: {status}\n"
-                f"Causal comparison prohibited because training budget is incomplete due to AMP skips or early termination.\n"
+                f"Causal comparison prohibited because training budget is incomplete due to AMP skips, early termination, or unverified status.\n"
                 f"Pass --allow-incomplete-endpoints to override strictly for exploratory analysis."
             )
+
     return {
+        "arm": actual_arm,
         "successful_updates": successful_updates,
         "primary_endpoint_reached": endpoint_reached,
+        "primary_3600_updates_completed": primary_3600_completed,
+        "is_completed_endpoint": is_completed_endpoint,
         "endpoint_status": status,
-        "epoch": ck.get("epoch"),
+        "epoch": epoch,
+        "metadata": meta,
+        "config": meta.get("config", {}),
     }
+
+
+def validate_paired_checkpoints_compatibility(info_c0: Dict[str, Any], info_c1: Dict[str, Any]) -> None:
+    """Verifies that C0 and C1 checkpoints share identical non-intervention configuration and provenance."""
+    meta_c0 = info_c0["metadata"]
+    meta_c1 = info_c1["metadata"]
+    cfg_c0 = info_c0["config"]
+    cfg_c1 = info_c1["config"]
+
+    # 1. Initial production checkpoint SHA
+    init_c0 = meta_c0.get("initial_checkpoint_sha256")
+    init_c1 = meta_c1.get("initial_checkpoint_sha256")
+    if init_c0 != init_c1:
+        raise RuntimeError(f"Paired comparison invalid: initial checkpoint SHA mismatch between C0 ({init_c0}) and C1 ({init_c1}).")
+
+    # 2. Frozen split manifest SHA
+    split_c0 = meta_c0.get("split_sha256")
+    split_c1 = meta_c1.get("split_sha256")
+    if split_c0 != split_c1:
+        raise RuntimeError(f"Paired comparison invalid: split manifest SHA mismatch between C0 ({split_c0}) and C1 ({split_c1}).")
+
+    # 3. Seed match
+    seed_c0 = cfg_c0.get("seed")
+    seed_c1 = cfg_c1.get("seed")
+    if seed_c0 != seed_c1:
+        raise RuntimeError(f"Paired comparison invalid: random seed mismatch between C0 ({seed_c0}) and C1 ({seed_c1}).")
+
+    # 4. Shared training configuration
+    shared_keys = ["learning_rate", "weight_decay", "warmup_updates", "batch_size", "gradient_accumulation_steps", "max_successful_updates"]
+    for k in shared_keys:
+        if k in cfg_c0 and k in cfg_c1:
+            if cfg_c0[k] != cfg_c1[k]:
+                raise RuntimeError(f"Paired comparison invalid: shared training config mismatch on '{k}': C0={cfg_c0[k]} vs C1={cfg_c1[k]}.")
+
+    # 5. Dropout distinction verification
+    p_c0 = float(meta_c0.get("binary_prompt_dropout_p", -1.0))
+    p_c1 = float(meta_c1.get("binary_prompt_dropout_p", -1.0))
+    if abs(p_c0 - 0.0) > 1e-6:
+        raise RuntimeError(f"Paired comparison invalid: Control C0 must have binary_prompt_dropout_p = 0.0, got {p_c0}.")
+    if p_c1 <= 0.0:
+        raise RuntimeError(f"Paired comparison invalid: Treatment C1 must have positive binary_prompt_dropout_p, got {p_c1}.")
 
 
 def load_eval_model(checkpoint_path: Path | str, device: torch.device) -> Tuple[LangfensWav2Vec2MDD, str]:
@@ -638,6 +721,9 @@ def run_paired_harness(
     print(f"[ENDPOINT] Validating Treatment C1 endpoint readiness ({c1_ckpt})...")
     meta_c1 = validate_endpoint_readiness(c1_ckpt, "C1", allow_incomplete=allow_incomplete_endpoints)
 
+    # Validate paired cross-arm compatibility (provenance, seed, shared hyperparameters)
+    validate_paired_checkpoints_compatibility(meta_c0, meta_c1)
+
     # 1. Validation Dataset Setup
     val_dataset = L2ArcticMDDDataset(str(manifest_path), 1, "val", policy="strict", zip_path=zip_path)
     train_dataset = L2ArcticMDDDataset(str(manifest_path), 1, "train", policy="strict", zip_path=zip_path)
@@ -683,10 +769,31 @@ def run_paired_harness(
     delta_compound = summary_c1["matched_binary_ap"] - summary_r["matched_binary_ap"]
     delta_gap_c1_c0 = summary_c1["matched_minus_mismatched_gap"] - summary_c0["matched_minus_mismatched_gap"]
 
-    # CTC PER guardrail check (< 1.0% degradation vs Reference R anchor)
-    per_degradation_c1 = (summary_c1["ctc_per"] - summary_r["ctc_per"]) * 100.0
-    per_degradation_c0 = (summary_c0["ctc_per"] - summary_r["ctc_per"]) * 100.0
-    ctc_guardrail_pass = per_degradation_c1 <= 1.0
+    # CTC PER guardrail checks for BOTH arms against newly measured Reference R and historical anchor
+    c0_per = summary_c0["ctc_per"]
+    c1_per = summary_c1["ctc_per"]
+    r_per = summary_r["ctc_per"]
+
+    c0_deg_vs_measured_r = (c0_per - r_per) * 100.0
+    c1_deg_vs_measured_r = (c1_per - r_per) * 100.0
+    c0_deg_vs_historical = (c0_per - HISTORICAL_REF_R_CTC_PER) * 100.0
+    c1_deg_vs_historical = (c1_per - HISTORICAL_REF_R_CTC_PER) * 100.0
+    r_vs_historical = (r_per - HISTORICAL_REF_R_CTC_PER) * 100.0
+
+    c0_guardrail_pass = c0_deg_vs_measured_r <= 1.0
+    c1_guardrail_pass = c1_deg_vs_measured_r <= 1.0
+    overall_guardrail_pass = c0_guardrail_pass and c1_guardrail_pass
+
+    # Status and primary comparison authorization
+    both_completed = meta_c0.get("is_completed_endpoint", False) and meta_c1.get("is_completed_endpoint", False)
+    is_primary_causal = both_completed and (not allow_incomplete_endpoints) and overall_guardrail_pass
+
+    if not overall_guardrail_pass:
+        experiment_status = "INVALID_GUARDRAIL_FAILURE"
+    elif allow_incomplete_endpoints or not both_completed:
+        experiment_status = "EXPLORATORY_INCOMPLETE_BUDGET"
+    else:
+        experiment_status = "VALID"
 
     # 6. Speaker-Stratified Cluster Bootstrap
     print("[BOOTSTRAP] Running 1,000 speaker-stratified paired utterance-cluster bootstrap...")
@@ -714,18 +821,37 @@ def run_paired_harness(
 
     report = {
         "evaluation_timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-        "experiment_status": "VALID" if ctc_guardrail_pass else "INVALID_GUARDRAIL_FAILURE",
+        "experiment_status": experiment_status,
+        "is_primary_causal_comparison": is_primary_causal,
+        "causal_comparison_authorized": is_primary_causal,
         "reference_checkpoint": str(ref_ckpt),
         "control_c0_checkpoint": str(c0_ckpt),
         "treatment_c1_checkpoint": str(c1_ckpt),
         "endpoint_verification": {
             "control_c0": meta_c0,
             "treatment_c1": meta_c1,
+            "both_endpoints_completed_3600": both_completed,
+            "allow_incomplete_endpoints_flag": allow_incomplete_endpoints,
         },
         "model_fingerprints": {
             "reference_r": fp_r,
             "control_c0": fp_c0,
             "treatment_c1": fp_c1,
+        },
+        "guardrail_status": {
+            "historical_anchor_ctc_per_pct": round(HISTORICAL_REF_R_CTC_PER * 100.0, 4),
+            "measured_reference_r_ctc_per_pct": round(r_per * 100.0, 4),
+            "control_c0_ctc_per_pct": round(c0_per * 100.0, 4),
+            "treatment_c1_ctc_per_pct": round(c1_per * 100.0, 4),
+            "c0_degradation_vs_measured_r_pct_points": round(c0_deg_vs_measured_r, 4),
+            "c1_degradation_vs_measured_r_pct_points": round(c1_deg_vs_measured_r, 4),
+            "c0_degradation_vs_historical_anchor_pct_points": round(c0_deg_vs_historical, 4),
+            "c1_degradation_vs_historical_anchor_pct_points": round(c1_deg_vs_historical, 4),
+            "measured_reference_r_vs_historical_anchor_pct_points": round(r_vs_historical, 4),
+            "max_allowable_degradation_pct_points": 1.0,
+            "c0_guardrail_pass": c0_guardrail_pass,
+            "c1_guardrail_pass": c1_guardrail_pass,
+            "overall_guardrail_pass": overall_guardrail_pass,
         },
         "canonical_prior_baseline": prior_eval,
         "single_arm_metrics": {
@@ -734,13 +860,16 @@ def run_paired_harness(
             "treatment_c1": summary_c1,
         },
         "paired_estimands": {
-            "primary_causal_delta_dropout (C1 - C0)": round(float(delta_dropout), 6),
+            ("primary_causal_delta_dropout (C1 - C0)" if is_primary_causal else "exploratory_unauthorized_delta_dropout (C1 - C0)"): round(float(delta_dropout), 6),
             "tuning_baseline_drift (C0 - R)": round(float(delta_tuning), 6),
             "compound_retraining_contrast (C1 - R)": round(float(delta_compound), 6),
             "delta_gap_change (C1_gap - C0_gap)": round(float(delta_gap_c1_c0), 6),
-            "ctc_per_delta_percentage_points (C1 - R)": round(float(per_degradation_c1), 4),
-            "ctc_per_delta_c0_percentage_points (C0 - R)": round(float(per_degradation_c0), 4),
-            "ctc_per_guardrail_pass": ctc_guardrail_pass,
+            "ctc_per_delta_percentage_points (C1 - R)": round(float(c1_deg_vs_measured_r), 4),
+            "ctc_per_delta_c0_percentage_points (C0 - R)": round(float(c0_deg_vs_measured_r), 4),
+            "c0_ctc_per_guardrail_pass": c0_guardrail_pass,
+            "c1_ctc_per_guardrail_pass": c1_guardrail_pass,
+            "ctc_per_guardrail_pass": overall_guardrail_pass,
+            "is_completed_primary_causal_estimate": is_primary_causal,
         },
         "speaker_stratified_bootstrap_95ci": boot_results,
         "protocol_z_zero_oracle": proto_z_report,
@@ -750,11 +879,17 @@ def run_paired_harness(
     report_path.write_text(json.dumps(report, indent=2) + "\n")
     print(f"\n[REPORT] Saved paired evaluation report to {report_path}")
 
-    # Guardrail Enforcement
-    if not ctc_guardrail_pass and strict_guardrails:
+    # Guardrail Enforcement across both arms
+    if not overall_guardrail_pass and strict_guardrails:
+        failed_arms = []
+        if not c0_guardrail_pass:
+            failed_arms.append(f"Control C0 (+{c0_deg_vs_measured_r:.2f}%)")
+        if not c1_guardrail_pass:
+            failed_arms.append(f"Treatment C1 (+{c1_deg_vs_measured_r:.2f}%)")
         raise RuntimeError(
-            f"GUARDRAIL FAILURE: Treatment C1 CTC PER degraded by +{per_degradation_c1:.2f} percentage points vs Reference R "
-            f"(limit: +1.0 percentage point). Experiment marked INVALID per safety contract."
+            f"GUARDRAIL FAILURE: {', '.join(failed_arms)} degraded beyond maximum allowable +1.0 percentage point vs Reference R "
+            f"(measured R={r_per*100:.2f}%, historical anchor={HISTORICAL_REF_R_CTC_PER*100:.2f}%). "
+            f"Experiment marked INVALID per safety contract."
         )
 
     return report

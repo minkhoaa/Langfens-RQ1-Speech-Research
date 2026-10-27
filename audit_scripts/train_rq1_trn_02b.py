@@ -331,6 +331,9 @@ def save_checkpoint(
     return local_sha
 
 
+CHECKPOINT_SCHEMA_VERSION = "1.0.0"
+
+
 def validate_checkpoint_for_resume(
     ck: Dict[str, Any],
     cfg: Dict[str, Any],
@@ -338,59 +341,168 @@ def validate_checkpoint_for_resume(
     init_ckpt_sha: str,
     binary_prompt_dropout_p: float,
 ) -> None:
-    """Validates checkpoint provenance, configuration, arm, seed, and counters before resumption."""
-    meta = ck.get("metadata", {})
-    ck_arm = meta.get("arm", ck.get("arm"))
+    """
+    Validates complete checkpoint provenance, configuration, arm, seed, counters,
+    and state integrity before resumption. Rejects missing, contradictory, halted,
+    or cross-arm checkpoints.
+    """
+    if not isinstance(ck, dict):
+        raise ValueError("Invalid checkpoint: checkpoint payload must be a dictionary.")
+
+    # 1. Top-Level Required Keys
+    required_keys = [
+        "model",
+        "optimizer",
+        "scheduler",
+        "scaler",
+        "epoch",
+        "successful_updates",
+        "step_attempts",
+        "skipped_updates",
+        "micro_steps",
+        "rng",
+        "dataloader_generator",
+        "metadata",
+    ]
+    for key in required_keys:
+        if key not in ck:
+            raise ValueError(f"Invalid checkpoint: missing required top-level key '{key}'.")
+
+    # 2. State Component Types & Non-Emptiness
+    if not isinstance(ck["model"], dict) or len(ck["model"]) == 0:
+        raise ValueError("Invalid checkpoint: 'model' state dict is missing or empty.")
+    if not isinstance(ck["optimizer"], dict) or len(ck["optimizer"]) == 0:
+        raise ValueError("Invalid checkpoint: 'optimizer' state dict is missing or empty.")
+    if not isinstance(ck["scheduler"], dict) or len(ck["scheduler"]) == 0:
+        raise ValueError("Invalid checkpoint: 'scheduler' state dict is missing or empty.")
+    if not isinstance(ck["scaler"], dict):
+        raise ValueError("Invalid checkpoint: 'scaler' state dict must be a dictionary.")
+    if not isinstance(ck["rng"], dict) or not {"python", "numpy", "torch"}.issubset(ck["rng"].keys()):
+        raise ValueError("Invalid checkpoint: 'rng' state dict missing required python/numpy/torch generators.")
+    if not isinstance(ck["dataloader_generator"], torch.Tensor):
+        raise ValueError("Invalid checkpoint: 'dataloader_generator' must be a valid torch.Tensor byte state.")
+
+    meta = ck["metadata"]
+    if not isinstance(meta, dict):
+        raise ValueError("Invalid checkpoint: 'metadata' must be a dictionary.")
+
+    # 3. Reject Halted, Corrupted, or Invalid Checkpoints
+    if meta.get("guardrail_violation") is True:
+        raise RuntimeError(
+            "RESUME REJECTED: Checkpoint is marked with guardrail_violation=True. "
+            "Resumption from a guardrail-halted artifact is prohibited without an explicit recovery procedure."
+        )
+    exp_status = meta.get("experiment_status", "")
+    if exp_status in {"HALTED_GUARDRAIL_VIOLATION", "HALTED", "CORRUPTED", "INVALID"}:
+        raise RuntimeError(
+            f"RESUME REJECTED: Checkpoint status is '{exp_status}'. "
+            "Resumption from a halted or invalid artifact is prohibited without an explicit recovery procedure."
+        )
+    if meta.get("corrupted") is True:
+        raise RuntimeError("RESUME REJECTED: Checkpoint metadata declares corrupted=True.")
+
+    # 4. Schema Version and Saved Source Commit
+    ck_schema = meta.get("schema_version") or meta.get("checkpoint_schema_version")
+    if not ck_schema:
+        raise ValueError("Invalid checkpoint: missing 'schema_version' in metadata.")
+    ck_git = meta.get("git_sha")
+    if not ck_git or ck_git == "unknown":
+        raise ValueError("Invalid checkpoint: missing or invalid 'git_sha' commit provenance in metadata.")
+
+    # 5. Arm ID Validation (C0 or C1, strictly matching config)
+    ck_arm = meta.get("arm")
     expected_arm = cfg.get("arm")
-    if ck_arm is not None and expected_arm is not None and ck_arm != expected_arm:
+    if ck_arm not in {"C0", "C1"}:
+        raise ValueError(f"Invalid checkpoint: arm ID '{ck_arm}' must be strictly 'C0' or 'C1'.")
+    if expected_arm not in {"C0", "C1"}:
+        raise ValueError(f"Invalid runtime configuration: arm ID '{expected_arm}' must be 'C0' or 'C1'.")
+    if ck_arm != expected_arm:
         raise ValueError(
-            f"Arm mismatch on resume: checkpoint has arm '{ck_arm}', but current configuration is arm '{expected_arm}'."
+            f"Cross-arm resume rejected: checkpoint declares arm '{ck_arm}', but current configuration expects arm '{expected_arm}'."
         )
 
-    ck_cfg = meta.get("config", {})
-    ck_seed = ck_cfg.get("seed", ck.get("seed"))
-    if ck_seed is not None and ck_seed != cfg["seed"]:
+    # 6. Seed and Dropout Probability
+    ck_cfg = meta.get("config")
+    if not isinstance(ck_cfg, dict):
+        raise ValueError("Invalid checkpoint: missing 'config' dictionary in metadata.")
+    ck_seed = ck_cfg.get("seed")
+    if ck_seed is None or ck_seed != cfg["seed"]:
         raise ValueError(
-            f"Seed mismatch on resume: checkpoint has seed {ck_seed}, but current configuration has seed {cfg['seed']}."
+            f"Seed mismatch on resume: checkpoint has seed {ck_seed}, but current configuration requires {cfg['seed']}."
         )
-
-    ck_manifest_sha = meta.get("split_sha256")
-    if ck_manifest_sha is not None and ck_manifest_sha != manifest_sha:
-        raise ValueError(
-            f"Manifest SHA-256 mismatch on resume: checkpoint was trained with {ck_manifest_sha}, but current manifest is {manifest_sha}."
-        )
-
-    ck_init_sha = meta.get("initial_checkpoint_sha256")
-    if ck_init_sha is not None and ck_init_sha != init_ckpt_sha:
-        raise ValueError(
-            f"Initial checkpoint SHA-256 mismatch on resume: checkpoint originated from {ck_init_sha}, but current expected {init_ckpt_sha}."
-        )
-
     ck_p = meta.get("binary_prompt_dropout_p")
-    if ck_p is not None and abs(float(ck_p) - binary_prompt_dropout_p) > 1e-6:
+    if ck_p is None or abs(float(ck_p) - binary_prompt_dropout_p) > 1e-6:
         raise ValueError(
-            f"Dropout probability mismatch on resume: checkpoint has p={ck_p}, current config has p={binary_prompt_dropout_p}."
+            f"Dropout probability mismatch on resume: checkpoint has p={ck_p}, but current configuration expects p={binary_prompt_dropout_p}."
+        )
+    if ck_arm == "C1" and ck.get("intervention_rng") is None:
+        raise ValueError("Invalid checkpoint: Treatment Arm C1 checkpoint must contain 'intervention_rng'.")
+
+    # 7. Provenance Hashes
+    ck_manifest_sha = meta.get("split_sha256")
+    if not ck_manifest_sha or ck_manifest_sha != manifest_sha:
+        raise ValueError(
+            f"Manifest SHA-256 mismatch on resume: checkpoint has '{ck_manifest_sha}', but current manifest is '{manifest_sha}'."
+        )
+    ck_init_sha = meta.get("initial_checkpoint_sha256")
+    if not ck_init_sha or ck_init_sha != init_ckpt_sha:
+        raise ValueError(
+            f"Initial checkpoint SHA-256 mismatch on resume: checkpoint has '{ck_init_sha}', but expected '{init_ckpt_sha}'."
         )
 
-    ck_successful = ck.get("successful_updates", 0)
-    ck_step_attempts = ck.get("step_attempts", 0)
-    ck_skipped = ck.get("skipped_updates", ck.get("skipped_amp_attempts_total", 0))
-    ck_micro_steps = ck.get("micro_steps", 0)
-    ck_epoch = ck.get("epoch", -1)
+    # 8. Complete Shared Optimizer and Scheduler Configuration
+    shared_checks = {
+        "learning_rate": (lambda a, b: abs(float(a) - float(b)) < 1e-9),
+        "weight_decay": (lambda a, b: abs(float(a) - float(b)) < 1e-9),
+        "warmup_updates": (lambda a, b: int(a) == int(b)),
+        "max_successful_updates": (lambda a, b: int(a) == int(b)),
+        "gradient_accumulation_steps": (lambda a, b: int(a) == int(b)),
+        "max_epochs": (lambda a, b: int(a) == int(b)),
+        "batch_size": (lambda a, b: int(a) == int(b)),
+    }
+    for field_name, validator in shared_checks.items():
+        if field_name not in ck_cfg:
+            raise ValueError(f"Invalid checkpoint config: missing shared configuration field '{field_name}'.")
+        if field_name not in cfg:
+            raise ValueError(f"Invalid runtime config: missing required configuration field '{field_name}'.")
+        if not validator(ck_cfg[field_name], cfg[field_name]):
+            raise ValueError(
+                f"Configuration mismatch on resume for '{field_name}': checkpoint has {ck_cfg[field_name]}, current configuration has {cfg[field_name]}."
+            )
 
-    if ck_successful < 0:
-        raise ValueError(f"Invalid checkpoint: successful_updates ({ck_successful}) cannot be negative.")
-    if ck_step_attempts < ck_successful:
+    # 9. Update Counters Consistency & Caps
+    ck_successful = ck["successful_updates"]
+    ck_step_attempts = ck["step_attempts"]
+    ck_skipped = ck["skipped_updates"]
+    ck_micro_steps = ck["micro_steps"]
+    ck_epoch = ck["epoch"]
+
+    for name, val in [
+        ("successful_updates", ck_successful),
+        ("step_attempts", ck_step_attempts),
+        ("skipped_updates", ck_skipped),
+        ("micro_steps", ck_micro_steps),
+        ("epoch", ck_epoch),
+    ]:
+        if not isinstance(val, int) or val < 0:
+            raise ValueError(f"Invalid checkpoint counter: '{name}' must be a non-negative integer, got {val}.")
+
+    if ck_step_attempts != ck_successful + ck_skipped:
         raise ValueError(
-            f"Invalid checkpoint: step_attempts ({ck_step_attempts}) cannot be less than successful_updates ({ck_successful})."
+            f"Contradictory counters on resume: step_attempts ({ck_step_attempts}) must exactly equal "
+            f"successful_updates ({ck_successful}) + skipped_updates ({ck_skipped})."
         )
-    if ck_skipped < 0:
-        raise ValueError(f"Invalid checkpoint: skipped_updates ({ck_skipped}) cannot be negative.")
-    if ck_epoch < 0:
-        raise ValueError(f"Invalid checkpoint: epoch ({ck_epoch}) cannot be negative.")
     if ck_micro_steps < ck_step_attempts:
         raise ValueError(
-            f"Invalid checkpoint: micro_steps ({ck_micro_steps}) cannot be less than step_attempts ({ck_step_attempts})."
+            f"Contradictory counters on resume: micro_steps ({ck_micro_steps}) cannot be less than step_attempts ({ck_step_attempts})."
+        )
+
+    # 10. Epoch-Boundary Resume State
+    history = ck.get("history")
+    if not isinstance(history, list) or len(history) != ck_epoch + 1:
+        raise ValueError(
+            f"Invalid checkpoint resume state: history length ({len(history) if isinstance(history, list) else 0}) "
+            f"does not match completed epoch count ({ck_epoch + 1})."
         )
 
 
@@ -573,6 +685,8 @@ def main():
 
     git_sha = get_git_commit_sha()
     metadata = {
+        "schema_version": CHECKPOINT_SCHEMA_VERSION,
+        "checkpoint_schema_version": CHECKPOINT_SCHEMA_VERSION,
         "arm": arm,
         "experiment": cfg["experiment"],
         "binary_prompt_dropout_p": binary_prompt_dropout_p,
@@ -581,6 +695,8 @@ def main():
         "initial_checkpoint_sha256": init_ckpt_sha,
         "config": cfg,
         "primary_endpoint_reached": False,
+        "experiment_status": "IN_PROGRESS",
+        "guardrail_violation": False,
     }
 
     # Resumption support
@@ -708,18 +824,41 @@ def main():
                 f"by +{deg_pct:.2f} percentage points (maximum allowed: +1.00%). Training halted per safety contract."
             )
             print(msg, flush=True)
-            chk_payload = {
+            halted_payload = {
                 "model": model.state_dict(),
                 "optimizer": optimizer.state_dict(),
+                "scheduler": scheduler.state_dict(),
+                "scaler": scaler.state_dict(),
                 "epoch": epoch,
+                "display_epoch": epoch + 1,
+                "successful_updates": budget_tracker.successful_updates,
+                "step_attempts": budget_tracker.step_attempts,
+                "skipped_updates": budget_tracker.skipped_updates,
+                "micro_steps": budget_tracker.micro_steps,
+                "best_ap": best_ap,
+                "patience": patience,
+                "skipped_amp_attempts_total": budget_tracker.skipped_updates,
+                "consecutive_skips": budget_tracker.consecutive_skips,
                 "history": history,
+                "rng": rng_state(),
+                "intervention_rng": model.intervention_generator.get_state() if model.intervention_generator is not None else None,
+                "dataloader_generator": train_dl_generator.get_state(),
                 "metadata": {
                     **metadata,
+                    "primary_endpoint_reached": False,
+                    "primary_3600_updates_completed": False,
+                    "epoch_cap_reached": False,
                     "guardrail_violation": True,
                     "experiment_status": "HALTED_GUARDRAIL_VIOLATION",
+                    "endpoint_status": "HALTED_GUARDRAIL_VIOLATION",
+                    "ctc_per_measured": current_ctc_per,
+                    "ctc_per_anchor": ref_ctc_anchor,
+                    "ctc_per_degradation_pct": deg_pct,
                 },
             }
-            save_checkpoint(outdir / "last.pt", chk_payload, drive_output_dir=drive_out)
+            halted_file = outdir / "halted_guardrail.pt"
+            save_checkpoint(halted_file, halted_payload, drive_output_dir=drive_out)
+            print(f"[GUARDRAIL ARTIFACT] Preserved complete halted checkpoint to {halted_file} (last.pt preserved).", flush=True)
             raise RuntimeError(msg)
 
         primary_3600_updates_completed = (budget_tracker.successful_updates >= max_successful_updates)

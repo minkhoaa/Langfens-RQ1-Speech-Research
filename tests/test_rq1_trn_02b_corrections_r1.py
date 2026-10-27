@@ -333,7 +333,9 @@ def test_7_fail_closed_endpoint_handling(tmp_path):
         "model": {"dummy": torch.zeros(1)},
         "successful_updates": 3580,  # Incomplete: 20 updates were skipped
         "metadata": {
+            "arm": "C1",
             "primary_endpoint_reached": False,
+            "primary_3600_updates_completed": False,
             "endpoint_status": "INCOMPLETE_AMP_SKIPS",
         },
     }
@@ -341,7 +343,7 @@ def test_7_fail_closed_endpoint_handling(tmp_path):
     torch.save(incomplete_payload, ckpt_file)
 
     # Must raise RuntimeError with fail-closed message
-    with pytest.raises(RuntimeError, match="FAIL-CLOSED.*NOT a completed 3,600-successful-update endpoint"):
+    with pytest.raises(RuntimeError, match="FAIL-CLOSED.*NOT an authorized completed 3,600-successful-update endpoint"):
         validate_endpoint_readiness(ckpt_file, "C1", allow_incomplete=False)
 
     # Overridden with allow_incomplete=True must pass
@@ -354,7 +356,9 @@ def test_7_fail_closed_endpoint_handling(tmp_path):
         "model": {"dummy": torch.zeros(1)},
         "successful_updates": 3600,
         "metadata": {
+            "arm": "C0",
             "primary_endpoint_reached": True,
+            "primary_3600_updates_completed": True,
             "endpoint_status": "COMPLETED_3600_UPDATES",
         },
     }
@@ -396,19 +400,39 @@ def test_9_checkpoint_provenance_validation_on_resume():
         "manifest_sha256": "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b",
         "initial_checkpoint_sha256": "a2445c8d17910bf3c03101f50fc419675e8d1bc012af43af10267a28dbba948b",
         "binary_prompt_dropout_p": 0.25,
+        "learning_rate": 0.001,
+        "weight_decay": 0.01,
+        "warmup_updates": 100,
+        "max_successful_updates": 3600,
+        "gradient_accumulation_steps": 2,
+        "max_epochs": 6,
+        "batch_size": 2,
     }
     valid_ck = {
+        "model": {"dummy": torch.zeros(1)},
+        "optimizer": {"state": {}, "param_groups": []},
+        "scheduler": {"last_epoch": 1200},
+        "scaler": {"scale": 4096.0},
         "successful_updates": 1200,
         "step_attempts": 1200,
         "skipped_updates": 0,
         "micro_steps": 2400,
         "epoch": 1,
+        "display_epoch": 2,
+        "history": [{"epoch": 1}, {"epoch": 2}],
+        "rng": {"python": (), "numpy": (), "torch": torch.ByteTensor([1])},
+        "dataloader_generator": torch.zeros(10, dtype=torch.uint8),
+        "intervention_rng": torch.zeros(10, dtype=torch.uint8),
         "metadata": {
+            "schema_version": "1.0.0",
+            "git_sha": "testsha",
             "arm": "C1",
             "split_sha256": cfg["manifest_sha256"],
             "initial_checkpoint_sha256": cfg["initial_checkpoint_sha256"],
             "binary_prompt_dropout_p": 0.25,
-            "config": {"seed": 1337},
+            "experiment_status": "IN_PROGRESS",
+            "guardrail_violation": False,
+            "config": copy.deepcopy(cfg),
         },
     }
 
@@ -420,7 +444,7 @@ def test_9_checkpoint_provenance_validation_on_resume():
     # 1. Arm mismatch
     bad_arm = copy.deepcopy(valid_ck)
     bad_arm["metadata"]["arm"] = "C0"
-    with pytest.raises(ValueError, match="Arm mismatch on resume"):
+    with pytest.raises(ValueError, match="Cross-arm resume rejected"):
         validate_checkpoint_for_resume(
             bad_arm, cfg, cfg["manifest_sha256"], cfg["initial_checkpoint_sha256"], 0.25
         )
@@ -441,10 +465,10 @@ def test_9_checkpoint_provenance_validation_on_resume():
             bad_init, cfg, cfg["manifest_sha256"], cfg["initial_checkpoint_sha256"], 0.25
         )
 
-    # 4. Inconsistent update counters (step_attempts < successful_updates)
+    # 4. Inconsistent update counters (step_attempts != successful_updates + skipped_updates)
     bad_counters = copy.deepcopy(valid_ck)
-    bad_counters["step_attempts"] = 1000  # < 1200
-    with pytest.raises(ValueError, match="step_attempts .* cannot be less than successful_updates"):
+    bad_counters["step_attempts"] = 1000  # != 1200 + 0
+    with pytest.raises(ValueError, match="Contradictory counters on resume"):
         validate_checkpoint_for_resume(
             bad_counters, cfg, cfg["manifest_sha256"], cfg["initial_checkpoint_sha256"], 0.25
         )
