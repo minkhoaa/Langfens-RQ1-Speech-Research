@@ -331,6 +331,69 @@ def save_checkpoint(
     return local_sha
 
 
+def validate_checkpoint_for_resume(
+    ck: Dict[str, Any],
+    cfg: Dict[str, Any],
+    manifest_sha: str,
+    init_ckpt_sha: str,
+    binary_prompt_dropout_p: float,
+) -> None:
+    """Validates checkpoint provenance, configuration, arm, seed, and counters before resumption."""
+    meta = ck.get("metadata", {})
+    ck_arm = meta.get("arm", ck.get("arm"))
+    expected_arm = cfg.get("arm")
+    if ck_arm is not None and expected_arm is not None and ck_arm != expected_arm:
+        raise ValueError(
+            f"Arm mismatch on resume: checkpoint has arm '{ck_arm}', but current configuration is arm '{expected_arm}'."
+        )
+
+    ck_cfg = meta.get("config", {})
+    ck_seed = ck_cfg.get("seed", ck.get("seed"))
+    if ck_seed is not None and ck_seed != cfg["seed"]:
+        raise ValueError(
+            f"Seed mismatch on resume: checkpoint has seed {ck_seed}, but current configuration has seed {cfg['seed']}."
+        )
+
+    ck_manifest_sha = meta.get("split_sha256")
+    if ck_manifest_sha is not None and ck_manifest_sha != manifest_sha:
+        raise ValueError(
+            f"Manifest SHA-256 mismatch on resume: checkpoint was trained with {ck_manifest_sha}, but current manifest is {manifest_sha}."
+        )
+
+    ck_init_sha = meta.get("initial_checkpoint_sha256")
+    if ck_init_sha is not None and ck_init_sha != init_ckpt_sha:
+        raise ValueError(
+            f"Initial checkpoint SHA-256 mismatch on resume: checkpoint originated from {ck_init_sha}, but current expected {init_ckpt_sha}."
+        )
+
+    ck_p = meta.get("binary_prompt_dropout_p")
+    if ck_p is not None and abs(float(ck_p) - binary_prompt_dropout_p) > 1e-6:
+        raise ValueError(
+            f"Dropout probability mismatch on resume: checkpoint has p={ck_p}, current config has p={binary_prompt_dropout_p}."
+        )
+
+    ck_successful = ck.get("successful_updates", 0)
+    ck_step_attempts = ck.get("step_attempts", 0)
+    ck_skipped = ck.get("skipped_updates", ck.get("skipped_amp_attempts_total", 0))
+    ck_micro_steps = ck.get("micro_steps", 0)
+    ck_epoch = ck.get("epoch", -1)
+
+    if ck_successful < 0:
+        raise ValueError(f"Invalid checkpoint: successful_updates ({ck_successful}) cannot be negative.")
+    if ck_step_attempts < ck_successful:
+        raise ValueError(
+            f"Invalid checkpoint: step_attempts ({ck_step_attempts}) cannot be less than successful_updates ({ck_successful})."
+        )
+    if ck_skipped < 0:
+        raise ValueError(f"Invalid checkpoint: skipped_updates ({ck_skipped}) cannot be negative.")
+    if ck_epoch < 0:
+        raise ValueError(f"Invalid checkpoint: epoch ({ck_epoch}) cannot be negative.")
+    if ck_micro_steps < ck_step_attempts:
+        raise ValueError(
+            f"Invalid checkpoint: micro_steps ({ck_micro_steps}) cannot be less than step_attempts ({ck_step_attempts})."
+        )
+
+
 def get_git_commit_sha() -> str:
     """Returns current git commit hash or unknown."""
     try:
@@ -523,6 +586,13 @@ def main():
     # Resumption support
     if args.resume:
         ck = torch.load(args.resume, map_location="cpu", weights_only=False)
+        validate_checkpoint_for_resume(
+            ck=ck,
+            cfg=cfg,
+            manifest_sha=manifest_sha,
+            init_ckpt_sha=init_ckpt_sha,
+            binary_prompt_dropout_p=binary_prompt_dropout_p,
+        )
         model.load_state_dict(ck["model"])
         optimizer.load_state_dict(ck["optimizer"])
         scheduler.load_state_dict(ck["scheduler"])
@@ -539,6 +609,9 @@ def main():
         restore_rng(ck["rng"])
         if "intervention_rng" in ck and ck["intervention_rng"] is not None and model.intervention_generator is not None:
             model.intervention_generator.set_state(ck["intervention_rng"])
+        if "dataloader_generator" in ck and ck["dataloader_generator"] is not None:
+            train_dl_generator.set_state(ck["dataloader_generator"])
+            print("[RESUME] Restored DataLoader generator state.")
         model.train()
         print(f"Resumed from {args.resume}: start_epoch={start_epoch}, successful_updates={budget_tracker.successful_updates}, best_ap={best_ap}")
 
@@ -624,6 +697,34 @@ def main():
         else:
             patience += 1
 
+        # Check CTC PER guardrail against Reference R anchor (23.64%)
+        ref_ctc_anchor = float(cfg.get("reference_ctc_anchor", 0.2364))
+        max_allowed_ctc_per = ref_ctc_anchor + 0.01  # +1.0 absolute percentage point
+        current_ctc_per = val_metrics["validation_ctc_per"]
+        if current_ctc_per > max_allowed_ctc_per:
+            deg_pct = (current_ctc_per - ref_ctc_anchor) * 100.0
+            msg = (
+                f"[GUARDRAIL VIOLATION] Validation CTC PER {current_ctc_per*100:.2f}% exceeds Reference R anchor (23.64%) "
+                f"by +{deg_pct:.2f} percentage points (maximum allowed: +1.00%). Training halted per safety contract."
+            )
+            print(msg, flush=True)
+            chk_payload = {
+                "model": model.state_dict(),
+                "optimizer": optimizer.state_dict(),
+                "epoch": epoch,
+                "history": history,
+                "metadata": {
+                    **metadata,
+                    "guardrail_violation": True,
+                    "experiment_status": "HALTED_GUARDRAIL_VIOLATION",
+                },
+            }
+            save_checkpoint(outdir / "last.pt", chk_payload, drive_output_dir=drive_out)
+            raise RuntimeError(msg)
+
+        primary_3600_updates_completed = (budget_tracker.successful_updates >= max_successful_updates)
+        epoch_cap_reached = (epoch + 1 >= max_epochs)
+
         # Checkpoint Payload Construction
         chk_payload = {
             "model": model.state_dict(),
@@ -643,9 +744,19 @@ def main():
             "history": history,
             "rng": rng_state(),
             "intervention_rng": model.intervention_generator.get_state() if model.intervention_generator is not None else None,
+            "dataloader_generator": train_dl_generator.get_state(),
             "metadata": {
                 **metadata,
-                "primary_endpoint_reached": (epoch + 1 == max_epochs) or budget_tracker.budget_exhausted,
+                "primary_endpoint_reached": primary_3600_updates_completed,
+                "primary_3600_updates_completed": primary_3600_updates_completed,
+                "epoch_cap_reached": epoch_cap_reached,
+                "successful_updates": budget_tracker.successful_updates,
+                "skipped_updates": budget_tracker.skipped_updates,
+                "endpoint_status": (
+                    "COMPLETED_3600_UPDATES"
+                    if primary_3600_updates_completed
+                    else ("INCOMPLETE_AMP_SKIPS" if budget_tracker.skipped_updates > 0 else "HALTED_EPOCH_CAP")
+                ),
             },
         }
 
@@ -656,11 +767,17 @@ def main():
         if is_best:
             save_checkpoint(outdir / "best.pt", chk_payload, drive_output_dir=drive_out)
 
-        # Check for primary matched-budget endpoint (Epoch 6 or 3,600 updates)
-        if (epoch + 1 == max_epochs) or budget_tracker.budget_exhausted:
+        # Check for primary matched-budget endpoint: strictly 3,600 successful updates
+        if primary_3600_updates_completed:
             primary_endpoint_reached = True
             save_checkpoint(outdir / "fixed_budget_checkpoint.pt", chk_payload, drive_output_dir=drive_out)
-            print(f"[PRIMARY ENDPOINT] Saved fixed_budget_checkpoint.pt at epoch {epoch + 1} ({budget_tracker.successful_updates} successful updates).")
+            print(f"[PRIMARY ENDPOINT] Saved fixed_budget_checkpoint.pt: completed {budget_tracker.successful_updates} successful updates.")
+        elif epoch_cap_reached:
+            print(
+                f"[INCOMPLETE ENDPOINT] Epoch cap (6) reached with {budget_tracker.successful_updates} / {max_successful_updates} updates "
+                f"({budget_tracker.skipped_updates} AMP skips). fixed_budget_checkpoint.pt NOT labeled as completed endpoint.",
+                flush=True,
+            )
 
         if patience >= cfg["early_stopping_patience"]:
             print(f"Early stopping triggered after {patience} epochs without validation AP improvement.", flush=True)

@@ -43,7 +43,11 @@ import torch.nn.functional as F
 from torch.utils.data import DataLoader
 
 from langfens_prep.collate import LangfensMDDCollate
-from langfens_prep.dataset import L2ArcticMDDDataset, ZeroOracleL2ArcticDataset
+from langfens_prep.dataset import (
+    L2ArcticMDDDataset,
+    ZeroOracleL2ArcticDataset,
+    load_arctic_prompts,
+)
 from langfens_prep.g2p import CMUDictG2P
 from langfens_prep.alignment import align_canonical_sequences
 from langfens_prep.model import LangfensWav2Vec2MDD
@@ -206,6 +210,35 @@ def make_within_speaker_perm(boundaries: List[int], total: int, shift: int = 1) 
             target_i = (local_i + shift) % seg_len
             res[start + local_i] = start + target_i
     return res
+
+
+def validate_endpoint_readiness(checkpoint_path: Path | str, arm_name: str, allow_incomplete: bool = False) -> Dict[str, Any]:
+    """Validates that a checkpoint is a verified completed endpoint (3,600 successful updates)."""
+    p = Path(checkpoint_path)
+    if not p.is_file():
+        raise FileNotFoundError(f"Checkpoint not found: {p}")
+    ck = torch.load(p, map_location="cpu", weights_only=False)
+    meta = ck.get("metadata", {})
+    successful_updates = ck.get("successful_updates", meta.get("successful_updates", 0))
+    endpoint_reached = meta.get("primary_endpoint_reached", False)
+    status = meta.get("endpoint_status", "UNKNOWN")
+
+    if not allow_incomplete:
+        if successful_updates < 3600 or not endpoint_reached:
+            raise RuntimeError(
+                f"FAIL-CLOSED: Checkpoint {p} for arm {arm_name} is NOT a completed 3,600-successful-update endpoint!\n"
+                f"  Successful updates: {successful_updates} / 3600\n"
+                f"  Primary endpoint reached flag: {endpoint_reached}\n"
+                f"  Endpoint status: {status}\n"
+                f"Causal comparison prohibited because training budget is incomplete due to AMP skips or early termination.\n"
+                f"Pass --allow-incomplete-endpoints to override strictly for exploratory analysis."
+            )
+    return {
+        "successful_updates": successful_updates,
+        "primary_endpoint_reached": endpoint_reached,
+        "endpoint_status": status,
+        "epoch": ck.get("epoch"),
+    }
 
 
 def load_eval_model(checkpoint_path: Path | str, device: torch.device) -> Tuple[LangfensWav2Vec2MDD, str]:
@@ -381,7 +414,7 @@ def evaluate_single_model_protocol_o(
             donor_item = val_dataset[donor_idx]
 
             # 1. Matched Forward Pass
-            w_m = item["waveform"].unsqueeze(0).to(device)
+            w_m = item["audio_waveform_16k"].unsqueeze(0).to(device)
             c_indices = item["canonical_phone_indices"].unsqueeze(0).to(device)
             c_len = torch.tensor([item["canonical_phone_indices"].shape[0]], device=device, dtype=torch.long)
             out_m = model(
@@ -392,7 +425,7 @@ def evaluate_single_model_protocol_o(
             s_m = torch.sigmoid(out_m.binary_logits.squeeze(0)).cpu().tolist()
 
             # 2. Mismatched Forward Pass (donor waveform)
-            w_mm = donor_item["waveform"].unsqueeze(0).to(device)
+            w_mm = donor_item["audio_waveform_16k"].unsqueeze(0).to(device)
             out_mm = model(
                 waveforms=w_mm,
                 canonical_phone_indices=c_indices,
@@ -413,7 +446,7 @@ def evaluate_single_model_protocol_o(
             ctc_pred = out_m.ctc_logits.squeeze(0).argmax(-1).cpu().tolist()
             input_len = out_m.input_lengths.item() if out_m.input_lengths is not None else len(ctc_pred)
             hyp = greedy_ctc_decode(ctc_pred[:input_len], blank_id=0)
-            ref = item["target_ctc"].tolist()
+            ref = item["ctc_target_indices"].tolist()
 
             ed, su, de, ins = compute_levenshtein_edits(ref, hyp)
             ctc_edits += ed
@@ -423,9 +456,11 @@ def evaluate_single_model_protocol_o(
             ctc_ref_total += len(ref)
             ctc_hyp_total += len(hyp)
 
+            spk = item["speaker_id"]
             utterance_results.append({
                 "utterance_id": item["utterance_id"],
-                "speaker": item["speaker"],
+                "speaker_id": spk,
+                "speaker": spk,
                 "labels": valid_lbls,
                 "matched_scores": valid_m,
                 "mismatched_scores": valid_mm,
@@ -453,6 +488,134 @@ def evaluate_single_model_protocol_o(
     return summary, utterance_results
 
 
+def evaluate_models_protocol_z(
+    models: Dict[str, LangfensWav2Vec2MDD],
+    manifest_path: Path,
+    zip_path: Optional[str],
+    device: torch.device,
+    prompts_source: str = "resources/L2-ARCTIC/prompts.json",
+) -> Dict[str, Any]:
+    """
+    Evaluates zero-oracle text+audio inference across Reference R, Control C0, and Treatment C1.
+    Strict isolation guarantees:
+    - Input contains audio waveform + prompt G2P canonical phones only.
+    - Zero TextGrids / gold labels enter model forward passes.
+    - Gold labels are accessed strictly offline during Levenshtein alignment scoring.
+    """
+    print("\n[PROTOCOL Z] Initializing deterministic CMUdict G2P frontend...")
+    g2p = CMUDictG2P(verify_checksum=True, oov_policy="strict")
+
+    print(f"[PROTOCOL Z] Loading ZeroOracleL2ArcticDataset (prompts={prompts_source})...")
+    z_dataset = ZeroOracleL2ArcticDataset(
+        split_manifest_path=str(manifest_path),
+        fold=1,
+        split="val",
+        prompts_source=prompts_source,
+        g2p_frontend=g2p,
+        zip_path=zip_path,
+    )
+
+    print("[PROTOCOL Z] Loading offline Gold dataset for ground-truth alignment...")
+    gold_dataset = L2ArcticMDDDataset(
+        split_manifest_path=str(manifest_path),
+        fold=1,
+        split="val",
+        policy="strict",
+        zip_path=zip_path,
+    )
+    assert len(z_dataset) == len(gold_dataset), "Dataset size mismatch in Protocol Z!"
+    n_utts = len(z_dataset)
+
+    model_keys = list(models.keys())
+    aligned_scores: Dict[str, List[float]] = {k: [] for k in model_keys}
+    aligned_labels: List[int] = []
+
+    total_gold_tokens = 0
+    total_g2p_tokens = 0
+    total_aligned_pairs = 0
+
+    with torch.inference_mode():
+        for idx in range(n_utts):
+            z_item = z_dataset[idx]
+            assert z_item["binary_labels"] is None, "Label leakage in ZeroOracleL2ArcticDataset!"
+            assert z_item["ctc_target_indices"] is None, "CTC target leakage in ZeroOracleL2ArcticDataset!"
+
+            g2p_phones = z_item["canonical_phones"]
+            total_g2p_tokens += len(g2p_phones)
+
+            audio = z_item["audio_waveform_16k"].unsqueeze(0).to(device)
+            can_idx = z_item["canonical_phone_indices"].unsqueeze(0).to(device)
+            can_len = torch.tensor([z_item["canonical_phone_indices"].shape[0]], dtype=torch.long, device=device)
+
+            z_scores_by_model: Dict[str, List[float]] = {}
+            for k, m in models.items():
+                m.eval()
+                out = m(
+                    waveforms=audio,
+                    canonical_phone_indices=can_idx,
+                    canonical_phone_lengths=can_len,
+                )
+                sc = torch.sigmoid(out.binary_logits[0, :len(g2p_phones)]).cpu().tolist()
+                z_scores_by_model[k] = sc
+
+            # Offline Scoring using Gold TextGrid (strictly isolated from inference)
+            gold_item = gold_dataset[idx]
+            assert gold_item["utterance_id"] == z_item["utterance_id"]
+            gold_phones = gold_item["canonical_phones_norm39"]
+            gold_labels = gold_item["binary_labels"].tolist()
+
+            valid_gold_count = sum(1 for l in gold_labels if l != -100)
+            total_gold_tokens += valid_gold_count
+
+            alignment = align_canonical_sequences(gold_phones, g2p_phones, tie_break="sub_first")
+            for g_idx, z_idx, op in alignment["aligned_pairs"]:
+                lbl = gold_labels[g_idx]
+                if lbl != -100:
+                    total_aligned_pairs += 1
+                    aligned_labels.append(lbl)
+                    for k in model_keys:
+                        aligned_scores[k].append(z_scores_by_model[k][z_idx])
+
+    coverage = total_aligned_pairs / max(total_gold_tokens, 1)
+
+    aligned_ap: Dict[str, float] = {}
+    for k in model_keys:
+        ap = average_precision_binary(aligned_labels, aligned_scores[k])
+        aligned_ap[k] = round(float(ap), 6)
+
+    delta_dropout_z = (
+        aligned_ap.get("treatment_c1", 0.0) - aligned_ap.get("control_c0", 0.0)
+        if ("treatment_c1" in aligned_ap and "control_c0" in aligned_ap)
+        else 0.0
+    )
+    delta_tuning_z = (
+        aligned_ap.get("control_c0", 0.0) - aligned_ap.get("reference_r", 0.0)
+        if ("control_c0" in aligned_ap and "reference_r" in aligned_ap)
+        else 0.0
+    )
+    delta_compound_z = (
+        aligned_ap.get("treatment_c1", 0.0) - aligned_ap.get("reference_r", 0.0)
+        if ("treatment_c1" in aligned_ap and "reference_r" in aligned_ap)
+        else 0.0
+    )
+
+    proto_z_report = {
+        "token_coverage": round(float(coverage), 6),
+        "total_valid_gold_tokens": total_gold_tokens,
+        "total_aligned_tokens": total_aligned_pairs,
+        "aligned_only_ap": aligned_ap,
+        "paired_estimands": {
+            "primary_causal_delta_dropout_z (C1 - C0)": round(float(delta_dropout_z), 6),
+            "tuning_baseline_drift_z (C0 - R)": round(float(delta_tuning_z), 6),
+            "compound_retraining_contrast_z (C1 - R)": round(float(delta_compound_z), 6),
+        },
+    }
+    print(f"[PROTOCOL Z] Aligned-only AP: R={aligned_ap.get('reference_r')} | C0={aligned_ap.get('control_c0')} | C1={aligned_ap.get('treatment_c1')}")
+    print(f"[PROTOCOL Z] Token coverage: {coverage*100:.2f}% ({total_aligned_pairs}/{total_gold_tokens})")
+    print(f"[PROTOCOL Z] Delta dropout (C1 - C0): {delta_dropout_z:+.6f}")
+    return proto_z_report
+
+
 def run_paired_harness(
     ref_ckpt: Path,
     c0_ckpt: Path,
@@ -461,31 +624,30 @@ def run_paired_harness(
     zip_path: Optional[str],
     output_dir: Path,
     device: torch.device,
+    prompts_source: str = "resources/L2-ARCTIC/prompts.json",
+    skip_protocol_z: bool = False,
+    allow_incomplete_endpoints: bool = False,
+    strict_guardrails: bool = True,
 ) -> Dict[str, Any]:
     """Runs full paired evaluation across Reference R, Control C0, and Treatment C1."""
     output_dir.mkdir(parents=True, exist_ok=True)
+
+    # 0. Validate endpoint readiness for C0 and C1 (Fail-Closed Enforcement)
+    print(f"[ENDPOINT] Validating Control C0 endpoint readiness ({c0_ckpt})...")
+    meta_c0 = validate_endpoint_readiness(c0_ckpt, "C0", allow_incomplete=allow_incomplete_endpoints)
+    print(f"[ENDPOINT] Validating Treatment C1 endpoint readiness ({c1_ckpt})...")
+    meta_c1 = validate_endpoint_readiness(c1_ckpt, "C1", allow_incomplete=allow_incomplete_endpoints)
 
     # 1. Validation Dataset Setup
     val_dataset = L2ArcticMDDDataset(str(manifest_path), 1, "val", policy="strict", zip_path=zip_path)
     train_dataset = L2ArcticMDDDataset(str(manifest_path), 1, "train", policy="strict", zip_path=zip_path)
 
     # Identify speaker boundary
-    spk_counts = []
-    cur_spk = None
-    count = 0
-    for i in range(len(val_dataset)):
-        s = val_dataset[i]["speaker"]
-        if cur_spk is None:
-            cur_spk = s
-            count = 1
-        elif s == cur_spk:
-            count += 1
-        else:
-            spk_counts.append(count)
-            cur_spk = s
-            count = 1
-    spk_bounds = spk_counts
-
+    spk_bounds = [
+        i for i in range(1, len(val_dataset))
+        if (val_dataset.utterance_entries[i][0] if hasattr(val_dataset, "utterance_entries") else val_dataset[i]["speaker_id"]) !=
+           (val_dataset.utterance_entries[i - 1][0] if hasattr(val_dataset, "utterance_entries") else val_dataset[i - 1]["speaker_id"])
+    ]
     print(f"[DATASET] Validation speakers: NJS & RRBI (boundary at {spk_bounds})")
 
     # 2. Canonical Prior Baseline
@@ -521,15 +683,28 @@ def run_paired_harness(
     delta_compound = summary_c1["matched_binary_ap"] - summary_r["matched_binary_ap"]
     delta_gap_c1_c0 = summary_c1["matched_minus_mismatched_gap"] - summary_c0["matched_minus_mismatched_gap"]
 
-    # CTC PER guardrail check (< 1.0% degradation vs Reference R anchor 23.64%)
+    # CTC PER guardrail check (< 1.0% degradation vs Reference R anchor)
     per_degradation_c1 = (summary_c1["ctc_per"] - summary_r["ctc_per"]) * 100.0
+    per_degradation_c0 = (summary_c0["ctc_per"] - summary_r["ctc_per"]) * 100.0
     ctc_guardrail_pass = per_degradation_c1 <= 1.0
 
     # 6. Speaker-Stratified Cluster Bootstrap
     print("[BOOTSTRAP] Running 1,000 speaker-stratified paired utterance-cluster bootstrap...")
     boot_results = run_speaker_stratified_paired_bootstrap(res_c0, res_c1, spk_bounds, n_bootstraps=1000, seed=1337)
 
-    # 7. Verification of Parameter Immutability
+    # 7. Protocol Z Secondary Zero-Oracle Evaluation
+    proto_z_report = None
+    if not skip_protocol_z:
+        print("[EVAL] Evaluating Reference R, Control C0, and Treatment C1 under Protocol Z (Zero-Oracle G2P)...")
+        proto_z_report = evaluate_models_protocol_z(
+            models={"reference_r": model_r, "control_c0": model_c0, "treatment_c1": model_c1},
+            manifest_path=manifest_path,
+            zip_path=zip_path,
+            device=device,
+            prompts_source=prompts_source,
+        )
+
+    # 8. Verification of Parameter Immutability
     post_fp_r = get_model_weights_fingerprint(model_r)
     post_fp_c0 = get_model_weights_fingerprint(model_c0)
     post_fp_c1 = get_model_weights_fingerprint(model_c1)
@@ -539,9 +714,14 @@ def run_paired_harness(
 
     report = {
         "evaluation_timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "experiment_status": "VALID" if ctc_guardrail_pass else "INVALID_GUARDRAIL_FAILURE",
         "reference_checkpoint": str(ref_ckpt),
         "control_c0_checkpoint": str(c0_ckpt),
         "treatment_c1_checkpoint": str(c1_ckpt),
+        "endpoint_verification": {
+            "control_c0": meta_c0,
+            "treatment_c1": meta_c1,
+        },
         "model_fingerprints": {
             "reference_r": fp_r,
             "control_c0": fp_c0,
@@ -559,14 +739,24 @@ def run_paired_harness(
             "compound_retraining_contrast (C1 - R)": round(float(delta_compound), 6),
             "delta_gap_change (C1_gap - C0_gap)": round(float(delta_gap_c1_c0), 6),
             "ctc_per_delta_percentage_points (C1 - R)": round(float(per_degradation_c1), 4),
+            "ctc_per_delta_c0_percentage_points (C0 - R)": round(float(per_degradation_c0), 4),
             "ctc_per_guardrail_pass": ctc_guardrail_pass,
         },
         "speaker_stratified_bootstrap_95ci": boot_results,
+        "protocol_z_zero_oracle": proto_z_report,
     }
 
     report_path = output_dir / "PAIRED_EVALUATION_REPORT.json"
     report_path.write_text(json.dumps(report, indent=2) + "\n")
     print(f"\n[REPORT] Saved paired evaluation report to {report_path}")
+
+    # Guardrail Enforcement
+    if not ctc_guardrail_pass and strict_guardrails:
+        raise RuntimeError(
+            f"GUARDRAIL FAILURE: Treatment C1 CTC PER degraded by +{per_degradation_c1:.2f} percentage points vs Reference R "
+            f"(limit: +1.0 percentage point). Experiment marked INVALID per safety contract."
+        )
+
     return report
 
 
@@ -577,6 +767,10 @@ def main():
     ap.add_argument("--ref-checkpoint", default="checkpoints/RQ1-TRN-02A/recovered/best.pt", help="Path to Reference R production baseline checkpoint")
     ap.add_argument("--manifest", default="manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json", help="Path to split manifest")
     ap.add_argument("--authorized-zip", default="datasets/L2-ARCTIC/authorized_RQ1-TRN-02A_fold1_train_val_only.zip", help="Path to authorized audio zip archive")
+    ap.add_argument("--prompts", default="resources/L2-ARCTIC/prompts.json", help="Path to written prompts JSON for Protocol Z")
+    ap.add_argument("--skip-protocol-z", action="store_true", help="Skip secondary Protocol Z zero-oracle evaluation")
+    ap.add_argument("--allow-incomplete-endpoints", action="store_true", help="Allow evaluating checkpoints that did not complete 3,600 updates (exploratory only)")
+    ap.add_argument("--no-strict-guardrails", action="store_true", help="Do not raise exception on CTC PER guardrail failure (still marks report invalid)")
     ap.add_argument("--output-dir", default="manifests/RQ1-TRN-02B/evaluation", help="Directory to save paired evaluation artifacts")
     ap.add_argument("--device", default="cpu", help="Device for evaluation (cpu or cuda)")
     ap.add_argument("--dry-run", action="store_true", help="Validate checkpoint presence and hashes on CPU then exit")
@@ -621,6 +815,10 @@ def main():
         zip_path=args.authorized_zip,
         output_dir=out_dir,
         device=device,
+        prompts_source=args.prompts,
+        skip_protocol_z=args.skip_protocol_z,
+        allow_incomplete_endpoints=args.allow_incomplete_endpoints,
+        strict_guardrails=not args.no_strict_guardrails,
     )
 
 

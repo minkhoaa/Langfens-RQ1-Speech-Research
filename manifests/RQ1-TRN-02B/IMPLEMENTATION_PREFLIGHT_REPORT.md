@@ -197,7 +197,7 @@ Results: **136 PASSED, 4 SKIPPED, 0 FAILED** (Duration: 102.77s)
 | **Split Manifest** | `manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json` | `7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b` | **VERIFIED MATCH** |
 | **Initial Checkpoint** | `checkpoints/RQ1-TRN-02A/recovered/best.pt` | `a2445c8d17910bf3c03101f50fc419675e8d1bc012af43af10267a28dbba948b` | **VERIFIED MATCH** |
 | **Acoustic Backbone** | `facebook/wav2vec2-base-960h` | Revision `22aad52d435eb6dbaf354bdad9b0da84ce7d6156` | **PINNED REVISION** |
-| **CMUdict Frontend** | `cmudict-0.7b` | SHA-256 `8191784338d38eb5ea26bb02cfb6a4a09a5b3a62024b457e5e34be64fa4cfd0e` | **PINNED G2P** |
+| **CMUdict Frontend** | `cmudict-0.7b` | SHA-256 `81917843c7f44ce2b094ac63873c2c7a4cf802040792c455ba3ca406891c3d22` | **PINNED G2P** |
 
 ---
 
