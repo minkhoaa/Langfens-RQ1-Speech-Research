@@ -84,6 +84,7 @@ Design and implement the controlled acoustic conditioning ablation (Control Arm 
   - [checkpoints/07-colab-auth-r3-trust-boundary-closure.md](checkpoints/07-colab-auth-r3-trust-boundary-closure.md)
   - [checkpoints/08-live-gpu-runtime-and-staging-verification.md](checkpoints/08-live-gpu-runtime-and-staging-verification.md)
   - [checkpoints/09-colab-cpu-fp32-feasibility-static-gate.md](checkpoints/09-colab-cpu-fp32-feasibility-static-gate.md)
+  - [checkpoints/10-kaggle-t4x2-migration-feasibility-static-review.md](checkpoints/10-kaggle-t4x2-migration-feasibility-static-review.md)
 
 ## 6. Restart / Recovery Instructions
 - Safe restart point: All preflight tests passing locally on CPU.
@@ -115,3 +116,13 @@ See [checkpoints/09-colab-cpu-fp32-feasibility-static-gate.md](checkpoints/09-co
 - CPU benchmark requires separate Colab-CPU authorization, narrow GPU-only policy exception, isolated tested FP32 benchmark driver, authentic TRAIN/VAL-only staging, and live timing evidence. No TEST data accessed in this review.
 - The historical 36h20 runtime message is not guaranteed uptime; no measured CPU throughput or RAM headroom yet. CPU vs GPU decision is `PENDING_MEASUREMENT`.
 - Latest real runtime evidence remains Step 08 (agent-reported); no new Colab session or optimizer step was executed. New Step 10 must record measured or blocked CPU benchmark execution and update INDEX.
+
+
+## 9. Step 10 — Kaggle T4×2 GPU static feasibility review (2026-10-28)
+
+See [checkpoints/10-kaggle-t4x2-migration-feasibility-static-review.md](checkpoints/10-kaggle-t4x2-migration-feasibility-static-review.md).
+
+- **Status:** `STATIC_PLATFORM_REVIEW_RECORDED`. Kaggle T4×2 is feasible in principle from public provider specifications and historical Colab T4 performance; **no Kaggle allocation, quota query, runtime benchmark or optimizer step executed**.
+- Official C0/C1 still `NOT_STARTED` (0/3600 updates each); separate CPU FP32 benchmark remains `NOT_EXECUTED` (0/50).
+- A Kaggle execution-policy amendment, licensed TRAIN/VAL-only staging, verified artifact hashes, Kaggle-specific launcher, per-epoch durable checkpoint mirroring, and operator approval are required. Original Colab GPU FP16 configuration and sealed TEST policy remain unchanged.
+- Next evidence milestone: a genuine Kaggle T4 FP16 50-successful-update preflight (Step 11) if authorized, with benchmark metrics; do not report measured feasibility before execution.
