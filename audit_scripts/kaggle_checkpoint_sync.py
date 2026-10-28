@@ -52,11 +52,16 @@ def resolve_hf_token(explicit_token: Optional[str] = None) -> Optional[str]:
         return None
     # Check potential local or staged token file locations
     candidate_token_files = [
-        Path.cwd() / "deploy" / "kaggle" / ".hf_token",
-        Path.cwd() / ".hf_token",
-        Path("/kaggle/working/deploy/kaggle/.hf_token"),
+        Path("/kaggle/working/hf_token.txt"),
         Path("/kaggle/working/.hf_token"),
+        Path("/kaggle/working/deploy/kaggle/hf_token.txt"),
+        Path("/kaggle/working/deploy/kaggle/.hf_token"),
+        Path("/kaggle/working/repo/deploy/kaggle/hf_token.txt"),
         Path("/kaggle/working/repo/deploy/kaggle/.hf_token"),
+        Path.cwd() / "deploy" / "kaggle" / "hf_token.txt",
+        Path.cwd() / "deploy" / "kaggle" / ".hf_token",
+        Path.cwd() / "hf_token.txt",
+        Path.cwd() / ".hf_token",
         Path.home() / ".cache" / "huggingface" / "token",
     ]
     for tf in candidate_token_files:

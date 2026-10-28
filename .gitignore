@@ -97,6 +97,8 @@ Thumbs.db
 *.pem
 .hf_token
 **/.hf_token
+hf_token.txt
+**/hf_token.txt
 .env
 .env.*
 !.env.example
