@@ -322,8 +322,12 @@ def execute_kaggle_training(
     if remote_mirror_token:
         cmd.extend(["--remote-mirror-token", str(remote_mirror_token)])
 
+    env = os.environ.copy()
+    repo_root = Path(__file__).resolve().parent.parent
+    env["PYTHONPATH"] = f"{repo_root}/src:{repo_root}:{repo_root / 'audit_scripts'}:{env.get('PYTHONPATH', '')}"
+
     print(f"[KAGGLE EXEC] Launching training subprocess: {' '.join(cmd)}")
-    proc = subprocess.run(cmd, check=False)
+    proc = subprocess.run(cmd, env=env, check=False)
 
     # 3. Classify Endpoint
     endpoint = classify_kaggle_training_endpoint(

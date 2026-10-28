@@ -29,8 +29,11 @@ import time
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-# Ensure src is on sys.path
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
+# Ensure repo root and src are on sys.path
+_repo_dir = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(_repo_dir / "src"))
+sys.path.insert(0, str(_repo_dir))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import numpy as np
 import torch
@@ -732,7 +735,10 @@ def main():
     mirror_target = args.remote_mirror_target or cfg.get("remote_mirror_target")
     mirror_token = args.remote_mirror_token or cfg.get("remote_mirror_token")
     if mirror_backend:
-        from audit_scripts.kaggle_checkpoint_sync import KaggleRemoteMirror
+        try:
+            from audit_scripts.kaggle_checkpoint_sync import KaggleRemoteMirror
+        except ImportError:
+            from kaggle_checkpoint_sync import KaggleRemoteMirror
         remote_mirror = KaggleRemoteMirror(
             backend=mirror_backend,
             remote_target=mirror_target,
