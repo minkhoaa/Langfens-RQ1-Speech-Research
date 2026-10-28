@@ -20,6 +20,8 @@ Key Guarantees:
 from __future__ import annotations
 
 import argparse
+import hashlib
+import os
 import re
 import shutil
 import subprocess
@@ -29,7 +31,21 @@ from typing import Dict, List, Optional, Tuple
 
 REPO_URL = "https://github.com/minkhoaa/Langfens-RQ1-Speech-Research.git"
 DRIVE_PROJECT_ROOT = "/content/drive/MyDrive/KLTN-Dataset"
+PROJECT_DRIVE_FOLDER_ID = "1Zms4bwv3QYZcmDQAeYolbq-ovrZVRlnK"
 REQUIRED_COMPUTE_UNITS_MIN = 15.0
+EXPECTED_MANIFEST_SHA256 = "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b"
+
+
+def compute_sha256(path: Path | str) -> str:
+    """Computes SHA-256 digest in 64KB blocks."""
+    p = Path(path)
+    if not p.is_file():
+        raise FileNotFoundError(f"File not found: {p}")
+    h = hashlib.sha256()
+    with open(p, "rb") as f:
+        for chunk in iter(lambda: f.read(65536), b""):
+            h.update(chunk)
+    return h.hexdigest()
 
 
 def validate_arm(arm: str) -> str:
@@ -85,19 +101,58 @@ def check_git_clean() -> bool:
     return len(status) == 0
 
 
-def validate_static_software(commit_sha: str) -> Tuple[bool, str]:
-    """Validates local static software: git cleanliness, configs, and manifests."""
-    if not check_git_clean():
-        return False, "FAIL: Git working directory is not clean."
+def validate_static_software(commit_sha: str, repo_root: Optional[Path] = None) -> Tuple[bool, str]:
+    """
+    Validates local static software:
+    1. Working tree cleanliness.
+    2. Actual Git HEAD equals the requested commit SHA (rejects wrong commits even if tree is clean).
+    3. Required configurations exist.
+    4. Frozen split manifest SHA-256 matches the ledger.
+    """
+    root = repo_root or Path(".")
 
+    # 1. Check working directory cleanliness
+    try:
+        status = subprocess.check_output(
+            ["git", "status", "--porcelain"],
+            cwd=str(root),
+            text=True,
+        ).strip()
+        if len(status) > 0:
+            return False, f"FAIL: Git working directory is not clean:\n{status}"
+    except Exception as exc:
+        return False, f"FAIL: Failed to check git status: {exc}"
+
+    # 2. Check actual Git HEAD equals requested commit SHA
+    try:
+        actual_head = subprocess.check_output(
+            ["git", "rev-parse", "HEAD"],
+            cwd=str(root),
+            text=True,
+        ).strip().lower()
+        requested = commit_sha.strip().lower()
+        if actual_head != requested:
+            return False, f"FAIL: Git HEAD mismatch: actual {actual_head} != requested {requested}"
+    except Exception as exc:
+        return False, f"FAIL: Failed to resolve Git HEAD: {exc}"
+
+    # 3. Check required configurations exist
     for arm in ("c0", "c1"):
-        cfg_file = Path(f"configs/rq1_trn_02b_{arm}.yaml")
+        cfg_file = root / f"configs/rq1_trn_02b_{arm}.yaml"
         if not cfg_file.is_file():
             return False, f"FAIL: Config file missing: {cfg_file}"
 
-    manifest_file = Path("manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json")
+    # 4. Check split manifest existence and cryptographic SHA-256 against ledger
+    manifest_file = root / "manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json"
     if not manifest_file.is_file():
         return False, f"FAIL: Split manifest missing: {manifest_file}"
+
+    manifest_sha = compute_sha256(manifest_file)
+    if manifest_sha != EXPECTED_MANIFEST_SHA256:
+        return False, (
+            f"FAIL: Split manifest SHA-256 mismatch!\n"
+            f"Computed: {manifest_sha}\nExpected: {EXPECTED_MANIFEST_SHA256}"
+        )
 
     return True, "PASS_SOFTWARE (Note: PASS_SOFTWARE does not authorize GPU execution)"
 
@@ -144,6 +199,10 @@ def generate_colab_arm_plan(
 def evaluate_readiness_layers(
     commit_sha: str,
     raw_usage: Optional[str] = None,
+    drive_mounted: Optional[bool] = None,
+    staging_verified: Optional[bool] = None,
+    operator_authorized: Optional[bool] = None,
+    repo_root: Optional[Path] = None,
 ) -> Dict[str, Tuple[str, str]]:
     """
     Evaluates all 5 operational readiness layers independently:
@@ -156,7 +215,7 @@ def evaluate_readiness_layers(
     layers: Dict[str, Tuple[str, str]] = {}
 
     # Layer 1: Software
-    soft_ok, soft_msg = validate_static_software(commit_sha)
+    soft_ok, soft_msg = validate_static_software(commit_sha, repo_root=repo_root)
     layers["1_STATIC_SOFTWARE"] = ("PASS_SOFTWARE" if soft_ok else "FAIL", soft_msg)
 
     # Layer 2: Quota
@@ -167,23 +226,61 @@ def evaluate_readiness_layers(
     else:
         layers["2_COMPUTE_QUOTA"] = ("BLOCKED", "colab usage query not available")
 
-    # Layer 3: Interactive Mount
-    layers["3_DRIVE_MOUNT"] = ("PENDING_OPERATOR_ACTION", "Interactive terminal execution of 'colab drivemount' required.")
+    # Layer 3: Interactive Mount & Storage Identity
+    if drive_mounted is True:
+        layers["3_DRIVE_MOUNT"] = ("PASS", "Google Drive mount verified on active runtime.")
+    elif drive_mounted is False:
+        layers["3_DRIVE_MOUNT"] = ("BLOCKED", "Google Drive is NOT mounted.")
+    else:
+        layers["3_DRIVE_MOUNT"] = (
+            "PENDING_RUNTIME_VERIFICATION",
+            "Interactive terminal execution of 'colab drivemount' required; storage identity PENDING_RUNTIME_VERIFICATION.",
+        )
 
     # Layer 4: VM Staging & Write Test
-    layers["4_VM_STAGING_WRITE"] = ("PENDING_RUNTIME_VERIFICATION", "Live VM copy & persistent Drive write test outstanding.")
-
-    # Layer 5: Training Authorization
-    all_ready = (
-        layers["1_STATIC_SOFTWARE"][0] == "PASS_SOFTWARE"
-        and layers["2_COMPUTE_QUOTA"][0] == "PASS"
-    )
-    if all_ready:
-        layers["5_GPU_AUTHORIZATION"] = ("PENDING_OPERATOR_SIGN_OFF", "Prerequisites met; operator sign-off required.")
+    if staging_verified is True:
+        layers["4_VM_STAGING_WRITE"] = ("PASS", "VM local staging & persistent Drive write access verified.")
+    elif staging_verified is False:
+        layers["4_VM_STAGING_WRITE"] = ("BLOCKED", "VM staging or write verification failed.")
     else:
-        layers["5_GPU_AUTHORIZATION"] = ("BLOCKED", "Upstream prerequisite layers are blocked.")
+        layers["4_VM_STAGING_WRITE"] = (
+            "PENDING_RUNTIME_VERIFICATION",
+            "Live VM copy & persistent Drive write test outstanding.",
+        )
+
+    # Layer 5: Explicit Operator Training Authorization
+    if operator_authorized is True:
+        layers["5_OPERATOR_AUTHORIZATION"] = ("PASS", "Explicit operator execution authorization confirmed.")
+    elif operator_authorized is False:
+        layers["5_OPERATOR_AUTHORIZATION"] = ("BLOCKED", "Operator explicitly withheld authorization.")
+    else:
+        layers["5_OPERATOR_AUTHORIZATION"] = (
+            "PENDING_OPERATOR_SIGN_OFF",
+            "Operator sign-off required; PASS_SOFTWARE does not authorize GPU execution.",
+        )
 
     return layers
+
+
+def is_executable_ready(layers: Dict[str, Tuple[str, str]]) -> Tuple[bool, str]:
+    """
+    Evaluates whether all 5 mandatory operational layers are ready for execution.
+    Executable readiness requires:
+    - Layer 1: PASS_SOFTWARE
+    - Layer 2: PASS
+    - Layer 3: PASS
+    - Layer 4: PASS
+    - Layer 5: PASS
+    Any blocked, pending, or unverified layer prevents execution readiness.
+    """
+    for layer_name, (status, detail) in layers.items():
+        if layer_name == "1_STATIC_SOFTWARE":
+            if status != "PASS_SOFTWARE":
+                return False, f"NOT READY: {layer_name} is {status} ({detail})"
+        else:
+            if status != "PASS":
+                return False, f"NOT READY: {layer_name} is {status} ({detail})"
+    return True, "READY: All mandatory operational layers verified and authorized."
 
 
 def main():
@@ -192,9 +289,13 @@ def main():
     ap.add_argument("--commit", default=None, help="Target immutable Git commit SHA (defaults to HEAD)")
     ap.add_argument("--session-prefix", default="langfens-rq1", help="Colab session prefix")
     ap.add_argument("--run-id", default=None, help="Optional execution run identifier")
-    ap.add_argument("--check-only", action="store_true", help="Perform preflight readiness checks and exit (fails closed with code 1 if blocked)")
+    ap.add_argument("--check-only", action="store_true", help="Perform preflight readiness checks and exit (fails closed with code 1 if blocked or unverified)")
     ap.add_argument("--check-software-only", action="store_true", help="Validate static software only (exits 0 if software is valid)")
     ap.add_argument("--print-plan", action="store_true", help="Print verified execution command sequence")
+    ap.add_argument("--mock-usage", default=None, help="Mock output string for colab usage (for testing)")
+    ap.add_argument("--drive-mounted", action="store_true", help="Assert Drive is mounted (for runtime check)")
+    ap.add_argument("--staging-verified", action="store_true", help="Assert staging has been verified")
+    ap.add_argument("--operator-authorized", action="store_true", help="Assert operator sign-off granted")
     args = ap.parse_args()
 
     commit = validate_commit_sha(args.commit if args.commit else get_current_git_head())
@@ -204,7 +305,7 @@ def main():
     print(f"Target Git Commit: {commit}")
     print("=" * 80)
 
-    # Software-only check mode
+    # Software-only check mode: exits 0 if software validation passes
     if args.check_software_only:
         soft_ok, soft_msg = validate_static_software(commit)
         print(f"[SOFTWARE VALIDATION] {soft_msg}")
@@ -217,18 +318,25 @@ def main():
             sys.exit(1)
 
     # Query Colab CLI usage (read-only)
-    colab_bin = shutil.which("colab")
-    raw_usage = None
-    if colab_bin:
-        try:
-            raw_usage = subprocess.check_output([colab_bin, "usage"], text=True)
-        except Exception as exc:
-            print(f"[COLAB QUOTA] Failed to query colab usage: {exc}", file=sys.stderr)
-    else:
-        print("[COLAB CLI] Binary 'colab' not found in PATH.", file=sys.stderr)
+    raw_usage = args.mock_usage
+    if raw_usage is None:
+        colab_bin = shutil.which("colab")
+        if colab_bin:
+            try:
+                raw_usage = subprocess.check_output([colab_bin, "usage"], text=True)
+            except Exception as exc:
+                print(f"[COLAB QUOTA] Failed to query colab usage: {exc}", file=sys.stderr)
+        else:
+            print("[COLAB CLI] Binary 'colab' not found in PATH.", file=sys.stderr)
 
     # Multi-layer readiness assessment
-    layers = evaluate_readiness_layers(commit, raw_usage)
+    layers = evaluate_readiness_layers(
+        commit_sha=commit,
+        raw_usage=raw_usage,
+        drive_mounted=True if args.drive_mounted else None,
+        staging_verified=True if args.staging_verified else None,
+        operator_authorized=True if args.operator_authorized else None,
+    )
 
     print("\n--- OPERATIONAL READINESS MATRIX ---")
     for name, (status, detail) in layers.items():
@@ -246,25 +354,23 @@ def main():
             print("\n".join(plan))
 
     print("\n" + "=" * 80)
-    quota_status = layers["2_COMPUTE_QUOTA"][0]
-    software_status = layers["1_STATIC_SOFTWARE"][0]
+    is_ready, ready_msg = is_executable_ready(layers)
 
-    if software_status != "PASS_SOFTWARE":
-        print("DECISION GATE: FAIL_SOFTWARE")
-        print("Software validation failed. Resolve working tree or configuration issues.")
-        sys.exit(1)
-
-    if quota_status != "PASS":
-        print("DECISION GATE: BLOCKED ON COMPUTE QUOTA")
-        print(f"Status: {layers['2_COMPUTE_QUOTA'][1]}")
-        print("Operator must purchase/allocate ~15-20 compute units before executing.")
+    if not is_ready:
+        print("DECISION GATE: NOT READY FOR EXECUTION")
+        print(f"Detail: {ready_msg}")
         print("Notice: PASS_SOFTWARE does not authorize GPU execution.")
         # Fail closed on executable check
         if args.check_only:
             sys.exit(1)
+        # Even without check-only, if software failed, exit 1
+        if layers["1_STATIC_SOFTWARE"][0] != "PASS_SOFTWARE":
+            sys.exit(1)
     else:
-        print("DECISION GATE: SOFTWARE & QUOTA READY (Pending interactive Drive mount)")
-        print("Notice: PASS_SOFTWARE does not authorize GPU execution.")
+        print("DECISION GATE: FULLY READY FOR EXECUTION")
+        print(f"Detail: {ready_msg}")
+        if args.check_only:
+            sys.exit(0)
 
     print("=" * 80)
 

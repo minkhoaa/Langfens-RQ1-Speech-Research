@@ -41,6 +41,7 @@ from audit_scripts.colab_launch_workflow import (
     check_quota_status,
     evaluate_readiness_layers,
     generate_colab_arm_plan,
+    is_executable_ready,
     parse_colab_usage,
     validate_arm,
     validate_commit_sha,
@@ -51,7 +52,9 @@ from audit_scripts.colab_stage_and_verify import (
     compute_sha256,
     resolve_drive_output_dir,
     stage_file_with_hash,
+    validate_drive_output_hierarchy,
     verify_drive_authenticity,
+    verify_google_drive_api_identity,
     verify_write_access,
 )
 import audit_scripts.colab_stage_and_verify as stage_mod
@@ -500,14 +503,72 @@ def test_authentic_drive_persistence_verification(tmp_path):
     with pytest.raises(RuntimeError, match="failed cryptographic identity verification"):
         verify_drive_authenticity(fake_drive, require_mount=False)
 
-    # Case 3: Directory with authentic baseline hash must pass
+    # Case 3: Directory with authentic baseline hash in pre-runtime environment
+    # A mountpoint and matching baseline hash alone must NOT be described as proof of root folder identity.
+    # Must return PENDING_RUNTIME_VERIFICATION, not PASS.
     real_baseline = Path("checkpoints/RQ1-TRN-02A/recovered/best.pt")
     if real_baseline.is_file():
         shutil.copyfile(str(real_baseline), str(chk_dir / "best.pt"))
-        assert verify_drive_authenticity(fake_drive, require_mount=False) is True
+        res = verify_drive_authenticity(fake_drive, require_mount=False)
+        assert res == "PENDING_RUNTIME_VERIFICATION"
+
+
+def test_drive_output_hierarchy_and_containment(tmp_path):
+    drive_root = tmp_path / "drive" / "KLTN-Dataset"
+    drive_root.mkdir(parents=True)
+
+    # Valid output path
+    valid_out = drive_root / "manifests/RQ1-TRN-02B/checkpoints/C0/run_01"
+    assert validate_drive_output_hierarchy(valid_out, drive_root, "C0") is True
+
+    # Arm mismatch in hierarchy
+    with pytest.raises(ValueError, match="does not belong to authorized hierarchy"):
+        validate_drive_output_hierarchy(valid_out, drive_root, "C1")
+
+    # Outside Drive root
+    outside_out = tmp_path / "outside_dir" / "manifests/RQ1-TRN-02B/checkpoints/C0"
+    with pytest.raises(ValueError, match="does not belong to authorized Drive root"):
+        validate_drive_output_hierarchy(outside_out, drive_root, "C0")
 
 
 # --- 13. Primary Endpoint Verification & Classification (Defect G) ---
+
+def _make_checkpoint_payload(
+    arm: str = "C0",
+    successful_updates: int = 3600,
+    primary_3600_updates_completed: bool = True,
+    primary_endpoint_reached: bool = True,
+    endpoint_status: str = "COMPLETED_3600_UPDATES",
+    guardrail_violation: bool = False,
+    git_sha: str = "ea8762079735cfb5520de49eaca4528a458a1f38",
+    split_sha256: str = "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b",
+    initial_checkpoint_sha256: str = "a2445c8d17910bf3c03101f50fc419675e8d1bc012af43af10267a28dbba948b",
+    include_state_dicts: bool = True,
+) -> dict:
+    import torch
+    ck = {
+        "successful_updates": successful_updates,
+        "epoch": 5,
+        "metadata": {
+            "arm": arm,
+            "successful_updates": successful_updates,
+            "primary_3600_updates_completed": primary_3600_updates_completed,
+            "primary_endpoint_reached": primary_endpoint_reached,
+            "endpoint_status": endpoint_status,
+            "guardrail_violation": guardrail_violation,
+            "git_sha": git_sha,
+            "split_sha256": split_sha256,
+            "initial_checkpoint_sha256": initial_checkpoint_sha256,
+            "schema_version": "rq1_trn_02b_v1",
+        },
+    }
+    if include_state_dicts:
+        ck["model"] = {"encoder.weight": torch.tensor([1.0])}
+        ck["optimizer"] = {"param_groups": [{"lr": 1e-4}]}
+        ck["scheduler"] = {"last_epoch": 5}
+        ck["scaler"] = {"scale": 1.0}
+    return ck
+
 
 def test_primary_endpoint_classification_states(tmp_path):
     import torch
@@ -553,35 +614,327 @@ def test_primary_endpoint_classification_states(tmp_path):
     assert info_incomp["status"] == "INCOMPLETE"
     assert info_incomp["successful_updates"] == 1800
 
-    # State 4: COMPLETED_3600_UPDATES (fixed_budget_checkpoint.pt with 3600 updates)
-    completed_payload = {
-        "metadata": {
-            "arm": "C0",
-            "guardrail_violation": False,
-            "primary_3600_updates_completed": True,
-            "successful_updates": 3600,
-        },
-        "successful_updates": 3600,
-        "epoch": 5,
-    }
+    # State 4: COMPLETED_3600_UPDATES (fixed_budget_checkpoint.pt with all 9 invariants)
+    completed_payload = _make_checkpoint_payload(arm="C0", successful_updates=3600)
     torch.save(completed_payload, out_dir / "fixed_budget_checkpoint.pt")
     info_comp = classify_training_endpoint(out_dir, "C0")
     assert info_comp["status"] == "COMPLETED_3600_UPDATES"
     assert info_comp["successful_updates"] == 3600
 
 
-# --- 14. Fail-Closed Readiness Checks (Defect E) ---
+# --- Task A Negative Endpoint Regressions ---
+
+def test_task_a_negative_endpoint_regressions(tmp_path):
+    import torch
+    out_dir = tmp_path / "neg_endpoints"
+    out_dir.mkdir()
+    chk_file = out_dir / "fixed_budget_checkpoint.pt"
+
+    # 1. 1,800 updates with completion flag True
+    ck1 = _make_checkpoint_payload(
+        successful_updates=1800,
+        primary_3600_updates_completed=True,
+    )
+    torch.save(ck1, chk_file)
+    res1 = classify_training_endpoint(out_dir, "C0")
+    assert res1["status"] == "FAILED"
+    assert "Contradictory metadata" in res1["message"]
+
+    # 2. 3,600 updates with completion flag False
+    ck2 = _make_checkpoint_payload(
+        successful_updates=3600,
+        primary_3600_updates_completed=False,
+    )
+    torch.save(ck2, chk_file)
+    res2 = classify_training_endpoint(out_dir, "C0")
+    assert res2["status"] == "FAILED"
+    assert "Contradictory metadata" in res2["message"]
+
+    # 3. 3,600 updates with missing endpoint status
+    ck3 = _make_checkpoint_payload(successful_updates=3600)
+    del ck3["metadata"]["endpoint_status"]
+    torch.save(ck3, chk_file)
+    res3 = classify_training_endpoint(out_dir, "C0")
+    assert res3["status"] == "FAILED"
+    assert "endpoint_status" in res3["message"]
+
+    # 4a. Wrong arm
+    ck4a = _make_checkpoint_payload(arm="C1")
+    torch.save(ck4a, chk_file)
+    res4a = classify_training_endpoint(out_dir, "C0")
+    assert res4a["status"] == "FAILED"
+    assert "Arm mismatch" in res4a["message"]
+
+    # 4b. Incompatible provenance (corrupted split SHA)
+    ck4b = _make_checkpoint_payload(split_sha256="corrupt_hash" + "0" * 28)
+    torch.save(ck4b, chk_file)
+    res4b = classify_training_endpoint(out_dir, "C0")
+    assert res4b["status"] == "FAILED"
+    assert "Provenance mismatch" in res4b["message"]
+
+    # 5. Guardrail violation despite completion flags
+    ck5 = _make_checkpoint_payload(
+        successful_updates=3600,
+        primary_3600_updates_completed=True,
+        guardrail_violation=True,
+    )
+    torch.save(ck5, chk_file)
+    res5 = classify_training_endpoint(out_dir, "C0")
+    assert res5["status"] == "HALTED_GUARDRAIL"
+    assert "guardrail violation" in res5["message"]
+
+    # 6a. Incomplete checkpoint payload (missing model state dict)
+    ck6a = _make_checkpoint_payload(include_state_dicts=False)
+    torch.save(ck6a, chk_file)
+    res6a = classify_training_endpoint(out_dir, "C0")
+    assert res6a["status"] == "FAILED"
+    assert "Corrupt or incomplete checkpoint payload" in res6a["message"]
+
+    # 6b. Corrupt checkpoint file (truncated bytes)
+    chk_file.write_bytes(b"PK\x03\x04not_a_valid_torch_checkpoint")
+    res6b = classify_training_endpoint(out_dir, "C0")
+    assert res6b["status"] == "FAILED"
+    assert "Failed to load or parse" in res6b["message"]
+
+
+# --- 14. Fail-Closed Readiness Checks (Task B) ---
 
 def test_fail_closed_readiness_checks():
     raw_usage_zero = "Current balance: 0.00 compute units\nUsage rate: 0.00/hr\nActive assignments: 0"
-    commit = "a497ec3f0b6dd4c760c4e40296481f61b6426d8d"
+    commit = "ea8762079735cfb5520de49eaca4528a458a1f38"
     layers = evaluate_readiness_layers(commit, raw_usage_zero)
 
     assert layers["2_COMPUTE_QUOTA"][0] == "BLOCKED"
     assert "ZERO_QUOTA" in layers["2_COMPUTE_QUOTA"][1]
-    assert layers["5_GPU_AUTHORIZATION"][0] == "BLOCKED"
+    assert layers["5_OPERATOR_AUTHORIZATION"][0] != "PASS"
 
     # With funded quota
     raw_usage_funded = "Current balance: 20.00 compute units\nUsage rate: 1.00/hr\nActive assignments: 0"
     layers_funded = evaluate_readiness_layers(commit, raw_usage_funded)
     assert layers_funded["2_COMPUTE_QUOTA"][0] == "PASS"
+
+
+# --- Task B Strict Executable Readiness Tests ---
+
+def _setup_clean_test_repo(tmp_path: Path) -> Tuple[Path, str]:
+    repo_dir = tmp_path / "clean_repo"
+    repo_dir.mkdir(parents=True, exist_ok=True)
+    subprocess.run(["git", "init"], cwd=str(repo_dir), check=True, capture_output=True)
+    subprocess.run(["git", "config", "user.email", "audit@langfens.local"], cwd=str(repo_dir), check=True)
+    subprocess.run(["git", "config", "user.name", "Auditor"], cwd=str(repo_dir), check=True)
+
+    # Configs
+    (repo_dir / "configs").mkdir(parents=True, exist_ok=True)
+    (repo_dir / "configs" / "rq1_trn_02b_c0.yaml").write_text("experiment: c0\n")
+    (repo_dir / "configs" / "rq1_trn_02b_c1.yaml").write_text("experiment: c1\n")
+
+    # Real manifest
+    manifest_dir = repo_dir / "manifests" / "RQ1-SPLIT-01"
+    manifest_dir.mkdir(parents=True, exist_ok=True)
+    real_manifest = Path("manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json")
+    shutil.copyfile(str(real_manifest), str(manifest_dir / "l2arctic_4fold_splits.json"))
+
+    subprocess.run(["git", "add", "."], cwd=str(repo_dir), check=True)
+    subprocess.run(["git", "commit", "-m", "init"], cwd=str(repo_dir), check=True, capture_output=True)
+    head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=str(repo_dir), text=True).strip()
+    return repo_dir, head
+
+
+def test_task_b_strict_executable_readiness(tmp_path):
+    repo_dir, commit = _setup_clean_test_repo(tmp_path)
+    raw_funded = "Current balance: 20.00 compute units\nUsage rate: 1.00/hr\nActive assignments: 0"
+
+    # 1. Zero quota -> NOT READY
+    raw_zero = "Current balance: 0.00 compute units\nUsage rate: 0.00/hr\nActive assignments: 0"
+    layers_zero = evaluate_readiness_layers(commit, raw_usage=raw_zero, repo_root=repo_dir)
+    ready_zero, reason_zero = is_executable_ready(layers_zero)
+    assert not ready_zero
+    assert layers_zero["1_STATIC_SOFTWARE"][0] == "PASS_SOFTWARE"
+    assert layers_zero["2_COMPUTE_QUOTA"][0] == "BLOCKED"
+    assert "2_COMPUTE_QUOTA" in reason_zero
+
+    # 2. Sufficient quota but missing Drive mount -> NOT READY
+    layers_no_drive = evaluate_readiness_layers(commit, raw_usage=raw_funded, drive_mounted=None, repo_root=repo_dir)
+    ready_no_drive, reason_no_drive = is_executable_ready(layers_no_drive)
+    assert not ready_no_drive
+    assert layers_no_drive["2_COMPUTE_QUOTA"][0] == "PASS"
+    assert layers_no_drive["3_DRIVE_MOUNT"][0] != "PASS"
+    assert "3_DRIVE_MOUNT" in reason_no_drive
+
+    # 3. Sufficient quota & Drive mount, but unverified staging -> NOT READY
+    layers_no_staging = evaluate_readiness_layers(
+        commit, raw_usage=raw_funded, drive_mounted=True, staging_verified=None, repo_root=repo_dir
+    )
+    ready_no_staging, reason_no_staging = is_executable_ready(layers_no_staging)
+    assert not ready_no_staging
+    assert layers_no_staging["3_DRIVE_MOUNT"][0] == "PASS"
+    assert layers_no_staging["4_VM_STAGING_WRITE"][0] != "PASS"
+    assert "4_VM_STAGING_WRITE" in reason_no_staging
+
+    # 4. Sufficient quota, Drive mount, staging verified, but missing operator authorization -> NOT READY
+    layers_no_auth = evaluate_readiness_layers(
+        commit, raw_usage=raw_funded, drive_mounted=True, staging_verified=True, operator_authorized=None, repo_root=repo_dir
+    )
+    ready_no_auth, reason_no_auth = is_executable_ready(layers_no_auth)
+    assert not ready_no_auth
+    assert layers_no_auth["4_VM_STAGING_WRITE"][0] == "PASS"
+    assert layers_no_auth["5_OPERATOR_AUTHORIZATION"][0] != "PASS"
+    assert "5_OPERATOR_AUTHORIZATION" in reason_no_auth
+
+    # All 5 layers satisfied -> READY
+    layers_all = evaluate_readiness_layers(
+        commit, raw_usage=raw_funded, drive_mounted=True, staging_verified=True, operator_authorized=True, repo_root=repo_dir
+    )
+    ready_all, reason_all = is_executable_ready(layers_all)
+    assert ready_all is True
+    assert "READY" in reason_all
+
+
+# --- Task C Immutable Source Validation Tests ---
+
+def test_task_c_immutable_source_validation(tmp_path):
+    repo_dir = tmp_path / "test_repo"
+    repo_dir.mkdir()
+    subprocess.run(["git", "init"], cwd=str(repo_dir), check=True, capture_output=True)
+    subprocess.run(["git", "config", "user.email", "audit@langfens.local"], cwd=str(repo_dir), check=True)
+    subprocess.run(["git", "config", "user.name", "Auditor"], cwd=str(repo_dir), check=True)
+
+    # Configs
+    (repo_dir / "configs").mkdir()
+    (repo_dir / "configs" / "rq1_trn_02b_c0.yaml").write_text("experiment: c0\n")
+    (repo_dir / "configs" / "rq1_trn_02b_c1.yaml").write_text("experiment: c1\n")
+
+    # Real manifest
+    manifest_dir = repo_dir / "manifests" / "RQ1-SPLIT-01"
+    manifest_dir.mkdir(parents=True)
+    real_manifest = Path("manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json")
+    shutil.copyfile(str(real_manifest), str(manifest_dir / "l2arctic_4fold_splits.json"))
+
+    subprocess.run(["git", "add", "."], cwd=str(repo_dir), check=True)
+    subprocess.run(["git", "commit", "-m", "init"], cwd=str(repo_dir), check=True, capture_output=True)
+    real_head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=str(repo_dir), text=True).strip()
+
+    # 1. Matching commit SHA on clean repo -> PASS_SOFTWARE
+    pass_ok, pass_msg = validate_static_software(real_head, repo_root=repo_dir)
+    assert pass_ok is True
+    assert "PASS_SOFTWARE" in pass_msg
+
+    # 2. Wrong commit SHA (even if clean worktree) -> FAIL
+    wrong_sha = "0" * 40
+    wrong_ok, wrong_msg = validate_static_software(wrong_sha, repo_root=repo_dir)
+    assert wrong_ok is False
+    assert "Git HEAD mismatch" in wrong_msg
+
+    # 3. Dirty working tree -> FAIL
+    (repo_dir / "dirty_file.txt").write_text("uncommitted")
+    dirty_ok, dirty_msg = validate_static_software(real_head, repo_root=repo_dir)
+    assert dirty_ok is False
+    assert "not clean" in dirty_msg
+    (repo_dir / "dirty_file.txt").unlink()
+
+    # 4. Corrupted manifest SHA-256 -> FAIL
+    (manifest_dir / "l2arctic_4fold_splits.json").write_text('{"corrupted": true}')
+    subprocess.run(["git", "commit", "-am", "corrupt manifest"], cwd=str(repo_dir), check=True, capture_output=True)
+    new_head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=str(repo_dir), text=True).strip()
+    corrupt_ok, corrupt_msg = validate_static_software(new_head, repo_root=repo_dir)
+    assert corrupt_ok is False
+    assert "Split manifest SHA-256 mismatch" in corrupt_msg
+
+
+def test_cli_invocation_exit_codes(tmp_path):
+    repo_dir, commit = _setup_clean_test_repo(tmp_path)
+    script_path = str(Path("audit_scripts/colab_launch_workflow.py").resolve())
+
+    # 1. check-software-only exits 0 on clean valid repo
+    res_soft = subprocess.run(
+        [sys.executable, script_path, "--commit", commit, "--check-software-only"],
+        cwd=str(repo_dir),
+        capture_output=True,
+        text=True,
+    )
+    assert res_soft.returncode == 0
+    assert "PASS_SOFTWARE" in res_soft.stdout
+
+    # 2. check-software-only exits 1 on wrong commit
+    res_wrong_commit = subprocess.run(
+        [sys.executable, script_path, "--commit", "0" * 40, "--check-software-only"],
+        cwd=str(repo_dir),
+        capture_output=True,
+        text=True,
+    )
+    assert res_wrong_commit.returncode == 1
+    assert "FAIL" in res_wrong_commit.stdout
+
+    # 3. check-only with zero quota exits 1
+    res_check_zero = subprocess.run(
+        [
+            sys.executable, script_path,
+            "--commit", commit, "--check-only",
+            "--mock-usage", "Current balance: 0.00 compute units\nUsage rate: 0.00/hr\nActive assignments: 0",
+        ],
+        cwd=str(repo_dir),
+        capture_output=True,
+        text=True,
+    )
+    assert res_check_zero.returncode == 1
+    assert "NOT READY FOR EXECUTION" in res_check_zero.stdout
+
+    # 4. check-only with funded quota but missing drive mount exits 1 (NOT READY)
+    res_check_funded = subprocess.run(
+        [
+            sys.executable, script_path,
+            "--commit", commit, "--check-only",
+            "--mock-usage", "Current balance: 25.00 compute units\nUsage rate: 1.00/hr\nActive assignments: 0",
+        ],
+        cwd=str(repo_dir),
+        capture_output=True,
+        text=True,
+    )
+    assert res_check_funded.returncode == 1
+    assert "NOT READY FOR EXECUTION" in res_check_funded.stdout
+    assert "3_DRIVE_MOUNT" in res_check_funded.stdout
+
+    # 5. check-only with funded quota and drive mount, but unverified staging exits 1
+    res_check_staging = subprocess.run(
+        [
+            sys.executable, script_path,
+            "--commit", commit, "--check-only",
+            "--mock-usage", "Current balance: 25.00 compute units\nUsage rate: 1.00/hr\nActive assignments: 0",
+            "--drive-mounted",
+        ],
+        cwd=str(repo_dir),
+        capture_output=True,
+        text=True,
+    )
+    assert res_check_staging.returncode == 1
+    assert "4_VM_STAGING_WRITE" in res_check_staging.stdout
+
+    # 6. check-only with funded quota, drive mount, staging verified, but missing auth exits 1
+    res_check_auth = subprocess.run(
+        [
+            sys.executable, script_path,
+            "--commit", commit, "--check-only",
+            "--mock-usage", "Current balance: 25.00 compute units\nUsage rate: 1.00/hr\nActive assignments: 0",
+            "--drive-mounted", "--staging-verified",
+        ],
+        cwd=str(repo_dir),
+        capture_output=True,
+        text=True,
+    )
+    assert res_check_auth.returncode == 1
+    assert "5_OPERATOR_AUTHORIZATION" in res_check_auth.stdout
+
+    # 7. check-only with all 5 layers satisfied exits 0
+    res_check_all = subprocess.run(
+        [
+            sys.executable, script_path,
+            "--commit", commit, "--check-only",
+            "--mock-usage", "Current balance: 25.00 compute units\nUsage rate: 1.00/hr\nActive assignments: 0",
+            "--drive-mounted", "--staging-verified", "--operator-authorized",
+        ],
+        cwd=str(repo_dir),
+        capture_output=True,
+        text=True,
+    )
+    assert res_check_all.returncode == 0
+    assert "FULLY READY FOR EXECUTION" in res_check_all.stdout

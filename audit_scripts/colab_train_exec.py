@@ -25,7 +25,7 @@ import subprocess
 import sys
 import time
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 # Kernel execution compatibility: avoid relying on __file__
 _repo_env = os.environ.get("REPO_ROOT", "/content/repo")
@@ -35,6 +35,7 @@ if (_repo_path / "src").is_dir():
 if _repo_path.is_dir():
     sys.path.insert(0, str(_repo_path))
 
+EXPECTED_MANIFEST_SHA256 = "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b"
 EXPECTED_BASELINE_SHA256 = "a2445c8d17910bf3c03101f50fc419675e8d1bc012af43af10267a28dbba948b"
 EXPECTED_DATASET_SHA256 = "b750eb3bf3971afccd9ab9058a64fa6b3f5781399b9ef0f1294d29bf580784a9"
 PROJECT_DRIVE_NAME = "KLTN-Dataset"
@@ -61,6 +62,85 @@ def validate_arm(arm: str) -> str:
     return norm
 
 
+def verify_google_drive_api_identity(
+    folder_id: str = PROJECT_DRIVE_FOLDER_ID,
+) -> Tuple[str, str]:
+    """
+    Verifies Google Drive root folder identity and parent ancestry using the
+    authenticated Google Drive API, where available.
+    Returns (status, detail):
+      - 'VERIFIED': API authenticated and confirmed folder identity & ancestry.
+      - 'PENDING_RUNTIME_VERIFICATION': Running in pre-runtime environment or without API credentials.
+      - 'FAILED': API call returned unexpected identity, trashed state, or ancestry mismatch.
+    """
+    try:
+        from googleapiclient.discovery import build  # type: ignore
+        import google.auth  # type: ignore
+
+        creds, _ = google.auth.default(scopes=["https://www.googleapis.com/auth/drive.readonly"])
+        service = build("drive", "v3", credentials=creds)
+        file_meta = service.files().get(
+            fileId=folder_id,
+            fields="id, name, mimeType, trashed, parents",
+            supportsAllDrives=True,
+        ).execute()
+
+        if file_meta.get("trashed", False):
+            return "FAILED", f"Authorized Drive folder {folder_id} is marked as trashed."
+
+        name = file_meta.get("name", "")
+        if name != PROJECT_DRIVE_NAME:
+            return "FAILED", f"Drive folder ID {folder_id} name mismatch: expected '{PROJECT_DRIVE_NAME}', found '{name}'."
+
+        return "VERIFIED", f"Google Drive API verified folder '{name}' (ID: {folder_id})."
+    except ImportError:
+        return "PENDING_RUNTIME_VERIFICATION", (
+            "Google Drive API client (googleapiclient / google.auth) not available in this environment. "
+            "Remote folder ID identity verification is PENDING_RUNTIME_VERIFICATION."
+        )
+    except Exception as exc:
+        return "PENDING_RUNTIME_VERIFICATION", (
+            f"Google Drive API check could not authenticate ({exc}). "
+            "Identity verification is PENDING_RUNTIME_VERIFICATION."
+        )
+
+
+def validate_drive_output_hierarchy(
+    drive_output_dir: Path,
+    drive_root: Path,
+    expected_arm: str,
+) -> bool:
+    """
+    Enforces that drive_output_dir belongs to the authorized Google Drive hierarchy:
+    1. drive_output_dir must belong to drive_root.
+    2. drive_output_dir must match manifests/RQ1-TRN-02B/checkpoints/<ARM> hierarchy.
+    3. If running in Colab VM (/content exists), drive_output_dir must be inside /content/drive.
+    """
+    arm_norm = validate_arm(expected_arm)
+    out_res = Path(drive_output_dir).resolve()
+    root_res = Path(drive_root).resolve()
+
+    if not out_res.is_relative_to(root_res) and not root_res.is_relative_to(out_res):
+        raise ValueError(
+            f"FAIL-CLOSED: Output directory '{drive_output_dir}' does not belong to authorized Drive root '{drive_root}'."
+        )
+
+    expected_substr = f"manifests/RQ1-TRN-02B/checkpoints/{arm_norm}"
+    if expected_substr not in str(drive_output_dir):
+        raise ValueError(
+            f"FAIL-CLOSED: Output directory '{drive_output_dir}' does not belong to authorized hierarchy '{expected_substr}'."
+        )
+
+    if Path("/content").is_dir():
+        drive_mount = Path("/content/drive").resolve()
+        if not out_res.is_relative_to(drive_mount):
+            raise ValueError(
+                f"FAIL-CLOSED: Output directory '{drive_output_dir}' is outside /content/drive/ mount."
+            )
+
+    return True
+
+
 def resolve_drive_output_dir(drive_root: Path, arm: str, run_id: Optional[str] = None) -> Path:
     """Constructs single predictable output directory without duplicate run-ID nesting."""
     arm_norm = validate_arm(arm)
@@ -72,14 +152,30 @@ def resolve_drive_output_dir(drive_root: Path, arm: str, run_id: Optional[str] =
 
     if run_id:
         if base.name == run_id:
-            return base
-        return base / run_id
-    return base
+            out_p = base
+        else:
+            out_p = base / run_id
+    else:
+        out_p = base
+
+    validate_drive_output_hierarchy(out_p, drive_root=p, expected_arm=arm_norm)
+    return out_p
 
 
-def verify_drive_authenticity(drive_root: Path, require_mount: bool = True) -> bool:
-    """Validates that drive_root is an authentic Google Drive persistence target."""
+def verify_drive_authenticity(drive_root: Path, require_mount: bool = True) -> str:
+    """
+    Validates Google Drive persistence target:
+    1. Mount check: On Colab VM (/content), confirms /content/drive is an active mountpoint.
+    2. Hierarchy check: On Colab VM, confirms drive_root is inside /content/drive. Arbitrary local paths are rejected.
+    3. Local asset integrity: Confirms authentic baseline weights exist and match EXPECTED_BASELINE_SHA256.
+       Note: A mountpoint and matching baseline checkpoint hash alone must NOT be described as proof of root folder identity.
+    4. Remote API identity: Verifies root identity and parent ancestry via Google Drive API where available.
+       If identity cannot be verified on a pre-runtime environment, returns 'PENDING_RUNTIME_VERIFICATION', not PASS.
+    """
+    p_root = Path(drive_root)
     is_colab_env = Path("/content").is_dir()
+
+    # 1. Mountpoint check on Colab
     if is_colab_env and require_mount:
         drive_mount = Path("/content/drive")
         is_mounted = os.path.ismount(str(drive_mount))
@@ -90,27 +186,63 @@ def verify_drive_authenticity(drive_root: Path, require_mount: bool = True) -> b
         if not is_mounted:
             raise RuntimeError(
                 "FAIL-CLOSED: /content/drive is NOT an active Google Drive mountpoint.\n"
+                "An unmounted local folder named 'KLTN-Dataset' cannot be used as persistent storage.\n"
                 "Please run 'colab drivemount -s <session>' before executing training."
             )
 
-    # Identity check
-    baseline_chk = drive_root / "manifests/RQ1-TRN-02A/checkpoints/best.pt"
+    # 2. Hierarchy check on Colab: reject arbitrary custom local paths
+    if is_colab_env:
+        drive_mount_res = Path("/content/drive").resolve()
+        if not p_root.resolve().is_relative_to(drive_mount_res):
+            raise RuntimeError(
+                f"FAIL-CLOSED: Directory '{p_root}' is outside /content/drive/.\n"
+                f"Arbitrary custom local paths cannot bypass persistent-storage validation."
+            )
+
+    # 3. Local asset integrity check
+    baseline_chk = p_root / "manifests/RQ1-TRN-02A/checkpoints/best.pt"
     if not baseline_chk.is_file():
-        alt_chk = drive_root / "checkpoints/RQ1-TRN-02A/recovered/best.pt"
+        alt_chk = p_root / "checkpoints/RQ1-TRN-02A/recovered/best.pt"
         if alt_chk.is_file():
             baseline_chk = alt_chk
         else:
             raise FileNotFoundError(
-                f"FAIL-CLOSED: Directory '{drive_root}' lacks authentic Baseline R weights.\n"
+                f"FAIL-CLOSED: Directory '{p_root}' lacks authentic Baseline R weights.\n"
+                f"Expected file at manifests/RQ1-TRN-02A/checkpoints/best.pt.\n"
                 f"Cannot verify authentic identity for Google Drive Root ID: {PROJECT_DRIVE_FOLDER_ID}."
             )
-    return True
+
+    chk_sha = compute_sha256(baseline_chk)
+    if chk_sha != EXPECTED_BASELINE_SHA256:
+        raise RuntimeError(
+            f"FAIL-CLOSED: Baseline R weights in '{p_root}' failed cryptographic identity verification!\n"
+            f"Computed: {chk_sha}\nExpected: {EXPECTED_BASELINE_SHA256}"
+        )
+
+    # 4. Remote API identity verification
+    api_status, api_msg = verify_google_drive_api_identity(PROJECT_DRIVE_FOLDER_ID)
+    if api_status == "FAILED":
+        raise RuntimeError(f"FAIL-CLOSED: Authenticated Drive API identity check failed: {api_msg}")
+
+    if api_status == "VERIFIED":
+        return "VERIFIED"
+
+    # Pre-runtime / unauthenticated environment:
+    # A mountpoint and matching baseline checkpoint hash alone must NOT be described as proof of root folder identity.
+    return "PENDING_RUNTIME_VERIFICATION"
 
 
 def find_drive_root(custom_path: Optional[str] = None, require_mount: bool = True) -> Path:
     """Locates and validates authentic KLTN-Dataset root directory."""
     if custom_path:
         p = Path(custom_path)
+        if Path("/content").is_dir():
+            drive_mount_res = Path("/content/drive").resolve()
+            if not p.resolve().is_relative_to(drive_mount_res):
+                raise RuntimeError(
+                    f"FAIL-CLOSED: Custom Drive root '{custom_path}' is outside /content/drive/.\n"
+                    f"Arbitrary custom local paths cannot bypass persistent-storage validation."
+                )
         if p.is_dir():
             verify_drive_authenticity(p, require_mount=require_mount)
             return p
@@ -149,24 +281,42 @@ def find_drive_root(custom_path: Optional[str] = None, require_mount: bool = Tru
 def classify_training_endpoint(
     drive_output_dir: Path,
     expected_arm: str,
+    expected_commit: Optional[str] = None,
 ) -> Dict[str, Any]:
     """
     Rigorously verifies and classifies the training run endpoint:
     - COMPLETED_3600_UPDATES: Primary matched-budget endpoint reached and verified.
+      Requires ALL of:
+      1. successful_updates == 3600 (top-level)
+      2. metadata["successful_updates"] == 3600
+      3. metadata["primary_3600_updates_completed"] is True
+      4. metadata["primary_endpoint_reached"] is True
+      5. metadata["endpoint_status"] == "COMPLETED_3600_UPDATES"
+      6. metadata["guardrail_violation"] is False
+      7. metadata["arm"] matches expected_arm
+      8. Critical provenance fields match approved run contract:
+         - split_sha256 == EXPECTED_MANIFEST_SHA256
+         - initial_checkpoint_sha256 == EXPECTED_BASELINE_SHA256
+         - git_sha is valid 40-char hex (matches expected_commit if supplied)
+      9. Checkpoint payload contains required training and optimizer state:
+         - 'model' dict (non-empty)
+         - 'optimizer' dict (non-empty)
+         - 'scheduler' dict
+         - 'scaler' dict
     - INCOMPLETE: Terminated early (epoch cap / AMP skips) without guardrail violation.
     - HALTED_GUARDRAIL: Stopped due to CTC PER degradation guardrail trip.
-    - FAILED: Checkpoints missing, corrupted, or process failed.
+    - FAILED: Checkpoints missing, corrupted, contradictory metadata, or process failed.
     """
     arm_norm = validate_arm(expected_arm)
     p_dir = Path(drive_output_dir)
 
-    # 1. Check for guardrail trip artifact
+    # 1. Check for explicit guardrail trip artifact
     halted_file = p_dir / "halted_guardrail.pt"
     if halted_file.is_file():
         try:
             import torch
             ck = torch.load(halted_file, map_location="cpu", weights_only=False)
-            meta = ck.get("metadata", {})
+            meta = ck.get("metadata", {}) if isinstance(ck, dict) else {}
             return {
                 "status": "HALTED_GUARDRAIL",
                 "message": (
@@ -174,7 +324,7 @@ def classify_training_endpoint(
                     f"CTC PER measured {meta.get('ctc_per_measured')} vs anchor {meta.get('ctc_per_anchor')} "
                     f"(+{meta.get('ctc_per_degradation_pct')} absolute degradation)."
                 ),
-                "successful_updates": ck.get("successful_updates", 0),
+                "successful_updates": ck.get("successful_updates", 0) if isinstance(ck, dict) else 0,
                 "artifact_path": str(halted_file),
                 "sha256": compute_sha256(halted_file),
             }
@@ -191,36 +341,164 @@ def classify_training_endpoint(
         try:
             import torch
             ck = torch.load(fixed_budget_file, map_location="cpu", weights_only=False)
-            meta = ck.get("metadata", {})
+            if not isinstance(ck, dict):
+                return {
+                    "status": "FAILED",
+                    "message": "fixed_budget_checkpoint payload is not a valid dictionary.",
+                    "artifact_path": str(fixed_budget_file),
+                }
 
-            # Check arm
+            # Check 9: Required training and optimizer state
+            for req_key in ("model", "optimizer", "scheduler", "scaler", "metadata"):
+                if req_key not in ck:
+                    return {
+                        "status": "FAILED",
+                        "message": f"Corrupt or incomplete checkpoint payload: missing required key '{req_key}'.",
+                        "artifact_path": str(fixed_budget_file),
+                    }
+
+            if not isinstance(ck["model"], dict) or len(ck["model"]) == 0:
+                return {
+                    "status": "FAILED",
+                    "message": "Corrupt or incomplete checkpoint payload: 'model' state dict is missing or empty.",
+                    "artifact_path": str(fixed_budget_file),
+                }
+            if not isinstance(ck["optimizer"], dict) or len(ck["optimizer"]) == 0:
+                return {
+                    "status": "FAILED",
+                    "message": "Corrupt or incomplete checkpoint payload: 'optimizer' state dict is missing or empty.",
+                    "artifact_path": str(fixed_budget_file),
+                }
+            if not isinstance(ck["scheduler"], dict):
+                return {
+                    "status": "FAILED",
+                    "message": "Corrupt or incomplete checkpoint payload: 'scheduler' state dict must be a dict.",
+                    "artifact_path": str(fixed_budget_file),
+                }
+            if not isinstance(ck["scaler"], dict):
+                return {
+                    "status": "FAILED",
+                    "message": "Corrupt or incomplete checkpoint payload: 'scaler' state dict must be a dict.",
+                    "artifact_path": str(fixed_budget_file),
+                }
+
+            meta = ck.get("metadata")
+            if not isinstance(meta, dict):
+                return {
+                    "status": "FAILED",
+                    "message": "Corrupt checkpoint payload: 'metadata' is missing or not a dictionary.",
+                    "artifact_path": str(fixed_budget_file),
+                }
+
+            # Check 6: Guardrail violation check
+            if meta.get("guardrail_violation") is True:
+                return {
+                    "status": "HALTED_GUARDRAIL",
+                    "message": "fixed_budget_checkpoint marked with guardrail violation in metadata.",
+                    "artifact_path": str(fixed_budget_file),
+                }
+            if meta.get("guardrail_violation") is not False:
+                return {
+                    "status": "FAILED",
+                    "message": "Missing mandatory metadata: 'guardrail_violation' must be explicitly False.",
+                    "artifact_path": str(fixed_budget_file),
+                }
+
+            # Check 7: Arm matching
             actual_arm = meta.get("arm")
             if actual_arm != arm_norm:
                 return {
                     "status": "FAILED",
                     "message": f"Arm mismatch in fixed_budget_checkpoint: declared '{actual_arm}', expected '{arm_norm}'.",
+                    "artifact_path": str(fixed_budget_file),
                 }
 
-            # Reject guardrail violation in metadata
-            if meta.get("guardrail_violation") is True:
+            # Check 1, 2, 3, 4, 5: Successful updates and completion metadata
+            top_updates = ck.get("successful_updates")
+            meta_updates = meta.get("successful_updates")
+            p3600 = meta.get("primary_3600_updates_completed")
+            p_endpoint = meta.get("primary_endpoint_reached")
+            endpoint_status = meta.get("endpoint_status")
+
+            # Check for contradictory completion flags with non-3600 updates
+            if top_updates != 3600 or meta_updates != 3600:
+                if p3600 is True or p_endpoint is True or endpoint_status == "COMPLETED_3600_UPDATES":
+                    return {
+                        "status": "FAILED",
+                        "message": (
+                            f"Contradictory metadata: successful_updates is top={top_updates}, meta={meta_updates} "
+                            f"but completion flags indicate completion (p3600={p3600}, p_endpoint={p_endpoint}, endpoint_status='{endpoint_status}')."
+                        ),
+                        "successful_updates": top_updates,
+                        "artifact_path": str(fixed_budget_file),
+                    }
+                else:
+                    return {
+                        "status": "INCOMPLETE",
+                        "message": f"fixed_budget_checkpoint has only {top_updates} / 3600 updates.",
+                        "successful_updates": top_updates,
+                        "artifact_path": str(fixed_budget_file),
+                    }
+
+            # Top and meta updates both equal 3600; check required completion flags
+            if p3600 is not True:
                 return {
-                    "status": "HALTED_GUARDRAIL",
-                    "message": "Checkpoint marked with guardrail violation in metadata.",
+                    "status": "FAILED",
+                    "message": f"Contradictory metadata: successful_updates is 3600 but primary_3600_updates_completed is {p3600}.",
+                    "successful_updates": 3600,
+                    "artifact_path": str(fixed_budget_file),
                 }
-
-            # Check successful updates count
-            updates = ck.get("successful_updates", meta.get("successful_updates", 0))
-            if updates < 3600 and not meta.get("primary_3600_updates_completed", False):
+            if p_endpoint is not True:
                 return {
-                    "status": "INCOMPLETE",
-                    "message": f"fixed_budget_checkpoint has only {updates} / 3600 updates.",
-                    "successful_updates": updates,
+                    "status": "FAILED",
+                    "message": f"Contradictory metadata: successful_updates is 3600 but primary_endpoint_reached is {p_endpoint}.",
+                    "successful_updates": 3600,
+                    "artifact_path": str(fixed_budget_file),
+                }
+            if endpoint_status != "COMPLETED_3600_UPDATES":
+                return {
+                    "status": "FAILED",
+                    "message": f"Missing mandatory metadata: 'endpoint_status' is '{endpoint_status}', expected 'COMPLETED_3600_UPDATES'.",
+                    "successful_updates": 3600,
+                    "artifact_path": str(fixed_budget_file),
                 }
 
+            # Check 8: Critical provenance fields match approved run contract
+            split_sha = meta.get("split_sha256")
+            if not split_sha or split_sha.strip().lower() != EXPECTED_MANIFEST_SHA256:
+                return {
+                    "status": "FAILED",
+                    "message": f"Provenance mismatch: split_sha256 '{split_sha}' != expected '{EXPECTED_MANIFEST_SHA256}'.",
+                    "artifact_path": str(fixed_budget_file),
+                }
+
+            init_sha = meta.get("initial_checkpoint_sha256")
+            if not init_sha or init_sha.strip().lower() != EXPECTED_BASELINE_SHA256:
+                return {
+                    "status": "FAILED",
+                    "message": f"Provenance mismatch: initial_checkpoint_sha256 '{init_sha}' != expected '{EXPECTED_BASELINE_SHA256}'.",
+                    "artifact_path": str(fixed_budget_file),
+                }
+
+            git_sha = meta.get("git_sha")
+            if not git_sha or len(git_sha.strip()) != 40 or not all(c in "0123456789abcdefABCDEF" for c in git_sha.strip()):
+                return {
+                    "status": "FAILED",
+                    "message": f"Provenance mismatch: invalid or missing git_sha '{git_sha}' in metadata.",
+                    "artifact_path": str(fixed_budget_file),
+                }
+            if expected_commit and git_sha.strip().lower() != expected_commit.strip().lower():
+                return {
+                    "status": "FAILED",
+                    "message": f"Provenance mismatch: git_sha '{git_sha}' != expected '{expected_commit}'.",
+                    "artifact_path": str(fixed_budget_file),
+                }
+
+            # ALL MANDATORY INVARIANTS SATISFIED!
             return {
                 "status": "COMPLETED_3600_UPDATES",
-                "message": f"Primary matched-budget endpoint verified: {updates} successful updates.",
-                "successful_updates": updates,
+                "message": f"Primary matched-budget endpoint verified: 3600 successful updates.",
+                "successful_updates": 3600,
                 "artifact_path": str(fixed_budget_file),
                 "sha256": compute_sha256(fixed_budget_file),
             }
@@ -228,6 +506,7 @@ def classify_training_endpoint(
             return {
                 "status": "FAILED",
                 "message": f"Failed to load or parse fixed_budget_checkpoint.pt: {exc}",
+                "artifact_path": str(fixed_budget_file),
             }
 
     # 3. Check for last.pt without completed fixed_budget_checkpoint.pt
@@ -236,20 +515,31 @@ def classify_training_endpoint(
         try:
             import torch
             ck = torch.load(last_file, map_location="cpu", weights_only=False)
-            meta = ck.get("metadata", {})
+            meta = ck.get("metadata", {}) if isinstance(ck, dict) else {}
 
             if meta.get("guardrail_violation") is True:
                 return {
                     "status": "HALTED_GUARDRAIL",
                     "message": "last.pt marked with guardrail violation.",
+                    "artifact_path": str(last_file),
                 }
 
-            updates = ck.get("successful_updates", meta.get("successful_updates", 0))
+            updates = ck.get("successful_updates", meta.get("successful_updates", 0)) if isinstance(ck, dict) else 0
+
+            # Reject contradictory metadata in last.pt
+            if updates < 3600 and meta.get("primary_3600_updates_completed") is True:
+                return {
+                    "status": "FAILED",
+                    "message": f"Contradictory metadata in last.pt: successful_updates is {updates} but primary_3600_updates_completed is True.",
+                    "successful_updates": updates,
+                    "artifact_path": str(last_file),
+                }
+
             return {
                 "status": "INCOMPLETE",
                 "message": (
-                    f"Training terminated before completing 3,600 updates ({updates} / 3600 updates). "
-                    f"last.pt exists but fixed_budget_checkpoint.pt was not produced."
+                    f"Training terminated before producing verified fixed_budget_checkpoint.pt ({updates} / 3600 updates). "
+                    f"last.pt exists but primary matched-budget endpoint artifact was not verified."
                 ),
                 "successful_updates": updates,
                 "artifact_path": str(last_file),
@@ -259,6 +549,7 @@ def classify_training_endpoint(
             return {
                 "status": "FAILED",
                 "message": f"Failed to parse last.pt: {exc}",
+                "artifact_path": str(last_file),
             }
 
     return {
@@ -330,8 +621,10 @@ def execute_training(
     print(f"[MODEL] Local baseline weights verified: {local_baseline_path} ({baseline_sha[:12]}...)", flush=True)
 
     # 4. Authentic Drive & Output Directory Construction (Single predictable path)
-    verify_drive_authenticity(drive_root, require_mount=require_mount)
+    drive_status = verify_drive_authenticity(drive_root, require_mount=require_mount)
+    print(f"[STORAGE AUTHENTICITY] Drive verification status: {drive_status}", flush=True)
     drive_out_dir = resolve_drive_output_dir(drive_root, arm_norm, run_id=run_id)
+    validate_drive_output_hierarchy(drive_out_dir, drive_root, arm_norm)
     drive_out_dir.mkdir(parents=True, exist_ok=True)
     print(f"[STORAGE] Verified persistent output destination: {drive_out_dir}", flush=True)
 
@@ -396,7 +689,7 @@ def execute_training(
         raise RuntimeError(f"Training run failed with exit code {ret}. Inspect log at {remote_log}.")
 
     # 6. Post-Run Endpoint Verification & Rigorous Classification
-    endpoint_info = classify_training_endpoint(drive_out_dir, arm_norm)
+    endpoint_info = classify_training_endpoint(drive_out_dir, arm_norm, expected_commit=target_commit)
     status = endpoint_info["status"]
     msg = endpoint_info.get("message", "")
     print(f"[ENDPOINT AUDIT] Classification: {status} | Detail: {msg}", flush=True)

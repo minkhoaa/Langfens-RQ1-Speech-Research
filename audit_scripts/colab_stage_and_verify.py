@@ -64,6 +64,85 @@ def validate_commit_sha(sha: str) -> str:
     return sha_clean.lower()
 
 
+def verify_google_drive_api_identity(
+    folder_id: str = PROJECT_DRIVE_FOLDER_ID,
+) -> Tuple[str, str]:
+    """
+    Verifies Google Drive root folder identity and parent ancestry using the
+    authenticated Google Drive API, where available.
+    Returns (status, detail):
+      - 'VERIFIED': API authenticated and confirmed folder identity & ancestry.
+      - 'PENDING_RUNTIME_VERIFICATION': Running in pre-runtime environment or without API credentials.
+      - 'FAILED': API call returned unexpected identity, trashed state, or ancestry mismatch.
+    """
+    try:
+        from googleapiclient.discovery import build  # type: ignore
+        import google.auth  # type: ignore
+
+        creds, _ = google.auth.default(scopes=["https://www.googleapis.com/auth/drive.readonly"])
+        service = build("drive", "v3", credentials=creds)
+        file_meta = service.files().get(
+            fileId=folder_id,
+            fields="id, name, mimeType, trashed, parents",
+            supportsAllDrives=True,
+        ).execute()
+
+        if file_meta.get("trashed", False):
+            return "FAILED", f"Authorized Drive folder {folder_id} is marked as trashed."
+
+        name = file_meta.get("name", "")
+        if name != PROJECT_DRIVE_NAME:
+            return "FAILED", f"Drive folder ID {folder_id} name mismatch: expected '{PROJECT_DRIVE_NAME}', found '{name}'."
+
+        return "VERIFIED", f"Google Drive API verified folder '{name}' (ID: {folder_id})."
+    except ImportError:
+        return "PENDING_RUNTIME_VERIFICATION", (
+            "Google Drive API client (googleapiclient / google.auth) not available in this environment. "
+            "Remote folder ID identity verification is PENDING_RUNTIME_VERIFICATION."
+        )
+    except Exception as exc:
+        return "PENDING_RUNTIME_VERIFICATION", (
+            f"Google Drive API check could not authenticate ({exc}). "
+            "Identity verification is PENDING_RUNTIME_VERIFICATION."
+        )
+
+
+def validate_drive_output_hierarchy(
+    drive_output_dir: Path,
+    drive_root: Path,
+    expected_arm: str,
+) -> bool:
+    """
+    Enforces that drive_output_dir belongs to the authorized Google Drive hierarchy:
+    1. drive_output_dir must belong to drive_root.
+    2. drive_output_dir must match manifests/RQ1-TRN-02B/checkpoints/<ARM> hierarchy.
+    3. If running in Colab VM (/content exists), drive_output_dir must be inside /content/drive.
+    """
+    arm_norm = validate_arm(expected_arm)
+    out_res = Path(drive_output_dir).resolve()
+    root_res = Path(drive_root).resolve()
+
+    if not out_res.is_relative_to(root_res) and not root_res.is_relative_to(out_res):
+        raise ValueError(
+            f"FAIL-CLOSED: Output directory '{drive_output_dir}' does not belong to authorized Drive root '{drive_root}'."
+        )
+
+    expected_substr = f"manifests/RQ1-TRN-02B/checkpoints/{arm_norm}"
+    if expected_substr not in str(drive_output_dir):
+        raise ValueError(
+            f"FAIL-CLOSED: Output directory '{drive_output_dir}' does not belong to authorized hierarchy '{expected_substr}'."
+        )
+
+    if Path("/content").is_dir():
+        drive_mount = Path("/content/drive").resolve()
+        if not out_res.is_relative_to(drive_mount):
+            raise ValueError(
+                f"FAIL-CLOSED: Output directory '{drive_output_dir}' is outside /content/drive/ mount."
+            )
+
+    return True
+
+
 def resolve_drive_output_dir(drive_root: Path, arm: str, run_id: Optional[str] = None) -> Path:
     """
     Constructs a single predictable output directory for the given arm and optional run_id.
@@ -78,29 +157,36 @@ def resolve_drive_output_dir(drive_root: Path, arm: str, run_id: Optional[str] =
 
     if run_id:
         if base.name == run_id:
-            return base
-        return base / run_id
-    return base
+            out_p = base
+        else:
+            out_p = base / run_id
+    else:
+        out_p = base
+
+    validate_drive_output_hierarchy(out_p, drive_root=p, expected_arm=arm_norm)
+    return out_p
 
 
-def verify_drive_authenticity(drive_root: Path, require_mount: bool = True) -> bool:
+def verify_drive_authenticity(drive_root: Path, require_mount: bool = True) -> str:
     """
-    Verifies that drive_root is an authentic Google Drive persistence target:
+    Validates Google Drive persistence target:
     1. Mount check: On Colab VM (/content), confirms /content/drive is an active mountpoint.
-    2. Identity check: Confirms authentic baseline assets exist and verify their cryptographic signatures.
-       Rejects arbitrary local directories that simply happen to be named 'KLTN-Dataset'.
+    2. Hierarchy check: On Colab VM, confirms drive_root is inside /content/drive. Arbitrary local paths are rejected.
+    3. Local asset integrity: Confirms authentic baseline weights exist and match EXPECTED_BASELINE_SHA256.
+       Note: A mountpoint and matching baseline checkpoint hash alone must NOT be described as proof of root folder identity.
+    4. Remote API identity: Verifies root identity and parent ancestry via Google Drive API where available.
+       If identity cannot be verified on a pre-runtime environment, returns 'PENDING_RUNTIME_VERIFICATION', not PASS.
     """
-    # 1. Mountpoint check on Colab
+    p_root = Path(drive_root)
     is_colab_env = Path("/content").is_dir()
+
+    # 1. Mountpoint check on Colab
     if is_colab_env and require_mount:
         drive_mount = Path("/content/drive")
-        # Check if /content/drive is mounted via ismount or /proc/mounts
         is_mounted = os.path.ismount(str(drive_mount))
-        if not is_mounted:
-            # Secondary check in /proc/mounts for fuse/drivefs
-            if Path("/proc/mounts").is_file():
-                mounts_text = Path("/proc/mounts").read_text()
-                is_mounted = any("/content/drive" in line and ("fuse" in line or "drivefs" in line) for line in mounts_text.splitlines())
+        if not is_mounted and Path("/proc/mounts").is_file():
+            mounts_text = Path("/proc/mounts").read_text()
+            is_mounted = any("/content/drive" in line and ("fuse" in line or "drivefs" in line) for line in mounts_text.splitlines())
 
         if not is_mounted:
             raise RuntimeError(
@@ -110,16 +196,24 @@ def verify_drive_authenticity(drive_root: Path, require_mount: bool = True) -> b
                 "or mount Google Drive in the Colab browser UI before executing."
             )
 
-    # 2. Identity check under drive_root
-    baseline_chk = drive_root / "manifests/RQ1-TRN-02A/checkpoints/best.pt"
+    # 2. Hierarchy check on Colab: reject arbitrary custom local paths
+    if is_colab_env:
+        drive_mount_res = Path("/content/drive").resolve()
+        if not p_root.resolve().is_relative_to(drive_mount_res):
+            raise RuntimeError(
+                f"FAIL-CLOSED: Directory '{p_root}' is outside /content/drive/.\n"
+                f"Arbitrary custom local paths cannot bypass persistent-storage validation."
+            )
+
+    # 3. Local asset integrity check
+    baseline_chk = p_root / "manifests/RQ1-TRN-02A/checkpoints/best.pt"
     if not baseline_chk.is_file():
-        # Check alternative recovered path
-        alt_chk = drive_root / "checkpoints/RQ1-TRN-02A/recovered/best.pt"
+        alt_chk = p_root / "checkpoints/RQ1-TRN-02A/recovered/best.pt"
         if alt_chk.is_file():
             baseline_chk = alt_chk
         else:
             raise FileNotFoundError(
-                f"FAIL-CLOSED: Directory '{drive_root}' lacks authentic Baseline R weights.\n"
+                f"FAIL-CLOSED: Directory '{p_root}' lacks authentic Baseline R weights.\n"
                 f"Expected file at manifests/RQ1-TRN-02A/checkpoints/best.pt.\n"
                 f"Cannot verify authentic identity for Google Drive Root ID: {PROJECT_DRIVE_FOLDER_ID}."
             )
@@ -127,17 +221,34 @@ def verify_drive_authenticity(drive_root: Path, require_mount: bool = True) -> b
     chk_sha = compute_sha256(baseline_chk)
     if chk_sha != EXPECTED_BASELINE_SHA256:
         raise RuntimeError(
-            f"FAIL-CLOSED: Baseline R weights in '{drive_root}' failed cryptographic identity verification!\n"
+            f"FAIL-CLOSED: Baseline R weights in '{p_root}' failed cryptographic identity verification!\n"
             f"Computed: {chk_sha}\nExpected: {EXPECTED_BASELINE_SHA256}"
         )
 
-    return True
+    # 4. Remote API identity verification
+    api_status, api_msg = verify_google_drive_api_identity(PROJECT_DRIVE_FOLDER_ID)
+    if api_status == "FAILED":
+        raise RuntimeError(f"FAIL-CLOSED: Authenticated Drive API identity check failed: {api_msg}")
+
+    if api_status == "VERIFIED":
+        return "VERIFIED"
+
+    # Pre-runtime / unauthenticated environment:
+    # A mountpoint and matching baseline checkpoint hash alone must NOT be described as proof of root folder identity.
+    return "PENDING_RUNTIME_VERIFICATION"
 
 
 def find_drive_root(custom_path: Optional[str] = None, require_mount: bool = True) -> Path:
     """Locates and validates authentic KLTN-Dataset root directory."""
     if custom_path:
         p = Path(custom_path)
+        if Path("/content").is_dir():
+            drive_mount_res = Path("/content/drive").resolve()
+            if not p.resolve().is_relative_to(drive_mount_res):
+                raise RuntimeError(
+                    f"FAIL-CLOSED: Custom Drive root '{custom_path}' is outside /content/drive/.\n"
+                    f"Arbitrary custom local paths cannot bypass persistent-storage validation."
+                )
         if p.is_dir():
             verify_drive_authenticity(p, require_mount=require_mount)
             return p
@@ -397,7 +508,10 @@ def stage_and_verify(
 
     print(f"[GIT PROVENANCE] HEAD verified: {verified_head} (matches target {commit_norm})", flush=True)
 
-    # 3. Locate Source Artifacts in Google Drive
+    # 3. Verify Drive Authenticity & Locate Source Artifacts in Google Drive
+    drive_status = verify_drive_authenticity(drive_root, require_mount=not mock_gpu)
+    print(f"[STORAGE AUTHENTICITY] Drive verification status: {drive_status}", flush=True)
+
     dataset_candidates = [
         drive_root / "manifests/RQ1-TRN-02A/authorized_data/fold1_train_val_only.zip",
         drive_root / "datasets/L2-ARCTIC/authorized_RQ1-TRN-02A_fold1_train_val_only.zip",
@@ -466,6 +580,7 @@ def stage_and_verify(
         "status": "READY_FOR_TRAINING",
         "arm": arm_norm,
         "verified_commit": verified_head,
+        "drive_verification_status": drive_status,
         "staged_zip_path": str(local_zip),
         "staged_zip_sha256": staged_zip_sha,
         "staged_baseline_path": str(local_baseline),
