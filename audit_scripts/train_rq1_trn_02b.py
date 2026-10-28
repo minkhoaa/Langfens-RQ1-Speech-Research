@@ -518,6 +518,7 @@ def main():
     ap = argparse.ArgumentParser(description="RQ1-TRN-02B Matched-Budget Training Entrypoint")
     ap.add_argument("--config", required=True, help="Path to arm configuration YAML (e.g. configs/rq1_trn_02b_c0.yaml)")
     ap.add_argument("--resume", default=None, help="Path to checkpoint for training resumption")
+    ap.add_argument("--initial-checkpoint", default=None, help="Path to initial baseline checkpoint (overrides config)")
     ap.add_argument("--zip-path", default=None, help="Path to zip archive containing authorized audio/TextGrids")
     ap.add_argument("--drive-output-dir", default=None, help="Google Drive destination for remote checkpoint persistence")
     ap.add_argument("--run-id", default=None, help="Unique execution run identifier to isolate output checkpoints")
@@ -534,6 +535,9 @@ def main():
     if not config_path.is_file():
         raise FileNotFoundError(f"Config file not found: {config_path}")
     cfg = yaml.safe_load(config_path.read_text())
+
+    if args.initial_checkpoint:
+        cfg["initial_checkpoint"] = args.initial_checkpoint
 
     # 1. Manifest Hash Verification
     manifest_path = Path(cfg["manifest"])
