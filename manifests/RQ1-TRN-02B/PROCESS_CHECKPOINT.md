@@ -57,10 +57,10 @@ Design and implement the controlled acoustic conditioning ablation (Control Arm 
    - Enforced execution boundary: no GPU training commenced; C0 and C1 remain pending operator action.
 
 ## 4. Results & Verification
-- Acceptance gate: Preflight software and operational launch package `PASS_SOFTWARE`; Operational GPU training gate **`BLOCKED_RESOURCES`**.
-- Regression tests: **190 CPU tests passed, 4 skipped** (0 failures).
-- Completed components: Experimental design, C0/C1 model implementation, preflight audit, Preflight-R2 safety closure, operational CLI launch package, Drive storage architecture, bootstrap drivers, and split provenance verification.
-- Uncompleted components: Operator compute unit assignment (~15–20 CCU), interactive Drive mount in human terminal (`colab drivemount`), Colab VM runtime staging write test, C0 GPU training, C1 GPU training, paired evaluation.
+- Acceptance gate: Preflight software and operational launch package `PASS_SOFTWARE`; Operational GPU training gate **`BLOCKED_RESOURCES`** (Colab CCU exhausted; Kaggle platform port implemented, benchmark gate pending).
+- Regression tests: **222 CPU tests passed, 4 skipped** (0 failures).
+- Completed components: Experimental design, C0/C1 model implementation, preflight audit, Preflight-R2 safety closure, operational CLI launch package, Drive storage architecture, bootstrap drivers, split provenance verification, Kaggle T4x2 platform port, Kaggle staging driver with auto-extracted zip support, remote checkpoint mirror with SHA readback, disposable 50-update benchmark driver, and kernel metadata registration (`--no-run`).
+- Uncompleted components: Kaggle private dataset upload (`minkhoaa/langfens-rq1-fold1-staging`), operator authorization of benchmark, disposable 50-update FP16 benchmark execution, C0 GPU training, C1 GPU training, paired evaluation.
 - Current operational blockers:
   1. **Compute Quota Blocker:** Measured balance is `0.00 compute units`. Running 7,200 optimizer updates across C0 and C1 on unbilled free tokens carries severe preemption/timeout risk. Operator must allocate ~15–20 compute units.
   2. **Interactive Drive Mount Prerequisite:** `colab drivemount -s <session>` requires human terminal interaction (`/dev/tty`).
@@ -73,7 +73,8 @@ Design and implement the controlled acoustic conditioning ablation (Control Arm 
 - Staging & launch drivers: `audit_scripts/colab_bootstrap.py`, `audit_scripts/colab_stage_and_verify.py`, `audit_scripts/colab_train_exec.py`, `audit_scripts/colab_launch_workflow.py`.
 - Authorization packet: `manifests/RQ1-TRN-02B/COLAB_EXECUTION_AUTHORIZATION_PACKET.md`.
 - Correction report: `manifests/RQ1-TRN-02B/COLAB_AUTH_R1_CORRECTIONS.md`.
-- Test suites: `tests/test_rq1_trn_02b_colab_launch.py`, `tests/test_rq1_trn_02b_preflight_r2_safety.py`, `tests/test_rq1_trn_02b_corrections_r1.py`, `tests/test_rq1_trn_02b_implementation_preflight.py`.
+- Test suites: `tests/test_rq1_trn_02b_colab_launch.py`, `tests/test_rq1_trn_02b_preflight_r2_safety.py`, `tests/test_rq1_trn_02b_corrections_r1.py`, `tests/test_rq1_trn_02b_implementation_preflight.py`, `tests/test_rq1_trn_02b_kaggle_platform.py`.
+- Kaggle drivers & configs: `audit_scripts/kaggle_stage_and_verify.py`, `audit_scripts/kaggle_checkpoint_sync.py`, `audit_scripts/kaggle_benchmark_fp16.py`, `audit_scripts/kaggle_train_exec.py`, `audit_scripts/kaggle_launch_workflow.py`, `configs/rq1_trn_02b_c0_kaggle.yaml`, `configs/rq1_trn_02b_c1_kaggle.yaml`, `configs/rq1_trn_02b_benchmark_kaggle.yaml`, `deploy/kaggle/*`.
 - Step checkpoints:
   - [checkpoints/01-acoustic-conditioning-design.md](checkpoints/01-acoustic-conditioning-design.md)
   - [checkpoints/02-implementation-and-preflight-audit.md](checkpoints/02-implementation-and-preflight-audit.md)
@@ -85,6 +86,7 @@ Design and implement the controlled acoustic conditioning ablation (Control Arm 
   - [checkpoints/08-live-gpu-runtime-and-staging-verification.md](checkpoints/08-live-gpu-runtime-and-staging-verification.md)
   - [checkpoints/09-colab-cpu-fp32-feasibility-static-gate.md](checkpoints/09-colab-cpu-fp32-feasibility-static-gate.md)
   - [checkpoints/10-kaggle-t4x2-migration-feasibility-static-review.md](checkpoints/10-kaggle-t4x2-migration-feasibility-static-review.md)
+  - [checkpoints/11-kaggle-t4x2-platform-port-and-benchmark-gate.md](checkpoints/11-kaggle-t4x2-platform-port-and-benchmark-gate.md)
 
 ## 6. Restart / Recovery Instructions
 - Safe restart point: All preflight tests passing locally on CPU.
@@ -126,3 +128,16 @@ See [checkpoints/10-kaggle-t4x2-migration-feasibility-static-review.md](checkpoi
 - Official C0/C1 still `NOT_STARTED` (0/3600 updates each); separate CPU FP32 benchmark remains `NOT_EXECUTED` (0/50).
 - A Kaggle execution-policy amendment, licensed TRAIN/VAL-only staging, verified artifact hashes, Kaggle-specific launcher, per-epoch durable checkpoint mirroring, and operator approval are required. Original Colab GPU FP16 configuration and sealed TEST policy remain unchanged.
 - Next evidence milestone: a genuine Kaggle T4 FP16 50-successful-update preflight (Step 11) if authorized, with benchmark metrics; do not report measured feasibility before execution.
+
+
+## 10. Step 11 — Kaggle T4×2 Platform Port Implementation and Benchmark Gate (2026-10-28)
+
+See [checkpoints/11-kaggle-t4x2-platform-port-and-benchmark-gate.md](checkpoints/11-kaggle-t4x2-platform-port-and-benchmark-gate.md).
+
+- **Status:** `PLATFORM_PORT_IMPLEMENTED; BENCHMARK_GATE_PENDING`.
+- Official Kaggle CLI queried: 30.00h GPU quota available, accelerator `NvidiaTeslaT4` verified, account `minkhoaa` verified.
+- Port implemented: Narrow AGENTS.md policy amendment, `KAGGLE_T4_CUDA_FP16_AMP` configs, staging driver supporting auto-extracted zip integrity verification, durable checkpoint mirror with SHA-256 readback, and 50-update disposable benchmark driver.
+- Kernel metadata saved with `--no-run`: `minkhoaa/langfens-rq1-trn-02b-t4x2` (private).
+- Benchmark status: `NOT_EXECUTED` (0/50 successful updates). Official C0/C1 status: `NOT_STARTED` (0/3600 updates each).
+- Total test census: **222 passed, 4 skipped, 0 failures**.
+

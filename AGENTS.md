@@ -3,10 +3,12 @@ Read before repository work. Verify evidence before reporting PASS.
 
 ## Execution Boundaries
 - Local laptop: Code development, unit/regression tests, manifest audits, metric analysis, and lightweight validation.
-- Google Colab GPU (official Colab CLI): ALL training, fine-tuning, backward passes, optimizer updates, and GPU ablations.
-- Google Drive: Persistent storage for original datasets, reusable fold packages, checkpoints, and experiment logs.
+- Remote GPU Platforms: ALL training, fine-tuning, backward passes, optimizer updates, and GPU ablations must run on authorized remote GPU hardware with verified compute allocation:
+  - Google Colab GPU (official Colab CLI, Tesla T4, CUDA FP16 AMP)
+  - Kaggle GPU (official Kaggle CLI, NvidiaTeslaT4 [T4 × 2], private execution, CUDA FP16 AMP)
+- Google Drive & Approved Private Remote Storage: Persistent storage for original datasets, reusable fold packages, checkpoints, and experiment logs. Ephemeral VM/runtime storage (/content, /kaggle/working) must not be treated as durable.
 - GitHub: Version-controlled source code, configurations, tests, and lightweight audit artifacts only.
-- Strict fallback prohibition: Never fall back to local GPU/CPU training when Colab is unavailable. Stop and report blockers.
+- Strict fallback prohibition: Never fall back to local GPU/CPU training when remote GPU platforms are unavailable. Local training remains strictly prohibited. Stop and report blockers.
 
 ## Reusable Data Staging & Storage
 - Keep original dataset archives (`l2arctic_release_v5.0.zip`) unchanged on Google Drive; do not re-upload from laptop.
@@ -20,6 +22,14 @@ Read before repository work. Verify evidence before reporting PASS.
 - Colab non-interactive rule: Never execute interactive commands (`colab drivemount`, `colab auth`, `colab repl`) in automation.
 - Monitor compute units via `colab usage`. If GPU quota is exhausted or auth is missing, STOP and report.
 - Resource hygiene: Always release idle runtimes promptly (`colab stop -s <name>`) to preserve compute units.
+
+## Kaggle CLI & Operational Safety
+- Provision GPU runtimes via official Kaggle CLI (`kaggle kernels push`) with `machine_shape: NvidiaTeslaT4`, `enable_gpu: true`, `is_private: true`.
+- Monitor weekly GPU accelerator quota via `kaggle quota`. Stop if quota is exhausted or insufficient.
+- Resource hygiene: Keep notebooks, scripts, and staged datasets strictly private under CC BY-NC 4.0; never publish public assets.
+- Ephemeral containment: Read immutable inputs from `/kaggle/input`; write temporary artifacts to `/kaggle/working` (subject to 20 GB ceiling).
+- Checkpoint durability: Mirror every epoch checkpoint atomically to an approved private persistent store with cryptographic SHA-256 readback. Ephemeral `/kaggle/working` is non-durable and must never be the sole checkpoint store.
+- Numerical integrity: Execute strictly under CUDA FP16 AMP; preserve frozen Wav2Vec2 backbone, two-head CTC+binary architecture, 3,600 max updates per arm, and independent optimizer/scheduler/scaler/RNG states.
 
 ## Training Contract & Provenance
 - Split manifest: `manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json` (SHA-256 `7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b`).

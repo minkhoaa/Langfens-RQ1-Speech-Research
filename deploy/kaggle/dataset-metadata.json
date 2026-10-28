@@ -1,0 +1,11 @@
+{
+  "title": "LANGFENS RQ1 Fold 1 Train/Val and Baseline R Staging",
+  "id": "minkhoaa/langfens-rq1-fold1-staging",
+  "licenses": [
+    {
+      "name": "CC-BY-NC-4.0"
+    }
+  ],
+  "is_private": true,
+  "description": "Authorized Fold 1 Train+Val audio archive and Baseline R best.pt for LANGFENS RQ1-TRN-02B. Contains NO test partition audio or annotations. Strictly for authorized private research under CC BY-NC 4.0."
+}
