@@ -16,11 +16,15 @@ Exhaustively verifies:
 """
 from __future__ import annotations
 
+import hashlib
 import io
 import json
 import os
 import shutil
+import subprocess
+import sys
 import tempfile
+import time
 import zipfile
 import zlib
 from pathlib import Path
@@ -243,7 +247,10 @@ def test_kaggle_remote_mirror_missing_gdrive_credentials(monkeypatch):
 
 
 def test_kaggle_remote_mirror_missing_hf_token(monkeypatch):
-    monkeypatch.delenv("HF_TOKEN", raising=False)
+    monkeypatch.setenv("HF_TOKEN", "")
+    monkeypatch.delenv("HUGGINGFACE_TOKEN", raising=False)
+    monkeypatch.delenv("HUGGING_FACE_HUB_TOKEN", raising=False)
+    monkeypatch.delenv("KAGGLE_REMOTE_MIRROR_TOKEN", raising=False)
     mirror = KaggleRemoteMirror(backend="huggingface", remote_target="minkhoaa/repo")
     ok, msg = mirror.verify_readiness()
     assert not ok
@@ -493,4 +500,155 @@ def test_benchmark_config_invariants():
     assert cfg["amp"] == "fp16"
     assert cfg["batch_size"] == 2
     assert cfg["gradient_accumulation_steps"] == 2
+
+
+# --- 12. Checkpoint 12 Remediation Regression Tests ---
+
+def test_kaggle_remote_mirror_rejects_ephemeral_kaggle_working(monkeypatch):
+    monkeypatch.setattr(Path, "is_dir", lambda p: True if str(p) == "/kaggle" else Path.is_dir(p))
+    mirror = KaggleRemoteMirror(backend="local_dir", remote_target="/kaggle/working/mirror")
+    ok, msg = mirror.verify_readiness()
+    assert not ok
+    assert "Ephemeral /kaggle path" in msg
+
+
+def test_kaggle_remote_mirror_huggingface_real_upload_and_readback(tmp_path):
+    repo_id = "minkhoaa/langfens-rq1-trn-02b-checkpoints"
+    mirror = KaggleRemoteMirror(backend="huggingface", remote_target=repo_id)
+    ok, msg = mirror.verify_readiness()
+    if not ok:
+        pytest.skip(f"Hugging Face credentials or network unavailable: {msg}")
+
+    test_file = tmp_path / "test_epoch_1.pt"
+    test_content = b"LANGFENS_EPOCH_1_VERIFIED_CHECKPOINT_DATA"
+    test_file.write_bytes(test_content)
+    expected_sha = hashlib.sha256(test_content).hexdigest()
+
+    rel_name = f"test_audit/test_chk_{int(time.time()*1000)}.pt"
+    try:
+        res = mirror.mirror_file(test_file, rel_name, verify_sha=True)
+        assert res["status"] == "SYNCED"
+        assert res["remote_sha256"] == expected_sha
+        assert res["local_sha256"] == expected_sha
+    finally:
+        # Cleanup remote probe
+        try:
+            from huggingface_hub import HfApi
+            token = mirror.auth_token or os.environ.get("HF_TOKEN")
+            HfApi(token=token).delete_file(path_in_repo=rel_name, repo_id=repo_id, repo_type="model")
+        except Exception:
+            pass
+
+
+def test_save_checkpoint_per_epoch_remote_sync(tmp_path):
+    from audit_scripts.train_rq1_trn_02b import save_checkpoint
+
+    mock_synced = []
+
+    class MockMirror:
+        backend = "mock_remote"
+        def mirror_file(self, path, remote_rel_path, verify_sha=True):
+            mock_synced.append((str(path), remote_rel_path))
+            return {
+                "status": "SYNCED",
+                "backend": "mock_remote",
+                "remote_rel_path": remote_rel_path,
+                "local_sha256": "dummy",
+                "remote_sha256": "dummy",
+            }
+
+    chk_path = tmp_path / "last.pt"
+    payload = {"model": {"w": torch.zeros(1)}, "successful_updates": 600}
+    mirror = MockMirror()
+
+    local_sha = save_checkpoint(
+        path=chk_path,
+        payload=payload,
+        remote_mirror=mirror,
+        remote_rel_prefix="C0",
+    )
+    assert chk_path.is_file()
+    assert len(mock_synced) == 1
+    assert mock_synced[0][1] == "C0/last.pt"
+
+
+def test_kaggle_cli_rejects_allow_mock_gpu():
+    import subprocess
+    # kaggle_stage_and_verify.py must reject --allow-mock-gpu
+    res_stage = subprocess.run(
+        [sys.executable, "audit_scripts/kaggle_stage_and_verify.py", "--config", "dummy.yaml", "--allow-mock-gpu"],
+        capture_output=True,
+        text=True,
+    )
+    assert res_stage.returncode == 2
+    assert "unrecognized arguments: --allow-mock-gpu" in res_stage.stderr
+
+    # kaggle_train_exec.py must reject --allow-mock-gpu
+    res_train = subprocess.run(
+        [sys.executable, "audit_scripts/kaggle_train_exec.py", "--config", "dummy.yaml", "--allow-mock-gpu"],
+        capture_output=True,
+        text=True,
+    )
+    assert res_train.returncode == 2
+    assert "unrecognized arguments: --allow-mock-gpu" in res_train.stderr
+
+
+def test_kaggle_train_exec_command_arguments(tmp_path, monkeypatch):
+    from audit_scripts.kaggle_train_exec import execute_kaggle_training
+
+    # Mock stage_and_verify_kaggle_environment
+    fake_report = {
+        "status": "PASS_STAGING",
+        "arm": "C0",
+        "run_id": "test_run_123",
+        "output_directory": str(tmp_path / "out"),
+        "dataset": {"path": str(tmp_path / "data.zip")},
+        "baseline_weights": {"path": str(tmp_path / "best.pt")},
+    }
+    monkeypatch.setattr(
+        "audit_scripts.kaggle_train_exec.stage_and_verify_kaggle_environment",
+        lambda **k: fake_report,
+    )
+
+    captured_cmds = []
+
+    def mock_subprocess_run(cmd, **kw):
+        captured_cmds.append(cmd)
+        class DummyProc:
+            returncode = 0
+        return DummyProc()
+
+    monkeypatch.setattr(subprocess, "run", mock_subprocess_run)
+    monkeypatch.setattr(
+        "audit_scripts.kaggle_train_exec.classify_kaggle_training_endpoint",
+        lambda **k: {"status": "COMPLETED_3600_UPDATES", "successful_updates": 3600},
+    )
+
+    cfg_file = tmp_path / "cfg.yaml"
+    cfg_file.write_text("arm: C0\n")
+
+    res = execute_kaggle_training(
+        config_path=cfg_file,
+        arm="C0",
+        run_id="test_run_123",
+        remote_mirror_backend="huggingface",
+        remote_mirror_target="minkhoaa/test-repo",
+    )
+    assert len(captured_cmds) == 1
+    cmd = captured_cmds[0]
+
+    # Verify no illegal arguments
+    assert "--arm" not in cmd
+    assert "--output-dir" not in cmd
+
+    # Verify required arguments present
+    assert "--initial-checkpoint" in cmd
+    assert str(tmp_path / "best.pt") in cmd
+    assert "--zip-path" in cmd
+    assert str(tmp_path / "data.zip") in cmd
+    assert "--run-id" in cmd
+    assert "test_run_123" in cmd
+    assert "--remote-mirror-backend" in cmd
+    assert "huggingface" in cmd
+
 

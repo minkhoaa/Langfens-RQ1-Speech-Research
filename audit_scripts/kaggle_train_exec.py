@@ -254,18 +254,19 @@ def execute_kaggle_training(
     run_id: Optional[str] = None,
     kaggle_input_dir: Optional[str | Path] = None,
     working_dir: Optional[str | Path] = None,
-    remote_mirror_backend: str = "local_dir",
+    remote_mirror_backend: str = "huggingface",
     remote_mirror_target: Optional[str] = None,
-    allow_mock_gpu: bool = False,
+    remote_mirror_token: Optional[str] = None,
     dry_run: bool = False,
     check_only: bool = False,
     resume: bool = False,
+    expected_commit: Optional[str] = None,
 ) -> Dict[str, Any]:
     """
     Executes Kaggle training workflow for arm C0 or C1:
-    1. Validates and stages environment.
-    2. Initializes remote mirror.
-    3. Runs training loop with atomic checkpoint saving and remote sync.
+    1. Validates and stages environment (requires real Nvidia Tesla T4 GPU).
+    2. Initializes and verifies remote persistent mirror readiness.
+    3. Runs training loop with atomic per-epoch checkpoint saving and remote sync.
     4. Rigorously classifies final endpoint.
     """
     with open(config_path) as f:
@@ -281,7 +282,6 @@ def execute_kaggle_training(
         working_dir=working_dir,
         remote_mirror_backend=remote_mirror_backend,
         remote_mirror_target=remote_mirror_target,
-        allow_mock_gpu=allow_mock_gpu,
         run_id=run_id,
         resume=resume,
     )
@@ -295,29 +295,33 @@ def execute_kaggle_training(
         }
 
     # 2. Invoke Training Driver
-    from audit_scripts.train_rq1_trn_02b import main as train_main
-
-    # Build CLI args for train_rq1_trn_02b
     out_dir = staging_report["output_directory"]
     staged_zip = staging_report["dataset"]["path"]
+    staged_baseline = staging_report["baseline_weights"]["path"]
 
-    # Execute training via subprocess or in-process
+    # Execute training with correct arguments and verified input paths
     import subprocess
     cmd = [
         sys.executable,
         "audit_scripts/train_rq1_trn_02b.py",
         "--config", str(config_path),
-        "--arm", cfg["arm"],
-        "--output-dir", out_dir,
-        "--zip-path", staged_zip,
+        "--initial-checkpoint", str(staged_baseline),
+        "--zip-path", str(staged_zip),
     ]
     if run_id:
-        cmd.extend(["--run-id", run_id])
+        cmd.extend(["--run-id", str(run_id)])
     if resume:
-        cmd.append("--resume")
+        resume_ckpt = Path(out_dir) / "last.pt"
+        if not resume_ckpt.is_file():
+            raise FileNotFoundError(f"FAIL-CLOSED: Cannot resume; checkpoint not found: {resume_ckpt}")
+        cmd.extend(["--resume", str(resume_ckpt)])
+    if remote_mirror_backend:
+        cmd.extend(["--remote-mirror-backend", str(remote_mirror_backend)])
+    if remote_mirror_target:
+        cmd.extend(["--remote-mirror-target", str(remote_mirror_target)])
+    if remote_mirror_token:
+        cmd.extend(["--remote-mirror-token", str(remote_mirror_token)])
 
-    # In production, train_rq1_trn_02b saves locally. Checkpoint mirror syncs per epoch.
-    # Remote mirror syncing is handled during or immediately following training.
     print(f"[KAGGLE EXEC] Launching training subprocess: {' '.join(cmd)}")
     proc = subprocess.run(cmd, check=False)
 
@@ -325,25 +329,12 @@ def execute_kaggle_training(
     endpoint = classify_kaggle_training_endpoint(
         output_dir=out_dir,
         expected_arm=cfg["arm"],
+        expected_commit=expected_commit,
     )
-
-    # 4. Mirror all artifacts to remote persistent store
-    mirror = KaggleRemoteMirror(
-        backend=remote_mirror_backend,
-        remote_target=remote_mirror_target,
-    )
-    mirror_results = []
-    for art in Path(out_dir).glob("*.pt"):
-        res = mirror.mirror_file(art, f"{cfg['arm']}/{art.name}")
-        mirror_results.append(res)
-    hist = Path(out_dir) / "history.json"
-    if hist.is_file():
-        mirror_results.append(mirror.mirror_file(hist, f"{cfg['arm']}/history.json"))
 
     return {
         "execution_returncode": proc.returncode,
         "endpoint": endpoint,
-        "mirror_syncs": mirror_results,
         "staging_report": staging_report,
     }
 
@@ -353,15 +344,21 @@ def main():
     parser.add_argument("--config", type=str, required=True, help="Path to config YAML")
     parser.add_argument("--arm", type=str, choices=["C0", "C1"], help="Arm to execute")
     parser.add_argument("--run-id", type=str, default=None, help="Unique run ID")
-    parser.add_argument("--kaggle-input-dir", type=str, default="/kaggle/input/langfens-fold1-train-val-baseline")
+    parser.add_argument("--kaggle-input-dir", type=str, default=None, help="Path to Kaggle input staging directory")
     parser.add_argument("--working-dir", type=str, default="/kaggle/working")
-    parser.add_argument("--remote-mirror-backend", type=str, default="local_dir")
-    parser.add_argument("--remote-mirror-target", type=str, default=None)
-    parser.add_argument("--allow-mock-gpu", action="store_true")
+    parser.add_argument("--remote-mirror-backend", type=str, default="huggingface")
+    parser.add_argument("--remote-mirror-target", type=str, default="minkhoaa/langfens-rq1-trn-02b-checkpoints")
+    parser.add_argument("--remote-mirror-token", type=str, default=None)
+    parser.add_argument("--commit-sha", type=str, default=None, help="Expected immutable Git commit SHA")
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--check-only", action="store_true")
     parser.add_argument("--resume", action="store_true")
-    args = parser.parse_args()
+    args, unknown = parser.parse_known_args()
+
+    # Reject unexpected flags (preserve Jupyter ipykernel connection arguments)
+    disallowed = [u for u in unknown if not (u.startswith("-f") or u.endswith(".json") or "kernel" in u)]
+    if disallowed:
+        parser.error(f"unrecognized arguments: {' '.join(disallowed)}")
 
     result = execute_kaggle_training(
         config_path=args.config,
@@ -371,10 +368,11 @@ def main():
         working_dir=args.working_dir,
         remote_mirror_backend=args.remote_mirror_backend,
         remote_mirror_target=args.remote_mirror_target,
-        allow_mock_gpu=args.allow_mock_gpu,
+        remote_mirror_token=args.remote_mirror_token,
         dry_run=args.dry_run,
         check_only=args.check_only,
         resume=args.resume,
+        expected_commit=args.commit_sha,
     )
     print(json.dumps(result, indent=2, default=str))
 

@@ -306,8 +306,10 @@ def save_checkpoint(
     payload: Dict[str, Any],
     drive_output_dir: Optional[str | Path] = None,
     verify_remote_sha: bool = True,
+    remote_mirror: Optional[Any] = None,
+    remote_rel_prefix: Optional[str] = None,
 ) -> str:
-    """Atomically saves checkpoint locally and optionally syncs with Drive verifying SHA-256."""
+    """Atomically saves checkpoint locally and optionally syncs with Drive / Remote Mirror verifying SHA-256."""
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_suffix(path.suffix + ".tmp")
     torch.save(payload, tmp)
@@ -328,6 +330,12 @@ def save_checkpoint(
                 raise IOError(
                     f"Remote checkpoint sync SHA-256 mismatch: local {local_sha} vs remote {remote_sha}"
                 )
+
+    if remote_mirror is not None:
+        rel_path = f"{remote_rel_prefix}/{path.name}" if remote_rel_prefix else path.name
+        sync_res = remote_mirror.mirror_file(path, rel_path, verify_sha=verify_remote_sha)
+        print(f"[REMOTE MIRROR] Mirrored {path.name} -> {sync_res['backend']}:{rel_path} (SHA: {sync_res['remote_sha256'][:12]}...)", flush=True)
+
     return local_sha
 
 
@@ -521,6 +529,9 @@ def main():
     ap.add_argument("--initial-checkpoint", default=None, help="Path to initial baseline checkpoint (overrides config)")
     ap.add_argument("--zip-path", default=None, help="Path to zip archive containing authorized audio/TextGrids")
     ap.add_argument("--drive-output-dir", default=None, help="Google Drive destination for remote checkpoint persistence")
+    ap.add_argument("--remote-mirror-backend", default=None, help="Remote persistent mirror backend (huggingface, gdrive, local_dir)")
+    ap.add_argument("--remote-mirror-target", default=None, help="Remote persistent mirror repository/directory target")
+    ap.add_argument("--remote-mirror-token", default=None, help="Authentication token for remote persistent mirror")
     ap.add_argument("--run-id", default=None, help="Unique execution run identifier to isolate output checkpoints")
     ap.add_argument("--eval-only", action="store_true", help="Run validation only without training")
     ap.add_argument("--dry-run", action="store_true", help="Validate config, hashes, and parameter setup on CPU then exit")
@@ -715,6 +726,24 @@ def main():
     if drive_out:
         Path(drive_out).mkdir(parents=True, exist_ok=True)
 
+    # Initialize remote persistent mirror if configured
+    remote_mirror = None
+    mirror_backend = args.remote_mirror_backend or cfg.get("remote_mirror_backend")
+    mirror_target = args.remote_mirror_target or cfg.get("remote_mirror_target")
+    mirror_token = args.remote_mirror_token or cfg.get("remote_mirror_token")
+    if mirror_backend:
+        from audit_scripts.kaggle_checkpoint_sync import KaggleRemoteMirror
+        remote_mirror = KaggleRemoteMirror(
+            backend=mirror_backend,
+            remote_target=mirror_target,
+            auth_token=mirror_token,
+            require_verification=True,
+        )
+        ok, msg = remote_mirror.verify_readiness()
+        if not ok:
+            raise RuntimeError(f"FAIL-CLOSED: Remote mirror readiness verification failed before training: {msg}")
+        print(f"[REMOTE MIRROR] Verified remote persistent mirror: {mirror_backend} -> {mirror_target}", flush=True)
+
     git_sha = get_git_commit_sha()
     metadata = {
         "schema_version": CHECKPOINT_SCHEMA_VERSION,
@@ -890,7 +919,13 @@ def main():
                 },
             }
             halted_file = outdir / "halted_guardrail.pt"
-            save_checkpoint(halted_file, halted_payload, drive_output_dir=drive_out)
+            save_checkpoint(
+                halted_file,
+                halted_payload,
+                drive_output_dir=drive_out,
+                remote_mirror=remote_mirror,
+                remote_rel_prefix=arm,
+            )
             print(f"[GUARDRAIL ARTIFACT] Preserved complete halted checkpoint to {halted_file} (last.pt preserved).", flush=True)
             raise RuntimeError(msg)
 
@@ -933,16 +968,34 @@ def main():
         }
 
         # Save last checkpoint
-        save_checkpoint(outdir / "last.pt", chk_payload, drive_output_dir=drive_out)
+        save_checkpoint(
+            outdir / "last.pt",
+            chk_payload,
+            drive_output_dir=drive_out,
+            remote_mirror=remote_mirror,
+            remote_rel_prefix=arm,
+        )
 
         # Save exploratory best validation checkpoint
         if is_best:
-            save_checkpoint(outdir / "best.pt", chk_payload, drive_output_dir=drive_out)
+            save_checkpoint(
+                outdir / "best.pt",
+                chk_payload,
+                drive_output_dir=drive_out,
+                remote_mirror=remote_mirror,
+                remote_rel_prefix=arm,
+            )
 
         # Check for primary matched-budget endpoint: strictly 3,600 successful updates
         if primary_3600_updates_completed:
             primary_endpoint_reached = True
-            save_checkpoint(outdir / "fixed_budget_checkpoint.pt", chk_payload, drive_output_dir=drive_out)
+            save_checkpoint(
+                outdir / "fixed_budget_checkpoint.pt",
+                chk_payload,
+                drive_output_dir=drive_out,
+                remote_mirror=remote_mirror,
+                remote_rel_prefix=arm,
+            )
             print(f"[PRIMARY ENDPOINT] Saved fixed_budget_checkpoint.pt: completed {budget_tracker.successful_updates} successful updates.")
         elif epoch_cap_reached:
             print(
@@ -962,6 +1015,10 @@ def main():
         remote_hist = Path(drive_out) / "history.json"
         shutil.copyfile(str(hist_json), str(remote_hist))
         print(f"Verified remote history persistence: {remote_hist}", flush=True)
+    if remote_mirror is not None:
+        rel_hist = f"{arm}/history.json"
+        remote_mirror.mirror_file(hist_json, rel_hist, verify_sha=True)
+        print(f"[REMOTE MIRROR] Mirrored history.json -> {mirror_backend}:{rel_hist}", flush=True)
 
     print("=" * 80)
     print(f"Training run completed for Arm {arm}.")

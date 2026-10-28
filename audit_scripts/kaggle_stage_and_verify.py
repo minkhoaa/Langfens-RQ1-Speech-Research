@@ -307,6 +307,9 @@ def verify_and_stage_fold1_data(
 
     # Case 2: Directory (Kaggle mountpoint under /kaggle/input/...)
     if src_p.is_dir():
+        staging_dir = Path(target_staging_dir or "/kaggle/working/staged").resolve()
+        staging_dir.mkdir(parents=True, exist_ok=True)
+
         # Check if direct outer zip exists inside directory
         candidates = list(src_p.glob("*.zip"))
         outer_candidates = [c for c in candidates if c.stat().st_size > 500_000_000]
@@ -317,8 +320,23 @@ def verify_and_stage_fold1_data(
                 verify_bounded_zip_speakers(outer)
                 return outer
 
+        # Check for uncompressed binary archive (*.bin or *.dat) uploaded to bypass auto-extraction
+        bin_candidates = list(src_p.glob("*.bin")) + list(src_p.glob("*.dat"))
+        outer_bins = [b for b in bin_candidates if b.stat().st_size > 500_000_000]
+        if outer_bins:
+            outer_bin = outer_bins[0]
+            sha = compute_sha256(outer_bin)
+            if sha == EXPECTED_ZIP_SHA256:
+                staged_zip = staging_dir / "authorized_RQ1-TRN-02A_fold1_train_val_only.zip"
+                if not staged_zip.exists():
+                    try:
+                        staged_zip.symlink_to(outer_bin)
+                    except OSError:
+                        shutil.copyfile(str(outer_bin), str(staged_zip))
+                verify_bounded_zip_speakers(staged_zip)
+                return staged_zip
+
         # Check for auto-extracted speaker packages
-        staging_dir = Path(target_staging_dir or "/kaggle/working/staged").resolve()
         rebuilt_zip = staging_dir / "authorized_RQ1-TRN-02A_fold1_train_val_only.zip"
         reconstruct_outer_zip_from_speaker_files(src_p, rebuilt_zip)
         verify_bounded_zip_speakers(rebuilt_zip)
@@ -348,9 +366,9 @@ def resolve_kaggle_output_dir(
     else:
         out_dir = root_p / "checkpoints" / "RQ1-TRN-02B" / arm_norm
 
-    # Containment check
-    if not out_dir.resolve().is_relative_to(root_p):
-        raise ValueError(f"FAIL-CLOSED: Output directory '{out_dir}' escapes working root '{root_p}'.")
+    # Strict descendant containment check: must be strictly inside root_p (not equal)
+    if not out_dir.resolve().is_relative_to(root_p) or out_dir.resolve() == root_p:
+        raise ValueError(f"FAIL-CLOSED: Output directory '{out_dir}' is not a strict descendant of working root '{root_p}'.")
 
     # Conflict detection
     if not allow_conflicts and out_dir.is_dir():
@@ -373,7 +391,7 @@ def stage_and_verify_kaggle_environment(
     config: Dict[str, Any],
     kaggle_input_dir: Optional[Path | str] = None,
     working_dir: Optional[Path | str] = None,
-    remote_mirror_backend: str = "local_dir",
+    remote_mirror_backend: str = "huggingface",
     remote_mirror_target: Optional[str] = None,
     allow_mock_gpu: bool = False,
     run_id: Optional[str] = None,
@@ -390,7 +408,29 @@ def stage_and_verify_kaggle_environment(
     """
     arm = validate_arm(config.get("arm", "C0"))
     work_root = Path(working_dir or "/kaggle/working").resolve()
-    input_root = Path(kaggle_input_dir or config.get("kaggle_input_dir", "/kaggle/input/langfens-fold1-train-val-baseline")).resolve()
+
+    # Search for valid input_root
+    input_root = None
+    if kaggle_input_dir:
+        candidate = Path(kaggle_input_dir).resolve()
+        if candidate.is_dir():
+            input_root = candidate
+    if not input_root:
+        for cand in [
+            Path("/kaggle/input/langfens-rq1-fold1-staging"),
+            Path("/kaggle/input/langfens-fold1-train-val-baseline"),
+            Path(config.get("kaggle_input_dir", "/kaggle/input/langfens-fold1-train-val-baseline")),
+        ]:
+            if cand.is_dir():
+                input_root = cand.resolve()
+                break
+    if not input_root and Path("/kaggle/input").is_dir():
+        for sub in Path("/kaggle/input").iterdir():
+            if sub.is_dir() and ((sub / "best.pt").is_file() or any(sub.glob("*.zip"))):
+                input_root = sub.resolve()
+                break
+    if not input_root:
+        input_root = Path(kaggle_input_dir or "/kaggle/input").resolve()
 
     # 1. Device check
     gpu_info = verify_kaggle_gpu_device(allow_mock=allow_mock_gpu)
@@ -401,19 +441,32 @@ def stage_and_verify_kaggle_environment(
 
     # 3. Baseline weights check
     init_ckpt = config.get("initial_checkpoint")
-    baseline_path = Path(init_ckpt)
-    if not baseline_path.is_file() and input_root.is_dir():
-        # Try finding in input_root
+    baseline_path = Path(init_ckpt) if init_ckpt else None
+    if (not baseline_path or not baseline_path.is_file()) and input_root.is_dir():
         candidate = input_root / "best.pt"
         if candidate.is_file():
             baseline_path = candidate
+        else:
+            found = list(input_root.rglob("best.pt"))
+            if found:
+                baseline_path = found[0]
+    if not baseline_path:
+        baseline_path = Path("checkpoints/RQ1-TRN-02A/recovered/best.pt")
     baseline_sha = verify_baseline_weights(baseline_path)
 
     # 4. Fold 1 dataset staging & test sealing
     zip_source = config.get("zip_path")
-    zip_path = Path(zip_source) if zip_source else input_root
-    if not zip_path.exists() and input_root.exists():
-        zip_path = input_root
+    zip_path = Path(zip_source) if zip_source and Path(zip_source).exists() else None
+    if not zip_path and input_root.is_dir():
+        # Check for zip file inside input_root
+        zips = list(input_root.glob("*.zip"))
+        outer_zips = [z for z in zips if z.stat().st_size > 500_000_000]
+        if outer_zips:
+            zip_path = outer_zips[0]
+        else:
+            zip_path = input_root
+    if not zip_path:
+        zip_path = Path("datasets/L2-ARCTIC/authorized_RQ1-TRN-02A_fold1_train_val_only.zip")
 
     staged_zip = verify_and_stage_fold1_data(
         input_source=zip_path,
@@ -474,14 +527,18 @@ def main():
     parser = argparse.ArgumentParser(description="LANGFENS — Kaggle T4x2 Staging and Verification")
     parser.add_argument("--config", type=str, required=True, help="Path to YAML configuration file")
     parser.add_argument("--arm", type=str, choices=["C0", "C1", "BENCHMARK"], help="Override arm")
-    parser.add_argument("--kaggle-input-dir", type=str, default="/kaggle/input", help="Path to /kaggle/input")
+    parser.add_argument("--kaggle-input-dir", type=str, default=None, help="Path to /kaggle/input")
     parser.add_argument("--working-dir", type=str, default="/kaggle/working", help="Path to /kaggle/working")
-    parser.add_argument("--remote-mirror-backend", type=str, default="local_dir", choices=list(KaggleRemoteMirror.SUPPORTED_BACKENDS))
-    parser.add_argument("--remote-mirror-target", type=str, default=None, help="Remote persistent mirror destination")
+    parser.add_argument("--remote-mirror-backend", type=str, default="huggingface", choices=list(KaggleRemoteMirror.SUPPORTED_BACKENDS))
+    parser.add_argument("--remote-mirror-target", type=str, default="minkhoaa/langfens-rq1-trn-02b-checkpoints", help="Remote persistent mirror destination")
     parser.add_argument("--run-id", type=str, default=None, help="Unique run identifier")
-    parser.add_argument("--allow-mock-gpu", action="store_true", help="Allow mock GPU for testing only")
     parser.add_argument("--resume", action="store_true", help="Resumption mode (allows pre-existing checkpoints)")
-    args = parser.parse_args()
+    args, unknown = parser.parse_known_args()
+
+    # Reject unexpected flags (preserve Jupyter ipykernel connection arguments)
+    disallowed = [u for u in unknown if not (u.startswith("-f") or u.endswith(".json") or "kernel" in u)]
+    if disallowed:
+        parser.error(f"unrecognized arguments: {' '.join(disallowed)}")
 
     import yaml
     with open(args.config) as f:
@@ -496,7 +553,6 @@ def main():
         working_dir=args.working_dir,
         remote_mirror_backend=args.remote_mirror_backend,
         remote_mirror_target=args.remote_mirror_target,
-        allow_mock_gpu=args.allow_mock_gpu,
         run_id=args.run_id,
         resume=args.resume,
     )

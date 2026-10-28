@@ -26,10 +26,12 @@ def run_command(cmd: list[str], cwd: Path | None = None) -> None:
 
 def main():
     parser = argparse.ArgumentParser(description="LANGFENS Kaggle Runtime Entrypoint")
-    parser.add_argument("--mode", choices=["benchmark", "train_c0", "train_c1", "verify_only"], default="benchmark")
-    parser.add_argument("--commit-sha", type=str, default=None, help="Pinned commit SHA to checkout")
-    parser.add_argument("--remote-mirror-backend", type=str, default="local_dir")
-    parser.add_argument("--remote-mirror-target", type=str, default="/kaggle/working/persistent_mirror")
+    parser.add_argument("--mode", choices=["train_c0", "train_c1", "verify_only", "benchmark"], default="train_c0")
+    parser.add_argument("--commit-sha", type=str, required=True, help="Pinned immutable Git commit SHA to checkout and verify")
+    parser.add_argument("--remote-mirror-backend", type=str, default="huggingface")
+    parser.add_argument("--remote-mirror-target", type=str, default="minkhoaa/langfens-rq1-trn-02b-checkpoints")
+    parser.add_argument("--remote-mirror-token", type=str, default=None)
+    parser.add_argument("--kaggle-input-dir", type=str, default=None)
     parser.add_argument("--run-id", type=str, default=None)
     args = parser.parse_args()
 
@@ -37,23 +39,54 @@ def main():
     if not repo_dir.exists():
         print("[SETUP] Cloning repository into /kaggle/working/repo...")
         run_command(["git", "clone", "https://github.com/minkhoaa/Langfens-RQ1-Speech-Research.git", str(repo_dir)])
-        if args.commit_sha:
-            run_command(["git", "checkout", args.commit_sha], cwd=repo_dir)
-    else:
-        print(f"[SETUP] Using existing repository at {repo_dir}")
+
+    # Strictly checkout and verify target commit
+    print(f"[SETUP] Verifying and checking out target commit {args.commit_sha}...")
+    run_command(["git", "fetch", "--all"], cwd=repo_dir)
+    run_command(["git", "checkout", args.commit_sha], cwd=repo_dir)
+
+    # Verify HEAD matches commit_sha exactly
+    head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo_dir, text=True).strip().lower()
+    if head != args.commit_sha.strip().lower():
+        raise RuntimeError(f"FAIL-CLOSED: Git HEAD mismatch on Kaggle VM: actual {head} != expected {args.commit_sha}")
+
+    status = subprocess.check_output(["git", "status", "--porcelain"], cwd=repo_dir, text=True).strip()
+    if status:
+        raise RuntimeError(f"FAIL-CLOSED: Repository working tree is dirty on Kaggle VM:\n{status}")
+    print(f"[SETUP] Repository verified clean at target commit: {head}")
 
     # Set PYTHONPATH
     env = os.environ.copy()
     env["PYTHONPATH"] = f"{repo_dir}/src:{repo_dir}"
 
-    kaggle_input = Path("/kaggle/input/langfens-fold1-train-val-baseline")
+    # Search for staged dataset directory under /kaggle/input
+    kaggle_input = None
+    if args.kaggle_input_dir:
+        candidate = Path(args.kaggle_input_dir)
+        if candidate.is_dir():
+            kaggle_input = candidate
+    if not kaggle_input:
+        candidates = [
+            Path("/kaggle/input/langfens-rq1-fold1-staging"),
+            Path("/kaggle/input/langfens-fold1-train-val-baseline"),
+        ]
+        for c in candidates:
+            if c.is_dir():
+                kaggle_input = c
+                break
+    if not kaggle_input and Path("/kaggle/input").is_dir():
+        for sub in Path("/kaggle/input").iterdir():
+            if sub.is_dir() and ((sub / "best.pt").is_file() or any(sub.glob("*.zip"))):
+                kaggle_input = sub
+                break
+    print(f"[INPUT] Using Kaggle dataset input path: {kaggle_input}")
 
     if args.mode == "verify_only":
         print("[VERIFY] Running preflight staging check...")
         cmd = [
             sys.executable,
             str(repo_dir / "audit_scripts" / "kaggle_stage_and_verify.py"),
-            "--config", str(repo_dir / "configs" / "rq1_trn_02b_benchmark_kaggle.yaml"),
+            "--config", str(repo_dir / "configs" / "rq1_trn_02b_c0_kaggle.yaml"),
             "--kaggle-input-dir", str(kaggle_input),
             "--working-dir", "/kaggle/working",
             "--remote-mirror-backend", args.remote_mirror_backend,
@@ -84,11 +117,14 @@ def main():
             str(repo_dir / "audit_scripts" / "kaggle_train_exec.py"),
             "--config", str(repo_dir / "configs" / cfg_name),
             "--arm", arm,
+            "--commit-sha", args.commit_sha,
             "--kaggle-input-dir", str(kaggle_input),
             "--working-dir", "/kaggle/working",
             "--remote-mirror-backend", args.remote_mirror_backend,
             "--remote-mirror-target", args.remote_mirror_target,
         ]
+        if args.remote_mirror_token:
+            cmd.extend(["--remote-mirror-token", args.remote_mirror_token])
         if args.run_id:
             cmd.extend(["--run-id", args.run_id])
         subprocess.run(cmd, env=env, check=True)

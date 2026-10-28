@@ -1,9 +1,9 @@
 {
-  "id": "minkhoaa/langfens-rq1-trn-02b-t4x2",
-  "title": "LANGFENS RQ1-TRN-02B T4x2",
-  "code_file": "kaggle_entrypoint.py",
+  "id": "minkhoaa/langfens-rq1-c0-t4x2",
+  "title": "LANGFENS RQ1 C0 T4x2",
+  "code_file": "kaggle_notebook.ipynb",
   "language": "python",
-  "kernel_type": "script",
+  "kernel_type": "notebook",
   "is_private": "true",
   "enable_gpu": "true",
   "enable_tpu": "false",

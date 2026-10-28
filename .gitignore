@@ -95,6 +95,8 @@ Thumbs.db
 *.token
 *.key
 *.pem
+.hf_token
+**/.hf_token
 .env
 .env.*
 !.env.example
