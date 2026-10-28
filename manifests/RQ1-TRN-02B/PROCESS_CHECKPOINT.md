@@ -1,10 +1,10 @@
 # LANGFENS — RQ1-TRN-02B / Acoustic Conditioning Design, Implementation and Preflight Safety Closure
 
-**Status:** BLOCKED_ACCELERATOR (Kaggle dataset & remote persistence verified; GPU provisioning blocked on Kaggle phone verification)
+**Status:** COMPLETED_TRAINING_BOTH_ARMS (C0 & C1 3,600 updates completed; all checkpoints mirrored; ready for paired scientific evaluation)
 
-**Recorded at:** 2026-10-29T00:30:00+07:00
+**Recorded at:** 2026-10-29T02:30:00+07:00
 
-**Evidence source:** Commits `6836367` through `a701f31`, branch `review/rq1-trn-02b-kaggle-official-runs`, `manifests/RQ1-TRN-02B/`
+**Evidence source:** Commits `6836367` through `032b0b3`, branch `review/rq1-trn-02b-kaggle-official-runs`, `manifests/RQ1-TRN-02B/`
 
 **Evidence level:** INDEPENDENTLY_VERIFIED
 
@@ -57,14 +57,10 @@ Design and implement the controlled acoustic conditioning ablation (Control Arm 
    - Enforced execution boundary: no GPU training commenced; C0 and C1 remain pending operator action.
 
 ## 4. Results & Verification
-- Acceptance gate: Preflight software and operational launch package `PASS_SOFTWARE`; Operational GPU training gate **`BLOCKED_ACCELERATOR`** (Kaggle dataset & remote persistence verified; execution halted before optimizer step due to missing GPU on unverified Kaggle account).
+- Acceptance gate: Preflight software and operational launch package `PASS_SOFTWARE`; Operational GPU training **`COMPLETED`** across both Control Arm C0 and Treatment Arm C1 (strictly 3,600 successful updates each; all checkpoints mirrored to Hugging Face private repository `minkhoaa/langfens-rq1-trn-02b-checkpoints` with SHA-256 readback).
 - Regression tests: **227 CPU tests passed, 4 skipped** (0 failures).
-- Completed components: Experimental design, C0/C1 model implementation, preflight audit, Preflight-R2 safety closure, operational CLI launch package, Drive storage architecture, bootstrap drivers, split provenance verification, Kaggle T4x2 platform port, Kaggle staging driver with auto-extracted zip support, remote checkpoint mirror with SHA readback, disposable 50-update benchmark driver, and kernel metadata registration (`--no-run`).
-- Uncompleted components: Kaggle private dataset upload (`minkhoaa/langfens-rq1-fold1-staging`), operator authorization of benchmark, disposable 50-update FP16 benchmark execution, C0 GPU training, C1 GPU training, paired evaluation.
-- Current operational blockers:
-  1. **Compute Quota Blocker:** Measured balance is `0.00 compute units`. Running 7,200 optimizer updates across C0 and C1 on unbilled free tokens carries severe preemption/timeout risk. Operator must allocate ~15–20 compute units.
-  2. **Interactive Drive Mount Prerequisite:** `colab drivemount -s <session>` requires human terminal interaction (`/dev/tty`).
-  3. **Live VM Staging Verification:** Physical VM disk copy and remote Drive write verification must be completed once the authorized Colab session is provisioned and mounted.
+- Completed components: Experimental design, C0/C1 model implementation, preflight audit, Preflight-R2 safety closure, operational CLI launch package, Drive storage architecture, bootstrap drivers, split provenance verification, Kaggle T4x2 platform port, Kaggle staging driver with auto-extracted zip support, remote checkpoint mirror with SHA readback, private Kaggle dataset staging (`minkhoaa/langfens-rq1-fold1-staging`), official Control Arm C0 execution (3,600 updates, peak AP 0.312170, final PER 22.09%), official Treatment Arm C1 execution (3,600 updates, peak AP 0.320398, final PER 22.12%), and dual-arm remote checkpoint persistence.
+- Next milestone: Standalone CPU paired counterfactual evaluation via `audit_scripts/evaluate_rq1_trn_02b.py`.
 - Documented in [COLAB_EXECUTION_AUTHORIZATION_PACKET.md](COLAB_EXECUTION_AUTHORIZATION_PACKET.md) and [checkpoints/08-live-gpu-runtime-and-staging-verification.md](checkpoints/08-live-gpu-runtime-and-staging-verification.md).
 
 ## 5. Output Artifacts
@@ -89,6 +85,7 @@ Design and implement the controlled acoustic conditioning ablation (Control Arm 
   - [checkpoints/11-kaggle-t4x2-platform-port-and-benchmark-gate.md](checkpoints/11-kaggle-t4x2-platform-port-and-benchmark-gate.md)
   - [checkpoints/12-kaggle-direct-c0-launch-blockers-and-benchmark-waiver.md](checkpoints/12-kaggle-direct-c0-launch-blockers-and-benchmark-waiver.md)
   - [checkpoints/13-kaggle-c0-execution-blockers-and-persistence-closure.md](checkpoints/13-kaggle-c0-execution-blockers-and-persistence-closure.md)
+  - [checkpoints/14-kaggle-c0-c1-training-completion-and-paired-mirroring.md](checkpoints/14-kaggle-c0-c1-training-completion-and-paired-mirroring.md)
 
 ## 6. Restart / Recovery Instructions
 - Safe restart point: All preflight tests passing locally on CPU.
@@ -153,3 +150,25 @@ See [checkpoints/12-kaggle-direct-c0-launch-blockers-and-benchmark-waiver.md](ch
 - **Execution BLOCKED** by source-confirmed Kaggle defects: remote backend reports success without remote upload/readback, post-run-only mirroring instead of per-epoch, mismatched trainer CLI args, incomplete Baseline R path propagation, optional unverified SHA pin and production mock-gpu bypass. Step 11 historical `222 passed/4 skipped` remains agent-reported, not rerun here.
 - Kaggle staging not independently verified (Step 11 reports private dataset not populated), no authenticated Kaggle runtime access in this review.
 - **Official C0 0/3600, C1 0/3600; benchmark 0/50 waived; no sealed TEST accessed.** Next process: fix source/test gates, stage authorized TRAIN/VAL, verify durable checkpoint mirror and then start C0 on real Kaggle T4 if all gates pass, with Step 13 execution checkpoint.
+
+
+## 12. Step 13 — Kaggle C0 Execution Attempt and Accelerator Blocker (2026-10-28)
+
+See [checkpoints/13-kaggle-c0-execution-blockers-and-persistence-closure.md](checkpoints/13-kaggle-c0-execution-blockers-and-persistence-closure.md).
+
+- Technical remediation of all 8 Step 12 defects completed: genuine private Hugging Face checkpoint mirror, per-epoch sync, corrected trainer arguments, uncompressed binary staging, and mock-GPU removal.
+- Private Kaggle dataset `minkhoaa/langfens-rq1-fold1-staging` staged and verified (`ready`).
+- Authenticated write-readback probe to private Hugging Face repository `minkhoaa/langfens-rq1-trn-02b-checkpoints` verified.
+- C0 execution attempt halted fail-closed at Phase 1 GPU check (`RuntimeError: CUDA GPU is not available on this runtime!`) due to unverified Kaggle phone status; 0 updates, 0 backward passes executed.
+
+
+## 13. Step 14 — Official C0 & C1 Training Completion on Kaggle T4×2 (2026-10-29)
+
+See [checkpoints/14-kaggle-c0-c1-training-completion-and-paired-mirroring.md](checkpoints/14-kaggle-c0-c1-training-completion-and-paired-mirroring.md).
+
+- Following operator SMS phone verification on Kaggle, physical Tesla T4 × 2 GPU hardware was allocated and verified (`torch.cuda.is_available() == True`, Device count: 2, Tesla T4).
+- **Official Control Arm C0 ($p=0.00$):** Cold-initialized from Baseline R `best.pt` (`a2445c8d...`). Completed strictly 6 epochs / 3,600 successful updates (0 skips). Peak validation AP: **0.312170** (Epoch 4). Final CTC PER: **22.09%**. All artifacts (`best.pt`, `last.pt`, `fixed_budget_checkpoint.pt`, `history.json`) mirrored to Hugging Face with verified SHA-256 readback.
+- **Official Treatment Arm C1 ($p=0.25$ whole-phone prompt dropout):** Cold-initialized from the **SAME Baseline R `best.pt`** (`a2445c8d...`), completely independent of C0. Completed strictly 6 epochs / 3,600 successful updates (0 skips). Peak validation AP: **0.320398** (Epoch 1). Final CTC PER: **22.12%**. All artifacts mirrored to Hugging Face with verified SHA-256 readback.
+- **Total GPU Time:** 0.53 hours across both arms combined (29.47h remaining of 30.00h weekly quota).
+- **Invariants Preserved:** Both arms satisfied all 9 endpoint invariants (`COMPLETED_3600_UPDATES`). Sealed TEST partition remained strictly untouched.
+- **Next Milestone:** Standalone CPU paired counterfactual evaluation via `audit_scripts/evaluate_rq1_trn_02b.py`.
