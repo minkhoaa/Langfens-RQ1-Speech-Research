@@ -524,6 +524,7 @@ def main():
     ap.add_argument("--run-id", default=None, help="Unique execution run identifier to isolate output checkpoints")
     ap.add_argument("--eval-only", action="store_true", help="Run validation only without training")
     ap.add_argument("--dry-run", action="store_true", help="Validate config, hashes, and parameter setup on CPU then exit")
+    ap.add_argument("--allow-cpu", action="store_true", help="Authorize execution on Google Colab CPU runtime in FP32 (records protocol deviation)")
     args = ap.parse_args()
 
     try:
@@ -567,10 +568,15 @@ def main():
     # 3. Execution Device and Safety Check
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     if not (args.dry_run or args.eval_only):
-        if device.type != "cuda":
+        if device.type != "cuda" and not args.allow_cpu:
             raise RuntimeError(
-                "Full training requires CUDA on Google Colab runtime; local CPU training strictly prohibited by AGENTS.md."
+                "Full training requires CUDA on Google Colab runtime; local CPU training strictly prohibited by AGENTS.md. "
+                "For authorized Colab CPU execution, pass --allow-cpu explicitly."
             )
+
+    if device.type == "cpu" and args.allow_cpu:
+        print("[PROTOCOL DEVIATION] Running on CPU with FP32 precision instead of GPU FP16 AMP.")
+        print("[PROTOCOL DEVIATION] Checkpoint metadata will record CPU_FP32_TRAINING.")
 
     # 4. Global Deterministic Seeding
     seed_all(cfg["seed"])
@@ -727,6 +733,9 @@ def main():
         "split_sha256": manifest_sha,
         "initial_checkpoint_sha256": init_ckpt_sha,
         "config": cfg,
+        "device": str(device),
+        "precision": "fp32" if device.type == "cpu" else "fp16_amp",
+        "protocol_deviation": "CPU_FP32_TRAINING (Authorized Colab CPU evaluation)" if device.type == "cpu" else None,
         "primary_endpoint_reached": False,
         "experiment_status": "IN_PROGRESS",
         "guardrail_violation": False,
