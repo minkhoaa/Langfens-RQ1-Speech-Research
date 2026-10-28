@@ -183,7 +183,6 @@ def test_strict_gpu_enforcement_in_staging(monkeypatch):
             local_data_dir=Path("/tmp"),
             local_checkpoint_dir=Path("/tmp"),
             drive_root=Path("/tmp"),
-            mock_gpu=False,
         )
 
 
@@ -199,7 +198,6 @@ def test_strict_gpu_enforcement_in_training(monkeypatch):
             drive_root=Path("/tmp"),
             local_zip_path=Path("/tmp/fake.zip"),
             local_baseline_path=Path("/tmp/fake.pt"),
-            mock_gpu=False,
         )
 
 
@@ -475,16 +473,14 @@ def test_duplicate_run_id_resolution(tmp_path):
     out_c0 = resolve_drive_output_dir(drive_root, "C0", run_id="run_20261028_01")
     assert str(out_c0) == str(drive_root / "manifests/RQ1-TRN-02B/checkpoints/C0/run_20261028_01")
 
-    # Case 2: Resume / caller already nested run-id
-    already_nested = drive_root / "manifests/RQ1-TRN-02B/checkpoints/C0/run_20261028_01"
-    resolved_idempotent = resolve_drive_output_dir(already_nested, "C0", run_id="run_20261028_01")
-    assert str(resolved_idempotent) == str(drive_root / "manifests/RQ1-TRN-02B/checkpoints/C0/run_20261028_01")
-    # Verify no double nesting
-    assert "run_20261028_01/run_20261028_01" not in str(resolved_idempotent)
-
-    # Case 3: Fresh run without run-id
+    # Case 2: Fresh run without run-id
     out_c1 = resolve_drive_output_dir(drive_root, "C1", run_id=None)
     assert str(out_c1) == str(drive_root / "manifests/RQ1-TRN-02B/checkpoints/C1")
+
+    # Case 3: Reverse ancestry or passing an already nested output dir as root must fail closed
+    already_nested = drive_root / "manifests/RQ1-TRN-02B/checkpoints/C0/run_20261028_01"
+    with pytest.raises(ValueError, match="is NOT a strict descendant"):
+        validate_drive_output_hierarchy(already_nested, already_nested, "C0")
 
 
 # --- 12. Authentic Drive Persistence Verification (Defect F) ---
@@ -522,12 +518,12 @@ def test_drive_output_hierarchy_and_containment(tmp_path):
     assert validate_drive_output_hierarchy(valid_out, drive_root, "C0") is True
 
     # Arm mismatch in hierarchy
-    with pytest.raises(ValueError, match="does not belong to authorized hierarchy"):
+    with pytest.raises(ValueError, match="does not match expected hierarchy"):
         validate_drive_output_hierarchy(valid_out, drive_root, "C1")
 
     # Outside Drive root
     outside_out = tmp_path / "outside_dir" / "manifests/RQ1-TRN-02B/checkpoints/C0"
-    with pytest.raises(ValueError, match="does not belong to authorized Drive root"):
+    with pytest.raises(ValueError, match="is NOT a strict descendant"):
         validate_drive_output_hierarchy(outside_out, drive_root, "C0")
 
 
@@ -702,16 +698,19 @@ def test_task_a_negative_endpoint_regressions(tmp_path):
 def test_fail_closed_readiness_checks():
     raw_usage_zero = "Current balance: 0.00 compute units\nUsage rate: 0.00/hr\nActive assignments: 0"
     commit = "ea8762079735cfb5520de49eaca4528a458a1f38"
-    layers = evaluate_readiness_layers(commit, raw_usage_zero)
+    layers = evaluate_readiness_layers(commit_sha=commit, raw_usage=raw_usage_zero)
 
     assert layers["2_COMPUTE_QUOTA"][0] == "BLOCKED"
     assert "ZERO_QUOTA" in layers["2_COMPUTE_QUOTA"][1]
     assert layers["5_OPERATOR_AUTHORIZATION"][0] != "PASS"
 
-    # With funded quota
+    # With funded quota but missing evidence artifacts
     raw_usage_funded = "Current balance: 20.00 compute units\nUsage rate: 1.00/hr\nActive assignments: 0"
-    layers_funded = evaluate_readiness_layers(commit, raw_usage_funded)
+    layers_funded = evaluate_readiness_layers(commit_sha=commit, raw_usage=raw_usage_funded)
     assert layers_funded["2_COMPUTE_QUOTA"][0] == "PASS"
+    assert layers_funded["3_DRIVE_MOUNT"][0] != "PASS"
+    assert layers_funded["4_VM_STAGING_WRITE"][0] != "PASS"
+    assert layers_funded["5_OPERATOR_AUTHORIZATION"][0] != "PASS"
 
 
 # --- Task B Strict Executable Readiness Tests ---
@@ -740,50 +739,202 @@ def _setup_clean_test_repo(tmp_path: Path) -> Tuple[Path, str]:
     return repo_dir, head
 
 
+def _create_test_evidence(
+    tmp_path: Path,
+    session: str,
+    commit: str,
+    arm: str = "C0",
+    run_id: str = "run_01",
+    drive_status: str = "VERIFIED",
+    staging_status: str = "READY_FOR_TRAINING",
+    mount_active: bool = True,
+    operator_status: str = "AUTHORIZED",
+) -> Tuple[Path, Path, Path]:
+    att_file = tmp_path / f"mount_attestation_{session}.json"
+    att_file.write_text(json.dumps({
+        "session": session,
+        "mount_active": mount_active,
+        "drive_folder_id": "1Zms4bwv3QYZcmDQAeYolbq-ovrZVRlnK",
+        "drive_verification_status": drive_status,
+    }))
+
+    rep_file = tmp_path / f"staging_report_{arm}_{session}.json"
+    rep_file.write_text(json.dumps({
+        "session": session,
+        "status": staging_status,
+        "drive_verification_status": drive_status,
+        "verified_commit": commit,
+        "arm": arm,
+        "run_id": run_id,
+        "staged_zip_sha256": "b750eb3bf3971afccd9ab9058a64fa6b3f5781399b9ef0f1294d29bf580784a9",
+        "staged_baseline_sha256": "a2445c8d17910bf3c03101f50fc419675e8d1bc012af43af10267a28dbba948b",
+        "manifest_sha256": "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b",
+    }))
+
+    app_file = tmp_path / "OPERATOR_EXECUTION_APPROVAL.json"
+    app_file.write_text(json.dumps({
+        "status": operator_status,
+        "approved_commit": commit,
+        "approved_session": session,
+        "approved_arm": arm,
+        "approved_run_id": run_id,
+        "operator_id": "auditor_lead",
+        "timestamp": "2026-10-28T15:00:00Z",
+    }))
+
+    return att_file, rep_file, app_file
+
+
 def test_task_b_strict_executable_readiness(tmp_path):
     repo_dir, commit = _setup_clean_test_repo(tmp_path)
+    session = "langfens-rq1-c0"
+    arm = "C0"
+    run_id = "run_01"
     raw_funded = "Current balance: 20.00 compute units\nUsage rate: 1.00/hr\nActive assignments: 0"
+
+    att_file, rep_file, app_file = _create_test_evidence(
+        tmp_path=tmp_path,
+        session=session,
+        commit=commit,
+        arm=arm,
+        run_id=run_id,
+    )
 
     # 1. Zero quota -> NOT READY
     raw_zero = "Current balance: 0.00 compute units\nUsage rate: 0.00/hr\nActive assignments: 0"
-    layers_zero = evaluate_readiness_layers(commit, raw_usage=raw_zero, repo_root=repo_dir)
+    layers_zero = evaluate_readiness_layers(
+        commit_sha=commit, session_name=session, arm=arm, run_id=run_id,
+        raw_usage=raw_zero, attestation_path=att_file, staging_report_path=rep_file,
+        operator_approval_path=app_file, repo_root=repo_dir
+    )
     ready_zero, reason_zero = is_executable_ready(layers_zero)
     assert not ready_zero
-    assert layers_zero["1_STATIC_SOFTWARE"][0] == "PASS_SOFTWARE"
     assert layers_zero["2_COMPUTE_QUOTA"][0] == "BLOCKED"
     assert "2_COMPUTE_QUOTA" in reason_zero
 
-    # 2. Sufficient quota but missing Drive mount -> NOT READY
-    layers_no_drive = evaluate_readiness_layers(commit, raw_usage=raw_funded, drive_mounted=None, repo_root=repo_dir)
-    ready_no_drive, reason_no_drive = is_executable_ready(layers_no_drive)
-    assert not ready_no_drive
-    assert layers_no_drive["2_COMPUTE_QUOTA"][0] == "PASS"
-    assert layers_no_drive["3_DRIVE_MOUNT"][0] != "PASS"
-    assert "3_DRIVE_MOUNT" in reason_no_drive
+    # 2. Sufficient quota but missing mount attestation -> NOT READY
+    layers_no_att = evaluate_readiness_layers(
+        commit_sha=commit, session_name=session, arm=arm, run_id=run_id,
+        raw_usage=raw_funded, attestation_path=None, staging_report_path=rep_file,
+        operator_approval_path=app_file, repo_root=repo_dir
+    )
+    ready_no_att, reason_no_att = is_executable_ready(layers_no_att)
+    assert not ready_no_att
+    assert layers_no_att["3_DRIVE_MOUNT"][0] != "PASS"
+    assert "3_DRIVE_MOUNT" in reason_no_att
 
-    # 3. Sufficient quota & Drive mount, but unverified staging -> NOT READY
+    # 3. Forged mount attestation with mismatched session -> NOT READY
+    bad_att = tmp_path / "bad_att.json"
+    bad_att.write_text(json.dumps({
+        "session": "wrong-session",
+        "mount_active": True,
+        "drive_folder_id": "1Zms4bwv3QYZcmDQAeYolbq-ovrZVRlnK",
+        "drive_verification_status": "VERIFIED",
+    }))
+    layers_bad_att = evaluate_readiness_layers(
+        commit_sha=commit, session_name=session, arm=arm, run_id=run_id,
+        raw_usage=raw_funded, attestation_path=bad_att, staging_report_path=rep_file,
+        operator_approval_path=app_file, repo_root=repo_dir
+    )
+    ready_bad_att, reason_bad_att = is_executable_ready(layers_bad_att)
+    assert not ready_bad_att
+    assert layers_bad_att["3_DRIVE_MOUNT"][0] == "BLOCKED"
+    assert "Mismatched session ID" in reason_bad_att
+
+    # 4. Sufficient quota & mount, but missing staging report -> NOT READY
     layers_no_staging = evaluate_readiness_layers(
-        commit, raw_usage=raw_funded, drive_mounted=True, staging_verified=None, repo_root=repo_dir
+        commit_sha=commit, session_name=session, arm=arm, run_id=run_id,
+        raw_usage=raw_funded, attestation_path=att_file, staging_report_path=None,
+        operator_approval_path=app_file, repo_root=repo_dir
     )
     ready_no_staging, reason_no_staging = is_executable_ready(layers_no_staging)
     assert not ready_no_staging
-    assert layers_no_staging["3_DRIVE_MOUNT"][0] == "PASS"
     assert layers_no_staging["4_VM_STAGING_WRITE"][0] != "PASS"
     assert "4_VM_STAGING_WRITE" in reason_no_staging
 
-    # 4. Sufficient quota, Drive mount, staging verified, but missing operator authorization -> NOT READY
+    # 5. Forged staging report with mismatched commit SHA -> NOT READY
+    bad_rep_commit = tmp_path / "bad_rep_commit.json"
+    bad_rep_commit.write_text(json.dumps({
+        "session": session,
+        "status": "READY_FOR_TRAINING",
+        "drive_verification_status": "VERIFIED",
+        "verified_commit": "0" * 40,
+        "arm": arm,
+        "run_id": run_id,
+        "staged_zip_sha256": "b750eb3bf3971afccd9ab9058a64fa6b3f5781399b9ef0f1294d29bf580784a9",
+        "staged_baseline_sha256": "a2445c8d17910bf3c03101f50fc419675e8d1bc012af43af10267a28dbba948b",
+        "manifest_sha256": "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b",
+    }))
+    layers_bad_commit = evaluate_readiness_layers(
+        commit_sha=commit, session_name=session, arm=arm, run_id=run_id,
+        raw_usage=raw_funded, attestation_path=att_file, staging_report_path=bad_rep_commit,
+        operator_approval_path=app_file, repo_root=repo_dir
+    )
+    ready_bad_commit, reason_bad_commit = is_executable_ready(layers_bad_commit)
+    assert not ready_bad_commit
+    assert layers_bad_commit["4_VM_STAGING_WRITE"][0] == "BLOCKED"
+    assert "Mismatched commit SHA" in reason_bad_commit
+
+    # 6. Staging report with drive status PENDING_RUNTIME_VERIFICATION -> NOT READY
+    bad_rep_drive = tmp_path / "bad_rep_drive.json"
+    bad_rep_drive.write_text(json.dumps({
+        "session": session,
+        "status": "READY_FOR_TRAINING",
+        "drive_verification_status": "PENDING_RUNTIME_VERIFICATION",
+        "verified_commit": commit,
+        "arm": arm,
+        "run_id": run_id,
+        "staged_zip_sha256": "b750eb3bf3971afccd9ab9058a64fa6b3f5781399b9ef0f1294d29bf580784a9",
+        "staged_baseline_sha256": "a2445c8d17910bf3c03101f50fc419675e8d1bc012af43af10267a28dbba948b",
+        "manifest_sha256": "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b",
+    }))
+    layers_bad_drive = evaluate_readiness_layers(
+        commit_sha=commit, session_name=session, arm=arm, run_id=run_id,
+        raw_usage=raw_funded, attestation_path=att_file, staging_report_path=bad_rep_drive,
+        operator_approval_path=app_file, repo_root=repo_dir
+    )
+    ready_bad_drive, reason_bad_drive = is_executable_ready(layers_bad_drive)
+    assert not ready_bad_drive
+    assert layers_bad_drive["4_VM_STAGING_WRITE"][0] == "BLOCKED"
+    assert "expected 'VERIFIED'" in reason_bad_drive
+
+    # 7. Missing operator authorization -> NOT READY
     layers_no_auth = evaluate_readiness_layers(
-        commit, raw_usage=raw_funded, drive_mounted=True, staging_verified=True, operator_authorized=None, repo_root=repo_dir
+        commit_sha=commit, session_name=session, arm=arm, run_id=run_id,
+        raw_usage=raw_funded, attestation_path=att_file, staging_report_path=rep_file,
+        operator_approval_path=None, repo_root=repo_dir
     )
     ready_no_auth, reason_no_auth = is_executable_ready(layers_no_auth)
     assert not ready_no_auth
-    assert layers_no_auth["4_VM_STAGING_WRITE"][0] == "PASS"
     assert layers_no_auth["5_OPERATOR_AUTHORIZATION"][0] != "PASS"
     assert "5_OPERATOR_AUTHORIZATION" in reason_no_auth
 
-    # All 5 layers satisfied -> READY
+    # 8. Forged operator approval with mismatched session ID -> NOT READY
+    bad_app_sess = tmp_path / "bad_app_sess.json"
+    bad_app_sess.write_text(json.dumps({
+        "status": "AUTHORIZED",
+        "approved_commit": commit,
+        "approved_session": "forged-session",
+        "approved_arm": arm,
+        "approved_run_id": run_id,
+        "operator_id": "auditor",
+        "timestamp": "2026-10-28T15:00:00Z",
+    }))
+    layers_bad_app = evaluate_readiness_layers(
+        commit_sha=commit, session_name=session, arm=arm, run_id=run_id,
+        raw_usage=raw_funded, attestation_path=att_file, staging_report_path=rep_file,
+        operator_approval_path=bad_app_sess, repo_root=repo_dir
+    )
+    ready_bad_app, reason_bad_app = is_executable_ready(layers_bad_app)
+    assert not ready_bad_app
+    assert layers_bad_app["5_OPERATOR_AUTHORIZATION"][0] == "BLOCKED"
+    assert "Mismatched session" in reason_bad_app
+
+    # 9. All 5 layers satisfied with genuine evidence -> READY
     layers_all = evaluate_readiness_layers(
-        commit, raw_usage=raw_funded, drive_mounted=True, staging_verified=True, operator_authorized=True, repo_root=repo_dir
+        commit_sha=commit, session_name=session, arm=arm, run_id=run_id,
+        raw_usage=raw_funded, attestation_path=att_file, staging_report_path=rep_file,
+        operator_approval_path=app_file, repo_root=repo_dir
     )
     ready_all, reason_all = is_executable_ready(layers_all)
     assert ready_all is True
@@ -844,6 +995,9 @@ def test_task_c_immutable_source_validation(tmp_path):
 def test_cli_invocation_exit_codes(tmp_path):
     repo_dir, commit = _setup_clean_test_repo(tmp_path)
     script_path = str(Path("audit_scripts/colab_launch_workflow.py").resolve())
+    session = "langfens-rq1-c0"
+    arm = "C0"
+    run_id = "run_01"
 
     # 1. check-software-only exits 0 on clean valid repo
     res_soft = subprocess.run(
@@ -865,76 +1019,160 @@ def test_cli_invocation_exit_codes(tmp_path):
     assert res_wrong_commit.returncode == 1
     assert "FAIL" in res_wrong_commit.stdout
 
-    # 3. check-only with zero quota exits 1
-    res_check_zero = subprocess.run(
-        [
-            sys.executable, script_path,
-            "--commit", commit, "--check-only",
-            "--mock-usage", "Current balance: 0.00 compute units\nUsage rate: 0.00/hr\nActive assignments: 0",
-        ],
-        cwd=str(repo_dir),
-        capture_output=True,
-        text=True,
-    )
-    assert res_check_zero.returncode == 1
-    assert "NOT READY FOR EXECUTION" in res_check_zero.stdout
+    # 3. Rejection of removed mock/assertion flags (cannot self-assert readiness)
+    for forbidden_flag in ["--mock-usage", "--drive-mounted", "--staging-verified", "--operator-authorized"]:
+        res_flag = subprocess.run(
+            [sys.executable, script_path, forbidden_flag],
+            cwd=str(repo_dir),
+            capture_output=True,
+            text=True,
+        )
+        assert res_flag.returncode == 2
+        assert "unrecognized arguments" in res_flag.stderr
 
-    # 4. check-only with funded quota but missing drive mount exits 1 (NOT READY)
-    res_check_funded = subprocess.run(
-        [
-            sys.executable, script_path,
-            "--commit", commit, "--check-only",
-            "--mock-usage", "Current balance: 25.00 compute units\nUsage rate: 1.00/hr\nActive assignments: 0",
-        ],
+    # 4. check-only without evidence exits 1 (NOT READY)
+    res_check_no_ev = subprocess.run(
+        [sys.executable, script_path, "--commit", commit, "--check-only"],
         cwd=str(repo_dir),
         capture_output=True,
         text=True,
     )
-    assert res_check_funded.returncode == 1
-    assert "NOT READY FOR EXECUTION" in res_check_funded.stdout
-    assert "3_DRIVE_MOUNT" in res_check_funded.stdout
+    assert res_check_no_ev.returncode == 1
+    assert "NOT READY FOR EXECUTION" in res_check_no_ev.stdout
 
-    # 5. check-only with funded quota and drive mount, but unverified staging exits 1
-    res_check_staging = subprocess.run(
+    # 5. check-only with mismatched session in staging report exits 1
+    att_file, rep_file, app_file = _create_test_evidence(
+        tmp_path=tmp_path, session="other-session", commit=commit, arm=arm, run_id=run_id
+    )
+    res_check_mismatch = subprocess.run(
         [
             sys.executable, script_path,
-            "--commit", commit, "--check-only",
-            "--mock-usage", "Current balance: 25.00 compute units\nUsage rate: 1.00/hr\nActive assignments: 0",
-            "--drive-mounted",
+            "--commit", commit, "--arm", "C0", "--run-id", run_id, "--check-only",
+            "--attestation-file", str(att_file),
+            "--staging-report", str(rep_file),
+            "--operator-approval-file", str(app_file),
         ],
         cwd=str(repo_dir),
         capture_output=True,
         text=True,
     )
-    assert res_check_staging.returncode == 1
-    assert "4_VM_STAGING_WRITE" in res_check_staging.stdout
+    assert res_check_mismatch.returncode == 1
+    assert "NOT READY FOR EXECUTION" in res_check_mismatch.stdout
 
-    # 6. check-only with funded quota, drive mount, staging verified, but missing auth exits 1
-    res_check_auth = subprocess.run(
-        [
-            sys.executable, script_path,
-            "--commit", commit, "--check-only",
-            "--mock-usage", "Current balance: 25.00 compute units\nUsage rate: 1.00/hr\nActive assignments: 0",
-            "--drive-mounted", "--staging-verified",
-        ],
-        cwd=str(repo_dir),
-        capture_output=True,
-        text=True,
-    )
-    assert res_check_auth.returncode == 1
-    assert "5_OPERATOR_AUTHORIZATION" in res_check_auth.stdout
 
-    # 7. check-only with all 5 layers satisfied exits 0
-    res_check_all = subprocess.run(
-        [
-            sys.executable, script_path,
-            "--commit", commit, "--check-only",
-            "--mock-usage", "Current balance: 25.00 compute units\nUsage rate: 1.00/hr\nActive assignments: 0",
-            "--drive-mounted", "--staging-verified", "--operator-authorized",
-        ],
-        cwd=str(repo_dir),
+# --- Defect A & D Regression Tests ---
+
+def test_defect_a_fail_closed_on_unverified_drive_identity(monkeypatch, tmp_path):
+    drive_dir = tmp_path / "dummy_drive"
+    drive_dir.mkdir()
+
+    import torch
+    monkeypatch.setattr(torch.cuda, "is_available", lambda: True)
+    monkeypatch.setattr(torch.cuda, "get_device_name", lambda i: "Tesla T4")
+    monkeypatch.setattr(torch.cuda, "device_count", lambda: 1)
+
+    real_popen = subprocess.Popen
+    def _fail_popen(cmd, *args, **kwargs):
+        cmd_str = " ".join(cmd) if isinstance(cmd, list) else str(cmd)
+        if "train_rq1_trn_02b" in cmd_str:
+            pytest.fail("FATAL: training subprocess must NEVER be called when Google Drive identity is unverified!")
+        return real_popen(cmd, *args, **kwargs)
+    monkeypatch.setattr(subprocess, "Popen", _fail_popen)
+
+    # 1. execute_training must fail closed when drive_status is PENDING_RUNTIME_VERIFICATION
+    monkeypatch.setattr(train_mod, "verify_drive_authenticity", lambda *a, **k: "PENDING_RUNTIME_VERIFICATION")
+    fake_zip = tmp_path / "data.zip"
+    fake_zip.write_bytes(b"zip")
+    monkeypatch.setattr(train_mod, "compute_sha256", lambda p: train_mod.EXPECTED_DATASET_SHA256 if "zip" in str(p) else train_mod.EXPECTED_BASELINE_SHA256)
+    fake_baseline = tmp_path / "best.pt"
+    fake_baseline.write_bytes(b"baseline")
+
+    head_commit = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
+
+    with pytest.raises(RuntimeError, match="Google Drive identity verification status is 'PENDING_RUNTIME_VERIFICATION', NOT 'VERIFIED'"):
+        train_mod.execute_training(
+            arm="C0",
+            target_commit=head_commit,
+            repo_root=Path("."),
+            drive_root=drive_dir,
+            local_zip_path=fake_zip,
+            local_baseline_path=fake_baseline,
+        )
+
+    # 2. stage_and_verify must fail closed when drive_status is PENDING_RUNTIME_VERIFICATION
+    monkeypatch.setattr(stage_mod, "verify_drive_authenticity", lambda *a, **k: "PENDING_RUNTIME_VERIFICATION")
+    with pytest.raises(RuntimeError, match="Google Drive storage verification is 'PENDING_RUNTIME_VERIFICATION', NOT 'VERIFIED'"):
+        stage_mod.stage_and_verify(
+            arm="C0",
+            target_commit=head_commit,
+            repo_root=Path("."),
+            local_data_dir=tmp_path / "data",
+            local_checkpoint_dir=tmp_path / "ckpt",
+            drive_root=drive_dir,
+            auto_bootstrap=False,
+        )
+
+
+def test_defect_c_drive_containment_and_symlink_escape(tmp_path):
+    drive_root = tmp_path / "drive" / "KLTN-Dataset"
+    drive_root.mkdir(parents=True)
+
+    # 1. Valid 4-part hierarchy
+    valid_4 = drive_root / "manifests/RQ1-TRN-02B/checkpoints/C0"
+    assert validate_drive_output_hierarchy(valid_4, drive_root, "C0") is True
+
+    # 2. Valid 5-part hierarchy with run_id
+    valid_5 = drive_root / "manifests/RQ1-TRN-02B/checkpoints/C0/run_01"
+    assert validate_drive_output_hierarchy(valid_5, drive_root, "C0", expected_run_id="run_01") is True
+
+    # 3. Reject reverse ancestry (drive_root == output_dir)
+    with pytest.raises(ValueError, match="is NOT a strict descendant"):
+        validate_drive_output_hierarchy(drive_root, drive_root, "C0")
+
+    # 4. Reject reverse ancestry (output_dir is parent of drive_root)
+    with pytest.raises(ValueError, match="is NOT a strict descendant"):
+        validate_drive_output_hierarchy(drive_root.parent, drive_root, "C0")
+
+    # 5. Reject directory outside drive_root
+    outside = tmp_path / "outside" / "manifests/RQ1-TRN-02B/checkpoints/C0"
+    with pytest.raises(ValueError, match="is NOT a strict descendant"):
+        validate_drive_output_hierarchy(outside, drive_root, "C0")
+
+    # 6. Reject path traversal in run_id
+    with pytest.raises(ValueError, match=r"parts do not match exact hierarchy|Illegal run ID component"):
+        bad_traversal = drive_root / "manifests/RQ1-TRN-02B/checkpoints/C0/../escaped"
+        validate_drive_output_hierarchy(bad_traversal, drive_root, "C0")
+
+    # 7. Reject too many components (> 5)
+    too_deep = drive_root / "manifests/RQ1-TRN-02B/checkpoints/C0/run_01/nested_sub"
+    with pytest.raises(ValueError, match="has 6 components; strictly 4"):
+        validate_drive_output_hierarchy(too_deep, drive_root, "C0")
+
+    # 8. Reject symlink escape pointing outside drive_root
+    secret_dir = tmp_path / "secret"
+    secret_dir.mkdir()
+    symlink_target = drive_root / "manifests/RQ1-TRN-02B/checkpoints/C0/escaped_symlink"
+    symlink_target.parent.mkdir(parents=True, exist_ok=True)
+    symlink_target.symlink_to(secret_dir)
+    with pytest.raises(ValueError, match="is NOT a strict descendant"):
+        validate_drive_output_hierarchy(symlink_target, drive_root, "C0")
+
+
+def test_defect_d_mock_gpu_cli_rejection():
+    # 1. colab_train_exec.py rejects --mock-gpu
+    res_train = subprocess.run(
+        [sys.executable, "audit_scripts/colab_train_exec.py", "--mock-gpu"],
         capture_output=True,
         text=True,
     )
-    assert res_check_all.returncode == 0
-    assert "FULLY READY FOR EXECUTION" in res_check_all.stdout
+    assert res_train.returncode == 2
+    assert "unrecognized arguments: --mock-gpu" in res_train.stderr
+
+    # 2. colab_stage_and_verify.py rejects --mock-gpu
+    res_stage = subprocess.run(
+        [sys.executable, "audit_scripts/colab_stage_and_verify.py", "--mock-gpu"],
+        capture_output=True,
+        text=True,
+    )
+    assert res_stage.returncode == 2
+    assert "unrecognized arguments: --mock-gpu" in res_stage.stderr

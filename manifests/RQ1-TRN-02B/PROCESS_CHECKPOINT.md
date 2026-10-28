@@ -2,9 +2,9 @@
 
 **Status:** PASS_SOFTWARE (Operational launch BLOCKED on quota and runtime verification)
 
-**Recorded at:** 2026-10-28T14:30:00+07:00
+**Recorded at:** 2026-10-28T16:00:00+07:00
 
-**Evidence source:** Commits `6836367` through `ea87620`, branch `fix/rq1-trn-02b-colab-auth-r2-hotfix`, `manifests/RQ1-TRN-02B/`
+**Evidence source:** Commits `6836367` through `4b5bacc`, branch `fix/rq1-trn-02b-colab-auth-r3`, `manifests/RQ1-TRN-02B/`
 
 **Evidence level:** INDEPENDENTLY_VERIFIED
 
@@ -12,7 +12,7 @@
 Design and implement the controlled acoustic conditioning ablation (Control Arm C0 with $p=0$ vs Treatment Arm C1 with Binary-only prompt dropout $p=0.25$), execute comprehensive CPU preflight verification, correct operational launch and staging packages, audit Google Drive and Colab CLI protocols, and prepare the Google Colab execution authorization packet with fail-closed safety guardrails.
 
 ## 2. Inputs & Dependencies
-- Source branch: `fix/rq1-trn-02b-colab-auth-r2-hotfix` (descending from `ea87620`, `a497ec3`, `aa6415a`, and historical `8486cbb`).
+- Source branch: `fix/rq1-trn-02b-colab-auth-r3` (descending from `4b5bacc`, `ea87620`, `a497ec3`, `aa6415a`, and historical `8486cbb`).
 - Initial checkpoint: `checkpoints/RQ1-TRN-02A/recovered/best.pt` (SHA-256 `a2445c8d17910bf3c03101f50fc419675e8d1bc012af43af10267a28dbba948b`).
 - Split manifest: `manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json` (SHA-256 `7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b`).
 - Authorized data: `datasets/L2-ARCTIC/authorized_RQ1-TRN-02A_fold1_train_val_only.zip` (SHA-256 `b750eb3bf3971afccd9ab9058a64fa6b3f5781399b9ef0f1294d29bf580784a9`).
@@ -42,11 +42,17 @@ Design and implement the controlled acoustic conditioning ablation (Control Arm 
    - Enforced immutable source validation in `validate_static_software(commit_sha)` verifying actual Git HEAD against requested commit, clean worktree, config presence, and split manifest SHA-256 against ledger.
    - Strengthened Drive verification across staging and training drivers: enforced output directory hierarchy containment (`manifests/RQ1-TRN-02B/checkpoints/<ARM>`), remote Google Drive API identity verification where available, clarified mountpoint/baseline hash alone is not proof of root folder identity, returned `PENDING_RUNTIME_VERIFICATION` on pre-runtime environments, and rejected arbitrary local custom paths.
    - Expanded test census to 187 passed CPU tests (4 skipped).
-9. Enforced execution boundary: no GPU training commenced.
+9. Remediated final trust-boundary defects in Revision R3 (`07-colab-auth-r3-trust-boundary-closure.md`):
+   - Enforced fail-closed execution on unverified Drive identity in both `colab_train_exec.py` and `colab_stage_and_verify.py` (`drive_verification_status == "VERIFIED"` strictly required; training subprocess launch completely prevented on pending identity).
+   - Eliminated production-accessible self-asserted readiness flags (`--mock-usage`, `--drive-mounted`, `--staging-verified`, `--operator-authorized`); enforced evidence-based readiness evaluation requiring authentic mount attestations, staging reports bound to session/commit/run_id, and operator approval records.
+   - Enforced strict descendant Drive containment (`is_relative_to` without equality or reverse ancestry), exact relative components (`manifests/RQ1-TRN-02B/checkpoints/{C0|C1}/[run_id]`), path traversal guards, and mount-to-folder API binding.
+   - Removed `--mock-gpu` from production launcher interfaces; strictly enforced GPU execution boundaries.
+   - Expanded test census to 190 passed CPU tests (4 skipped).
+10. Enforced execution boundary: no GPU training commenced.
 
 ## 4. Results & Verification
 - Acceptance gate: Preflight software and operational launch package `PASS_SOFTWARE`; Operational GPU training gate **`BLOCKED`**.
-- Regression tests: **187 CPU tests passed, 4 skipped** (0 failures).
+- Regression tests: **190 CPU tests passed, 4 skipped** (0 failures).
 - Completed components: Experimental design, C0/C1 model implementation, preflight audit, Preflight-R2 safety closure, operational CLI launch package, Drive storage architecture, bootstrap drivers, and split provenance verification.
 - Uncompleted components: Operator compute unit assignment, interactive Drive mount, Colab VM runtime staging write test, C0 GPU training, C1 GPU training, paired evaluation.
 - Current operational blockers:
@@ -69,6 +75,7 @@ Design and implement the controlled acoustic conditioning ablation (Control Arm 
   - [checkpoints/04-colab-auth-r1-operational-corrections.md](checkpoints/04-colab-auth-r1-operational-corrections.md)
   - [checkpoints/05-colab-auth-r2-launcher-safety-fixes.md](checkpoints/05-colab-auth-r2-launcher-safety-fixes.md)
   - [checkpoints/06-colab-auth-r2-final-safety-hotfix.md](checkpoints/06-colab-auth-r2-final-safety-hotfix.md)
+  - [checkpoints/07-colab-auth-r3-trust-boundary-closure.md](checkpoints/07-colab-auth-r3-trust-boundary-closure.md)
 
 ## 6. Restart / Recovery Instructions
 - Safe restart point: All preflight tests passing locally on CPU.

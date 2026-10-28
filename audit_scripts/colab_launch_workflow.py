@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import json
 import os
 import re
 import shutil
@@ -34,6 +35,8 @@ DRIVE_PROJECT_ROOT = "/content/drive/MyDrive/KLTN-Dataset"
 PROJECT_DRIVE_FOLDER_ID = "1Zms4bwv3QYZcmDQAeYolbq-ovrZVRlnK"
 REQUIRED_COMPUTE_UNITS_MIN = 15.0
 EXPECTED_MANIFEST_SHA256 = "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b"
+EXPECTED_BASELINE_SHA256 = "a2445c8d17910bf3c03101f50fc419675e8d1bc012af43af10267a28dbba948b"
+EXPECTED_DATASET_SHA256 = "b750eb3bf3971afccd9ab9058a64fa6b3f5781399b9ef0f1294d29bf580784a9"
 
 
 def compute_sha256(path: Path | str) -> str:
@@ -196,21 +199,175 @@ def generate_colab_arm_plan(
     return commands
 
 
+def verify_mount_attestation(
+    attestation_path: Path | str,
+    expected_session: str,
+) -> Tuple[bool, str]:
+    """
+    Verifies authentic Google Drive mount attestation JSON artifact bound to expected session.
+    """
+    p = Path(attestation_path)
+    if not p.is_file():
+        return False, f"Mount attestation artifact not found: {p}"
+    try:
+        data = json.loads(p.read_text())
+    except Exception as exc:
+        return False, f"Failed to parse mount attestation JSON: {exc}"
+
+    if not isinstance(data, dict):
+        return False, "Mount attestation must be a JSON dictionary."
+
+    session = data.get("session")
+    if not session or session != expected_session:
+        return False, f"Mismatched session ID in mount attestation: found '{session}', expected '{expected_session}'."
+
+    if data.get("mount_active") is not True:
+        return False, "Mount attestation declares mount_active is not True."
+
+    folder_id = data.get("drive_folder_id")
+    if folder_id != PROJECT_DRIVE_FOLDER_ID:
+        return False, f"Mismatched Google Drive folder ID: found '{folder_id}', expected '{PROJECT_DRIVE_FOLDER_ID}'."
+
+    drive_status = data.get("drive_verification_status")
+    if drive_status != "VERIFIED":
+        return False, f"Drive verification status in attestation is '{drive_status}', expected 'VERIFIED'."
+
+    return True, f"Google Drive mount and genuine identity (ID: {PROJECT_DRIVE_FOLDER_ID}) verified for session '{expected_session}'."
+
+
+def verify_staging_report(
+    staging_report_path: Path | str,
+    expected_session: str,
+    expected_commit: str,
+    expected_arm: str,
+    expected_run_id: Optional[str] = None,
+) -> Tuple[bool, str]:
+    """
+    Verifies authentic VM staging report JSON artifact bound to session, run ID, and immutable Git SHA.
+    """
+    p = Path(staging_report_path)
+    if not p.is_file():
+        return False, f"Staging report artifact not found: {p}"
+    try:
+        data = json.loads(p.read_text())
+    except Exception as exc:
+        return False, f"Failed to parse staging report JSON: {exc}"
+
+    if not isinstance(data, dict):
+        return False, "Staging report must be a JSON dictionary."
+
+    if data.get("status") != "READY_FOR_TRAINING":
+        return False, f"Staging report status is '{data.get('status')}', expected 'READY_FOR_TRAINING'."
+
+    if data.get("drive_verification_status") != "VERIFIED":
+        return False, f"Drive verification status in staging report is '{data.get('drive_verification_status')}', expected 'VERIFIED'."
+
+    session = data.get("session")
+    if not session or session != expected_session:
+        return False, f"Mismatched session ID in staging report: found '{session}', expected '{expected_session}'."
+
+    commit = data.get("verified_commit")
+    if not commit or commit.strip().lower() != expected_commit.strip().lower():
+        return False, f"Mismatched commit SHA in staging report: found '{commit}', expected '{expected_commit}'."
+
+    arm = data.get("arm")
+    if expected_arm != "both":
+        arm_norm = validate_arm(expected_arm)
+        if arm != arm_norm:
+            return False, f"Mismatched arm in staging report: found '{arm}', expected '{arm_norm}'."
+    else:
+        if arm not in ("C0", "C1"):
+            return False, f"Invalid arm in staging report: found '{arm}'."
+
+    if expected_run_id:
+        run_id = data.get("run_id")
+        if run_id != expected_run_id:
+            return False, f"Mismatched run ID in staging report: found '{run_id}', expected '{expected_run_id}'."
+
+    if data.get("staged_zip_sha256") != EXPECTED_DATASET_SHA256:
+        return False, "Staged dataset archive SHA-256 in report does not match ledger."
+
+    if data.get("staged_baseline_sha256") != EXPECTED_BASELINE_SHA256:
+        return False, "Staged baseline checkpoint SHA-256 in report does not match ledger."
+
+    if data.get("manifest_sha256") != EXPECTED_MANIFEST_SHA256:
+        return False, "Split manifest SHA-256 in report does not match ledger."
+
+    return True, f"Verified staging report bound to session '{expected_session}', commit '{expected_commit[:10]}...', and arm '{arm}'."
+
+
+def verify_operator_approval(
+    approval_path: Path | str,
+    expected_session: str,
+    expected_commit: str,
+    expected_arm: str,
+    expected_run_id: Optional[str] = None,
+) -> Tuple[bool, str]:
+    """
+    Verifies explicit operator authorization JSON record bound independently of command-line flags.
+    """
+    p = Path(approval_path)
+    if not p.is_file():
+        return False, f"Operator authorization record not found: {p}"
+    try:
+        data = json.loads(p.read_text())
+    except Exception as exc:
+        return False, f"Failed to parse operator authorization JSON: {exc}"
+
+    if not isinstance(data, dict):
+        return False, "Operator authorization record must be a JSON dictionary."
+
+    if data.get("status") not in ("AUTHORIZED", "APPROVED"):
+        return False, f"Operator authorization status is '{data.get('status')}', expected 'AUTHORIZED' or 'APPROVED'."
+
+    commit = data.get("approved_commit")
+    if not commit or commit.strip().lower() != expected_commit.strip().lower():
+        return False, f"Mismatched commit SHA in operator approval: found '{commit}', expected '{expected_commit}'."
+
+    session = data.get("approved_session")
+    if not session or session != expected_session:
+        return False, f"Mismatched session in operator approval: found '{session}', expected '{expected_session}'."
+
+    approved_arm = data.get("approved_arm")
+    if expected_arm != "both":
+        arm_norm = validate_arm(expected_arm)
+        if approved_arm not in (arm_norm, "both"):
+            return False, f"Mismatched arm in operator approval: found '{approved_arm}', expected '{arm_norm}'."
+
+    if expected_run_id:
+        run_id = data.get("approved_run_id")
+        if run_id != expected_run_id:
+            return False, f"Mismatched run ID in operator approval: found '{run_id}', expected '{expected_run_id}'."
+
+    op_id = data.get("operator_id") or data.get("approved_by")
+    if not op_id or not str(op_id).strip():
+        return False, "Operator authorization record missing operator identifier ('operator_id' or 'approved_by')."
+
+    timestamp = data.get("timestamp")
+    if not timestamp or not str(timestamp).strip():
+        return False, "Operator authorization record missing 'timestamp'."
+
+    return True, f"Operator authorization confirmed by '{op_id}' for session '{expected_session}' at {timestamp}."
+
+
 def evaluate_readiness_layers(
     commit_sha: str,
+    session_name: str = "langfens-rq1",
+    arm: str = "both",
+    run_id: Optional[str] = None,
     raw_usage: Optional[str] = None,
-    drive_mounted: Optional[bool] = None,
-    staging_verified: Optional[bool] = None,
-    operator_authorized: Optional[bool] = None,
+    attestation_path: Optional[Path | str] = None,
+    staging_report_path: Optional[Path | str] = None,
+    operator_approval_path: Optional[Path | str] = None,
     repo_root: Optional[Path] = None,
 ) -> Dict[str, Tuple[str, str]]:
     """
-    Evaluates all 5 operational readiness layers independently:
-    1. Static Software Validation
-    2. Colab Quota Readiness
-    3. Authenticated Drive Mount Readiness
-    4. Real VM Staging & Storage Write Readiness
-    5. Final GPU Training Authorization
+    Evaluates all 5 operational readiness layers using verifiable evidence:
+    1. Static Software Validation: verified local repo state against requested commit.
+    2. Colab Quota Readiness: verified read-only Colab usage balance.
+    3. Authenticated Drive Mount Readiness: verified mount attestation artifact bound to session.
+    4. Real VM Staging & Storage Write Readiness: verified staging report artifact bound to session, run ID, and commit.
+    5. Final GPU Training Authorization: explicit operator authorization record bound to session, run ID, and commit.
     """
     layers: Dict[str, Tuple[str, str]] = {}
 
@@ -226,37 +383,46 @@ def evaluate_readiness_layers(
     else:
         layers["2_COMPUTE_QUOTA"] = ("BLOCKED", "colab usage query not available")
 
-    # Layer 3: Interactive Mount & Storage Identity
-    if drive_mounted is True:
-        layers["3_DRIVE_MOUNT"] = ("PASS", "Google Drive mount verified on active runtime.")
-    elif drive_mounted is False:
-        layers["3_DRIVE_MOUNT"] = ("BLOCKED", "Google Drive is NOT mounted.")
+    # Layer 3: Interactive Mount & Storage Identity (requires verifiable attestation)
+    if attestation_path:
+        m_ok, m_msg = verify_mount_attestation(attestation_path, session_name)
+        layers["3_DRIVE_MOUNT"] = ("PASS" if m_ok else "BLOCKED", m_msg)
     else:
         layers["3_DRIVE_MOUNT"] = (
-            "PENDING_RUNTIME_VERIFICATION",
-            "Interactive terminal execution of 'colab drivemount' required; storage identity PENDING_RUNTIME_VERIFICATION.",
+            "PENDING_OPERATOR_ACTION",
+            "Interactive terminal execution of 'colab drivemount' required; mount attestation not found.",
         )
 
-    # Layer 4: VM Staging & Write Test
-    if staging_verified is True:
-        layers["4_VM_STAGING_WRITE"] = ("PASS", "VM local staging & persistent Drive write access verified.")
-    elif staging_verified is False:
-        layers["4_VM_STAGING_WRITE"] = ("BLOCKED", "VM staging or write verification failed.")
+    # Layer 4: VM Staging & Write Test (requires verifiable staging report)
+    if staging_report_path:
+        s_ok, s_msg = verify_staging_report(
+            staging_report_path,
+            expected_session=session_name,
+            expected_commit=commit_sha,
+            expected_arm=arm,
+            expected_run_id=run_id,
+        )
+        layers["4_VM_STAGING_WRITE"] = ("PASS" if s_ok else "BLOCKED", s_msg)
     else:
         layers["4_VM_STAGING_WRITE"] = (
             "PENDING_RUNTIME_VERIFICATION",
-            "Live VM copy & persistent Drive write test outstanding.",
+            "Live VM copy & staging report bound to session and commit not found.",
         )
 
-    # Layer 5: Explicit Operator Training Authorization
-    if operator_authorized is True:
-        layers["5_OPERATOR_AUTHORIZATION"] = ("PASS", "Explicit operator execution authorization confirmed.")
-    elif operator_authorized is False:
-        layers["5_OPERATOR_AUTHORIZATION"] = ("BLOCKED", "Operator explicitly withheld authorization.")
+    # Layer 5: Explicit Operator Training Authorization (requires verifiable approval record)
+    if operator_approval_path:
+        o_ok, o_msg = verify_operator_approval(
+            operator_approval_path,
+            expected_session=session_name,
+            expected_commit=commit_sha,
+            expected_arm=arm,
+            expected_run_id=run_id,
+        )
+        layers["5_OPERATOR_AUTHORIZATION"] = ("PASS" if o_ok else "BLOCKED", o_msg)
     else:
         layers["5_OPERATOR_AUTHORIZATION"] = (
             "PENDING_OPERATOR_SIGN_OFF",
-            "Operator sign-off required; PASS_SOFTWARE does not authorize GPU execution.",
+            "Operator sign-off file required; PASS_SOFTWARE does not authorize GPU execution.",
         )
 
     return layers
@@ -292,10 +458,9 @@ def main():
     ap.add_argument("--check-only", action="store_true", help="Perform preflight readiness checks and exit (fails closed with code 1 if blocked or unverified)")
     ap.add_argument("--check-software-only", action="store_true", help="Validate static software only (exits 0 if software is valid)")
     ap.add_argument("--print-plan", action="store_true", help="Print verified execution command sequence")
-    ap.add_argument("--mock-usage", default=None, help="Mock output string for colab usage (for testing)")
-    ap.add_argument("--drive-mounted", action="store_true", help="Assert Drive is mounted (for runtime check)")
-    ap.add_argument("--staging-verified", action="store_true", help="Assert staging has been verified")
-    ap.add_argument("--operator-authorized", action="store_true", help="Assert operator sign-off granted")
+    ap.add_argument("--attestation-file", default=None, help="Path to verified mount attestation JSON artifact")
+    ap.add_argument("--staging-report", default=None, help="Path to verified staging report JSON artifact")
+    ap.add_argument("--operator-approval-file", default=None, help="Path to operator execution approval JSON record")
     args = ap.parse_args()
 
     commit = validate_commit_sha(args.commit if args.commit else get_current_git_head())
@@ -317,25 +482,29 @@ def main():
             print("\nRESULT: FAIL")
             sys.exit(1)
 
-    # Query Colab CLI usage (read-only)
-    raw_usage = args.mock_usage
-    if raw_usage is None:
-        colab_bin = shutil.which("colab")
-        if colab_bin:
-            try:
-                raw_usage = subprocess.check_output([colab_bin, "usage"], text=True)
-            except Exception as exc:
-                print(f"[COLAB QUOTA] Failed to query colab usage: {exc}", file=sys.stderr)
-        else:
-            print("[COLAB CLI] Binary 'colab' not found in PATH.", file=sys.stderr)
+    # Query Colab CLI usage (read-only real execution)
+    raw_usage = None
+    colab_bin = shutil.which("colab")
+    if colab_bin:
+        try:
+            raw_usage = subprocess.check_output([colab_bin, "usage"], text=True)
+        except Exception as exc:
+            print(f"[COLAB QUOTA] Failed to query colab usage: {exc}", file=sys.stderr)
+    else:
+        print("[COLAB CLI] Binary 'colab' not found in PATH.", file=sys.stderr)
 
-    # Multi-layer readiness assessment
+    session_name = f"{args.session_prefix}-{args.arm.lower() if args.arm != 'both' else 'c0'}"
+
+    # Multi-layer readiness assessment based on verifiable evidence artifacts
     layers = evaluate_readiness_layers(
         commit_sha=commit,
+        session_name=session_name,
+        arm=args.arm,
+        run_id=args.run_id,
         raw_usage=raw_usage,
-        drive_mounted=True if args.drive_mounted else None,
-        staging_verified=True if args.staging_verified else None,
-        operator_authorized=True if args.operator_authorized else None,
+        attestation_path=args.attestation_file,
+        staging_report_path=args.staging_report,
+        operator_approval_path=args.operator_approval_file,
     )
 
     print("\n--- OPERATIONAL READINESS MATRIX ---")

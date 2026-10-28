@@ -19,7 +19,9 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -66,14 +68,17 @@ def validate_commit_sha(sha: str) -> str:
 
 def verify_google_drive_api_identity(
     folder_id: str = PROJECT_DRIVE_FOLDER_ID,
+    drive_root_path: Optional[Path] = None,
 ) -> Tuple[str, str]:
     """
-    Verifies Google Drive root folder identity and parent ancestry using the
-    authenticated Google Drive API, where available.
+    Verifies Google Drive root folder identity, expected MIME type, parent ancestry,
+    and establishes mount-to-folder binding where available.
     Returns (status, detail):
-      - 'VERIFIED': API authenticated and confirmed folder identity & ancestry.
-      - 'PENDING_RUNTIME_VERIFICATION': Running in pre-runtime environment or without API credentials.
-      - 'FAILED': API call returned unexpected identity, trashed state, or ancestry mismatch.
+      - 'VERIFIED': API authenticated, folder identity, MIME type, ancestry verified,
+                    and mount-to-folder binding confirmed.
+      - 'BLOCKED_IDENTITY_MISMATCH': API returned unexpected folder identity, MIME type, or trashed folder.
+      - 'BLOCKED_UNBOUND_MOUNT': API authenticated but cannot bind local mount to remote folder.
+      - 'PENDING_HUMAN_RUNTIME_VERIFICATION': Running in pre-runtime environment or without API credentials.
     """
     try:
         from googleapiclient.discovery import build  # type: ignore
@@ -88,82 +93,155 @@ def verify_google_drive_api_identity(
         ).execute()
 
         if file_meta.get("trashed", False):
-            return "FAILED", f"Authorized Drive folder {folder_id} is marked as trashed."
+            return "BLOCKED_IDENTITY_MISMATCH", f"Authorized Drive folder {folder_id} is marked as trashed."
 
         name = file_meta.get("name", "")
         if name != PROJECT_DRIVE_NAME:
-            return "FAILED", f"Drive folder ID {folder_id} name mismatch: expected '{PROJECT_DRIVE_NAME}', found '{name}'."
+            return "BLOCKED_IDENTITY_MISMATCH", f"Drive folder ID {folder_id} name mismatch: expected '{PROJECT_DRIVE_NAME}', found '{name}'."
 
-        return "VERIFIED", f"Google Drive API verified folder '{name}' (ID: {folder_id})."
+        mime = file_meta.get("mimeType", "")
+        if mime != "application/vnd.google-apps.folder":
+            return "BLOCKED_IDENTITY_MISMATCH", f"Drive item ID {folder_id} is not a folder (mimeType='{mime}')."
+
+        parents = file_meta.get("parents", [])
+        if not isinstance(parents, list):
+            return "BLOCKED_IDENTITY_MISMATCH", f"Drive folder ID {folder_id} ancestry is invalid or missing."
+
+        # Establish mount-to-folder binding if local path provided
+        if drive_root_path is not None:
+            p_root = Path(drive_root_path).resolve()
+            children_res = service.files().list(
+                q=f"'{folder_id}' in parents and trashed=false",
+                fields="files(id, name, mimeType)",
+                supportsAllDrives=True,
+            ).execute()
+            remote_child_names = {f["name"] for f in children_res.get("files", [])}
+
+            expected_children = {"manifests"}
+            if not expected_children.issubset(remote_child_names):
+                return "BLOCKED_UNBOUND_MOUNT", (
+                    f"Remote folder {folder_id} does not contain expected children {expected_children}. "
+                    f"Found: {remote_child_names}."
+                )
+            for child in expected_children:
+                if not (p_root / child).exists():
+                    return "BLOCKED_UNBOUND_MOUNT", (
+                        f"Local mount path '{p_root}' does not contain expected child '{child}'. "
+                        f"Mount-to-folder binding failed."
+                    )
+
+            return "VERIFIED", f"Google Drive API verified folder '{name}' (ID: {folder_id}) and confirmed mount binding."
+        else:
+            return "VERIFIED", f"Google Drive API verified folder '{name}' (ID: {folder_id})."
+
     except ImportError:
-        return "PENDING_RUNTIME_VERIFICATION", (
+        human_proc = (
             "Google Drive API client (googleapiclient / google.auth) not available in this environment. "
-            "Remote folder ID identity verification is PENDING_RUNTIME_VERIFICATION."
+            "FAIL-CLOSED: Mount-to-folder binding cannot be established automatically. "
+            "Human Verification Procedure: "
+            "1. Run 'colab drivemount -s <session>' in an interactive terminal. "
+            "2. Confirm Google account mounted at /content/drive owns folder ID '1Zms4bwv3QYZcmDQAeYolbq-ovrZVRlnK'. "
+            "3. Verify local path /content/drive/MyDrive/KLTN-Dataset contains manifests/RQ1-TRN-02A/checkpoints/best.pt."
         )
+        return "PENDING_HUMAN_RUNTIME_VERIFICATION", human_proc
     except Exception as exc:
-        return "PENDING_RUNTIME_VERIFICATION", (
+        human_proc = (
             f"Google Drive API check could not authenticate ({exc}). "
-            "Identity verification is PENDING_RUNTIME_VERIFICATION."
+            "FAIL-CLOSED: Mount-to-folder binding cannot be established automatically. "
+            "Human Verification Procedure: "
+            "1. Run 'colab drivemount -s <session>' in an interactive terminal. "
+            "2. Confirm Google account mounted at /content/drive owns folder ID '1Zms4bwv3QYZcmDQAeYolbq-ovrZVRlnK'. "
+            "3. Verify local path /content/drive/MyDrive/KLTN-Dataset contains manifests/RQ1-TRN-02A/checkpoints/best.pt."
         )
+        return "PENDING_HUMAN_RUNTIME_VERIFICATION", human_proc
 
 
 def validate_drive_output_hierarchy(
-    drive_output_dir: Path,
-    drive_root: Path,
+    drive_output_dir: Path | str,
+    drive_root: Path | str,
     expected_arm: str,
+    expected_run_id: Optional[str] = None,
 ) -> bool:
     """
-    Enforces that drive_output_dir belongs to the authorized Google Drive hierarchy:
-    1. drive_output_dir must belong to drive_root.
-    2. drive_output_dir must match manifests/RQ1-TRN-02B/checkpoints/<ARM> hierarchy.
-    3. If running in Colab VM (/content exists), drive_output_dir must be inside /content/drive.
+    Enforces strict descendant containment and exact relative output components:
+    1. Strict descendant containment: resolved_output.is_relative_to(resolved_root).
+       Does NOT accept reverse ancestry or equality (resolved_root.is_relative_to(resolved_output) prohibited).
+    2. Check exact relative output components:
+       manifests/RQ1-TRN-02B/checkpoints/{C0|C1} OR manifests/RQ1-TRN-02B/checkpoints/{C0|C1}/[run_id]
+    3. Reject path traversal, symlink escapes, and arbitrary custom roots.
+    4. On Colab VM (/content exists), both drive_root and drive_output_dir must reside within /content/drive.
     """
     arm_norm = validate_arm(expected_arm)
     out_res = Path(drive_output_dir).resolve()
     root_res = Path(drive_root).resolve()
 
-    if not out_res.is_relative_to(root_res) and not root_res.is_relative_to(out_res):
+    # 1. Strict descendant containment (reject equality and reverse ancestry)
+    if not out_res.is_relative_to(root_res) or out_res == root_res:
         raise ValueError(
-            f"FAIL-CLOSED: Output directory '{drive_output_dir}' does not belong to authorized Drive root '{drive_root}'."
+            f"FAIL-CLOSED: Output directory '{drive_output_dir}' (resolved: '{out_res}') "
+            f"is NOT a strict descendant of authorized Drive root '{drive_root}' (resolved: '{root_res}'). "
+            f"Reverse ancestry or identical path is strictly prohibited."
         )
 
-    expected_substr = f"manifests/RQ1-TRN-02B/checkpoints/{arm_norm}"
-    if expected_substr not in str(drive_output_dir):
+    # 2. Check exact relative components
+    rel_path = out_res.relative_to(root_res)
+    parts = rel_path.parts
+    expected_prefix = ("manifests", "RQ1-TRN-02B", "checkpoints", arm_norm)
+
+    if len(parts) == 4:
+        if parts != expected_prefix:
+            raise ValueError(
+                f"FAIL-CLOSED: Output path '{rel_path}' parts do not match exact hierarchy: {expected_prefix}."
+            )
+    elif len(parts) == 5:
+        if parts[:4] != expected_prefix:
+            raise ValueError(
+                f"FAIL-CLOSED: Output path prefix '{parts[:4]}' does not match expected hierarchy: {expected_prefix}."
+            )
+        run_comp = parts[4]
+        # Reject path traversal or illegal characters in run_id
+        if not re.match(r"^[A-Za-z0-9_-]+$", run_comp) or run_comp in (".", ".."):
+            raise ValueError(
+                f"FAIL-CLOSED: Illegal run ID component '{run_comp}' in output path '{rel_path}'."
+            )
+        if expected_run_id and run_comp != expected_run_id:
+            raise ValueError(
+                f"FAIL-CLOSED: Run ID in output path '{run_comp}' does not match expected run ID '{expected_run_id}'."
+            )
+    else:
         raise ValueError(
-            f"FAIL-CLOSED: Output directory '{drive_output_dir}' does not belong to authorized hierarchy '{expected_substr}'."
+            f"FAIL-CLOSED: Output path '{rel_path}' has {len(parts)} components; "
+            f"strictly 4 ('manifests/RQ1-TRN-02B/checkpoints/{arm_norm}') or "
+            f"5 ('manifests/RQ1-TRN-02B/checkpoints/{arm_norm}/<run_id>') required."
         )
 
+    # 3. Colab VM containment
     if Path("/content").is_dir():
         drive_mount = Path("/content/drive").resolve()
+        if not root_res.is_relative_to(drive_mount):
+            raise ValueError(
+                f"FAIL-CLOSED: Authorized Drive root '{root_res}' is outside /content/drive/ mount."
+            )
         if not out_res.is_relative_to(drive_mount):
             raise ValueError(
-                f"FAIL-CLOSED: Output directory '{drive_output_dir}' is outside /content/drive/ mount."
+                f"FAIL-CLOSED: Output directory '{out_res}' is outside /content/drive/ mount."
             )
 
     return True
 
 
-def resolve_drive_output_dir(drive_root: Path, arm: str, run_id: Optional[str] = None) -> Path:
-    """
-    Constructs a single predictable output directory for the given arm and optional run_id.
-    Guarantees no duplicate run-ID nesting (e.g. checkpoints/C0/<run_id>/<run_id>).
-    """
+def resolve_drive_output_dir(drive_root: Path | str, arm: str, run_id: Optional[str] = None) -> Path:
+    """Constructs single predictable output directory without duplicate run-ID nesting."""
     arm_norm = validate_arm(arm)
-    p = Path(drive_root)
-    if "manifests/RQ1-TRN-02B/checkpoints" in str(p):
-        base = p
-    else:
-        base = p / f"manifests/RQ1-TRN-02B/checkpoints/{arm_norm}"
+    p = Path(drive_root).resolve()
 
+    base = p / "manifests" / "RQ1-TRN-02B" / "checkpoints" / arm_norm
     if run_id:
-        if base.name == run_id:
-            out_p = base
-        else:
-            out_p = base / run_id
+        out_p = base / run_id
     else:
         out_p = base
 
-    validate_drive_output_hierarchy(out_p, drive_root=p, expected_arm=arm_norm)
+    validate_drive_output_hierarchy(out_p, drive_root=p, expected_arm=arm_norm, expected_run_id=run_id)
     return out_p
 
 
@@ -226,14 +304,14 @@ def verify_drive_authenticity(drive_root: Path, require_mount: bool = True) -> s
         )
 
     # 4. Remote API identity verification
-    api_status, api_msg = verify_google_drive_api_identity(PROJECT_DRIVE_FOLDER_ID)
-    if api_status == "FAILED":
-        raise RuntimeError(f"FAIL-CLOSED: Authenticated Drive API identity check failed: {api_msg}")
+    api_status, api_msg = verify_google_drive_api_identity(PROJECT_DRIVE_FOLDER_ID, drive_root_path=p_root)
+    if api_status in ("BLOCKED_IDENTITY_MISMATCH", "BLOCKED_UNBOUND_MOUNT"):
+        raise RuntimeError(f"FAIL-CLOSED: Drive API identity/binding check failed: {api_msg}")
 
     if api_status == "VERIFIED":
         return "VERIFIED"
 
-    # Pre-runtime / unauthenticated environment:
+    # Pre-runtime / unauthenticated environment or pending human verification:
     # A mountpoint and matching baseline checkpoint hash alone must NOT be described as proof of root folder identity.
     return "PENDING_RUNTIME_VERIFICATION"
 
@@ -467,13 +545,14 @@ def stage_and_verify(
     local_checkpoint_dir: Path,
     drive_root: Path,
     run_id: Optional[str] = None,
+    session_name: Optional[str] = None,
     resume: bool = False,
-    mock_gpu: bool = False,
     auto_bootstrap: bool = True,
 ) -> Dict[str, Any]:
     """Executes full staging and environment verification protocol."""
     arm_norm = validate_arm(arm)
     commit_norm = validate_commit_sha(target_commit)
+    session = session_name or f"langfens-rq1-{arm_norm.lower()}"
 
     print("=" * 80)
     print(f"LANGFENS — RQ1-TRN-02B Colab Staging & Environment Verification")
@@ -481,20 +560,19 @@ def stage_and_verify(
     print(f"Drive Root: {drive_root}")
     print("=" * 80, flush=True)
 
-    # 1. Hardware & CUDA Check
-    if not mock_gpu:
-        try:
-            import torch
-            if not torch.cuda.is_available():
-                raise RuntimeError(
-                    "CUDA is NOT available on this runtime!\n"
-                    "Per AGENTS.md execution boundaries, training without a Colab GPU is strictly prohibited.\n"
-                    "Do NOT fall back to CPU training. Provision a GPU runtime via 'colab new -s <name> --gpu T4'."
-                )
-            gpu_name = torch.cuda.get_device_name(0)
-            print(f"[HARDWARE] GPU verified: {gpu_name} (CUDA {torch.version.cuda})", flush=True)
-        except ImportError:
-            raise RuntimeError("PyTorch is not installed in the current environment.")
+    # 1. Hardware & CUDA Check: strictly required; cannot be bypassed
+    try:
+        import torch
+        if not torch.cuda.is_available():
+            raise RuntimeError(
+                "CUDA is NOT available on this runtime!\n"
+                "Per AGENTS.md execution boundaries, training without a Colab GPU is strictly prohibited.\n"
+                "Do NOT fall back to CPU training. Provision a GPU runtime via 'colab new -s <name> --gpu T4'."
+            )
+        gpu_name = torch.cuda.get_device_name(0)
+        print(f"[HARDWARE] GPU verified: {gpu_name} (CUDA {torch.version.cuda})", flush=True)
+    except ImportError:
+        raise RuntimeError("PyTorch is not installed in the current environment.")
 
     # 2. Bootstrap & Repository Verification
     if auto_bootstrap:
@@ -509,8 +587,16 @@ def stage_and_verify(
     print(f"[GIT PROVENANCE] HEAD verified: {verified_head} (matches target {commit_norm})", flush=True)
 
     # 3. Verify Drive Authenticity & Locate Source Artifacts in Google Drive
-    drive_status = verify_drive_authenticity(drive_root, require_mount=not mock_gpu)
+    drive_status = verify_drive_authenticity(drive_root, require_mount=True)
     print(f"[STORAGE AUTHENTICITY] Drive verification status: {drive_status}", flush=True)
+
+    # Section A Invariant: Require drive_verification_status == "VERIFIED" before reporting staging success
+    if drive_status != "VERIFIED":
+        raise RuntimeError(
+            f"FAIL-CLOSED: Google Drive storage verification is '{drive_status}', NOT 'VERIFIED'.\n"
+            f"Staging cannot declare READY_FOR_TRAINING until Drive identity (Folder ID: {PROJECT_DRIVE_FOLDER_ID}) "
+            f"is authenticated and verified via Google Drive API."
+        )
 
     dataset_candidates = [
         drive_root / "manifests/RQ1-TRN-02A/authorized_data/fold1_train_val_only.zip",
@@ -579,6 +665,8 @@ def stage_and_verify(
     summary = {
         "status": "READY_FOR_TRAINING",
         "arm": arm_norm,
+        "session": session,
+        "run_id": run_id,
         "verified_commit": verified_head,
         "drive_verification_status": drive_status,
         "staged_zip_path": str(local_zip),
@@ -588,6 +676,14 @@ def stage_and_verify(
         "manifest_sha256": manifest_sha,
         "drive_output_dir": str(drive_out_dir),
     }
+
+    # Save staging report artifact to drive output directory and local data directory
+    staging_report_file = drive_out_dir / "staging_report.json"
+    local_staging_report = local_data_dir / "staging_report.json"
+    report_json = json.dumps(summary, indent=2) + "\n"
+    staging_report_file.write_text(report_json)
+    local_staging_report.write_text(report_json)
+    print(f"[STAGING REPORT] Saved verified staging report to {staging_report_file}", flush=True)
 
     print("=" * 80)
     print("STAGING & PREFLIGHT VERIFICATION PASSED: VM is ready for training launch.")
@@ -604,10 +700,17 @@ def main():
     ap.add_argument("--local-data-dir", default=os.environ.get("LOCAL_DATA_DIR", "/content/data"), help="VM-local data directory")
     ap.add_argument("--local-checkpoint-dir", default=os.environ.get("LOCAL_CHECKPOINT_DIR", "/content/checkpoints/RQ1-TRN-02A/recovered"), help="VM-local checkpoint directory")
     ap.add_argument("--run-id", default=os.environ.get("RUN_ID", None), help="Optional execution run identifier")
+    ap.add_argument("--session-name", default=os.environ.get("SESSION_NAME", None), help="Optional session name")
     ap.add_argument("--resume", action="store_true", help="Allow resumption if prior checkpoints exist")
-    ap.add_argument("--mock-gpu", action="store_true", help="Skip CUDA requirement for unit testing only")
     # Kernel compatibility: parse_known_args ignores Jupyter launcher arguments
-    args, _ = ap.parse_known_args()
+    args, unknown = ap.parse_known_args()
+    # Reject unknown CLI flags (only allowing ipykernel connection arguments)
+    disallowed_unknown = [
+        u for u in unknown
+        if not (u.startswith("-f") or u.endswith(".json") or "kernel" in u or "ipykernel" in u)
+    ]
+    if disallowed_unknown:
+        ap.error(f"unrecognized arguments: {' '.join(disallowed_unknown)}")
 
     if not args.target_commit:
         print("ERROR: --target-commit or TARGET_COMMIT environment variable is required.", file=sys.stderr)
@@ -624,8 +727,8 @@ def main():
         local_checkpoint_dir=Path(args.local_checkpoint_dir),
         drive_root=drive_path,
         run_id=args.run_id,
+        session_name=args.session_name,
         resume=args.resume,
-        mock_gpu=args.mock_gpu,
     )
 
 

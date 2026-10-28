@@ -1,13 +1,14 @@
-# LANGFENS — RQ1-TRN-02B: Colab Execution Authorization Packet (Revision R2-HOTFIX)
+# LANGFENS — RQ1-TRN-02B: Colab Execution Authorization Packet (Revision R3)
 
 **Document ID:** `RQ1-TRN-02B-COLAB-AUTH-PACKET`<br>
-**Revision:** `R2-HOTFIX (Final Fail-Closed Readiness & Endpoint Corrections)`<br>
+**Revision:** `R3 (Final Operational Trust-Boundary Closure)`<br>
 **Status:** `PASS_SOFTWARE` (Operational Execution: `BLOCKED` on quota and runtime verification)<br>
-**Current Review Branch:** `fix/rq1-trn-02b-colab-auth-r2-hotfix`<br>
+**Current Review Branch:** `fix/rq1-trn-02b-colab-auth-r3`<br>
 **Parent Documentation Base Commit:** `aa6415a8d3a073a3550f209a53e1baa44461ce97`<br>
 **Historical Preflight R2 Base Commit:** `8486cbb3596a0f5d2603dcdf46fd891b5c849840`<br>
 **Audited R1 Base Commit:** `a497ec3f0b6dd4c760c4e40296481f61b6426d8d`<br>
 **Audited R2 Base Commit:** `ea8762079735cfb5520de49eaca4528a458a1f38`<br>
+**Audited R2-Hotfix Base Commit:** `4b5baccbb40d7e00bb710b42979196eaef4ce4d3`<br>
 **Decision Gate:** `RQ1-TRN-02B-COLAB-AUTHORIZATION: PASS_SOFTWARE`<br>
 **Operational Scope:** Formal pre-execution authorization packet. STRICTLY NO GPU runtime allocation, Colab provisioning, training backward passes, or optimizer updates occurred during the preparation of this packet. Notice: `PASS_SOFTWARE does not authorize GPU execution`.
 
@@ -17,7 +18,7 @@
 
 This operational authorization packet establishes all cryptographic provenance, execution configurations, storage architectures, fail-closed guardrails, and verified Google Colab CLI command sequences for the upcoming Fold 1 Controlled Acoustic Conditioning Ablation experiment (Control Arm C0 vs. Treatment Arm C1).
 
-Revision R2-HOTFIX incorporates the final source-level safety and endpoint remediations identified during independent audit:
+Revision R3 incorporates the final operational trust-boundary remediations identified during independent audit:
 1. **Fresh VM Deterministic Bootstrap:** Implemented `audit_scripts/colab_bootstrap.py` and integrated `bootstrap_repository()` into `audit_scripts/colab_stage_and_verify.py` to automatically clone the official repository, verify origin identity, refuse dirty/unrelated repositories, and checkout the immutable commit SHA on a fresh VM where `/content/repo` does not initially exist.
 2. **Colab Kernel Execution Compatibility:** Audited all staging and training drivers to eliminate dependence on `__file__` (which is undefined in fresh Jupyter kernel execution namespaces) and adopted `parse_known_args()` to cleanly ignore ipykernel launcher arguments (`['-f', '/root/.../kernel-uuid.json']`).
 3. **Duplicate Run-ID Elimination:** Corrected output path resolution in `audit_scripts/train_rq1_trn_02b.py`, `colab_stage_and_verify.py`, and `colab_train_exec.py` (`resolve_drive_output_dir`), ensuring single, predictable directory paths (`.../checkpoints/<ARM>/<RUN_ID>`) without duplicate nesting.
@@ -29,6 +30,10 @@ Revision R2-HOTFIX incorporates the final source-level safety and endpoint remed
 9. **Strict Executable Readiness (Task B):** Separated 5 operational layers (Software, Quota, Drive Mount, VM Staging, Operator Authorization). Enforced that `--check-only` fails closed (exits non-zero) whenever any layer remains blocked or unverified. Funded quota alone is never treated as complete execution readiness.
 10. **Immutable Source Validation (Task C):** Hardened `validate_static_software(commit_sha)` to verify actual Git HEAD equals requested commit SHA, reject wrong commits even on clean worktrees, check worktree cleanliness, verify required YAML configs, and compute/verify split manifest SHA-256 against ledger.
 11. **Authenticated Persistent Storage (Task D):** Enforced output directory containment within authorized Drive hierarchy (`manifests/RQ1-TRN-02B/checkpoints/<ARM>`), remote Google Drive API identity verification where available, clarified mountpoint/baseline hash alone is not proof of root folder identity, returned `PENDING_RUNTIME_VERIFICATION` on pre-runtime environments, and rejected arbitrary local custom paths outside `/content/drive/` on Colab.
+12. **Fail Closed on Unverified Drive Identity (Revision R3 - Defect A):** Enforced that `drive_verification_status == "VERIFIED"` is strictly required before reporting staging success or launching training. Training subprocess launch is completely blocked when identity is pending.
+13. **Elimination of User-Asserted Readiness Flags (Revision R3 - Defect B):** Removed production-accessible self-asserted readiness flags (`--mock-usage`, `--drive-mounted`, `--staging-verified`, `--operator-authorized`). Enforced evidence-based readiness evaluation requiring authentic mount attestations, staging reports bound to session/commit/run_id, and operator approval records.
+14. **Strict Descendant Drive Containment & Identity Binding (Revision R3 - Defect C):** Enforced `is_relative_to` without equality or reverse ancestry, exact relative components (`manifests/RQ1-TRN-02B/checkpoints/{C0|C1}/[run_id]`), path traversal guards, and mount-to-folder API binding.
+15. **GPU Execution Boundary Protection (Revision R3 - Defect D):** Removed `--mock-gpu` from production launcher interfaces; strictly enforced GPU execution boundaries.
 
 ```
 +--------------------------------------------------------------------------------------------------+
@@ -36,11 +41,12 @@ Revision R2-HOTFIX incorporates the final source-level safety and endpoint remed
 |                                                                                                  |
 |   RQ1-TRN-02B-COLAB-AUTHORIZATION: PASS_SOFTWARE                                                  |
 |                                                                                                  |
-| Codebase, bootstrap, launcher scripts, data ledgers, and unit tests (187 passed) are verified.  |
+| Codebase, bootstrap, launcher scripts, data ledgers, and unit tests (190 passed) are verified.  |
 | Notice: PASS_SOFTWARE does NOT authorize GPU execution. Full execution launch remains BLOCKED:   |
 |   1. Operator allocation of Colab compute units (~15–20 compute units; balance is 0.00).         |
 |   2. Interactive Google Drive mount (colab drivemount -s <session>) by human operator.          |
-|   3. Live runtime staging and storage write verification on authorized Colab VM disk.            |
+|   3. Generation of authentic mount attestation and staging report artifacts.                     |
+|   4. Explicit operator authorization record.                                                     |
 +--------------------------------------------------------------------------------------------------+
 ```
 
@@ -61,6 +67,7 @@ To ensure full scientific reproducibility, all project sources and deliverables 
 | **Audited Operational R1 Base** | `a497ec3f0b6dd4c760c4e40296481f61b6426d8d` | Operational corrections and split reconciliation. |
 | **Current Review Branch (R2)** | `fix/rq1-trn-02b-colab-auth-r2` | Deterministic bootstrap, kernel compatibility, and safety fixes. |
 | **Hotfix Review Branch (R2-HOTFIX)** | `fix/rq1-trn-02b-colab-auth-r2-hotfix` | Final fail-closed readiness, endpoint invariants, and Drive API checks. |
+| **Trust-Boundary Review Branch (R3)** | `fix/rq1-trn-02b-colab-auth-r3` | Final operational trust-boundary closure, evidence-based readiness. |
 | **Future Execution Commit** | *To be pinned on merge* | Immutable Git commit SHA to be checked out on Colab VM. |
 
 Future training MUST checkout the exact immutable Git commit SHA on the Colab VM, never a floating branch name.
@@ -285,12 +292,12 @@ python3 audit_scripts/evaluate_rq1_trn_02b.py \
 
 | Test File | Total Tests | Passed | Skipped | Status |
 |---|:---:|:---:|:---:|:---:|
-| `tests/test_rq1_trn_02b_colab_launch.py` | 30 | 30 | 0 | **PASS** |
+| `tests/test_rq1_trn_02b_colab_launch.py` | 33 | 33 | 0 | **PASS** |
 | `tests/test_rq1_trn_02b_preflight_r2_safety.py` | 11 | 11 | 0 | **PASS** |
 | `tests/test_rq1_trn_02b_corrections_r1.py` | 10 | 10 | 0 | **PASS** |
 | `tests/test_rq1_trn_02b_implementation_preflight.py` | 14 | 13 | 1 (AGENTS.md GPU boundary) | **PASS** |
-| **Combined RQ1-TRN-02B Focused Census** | **65** | **64** | **1** | **PASS** |
-| **Full Repository Regression Census** | **191** | **187** | **4** (CUDA-only placeholders) | **PASS** |
+| **Combined RQ1-TRN-02B Focused Census** | **68** | **67** | **1** | **PASS** |
+| **Full Repository Regression Census** | **194** | **190** | **4** (CUDA-only placeholders) | **PASS** |
 
 ---
 
@@ -303,8 +310,9 @@ STATUS: PASS_SOFTWARE
 
 All operational scripts, deterministic bootstrap, notebook kernel execution
 semantics, single output paths, safe bounded zip inspections, strict primary
-endpoint invariants (9/9), negative endpoint tests (6/6), and 5-layer executable
-readiness gates are verified locally (187 passed tests).
+endpoint invariants (9/9), negative endpoint tests (6/6), evidence-based readiness
+validation, strict descendant Drive containment, and GPU boundary protection
+are verified locally (190 passed tests).
 
 Notice: PASS_SOFTWARE does NOT authorize GPU execution.
 
@@ -314,5 +322,8 @@ OPERATIONAL BLOCKERS:
 2. Interactive Drive Mount: colab drivemount requires operator terminal interaction.
 3. Live Staging Verification: Live VM disk copy and remote Drive write validation
    must be confirmed once the authorized Colab session is provisioned.
+4. Evidence Artifacts: Generation of authentic mount attestation and staging report
+   bound to active session, commit, and run ID.
+5. Explicit Operator Approval Record: Operator authorization record signed by operator.
 ================================================================================
 ```
