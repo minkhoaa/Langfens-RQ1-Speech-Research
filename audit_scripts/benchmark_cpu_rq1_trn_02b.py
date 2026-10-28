@@ -243,7 +243,7 @@ def run_benchmark(
         # Measure Forward Pass
         t_fwd_start = time.perf_counter()
         result = step_model(model, batch, device, training=True)
-        loss = result["loss"] / accum_steps
+        loss = result.loss / accum_steps
         t_fwd = time.perf_counter() - t_fwd_start
         update_forward_time += t_fwd
 
