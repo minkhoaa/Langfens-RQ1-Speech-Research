@@ -1,10 +1,10 @@
 # LANGFENS — RQ1-TRN-02B / Acoustic Conditioning Design, Implementation and Preflight Safety Closure
 
-**Status:** PASS_SOFTWARE (Operational launch BLOCKED on quota and runtime verification)
+**Status:** BLOCKED_RESOURCES (Operational launch BLOCKED on quota and interactive Drive mount)
 
-**Recorded at:** 2026-10-28T16:00:00+07:00
+**Recorded at:** 2026-10-28T16:30:00+07:00
 
-**Evidence source:** Commits `6836367` through `4b5bacc`, branch `fix/rq1-trn-02b-colab-auth-r3`, `manifests/RQ1-TRN-02B/`
+**Evidence source:** Commits `6836367` through `ba7be0d`, branch `fix/rq1-trn-02b-colab-auth-r3`, `manifests/RQ1-TRN-02B/`
 
 **Evidence level:** INDEPENDENTLY_VERIFIED
 
@@ -48,18 +48,24 @@ Design and implement the controlled acoustic conditioning ablation (Control Arm 
    - Enforced strict descendant Drive containment (`is_relative_to` without equality or reverse ancestry), exact relative components (`manifests/RQ1-TRN-02B/checkpoints/{C0|C1}/[run_id]`), path traversal guards, and mount-to-folder API binding.
    - Removed `--mock-gpu` from production launcher interfaces; strictly enforced GPU execution boundaries.
    - Expanded test census to 190 passed CPU tests (4 skipped).
-10. Enforced execution boundary: no GPU training commenced.
+10. Executed live Colab GPU runtime and staging probe (`08-live-gpu-runtime-and-staging-verification.md`):
+   - Probed Colab CCU API: balance is `0.00 compute units` (5,836 free tokens).
+   - Provisioned and verified Tesla T4 GPU (CUDA 13.0, 15GB VRAM, PyTorch `torch.cuda.is_available() == True`).
+   - Probed Drive credentials propagation on VM: Google Drive unmounted (`/content/drive` absent); interactive OAuth consent flow required.
+   - Identified non-interactive subshell automation constraint: `colab drivemount` invokes `/dev/tty`, raising `OSError` in headless environments.
+   - Preserved resource hygiene: promptly terminated test GPU session (`colab stop -s rq1-test-gpu`).
+   - Enforced execution boundary: no GPU training commenced; C0 and C1 remain pending operator action.
 
 ## 4. Results & Verification
-- Acceptance gate: Preflight software and operational launch package `PASS_SOFTWARE`; Operational GPU training gate **`BLOCKED`**.
+- Acceptance gate: Preflight software and operational launch package `PASS_SOFTWARE`; Operational GPU training gate **`BLOCKED_RESOURCES`**.
 - Regression tests: **190 CPU tests passed, 4 skipped** (0 failures).
 - Completed components: Experimental design, C0/C1 model implementation, preflight audit, Preflight-R2 safety closure, operational CLI launch package, Drive storage architecture, bootstrap drivers, and split provenance verification.
-- Uncompleted components: Operator compute unit assignment, interactive Drive mount, Colab VM runtime staging write test, C0 GPU training, C1 GPU training, paired evaluation.
+- Uncompleted components: Operator compute unit assignment (~15–20 CCU), interactive Drive mount in human terminal (`colab drivemount`), Colab VM runtime staging write test, C0 GPU training, C1 GPU training, paired evaluation.
 - Current operational blockers:
-  1. **Compute Quota Blocker:** Measured balance is `0.00 compute units`. Google Colab cannot provision GPU runtimes. Operator must assign ~15–20 compute units.
-  2. **Interactive Drive Mount Prerequisite:** `colab drivemount -s <session>` requires human terminal interaction.
-  3. **Live VM Staging Verification:** Physical VM disk copy and remote Drive write verification must be confirmed once the authorized Colab session is provisioned.
-- Documented in [COLAB_EXECUTION_AUTHORIZATION_PACKET.md](COLAB_EXECUTION_AUTHORIZATION_PACKET.md) and [COLAB_AUTH_R1_CORRECTIONS.md](COLAB_AUTH_R1_CORRECTIONS.md).
+  1. **Compute Quota Blocker:** Measured balance is `0.00 compute units`. Running 7,200 optimizer updates across C0 and C1 on unbilled free tokens carries severe preemption/timeout risk. Operator must allocate ~15–20 compute units.
+  2. **Interactive Drive Mount Prerequisite:** `colab drivemount -s <session>` requires human terminal interaction (`/dev/tty`).
+  3. **Live VM Staging Verification:** Physical VM disk copy and remote Drive write verification must be completed once the authorized Colab session is provisioned and mounted.
+- Documented in [COLAB_EXECUTION_AUTHORIZATION_PACKET.md](COLAB_EXECUTION_AUTHORIZATION_PACKET.md) and [checkpoints/08-live-gpu-runtime-and-staging-verification.md](checkpoints/08-live-gpu-runtime-and-staging-verification.md).
 
 ## 5. Output Artifacts
 - Design & reports: `manifests/RQ1-TRN-02B/*.md`.
@@ -76,6 +82,7 @@ Design and implement the controlled acoustic conditioning ablation (Control Arm 
   - [checkpoints/05-colab-auth-r2-launcher-safety-fixes.md](checkpoints/05-colab-auth-r2-launcher-safety-fixes.md)
   - [checkpoints/06-colab-auth-r2-final-safety-hotfix.md](checkpoints/06-colab-auth-r2-final-safety-hotfix.md)
   - [checkpoints/07-colab-auth-r3-trust-boundary-closure.md](checkpoints/07-colab-auth-r3-trust-boundary-closure.md)
+  - [checkpoints/08-live-gpu-runtime-and-staging-verification.md](checkpoints/08-live-gpu-runtime-and-staging-verification.md)
 
 ## 6. Restart / Recovery Instructions
 - Safe restart point: All preflight tests passing locally on CPU.
