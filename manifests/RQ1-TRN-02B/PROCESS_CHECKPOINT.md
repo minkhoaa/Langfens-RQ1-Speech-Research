@@ -1,10 +1,10 @@
 # LANGFENS — RQ1-TRN-02B / Acoustic Conditioning Design, Implementation and Preflight Safety Closure
 
-**Status:** BLOCKED_RESOURCES (Operational launch BLOCKED on quota and interactive Drive mount)
+**Status:** CPU_FEASIBLE (Operational launch BLOCKED on interactive Google Drive mount)
 
-**Recorded at:** 2026-10-28T16:30:00+07:00
+**Recorded at:** 2026-10-28T16:45:00+07:00
 
-**Evidence source:** Commits `6836367` through `ba7be0d`, branch `fix/rq1-trn-02b-colab-auth-r3`, `manifests/RQ1-TRN-02B/`
+**Evidence source:** Commits `6836367` through `a54528c`, branch `feat/rq1-trn-02b-cpu-execution`, `manifests/RQ1-TRN-02B/`
 
 **Evidence level:** INDEPENDENTLY_VERIFIED
 
@@ -55,17 +55,29 @@ Design and implement the controlled acoustic conditioning ablation (Control Arm 
    - Identified non-interactive subshell automation constraint: `colab drivemount` invokes `/dev/tty`, raising `OSError` in headless environments.
    - Preserved resource hygiene: promptly terminated test GPU session (`colab stop -s rq1-test-gpu`).
    - Enforced execution boundary: no GPU training commenced; C0 and C1 remain pending operator action.
+11. Implemented CPU FP32 execution path and conducted live 50-update feasibility benchmark on Colab CPU (`08-colab-cpu-feasibility-benchmark.md`):
+   - Created dedicated reviewable branch `feat/rq1-trn-02b-cpu-execution`.
+   - Added `--allow-cpu` flag to `audit_scripts/train_rq1_trn_02b.py` and recorded `CPU_FP32_TRAINING` protocol deviation in metadata ledger.
+   - Attached to active Colab CPU VM `m-s-usw3b5-57ccj5ykg7oh` via SSH WebSocket bridge.
+   - Verified data integrity: `fold1_train_val_only.zip` (`b750eb3...`) and baseline `best.pt` (`a2445c8...`).
+   - Executed disposable 50-update benchmark on AMD EPYC 7B12 (2 vCPUs):
+     - Median update duration: `12.538s` (0.080 updates/s).
+     - Validation time per epoch: `243.7s` (`4.1 minutes`).
+     - 1 epoch (600 updates + val): `2.16 hours`.
+     - 6 epochs / 3,600 updates (C0 full budget): `12.94 hours` (safety ratio `2.81x` vs 36.33h Colab session budget).
+     - Both arms (C0 + C1, 7,200 updates): `25.89 hours` (safety ratio `1.40x`).
+     - Peak RAM during training: `4.87 GB` (well within 12.67 GB).
+     - Declared: `CPU_FEASIBLE`.
+   - Enforced execution boundary: Official C0 training halted before Step 09 due to unmounted Google Drive storage (`/content/drive`).
 
 ## 4. Results & Verification
-- Acceptance gate: Preflight software and operational launch package `PASS_SOFTWARE`; Operational GPU training gate **`BLOCKED_RESOURCES`**.
-- Regression tests: **190 CPU tests passed, 4 skipped** (0 failures).
-- Completed components: Experimental design, C0/C1 model implementation, preflight audit, Preflight-R2 safety closure, operational CLI launch package, Drive storage architecture, bootstrap drivers, and split provenance verification.
-- Uncompleted components: Operator compute unit assignment (~15–20 CCU), interactive Drive mount in human terminal (`colab drivemount`), Colab VM runtime staging write test, C0 GPU training, C1 GPU training, paired evaluation.
+- Acceptance gate: Preflight software `PASS_SOFTWARE`; Colab CPU computational feasibility **`CPU_FEASIBLE`**; Operational launch gate **`BLOCKED`** on Google Drive mount.
+- Regression tests: **193 CPU tests passed, 4 skipped** (0 failures).
+- Completed components: Experimental design, C0/C1 model implementation, preflight audit, Preflight-R2 safety closure, operational CLI launch package, Drive storage architecture, bootstrap drivers, split provenance verification, live GPU probing, CPU FP32 execution path, and empirical 50-update CPU benchmark.
+- Uncompleted components: Interactive Google Drive mount in Colab Web UI, C0 CPU training execution, C1 CPU training execution, paired evaluation.
 - Current operational blockers:
-  1. **Compute Quota Blocker:** Measured balance is `0.00 compute units`. Running 7,200 optimizer updates across C0 and C1 on unbilled free tokens carries severe preemption/timeout risk. Operator must allocate ~15–20 compute units.
-  2. **Interactive Drive Mount Prerequisite:** `colab drivemount -s <session>` requires human terminal interaction (`/dev/tty`).
-  3. **Live VM Staging Verification:** Physical VM disk copy and remote Drive write verification must be completed once the authorized Colab session is provisioned and mounted.
-- Documented in [COLAB_EXECUTION_AUTHORIZATION_PACKET.md](COLAB_EXECUTION_AUTHORIZATION_PACKET.md) and [checkpoints/08-live-gpu-runtime-and-staging-verification.md](checkpoints/08-live-gpu-runtime-and-staging-verification.md).
+  1. **Google Drive Mount Prerequisite:** `/content/drive` is unmounted on the active Colab CPU VM. Operator must connect via direct notebook UI URL and run `from google.colab import drive; drive.mount('/content/drive')` to ensure atomic checkpoint persistence.
+- Documented in [checkpoints/08-colab-cpu-feasibility-benchmark.md](checkpoints/08-colab-cpu-feasibility-benchmark.md) and [benchmark_cpu_results.json](benchmark_cpu_results.json).
 
 ## 5. Output Artifacts
 - Design & reports: `manifests/RQ1-TRN-02B/*.md`.
@@ -82,7 +94,7 @@ Design and implement the controlled acoustic conditioning ablation (Control Arm 
   - [checkpoints/05-colab-auth-r2-launcher-safety-fixes.md](checkpoints/05-colab-auth-r2-launcher-safety-fixes.md)
   - [checkpoints/06-colab-auth-r2-final-safety-hotfix.md](checkpoints/06-colab-auth-r2-final-safety-hotfix.md)
   - [checkpoints/07-colab-auth-r3-trust-boundary-closure.md](checkpoints/07-colab-auth-r3-trust-boundary-closure.md)
-  - [checkpoints/08-live-gpu-runtime-and-staging-verification.md](checkpoints/08-live-gpu-runtime-and-staging-verification.md)
+  - [checkpoints/08-colab-cpu-feasibility-benchmark.md](checkpoints/08-colab-cpu-feasibility-benchmark.md)
 
 ## 6. Restart / Recovery Instructions
 - Safe restart point: All preflight tests passing locally on CPU.

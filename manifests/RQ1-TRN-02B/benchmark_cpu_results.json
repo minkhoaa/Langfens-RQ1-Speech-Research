@@ -1,0 +1,48 @@
+{
+  "benchmark_timestamp": "2026-10-28T08:35:41Z",
+  "hardware": {
+    "system": "Linux 6.6.159+ (x86_64)",
+    "cpu_model": "AMD EPYC 7B12",
+    "logical_cpus": 2,
+    "total_ram_gb": 12.67,
+    "available_ram_gb": 10.93
+  },
+  "ram": {
+    "baseline_gb": 0.465,
+    "post_model_load_gb": 1.221,
+    "peak_training_gb": 4.869,
+    "net_increase_gb": 4.404
+  },
+  "model_init_time_sec": 1.46,
+  "measured_updates_count": 50,
+  "per_update_metrics": {
+    "median_sec": 12.538,
+    "mean_sec": 12.14,
+    "min_sec": 6.485,
+    "max_sec": 18.326,
+    "std_dev_sec": 2.381,
+    "breakdown_mean": {
+      "forward_pass_sec": 4.063,
+      "backward_pass_sec": 7.736,
+      "optimizer_step_sec": 0.282,
+      "data_loading_sec": 0.06
+    }
+  },
+  "validation_metrics": {
+    "measured_batches": 10,
+    "mean_val_batch_sec": 1.625,
+    "total_val_batches_epoch": 150,
+    "est_full_val_epoch_sec": 243.7,
+    "est_full_val_epoch_min": 4.1
+  },
+  "projections": {
+    "updates_per_epoch": 600,
+    "one_epoch_total_hours": 2.16,
+    "c0_6_epochs_3600_updates_hours": 12.94,
+    "both_arms_6_epochs_hours": 25.89,
+    "colab_runtime_budget_hours": 36.33,
+    "safety_ratio_c0": 2.81
+  },
+  "verdict": "CPU_FEASIBLE",
+  "verdict_detail": "FEASIBLE: 6 epochs (3,600 updates) estimated at 12.9h fits within available Colab runtime budget (36.3h, ratio 2.81x)."
+}
