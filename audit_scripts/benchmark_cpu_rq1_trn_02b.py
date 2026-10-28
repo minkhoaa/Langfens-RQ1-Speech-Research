@@ -191,15 +191,19 @@ def run_benchmark(
     print(f"[DATA] Train samples: {len(train_ds)} | Val samples: {len(val_ds)} | Setup time: {data_setup_sec:.2f}s")
 
     # 6. Optimizer Setup
+    lr = float(cfg.get("learning_rate", 0.001))
+    weight_decay = float(cfg.get("weight_decay", 0.01))
     optimizer = torch.optim.AdamW(
         filter(lambda p: p.requires_grad, model.parameters()),
-        lr=float(cfg["optimizer"]["lr"]),
-        weight_decay=float(cfg["optimizer"]["weight_decay"]),
+        lr=lr,
+        weight_decay=weight_decay,
+        betas=(0.9, 0.999),
+        eps=1e-8,
     )
 
     accum_steps = int(cfg["gradient_accumulation_steps"])  # 2 micro-batches per update
-    batch_size = int(cfg["batch_size"])                    # 4 utterances
-    eff_batch_size = accum_steps * batch_size             # 8 utterances / update
+    batch_size = int(cfg["batch_size"])                    # 2 utterances
+    eff_batch_size = accum_steps * batch_size             # 4 utterances / update
 
     print(f"[CONFIG] Batch Size: {batch_size} | Accumulation: {accum_steps} | Effective Batch: {eff_batch_size} utterances")
     print(f"[BENCHMARK] Starting disposable benchmark of {num_updates} successful updates on CPU FP32...", flush=True)
@@ -256,7 +260,7 @@ def run_benchmark(
             t_opt_start = time.perf_counter()
             torch.nn.utils.clip_grad_norm_(
                 filter(lambda p: p.requires_grad, model.parameters()),
-                float(cfg["grad_clip_norm"]),
+                float(cfg.get("gradient_clip_norm", 1.0)),
             )
             optimizer.step()
             optimizer.zero_grad()
@@ -330,47 +334,38 @@ def run_benchmark(
     mean_data_sec = statistics.mean(data_durations)
 
     # 10. Projections & Feasibility Analysis
-    # Training set has 2,399 utterances. At effective batch 8: 300 updates per epoch.
-    updates_per_epoch = 300
+    # Training set has 2,399 utterances.
+    # With batch size 2 * accum 2 = 4 utterances per update:
+    updates_per_epoch = int((len(train_ds) + eff_batch_size - 1) // eff_batch_size)  # ~600 updates / epoch
     target_budget_updates = 3600  # Cap: 6 epochs or 3,600 updates
     max_epochs = 6
 
-    # Time per epoch = 300 updates + 1 full validation pass
+    # Time per epoch = 600 updates + 1 full validation pass
     epoch_train_time_sec = updates_per_epoch * median_update_sec
     epoch_total_sec = epoch_train_time_sec + est_full_val_epoch_sec
 
-    # Full C0 run (6 epochs = 1,800 updates in standard 6 epochs, or up to 3,600 updates if continued)
-    # The protocol specifies 6 epochs max OR 3,600 updates cap (whichever hit first).
-    # With 2,399 samples / 8 per update = 300 updates per epoch:
-    # 6 complete epochs = exactly 1,800 successful updates.
-    # If trained for 3,600 updates = 12 epochs equivalent.
-    c0_1800_updates_sec = (1800 * median_update_sec) + (6 * est_full_val_epoch_sec)
-    c0_3600_updates_sec = (3600 * median_update_sec) + (12 * est_full_val_epoch_sec)
+    # Full C0 run (6 epochs = 3,600 updates at 600 updates/epoch!)
+    c0_6_epochs_updates = updates_per_epoch * max_epochs  # 600 * 6 = 3,600 updates exactly!
+    c0_6_epochs_sec = (c0_6_epochs_updates * median_update_sec) + (max_epochs * est_full_val_epoch_sec)
+    c0_6_epochs_hours = c0_6_epochs_sec / 3600.0
 
-    c0_1800_hours = c0_1800_updates_sec / 3600.0
-    c0_3600_hours = c0_3600_updates_sec / 3600.0
-
-    both_arms_1800_hours = c0_1800_hours * 2.0
-    both_arms_3600_hours = c0_3600_hours * 2.0
+    both_arms_hours = c0_6_epochs_hours * 2.0
 
     available_budget_hours = colab_runtime_budget_hours
-    budget_safety_ratio_c0_1800 = available_budget_hours / max(c0_1800_hours, 1e-6)
-    budget_safety_ratio_c0_3600 = available_budget_hours / max(c0_3600_hours, 1e-6)
+    budget_safety_ratio = available_budget_hours / max(c0_6_epochs_hours, 1e-6)
 
     # Feasibility verdict
-    # A single continuous session must fit the run with at least a 1.25x safety margin
-    # to account for checkpointing, network latency, and GC pauses.
-    if c0_1800_hours <= (available_budget_hours / 1.25):
+    if c0_6_epochs_hours <= (available_budget_hours / 1.25):
         verdict = "CPU_FEASIBLE"
         verdict_detail = (
-            f"FEASIBLE: 6 epochs (1,800 updates) estimated at {c0_1800_hours:.1f}h "
-            f"fits within available Colab runtime budget ({available_budget_hours:.1f}h, ratio {budget_safety_ratio_c0_1800:.2f}x)."
+            f"FEASIBLE: 6 epochs (3,600 updates) estimated at {c0_6_epochs_hours:.1f}h "
+            f"fits within available Colab runtime budget ({available_budget_hours:.1f}h, ratio {budget_safety_ratio:.2f}x)."
         )
     else:
         verdict = "CPU_NOT_FEASIBLE"
         verdict_detail = (
-            f"NOT FEASIBLE: 6 epochs (1,800 updates) requires {c0_1800_hours:.1f}h "
-            f"(3,600 updates cap requires {c0_3600_hours:.1f}h; both arms require {both_arms_1800_hours:.1f}h - {both_arms_3600_hours:.1f}h), "
+            f"NOT FEASIBLE: 6 epochs (3,600 updates) requires {c0_6_epochs_hours:.1f}h "
+            f"(both arms require {both_arms_hours:.1f}h), "
             f"which exceeds the Colab runtime budget of {available_budget_hours:.1f}h (or leaves insufficient safety margin)."
         )
 
@@ -406,14 +401,12 @@ def run_benchmark(
             "est_full_val_epoch_min": round(est_full_val_epoch_sec / 60.0, 1),
         },
         "projections": {
-            "one_epoch_300_updates_hours": round(epoch_total_sec / 3600.0, 2),
-            "c0_6_epochs_1800_updates_hours": round(c0_1800_hours, 2),
-            "c0_3600_updates_budget_cap_hours": round(c0_3600_hours, 2),
-            "both_arms_6_epochs_each_hours": round(both_arms_1800_hours, 2),
-            "both_arms_3600_updates_each_hours": round(both_arms_3600_hours, 2),
+            "updates_per_epoch": updates_per_epoch,
+            "one_epoch_total_hours": round(epoch_total_sec / 3600.0, 2),
+            "c0_6_epochs_3600_updates_hours": round(c0_6_epochs_hours, 2),
+            "both_arms_6_epochs_hours": round(both_arms_hours, 2),
             "colab_runtime_budget_hours": available_budget_hours,
-            "safety_ratio_c0_1800": round(budget_safety_ratio_c0_1800, 2),
-            "safety_ratio_c0_3600": round(budget_safety_ratio_c0_3600, 2),
+            "safety_ratio_c0": round(budget_safety_ratio, 2),
         },
         "verdict": verdict,
         "verdict_detail": verdict_detail,
@@ -429,12 +422,11 @@ def run_benchmark(
     print(f"  - Backward Pass:                  {mean_bwd_sec:.2f}s")
     print(f"  - Optimizer & Clip:               {mean_opt_sec:.2f}s")
     print(f"  - Data Loading Overhead:          {mean_data_sec:.2f}s")
-    print(f"Validation Pass (75 batches):       {est_full_val_epoch_sec / 60.0:.1f} minutes per epoch")
+    print(f"Validation Pass ({total_val_batches} batches):      {est_full_val_epoch_sec / 60.0:.1f} minutes per epoch")
     print("-" * 80)
-    print(f"Projected C0 Duration (6 epochs / 1,800 updates): {c0_1800_hours:.2f} hours")
-    print(f"Projected C0 Duration (3,600 updates cap):        {c0_3600_hours:.2f} hours")
-    print(f"Projected C0 + C1 (both arms, 6 epochs each):    {both_arms_1800_hours:.2f} hours")
-    print(f"Projected C0 + C1 (both arms, 3,600 updates cap): {both_arms_3600_hours:.2f} hours")
+    print(f"Updates per Epoch:                                {updates_per_epoch} updates")
+    print(f"Projected C0 Duration (6 epochs / 3,600 updates): {c0_6_epochs_hours:.2f} hours")
+    print(f"Projected C0 + C1 (both arms, 6 epochs each):    {both_arms_hours:.2f} hours")
     print(f"Available Colab Session Budget:                   {available_budget_hours:.2f} hours")
     print("=" * 80)
     print(f"FEASIBILITY VERDICT: {verdict}")
