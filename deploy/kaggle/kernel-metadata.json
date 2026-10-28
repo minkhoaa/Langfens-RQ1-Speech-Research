@@ -1,14 +1,15 @@
 {
-  "id": "minkhoaa/langfens-rq1-c0-t4x2",
-  "title": "LANGFENS RQ1 C0 T4x2",
+  "id": "minkhoaa/langfens-rq1-trn-02b-c0-gpu",
+  "title": "LANGFENS RQ1 TRN 02B C0 GPU",
   "code_file": "kaggle_notebook.ipynb",
   "language": "python",
   "kernel_type": "notebook",
-  "is_private": "true",
-  "enable_gpu": "true",
-  "enable_tpu": "false",
-  "enable_internet": "true",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
   "machine_shape": "NvidiaTeslaT4",
+  "docker_image": "gcr.io/kaggle-gpu-images/python",
   "dataset_sources": [
     "minkhoaa/langfens-rq1-fold1-staging"
   ],

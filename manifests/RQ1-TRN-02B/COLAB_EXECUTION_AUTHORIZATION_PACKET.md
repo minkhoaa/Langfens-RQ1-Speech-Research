@@ -2,13 +2,14 @@
 
 **Document ID:** `RQ1-TRN-02B-COLAB-AUTH-PACKET`<br>
 **Revision:** `R3 (Final Operational Trust-Boundary Closure)`<br>
-**Status:** `PASS_SOFTWARE` (Operational Execution: `BLOCKED` on quota and runtime verification)<br>
-**Current Review Branch:** `fix/rq1-trn-02b-colab-auth-r3`<br>
+**Status:** `BLOCKED_ACCELERATOR` (Kaggle dataset & remote persistence verified; GPU provisioning blocked on Kaggle phone verification)<br>
+**Current Review Branch:** `review/rq1-trn-02b-kaggle-official-runs`<br>
 **Parent Documentation Base Commit:** `aa6415a8d3a073a3550f209a53e1baa44461ce97`<br>
 **Historical Preflight R2 Base Commit:** `8486cbb3596a0f5d2603dcdf46fd891b5c849840`<br>
 **Audited R1 Base Commit:** `a497ec3f0b6dd4c760c4e40296481f61b6426d8d`<br>
 **Audited R2 Base Commit:** `ea8762079735cfb5520de49eaca4528a458a1f38`<br>
 **Audited R2-Hotfix Base Commit:** `4b5baccbb40d7e00bb710b42979196eaef4ce4d3`<br>
+**Audited R3 Base Commit:** `00af593321ca1277abe8a459ffdc0030cd5cbb9d`<br>
 **Decision Gate:** `RQ1-TRN-02B-COLAB-AUTHORIZATION: PASS_SOFTWARE`<br>
 **Operational Scope:** Formal pre-execution authorization packet. STRICTLY NO GPU runtime allocation, Colab provisioning, training backward passes, or optimizer updates occurred during the preparation of this packet. Notice: `PASS_SOFTWARE does not authorize GPU execution`.
 
@@ -292,12 +293,13 @@ python3 audit_scripts/evaluate_rq1_trn_02b.py \
 
 | Test File | Total Tests | Passed | Skipped | Status |
 |---|:---:|:---:|:---:|:---:|
+| `tests/test_rq1_trn_02b_kaggle_platform.py` | 37 | 37 | 0 | **PASS** |
 | `tests/test_rq1_trn_02b_colab_launch.py` | 33 | 33 | 0 | **PASS** |
 | `tests/test_rq1_trn_02b_preflight_r2_safety.py` | 11 | 11 | 0 | **PASS** |
 | `tests/test_rq1_trn_02b_corrections_r1.py` | 10 | 10 | 0 | **PASS** |
 | `tests/test_rq1_trn_02b_implementation_preflight.py` | 14 | 13 | 1 (AGENTS.md GPU boundary) | **PASS** |
-| **Combined RQ1-TRN-02B Focused Census** | **68** | **67** | **1** | **PASS** |
-| **Full Repository Regression Census** | **194** | **190** | **4** (CUDA-only placeholders) | **PASS** |
+| **Combined RQ1-TRN-02B Focused Census** | **105** | **104** | **1** | **PASS** |
+| **Full Repository Regression Census** | **231** | **227** | **4** (CUDA-only placeholders) | **PASS** |
 
 ---
 

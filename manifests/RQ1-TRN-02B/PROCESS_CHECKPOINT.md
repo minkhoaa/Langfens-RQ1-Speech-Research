@@ -1,10 +1,10 @@
 # LANGFENS — RQ1-TRN-02B / Acoustic Conditioning Design, Implementation and Preflight Safety Closure
 
-**Status:** BLOCKED_RESOURCES (Operational launch BLOCKED on quota and interactive Drive mount)
+**Status:** BLOCKED_ACCELERATOR (Kaggle dataset & remote persistence verified; GPU provisioning blocked on Kaggle phone verification)
 
-**Recorded at:** 2026-10-28T16:30:00+07:00
+**Recorded at:** 2026-10-29T00:30:00+07:00
 
-**Evidence source:** Commits `6836367` through `ba7be0d`, branch `fix/rq1-trn-02b-colab-auth-r3`, `manifests/RQ1-TRN-02B/`
+**Evidence source:** Commits `6836367` through `a701f31`, branch `review/rq1-trn-02b-kaggle-official-runs`, `manifests/RQ1-TRN-02B/`
 
 **Evidence level:** INDEPENDENTLY_VERIFIED
 
@@ -12,7 +12,7 @@
 Design and implement the controlled acoustic conditioning ablation (Control Arm C0 with $p=0$ vs Treatment Arm C1 with Binary-only prompt dropout $p=0.25$), execute comprehensive CPU preflight verification, correct operational launch and staging packages, audit Google Drive and Colab CLI protocols, and prepare the Google Colab execution authorization packet with fail-closed safety guardrails.
 
 ## 2. Inputs & Dependencies
-- Source branch: `fix/rq1-trn-02b-colab-auth-r3` (descending from `4b5bacc`, `ea87620`, `a497ec3`, `aa6415a`, and historical `8486cbb`).
+- Source branch: `review/rq1-trn-02b-kaggle-official-runs` (descending from `a701f31`, `00af593`, `96f7997`, and historical `8486cbb`).
 - Initial checkpoint: `checkpoints/RQ1-TRN-02A/recovered/best.pt` (SHA-256 `a2445c8d17910bf3c03101f50fc419675e8d1bc012af43af10267a28dbba948b`).
 - Split manifest: `manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json` (SHA-256 `7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b`).
 - Authorized data: `datasets/L2-ARCTIC/authorized_RQ1-TRN-02A_fold1_train_val_only.zip` (SHA-256 `b750eb3bf3971afccd9ab9058a64fa6b3f5781399b9ef0f1294d29bf580784a9`).
@@ -57,8 +57,8 @@ Design and implement the controlled acoustic conditioning ablation (Control Arm 
    - Enforced execution boundary: no GPU training commenced; C0 and C1 remain pending operator action.
 
 ## 4. Results & Verification
-- Acceptance gate: Preflight software and operational launch package `PASS_SOFTWARE`; Operational GPU training gate **`BLOCKED_RESOURCES`** (Colab CCU exhausted; Kaggle platform port implemented, benchmark gate pending).
-- Regression tests: **222 CPU tests passed, 4 skipped** (0 failures).
+- Acceptance gate: Preflight software and operational launch package `PASS_SOFTWARE`; Operational GPU training gate **`BLOCKED_ACCELERATOR`** (Kaggle dataset & remote persistence verified; execution halted before optimizer step due to missing GPU on unverified Kaggle account).
+- Regression tests: **227 CPU tests passed, 4 skipped** (0 failures).
 - Completed components: Experimental design, C0/C1 model implementation, preflight audit, Preflight-R2 safety closure, operational CLI launch package, Drive storage architecture, bootstrap drivers, split provenance verification, Kaggle T4x2 platform port, Kaggle staging driver with auto-extracted zip support, remote checkpoint mirror with SHA readback, disposable 50-update benchmark driver, and kernel metadata registration (`--no-run`).
 - Uncompleted components: Kaggle private dataset upload (`minkhoaa/langfens-rq1-fold1-staging`), operator authorization of benchmark, disposable 50-update FP16 benchmark execution, C0 GPU training, C1 GPU training, paired evaluation.
 - Current operational blockers:
@@ -88,6 +88,7 @@ Design and implement the controlled acoustic conditioning ablation (Control Arm 
   - [checkpoints/10-kaggle-t4x2-migration-feasibility-static-review.md](checkpoints/10-kaggle-t4x2-migration-feasibility-static-review.md)
   - [checkpoints/11-kaggle-t4x2-platform-port-and-benchmark-gate.md](checkpoints/11-kaggle-t4x2-platform-port-and-benchmark-gate.md)
   - [checkpoints/12-kaggle-direct-c0-launch-blockers-and-benchmark-waiver.md](checkpoints/12-kaggle-direct-c0-launch-blockers-and-benchmark-waiver.md)
+  - [checkpoints/13-kaggle-c0-execution-blockers-and-persistence-closure.md](checkpoints/13-kaggle-c0-execution-blockers-and-persistence-closure.md)
 
 ## 6. Restart / Recovery Instructions
 - Safe restart point: All preflight tests passing locally on CPU.
