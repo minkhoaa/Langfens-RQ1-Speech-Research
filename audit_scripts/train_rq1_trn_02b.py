@@ -686,9 +686,14 @@ def main():
     drive_out = args.drive_output_dir or cfg.get("drive_output_dir")
     run_id = args.run_id or cfg.get("run_id")
     if run_id:
-        outdir = outdir / run_id
+        if outdir.name != run_id:
+            outdir = outdir / run_id
         if drive_out:
-            drive_out = str(Path(drive_out) / run_id)
+            drive_out_p = Path(drive_out)
+            if drive_out_p.name != run_id:
+                drive_out = str(drive_out_p / run_id)
+            else:
+                drive_out = str(drive_out_p)
 
     # Fail closed on pre-existing conflicting artifacts if not resuming
     if not args.resume and not (args.dry_run or args.eval_only):

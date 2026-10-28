@@ -5,14 +5,15 @@ Designed for execution on Google Colab VM via:
     colab exec -s <session> -f audit_scripts/colab_stage_and_verify.py --timeout 1800
 
 Key Contracts & Invariants:
-1. Validates Arm Identifier: Strictly C0 (p=0.00) or C1 (p=0.25).
-2. Verifies Commit Provenance: Enforces exact target Git commit SHA (fails closed if mismatch).
-3. Verifies Hardware: Requires CUDA GPU (strictly fails closed if GPU unavailable).
-4. Google Drive Mount Check: Locates KLTN-Dataset root (fails closed with instructions if unmounted).
-5. VM Local Staging: Copies authorized dataset archive and baseline weights to VM local disk (/content/...).
-6. Cryptographic Verification: Computes SHA-256 of staged files and verifies exact matches.
-7. Output Directory Preparation: Ensures persistent Google Drive output path is writable and clean.
-8. No Fallback: Strictly prohibits falling back to CPU or local training.
+1. Deterministic Bootstrap: Clones repo on fresh VM or validates cleanliness/origin if pre-existing.
+2. Validates Arm Identifier: Strictly C0 (p=0.00) or C1 (p=0.25).
+3. Verifies Commit Provenance: Enforces exact target Git commit SHA (fails closed if mismatch).
+4. Verifies Hardware: Requires CUDA GPU (strictly fails closed if GPU unavailable).
+5. Authentic Drive Persistence Check: Validates genuine Drive mount and authentic baseline asset identity.
+6. VM Local Staging: Copies authorized dataset archive and baseline weights to VM local disk (/content/...).
+7. Cryptographic Verification: Computes SHA-256 of staged files and verifies exact matches.
+8. Single Predictable Output Directory: Prevents duplicate run-ID path construction.
+9. Kernel Compatibility: No dependence on __file__; ignores ipykernel arguments.
 """
 from __future__ import annotations
 
@@ -23,7 +24,7 @@ import shutil
 import subprocess
 import sys
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 # Cryptographic Digests Ledger
 EXPECTED_MANIFEST_SHA256 = "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b"
@@ -32,6 +33,7 @@ EXPECTED_DATASET_SHA256 = "b750eb3bf3971afccd9ab9058a64fa6b3f5781399b9ef0f1294d2
 
 PROJECT_DRIVE_NAME = "KLTN-Dataset"
 PROJECT_DRIVE_FOLDER_ID = "1Zms4bwv3QYZcmDQAeYolbq-ovrZVRlnK"
+REPO_URL = "https://github.com/minkhoaa/Langfens-RQ1-Speech-Research.git"
 
 
 def compute_sha256(path: Path | str) -> str:
@@ -62,11 +64,82 @@ def validate_commit_sha(sha: str) -> str:
     return sha_clean.lower()
 
 
-def find_drive_root(custom_path: Optional[str] = None) -> Path:
-    """Locates KLTN-Dataset root directory under /content/drive/ or custom mount."""
+def resolve_drive_output_dir(drive_root: Path, arm: str, run_id: Optional[str] = None) -> Path:
+    """
+    Constructs a single predictable output directory for the given arm and optional run_id.
+    Guarantees no duplicate run-ID nesting (e.g. checkpoints/C0/<run_id>/<run_id>).
+    """
+    arm_norm = validate_arm(arm)
+    p = Path(drive_root)
+    if "manifests/RQ1-TRN-02B/checkpoints" in str(p):
+        base = p
+    else:
+        base = p / f"manifests/RQ1-TRN-02B/checkpoints/{arm_norm}"
+
+    if run_id:
+        if base.name == run_id:
+            return base
+        return base / run_id
+    return base
+
+
+def verify_drive_authenticity(drive_root: Path, require_mount: bool = True) -> bool:
+    """
+    Verifies that drive_root is an authentic Google Drive persistence target:
+    1. Mount check: On Colab VM (/content), confirms /content/drive is an active mountpoint.
+    2. Identity check: Confirms authentic baseline assets exist and verify their cryptographic signatures.
+       Rejects arbitrary local directories that simply happen to be named 'KLTN-Dataset'.
+    """
+    # 1. Mountpoint check on Colab
+    is_colab_env = Path("/content").is_dir()
+    if is_colab_env and require_mount:
+        drive_mount = Path("/content/drive")
+        # Check if /content/drive is mounted via ismount or /proc/mounts
+        is_mounted = os.path.ismount(str(drive_mount))
+        if not is_mounted:
+            # Secondary check in /proc/mounts for fuse/drivefs
+            if Path("/proc/mounts").is_file():
+                mounts_text = Path("/proc/mounts").read_text()
+                is_mounted = any("/content/drive" in line and ("fuse" in line or "drivefs" in line) for line in mounts_text.splitlines())
+
+        if not is_mounted:
+            raise RuntimeError(
+                "FAIL-CLOSED: /content/drive is NOT an active Google Drive mountpoint.\n"
+                "An unmounted local folder named 'KLTN-Dataset' cannot be used as persistent storage.\n"
+                "Please run 'colab drivemount -s <session>' in your interactive terminal\n"
+                "or mount Google Drive in the Colab browser UI before executing."
+            )
+
+    # 2. Identity check under drive_root
+    baseline_chk = drive_root / "manifests/RQ1-TRN-02A/checkpoints/best.pt"
+    if not baseline_chk.is_file():
+        # Check alternative recovered path
+        alt_chk = drive_root / "checkpoints/RQ1-TRN-02A/recovered/best.pt"
+        if alt_chk.is_file():
+            baseline_chk = alt_chk
+        else:
+            raise FileNotFoundError(
+                f"FAIL-CLOSED: Directory '{drive_root}' lacks authentic Baseline R weights.\n"
+                f"Expected file at manifests/RQ1-TRN-02A/checkpoints/best.pt.\n"
+                f"Cannot verify authentic identity for Google Drive Root ID: {PROJECT_DRIVE_FOLDER_ID}."
+            )
+
+    chk_sha = compute_sha256(baseline_chk)
+    if chk_sha != EXPECTED_BASELINE_SHA256:
+        raise RuntimeError(
+            f"FAIL-CLOSED: Baseline R weights in '{drive_root}' failed cryptographic identity verification!\n"
+            f"Computed: {chk_sha}\nExpected: {EXPECTED_BASELINE_SHA256}"
+        )
+
+    return True
+
+
+def find_drive_root(custom_path: Optional[str] = None, require_mount: bool = True) -> Path:
+    """Locates and validates authentic KLTN-Dataset root directory."""
     if custom_path:
         p = Path(custom_path)
         if p.is_dir():
+            verify_drive_authenticity(p, require_mount=require_mount)
             return p
         raise FileNotFoundError(f"Specified custom Drive root not found: {custom_path}")
 
@@ -79,44 +152,135 @@ def find_drive_root(custom_path: Optional[str] = None) -> Path:
 
     for cand in candidates:
         if cand.is_dir():
-            return cand
+            try:
+                verify_drive_authenticity(cand, require_mount=require_mount)
+                return cand
+            except Exception:
+                continue
 
     # Deep search under /content/drive if mounted
     drive_base = Path("/content/drive")
     if drive_base.is_dir():
         for root, dirs, _ in os.walk(str(drive_base)):
             if PROJECT_DRIVE_NAME in dirs:
-                return Path(root) / PROJECT_DRIVE_NAME
+                found_cand = Path(root) / PROJECT_DRIVE_NAME
+                try:
+                    verify_drive_authenticity(found_cand, require_mount=require_mount)
+                    return found_cand
+                except Exception:
+                    continue
 
     raise RuntimeError(
-        f"Google Drive root '{PROJECT_DRIVE_NAME}' not found under /content/drive/.\n"
+        f"Google Drive root '{PROJECT_DRIVE_NAME}' (Folder ID: {PROJECT_DRIVE_FOLDER_ID}) not found under /content/drive/.\n"
         f"Drive mounting requires interactive human authorization.\n"
         f"Please run 'colab drivemount -s <session>' in an interactive terminal\n"
         f"or authorize Drive mount in the Colab web UI before running this staging script."
     )
 
 
-def verify_git_commit(repo_root: Path, target_commit: str) -> str:
-    """Verifies that the repository HEAD matches the immutable target commit."""
-    if not (repo_root / ".git").is_dir():
-        raise FileNotFoundError(f"Git repository not found at {repo_root}")
+def bootstrap_repository(
+    repo_root: Path,
+    target_commit: str,
+    repo_url: str = REPO_URL,
+) -> str:
+    """
+    Deterministic bootstrap routine:
+    - If repo_root is absent on fresh VM, clones repository.
+    - If repo_root exists, audits git identity, remote origin, and working tree cleanliness.
+    - Checks out target immutable commit SHA and verifies HEAD.
+    """
+    commit_norm = validate_commit_sha(target_commit)
 
-    head_sha = subprocess.check_output(
-        ["git", "rev-parse", "HEAD"], cwd=str(repo_root), text=True
-    ).strip().lower()
+    if not repo_root.exists():
+        print(f"[BOOTSTRAP] Fresh VM detected. Cloning {repo_url} into {repo_root}...", flush=True)
+        repo_root.parent.mkdir(parents=True, exist_ok=True)
+        res = subprocess.run(
+            ["git", "clone", repo_url, str(repo_root)],
+            capture_output=True,
+            text=True,
+        )
+        if res.returncode != 0:
+            raise RuntimeError(f"Git clone failed:\nSTDOUT: {res.stdout}\nSTDERR: {res.stderr}")
+    else:
+        # Pre-existing directory audit
+        if not (repo_root / ".git").is_dir():
+            raise RuntimeError(
+                f"FAIL-CLOSED: Pre-existing directory {repo_root} is NOT a Git repository.\n"
+                f"Refusing to execute on an untrusted or corrupt directory."
+            )
 
-    if head_sha != target_commit.lower():
+        # Check remote origin identity
+        try:
+            origin_url = subprocess.check_output(
+                ["git", "config", "--get", "remote.origin.url"],
+                cwd=str(repo_root),
+                text=True,
+            ).strip()
+        except subprocess.CalledProcessError:
+            origin_url = ""
+
+        if "Langfens-RQ1-Speech-Research" not in origin_url:
+            raise RuntimeError(
+                f"FAIL-CLOSED: Pre-existing repository at {repo_root} has unexpected remote origin:\n"
+                f"  Found: {origin_url}\n"
+                f"  Expected: {repo_url}\n"
+                f"Refusing to execute on an untrusted or unrelated repository."
+            )
+
+        # Check working tree cleanliness
+        status = subprocess.check_output(
+            ["git", "status", "--porcelain"],
+            cwd=str(repo_root),
+            text=True,
+        ).strip()
+        if status:
+            raise RuntimeError(
+                f"FAIL-CLOSED: Pre-existing repository at {repo_root} has dirty working tree:\n"
+                f"{status}\n"
+                f"Refusing to checkout commit over uncommitted changes."
+            )
+
+        subprocess.run(["git", "fetch", "--all"], cwd=str(repo_root), capture_output=True)
+
+    # Checkout exact immutable commit
+    print(f"[BOOTSTRAP] Checking out approved immutable commit {commit_norm}...", flush=True)
+    chk_res = subprocess.run(
+        ["git", "checkout", commit_norm],
+        cwd=str(repo_root),
+        capture_output=True,
+        text=True,
+    )
+    if chk_res.returncode != 0:
         raise RuntimeError(
-            f"Repository commit mismatch: HEAD is {head_sha}, expected target {target_commit}.\n"
-            f"Please run 'git checkout {target_commit}' in {repo_root}."
+            f"Git checkout failed for commit {commit_norm}:\n"
+            f"STDOUT: {chk_res.stdout}\nSTDERR: {chk_res.stderr}"
         )
 
-    # Check for uncommitted working tree modifications
-    status = subprocess.check_output(
-        ["git", "status", "--porcelain"], cwd=str(repo_root), text=True
+    head_sha = subprocess.check_output(
+        ["git", "rev-parse", "HEAD"],
+        cwd=str(repo_root),
+        text=True,
+    ).strip().lower()
+
+    if head_sha != commit_norm:
+        raise RuntimeError(
+            f"HEAD verification failed: HEAD is {head_sha}, expected {commit_norm}."
+        )
+
+    post_status = subprocess.check_output(
+        ["git", "status", "--porcelain"],
+        cwd=str(repo_root),
+        text=True,
     ).strip()
-    if status:
-        raise RuntimeError(f"Repository working tree is not clean at {repo_root}:\n{status}")
+    if post_status:
+        raise RuntimeError(
+            f"Working tree at {repo_root} is dirty after checkout:\n{post_status}"
+        )
+
+    # Ensure src is on sys.path
+    if (repo_root / "src").is_dir():
+        sys.path.insert(0, str(repo_root / "src"))
+    sys.path.insert(0, str(repo_root))
 
     return head_sha
 
@@ -130,7 +294,6 @@ def stage_file_with_hash(
     """Copies file to local destination if needed and validates SHA-256."""
     dest_path.parent.mkdir(parents=True, exist_ok=True)
 
-    # Check if destination file already exists and matches hash
     if dest_path.is_file():
         local_sha = compute_sha256(dest_path)
         if local_sha == expected_sha256:
@@ -195,6 +358,7 @@ def stage_and_verify(
     run_id: Optional[str] = None,
     resume: bool = False,
     mock_gpu: bool = False,
+    auto_bootstrap: bool = True,
 ) -> Dict[str, Any]:
     """Executes full staging and environment verification protocol."""
     arm_norm = validate_arm(arm)
@@ -221,8 +385,16 @@ def stage_and_verify(
         except ImportError:
             raise RuntimeError("PyTorch is not installed in the current environment.")
 
-    # 2. Repository and Commit Verification
-    verified_head = verify_git_commit(repo_root, commit_norm)
+    # 2. Bootstrap & Repository Verification
+    if auto_bootstrap:
+        verified_head = bootstrap_repository(repo_root, commit_norm)
+    else:
+        verified_head = subprocess.check_output(
+            ["git", "rev-parse", "HEAD"], cwd=str(repo_root), text=True
+        ).strip().lower()
+        if verified_head != commit_norm:
+            raise RuntimeError(f"Commit mismatch: HEAD {verified_head} != target {commit_norm}")
+
     print(f"[GIT PROVENANCE] HEAD verified: {verified_head} (matches target {commit_norm})", flush=True)
 
     # 3. Locate Source Artifacts in Google Drive
@@ -270,7 +442,7 @@ def stage_and_verify(
         baseline_src, local_baseline, EXPECTED_BASELINE_SHA256, "Baseline R Model Weights (best.pt)"
     )
 
-    # Also verify local split manifest inside repo
+    # Verify local split manifest inside repo
     local_manifest = repo_root / "manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json"
     if not local_manifest.is_file():
         raise FileNotFoundError(f"Split manifest not found at {local_manifest}")
@@ -281,10 +453,8 @@ def stage_and_verify(
         )
     print(f"[MANIFEST] Split manifest verified: {manifest_sha[:12]}...", flush=True)
 
-    # 5. Persistent Output Directory Verification
-    drive_out_dir = drive_root / f"manifests/RQ1-TRN-02B/checkpoints/{arm_norm}"
-    if run_id:
-        drive_out_dir = drive_out_dir / run_id
+    # 5. Persistent Output Directory Verification (Single predictable path)
+    drive_out_dir = resolve_drive_output_dir(drive_root, arm_norm, run_id=run_id)
 
     verify_write_access(drive_out_dir)
     print(f"[STORAGE ACCESS] Verified persistent write access to: {drive_out_dir}", flush=True)
@@ -321,7 +491,8 @@ def main():
     ap.add_argument("--run-id", default=os.environ.get("RUN_ID", None), help="Optional execution run identifier")
     ap.add_argument("--resume", action="store_true", help="Allow resumption if prior checkpoints exist")
     ap.add_argument("--mock-gpu", action="store_true", help="Skip CUDA requirement for unit testing only")
-    args = ap.parse_args()
+    # Kernel compatibility: parse_known_args ignores Jupyter launcher arguments
+    args, _ = ap.parse_known_args()
 
     if not args.target_commit:
         print("ERROR: --target-commit or TARGET_COMMIT environment variable is required.", file=sys.stderr)

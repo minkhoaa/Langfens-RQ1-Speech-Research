@@ -1,13 +1,14 @@
-# LANGFENS — RQ1-TRN-02B: Colab Execution Authorization Packet (Revision R1)
+# LANGFENS — RQ1-TRN-02B: Colab Execution Authorization Packet (Revision R2)
 
 **Document ID:** `RQ1-TRN-02B-COLAB-AUTH-PACKET`<br>
-**Revision:** `R1 (Operational Corrections & Provenance Reconciliation)`<br>
-**Status:** `CORRECTED_PENDING_RUNTIME_VERIFICATION`<br>
-**Current Review Branch:** `fix/rq1-trn-02b-colab-auth-r1`<br>
+**Revision:** `R2 (Operational Corrections & Launcher Safety Fixes)`<br>
+**Status:** `PASS_SOFTWARE` (Operational Execution: `BLOCKED` on quota and runtime verification)<br>
+**Current Review Branch:** `fix/rq1-trn-02b-colab-auth-r2`<br>
 **Parent Documentation Base Commit:** `aa6415a8d3a073a3550f209a53e1baa44461ce97`<br>
 **Historical Preflight R2 Base Commit:** `8486cbb3596a0f5d2603dcdf46fd891b5c849840`<br>
-**Decision Gate:** `RQ1-TRN-02B-COLAB-AUTHORIZATION: CORRECTED_PENDING_RUNTIME_VERIFICATION`<br>
-**Operational Scope:** Formal pre-execution authorization packet. STRICTLY NO GPU runtime allocation, Colab provisioning, training backward passes, or optimizer updates occurred during the preparation of this packet.
+**Audited R1 Base Commit:** `a497ec3f0b6dd4c760c4e40296481f61b6426d8d`<br>
+**Decision Gate:** `RQ1-TRN-02B-COLAB-AUTHORIZATION: PASS_SOFTWARE`<br>
+**Operational Scope:** Formal pre-execution authorization packet. STRICTLY NO GPU runtime allocation, Colab provisioning, training backward passes, or optimizer updates occurred during the preparation of this packet. Notice: `PASS_SOFTWARE does not authorize GPU execution`.
 
 ---
 
@@ -15,22 +16,25 @@
 
 This operational authorization packet establishes all cryptographic provenance, execution configurations, storage architectures, fail-closed guardrails, and verified Google Colab CLI command sequences for the upcoming Fold 1 Controlled Acoustic Conditioning Ablation experiment (Control Arm C0 vs. Treatment Arm C1).
 
-Revision R1 resolves four operational discrepancies identified during pre-execution audit:
-1. **Scientific Provenance Correction:** Corrects the Fold 1 TRAIN speaker partition list in documentation (removing erroneously listed TEST and VAL speakers) while proving strict speaker-disjointness across TRAIN, VAL, and SEALED TEST.
-2. **Commit Provenance Reconciliation:** Disentangles baseline, preflight, registry, and operational correction commits, eliminating the phantom uncommitted SHA `96729fe...` and establishing the requirement that training check out one immutable Git commit.
-3. **Colab CLI Command Repair:** Replaces unsupported shell pipes (`colab exec -s S -- "..."`) with verified non-interactive Python script execution (`colab exec -s S -f script.py --env ... --timeout ...`), verified against Colab CLI v0.7.4.
-4. **Google Drive Staging & Output Hierarchy:** Reconciles the authoritative Google Drive folder and file IDs under root `KLTN-Dataset` (`1Zms4bwv3QYZcmDQAeYolbq-ovrZVRlnK`), defines non-interactive VM disk staging with SHA-256 re-hashing, and documents the prerequisite human-assisted `colab drivemount` step.
+Revision R2 incorporates seven operational and launcher safety remediations identified during independent source audit:
+1. **Fresh VM Deterministic Bootstrap:** Implemented `audit_scripts/colab_bootstrap.py` and integrated `bootstrap_repository()` into `audit_scripts/colab_stage_and_verify.py` to automatically clone the official repository, verify origin identity, refuse dirty/unrelated repositories, and checkout the immutable commit SHA on a fresh VM where `/content/repo` does not initially exist.
+2. **Colab Kernel Execution Compatibility:** Audited all staging and training drivers to eliminate dependence on `__file__` (which is undefined in fresh Jupyter kernel execution namespaces) and adopted `parse_known_args()` to cleanly ignore ipykernel launcher arguments (`['-f', '/root/.../kernel-uuid.json']`).
+3. **Duplicate Run-ID Elimination:** Corrected output path resolution in `audit_scripts/train_rq1_trn_02b.py`, `colab_stage_and_verify.py`, and `colab_train_exec.py` (`resolve_drive_output_dir`), ensuring single, predictable directory paths (`.../checkpoints/<ARM>/<RUN_ID>`) without duplicate nesting.
+4. **Safe Bounded Dataset Package Inspection:** Replaced shallow `.zip` filename checks with safe, in-memory bounded path inspection of nested zip archives, verifying that every internal file belongs exclusively to approved TRAIN and VAL speakers (`BWC, ERMS, HKK, HQTV, MBMPS, NCC, NJS, RRBI, SKA, SVBI, THV, TLV, TNI, TXHC, YBAA, YDCK, YKWK, ZHAA`) with zero test leakage. Marks test `SKIPPED/UNVERIFIED` if archive is locally unavailable.
+5. **Fail-Closed Quota & Layered Readiness:** Updated `colab_launch_workflow.py` to separate operational readiness into 5 distinct layers and return a non-zero exit code (`sys.exit(1)`) on executable checks when compute quota or runtime prerequisites are blocked.
+6. **Authentic Google Drive Persistence Verification:** Enforced active mountpoint validation on Colab VM (`os.path.ismount('/content/drive')` or `/proc/mounts`) and cryptographic identity verification of authoritative baseline assets under `KLTN-Dataset` (`1Zms4bwv3QYZcmDQAeYolbq-ovrZVRlnK`).
+7. **Primary Endpoint Verification & Classification:** Implemented `classify_training_endpoint()` in `colab_train_exec.py`, classifying runs into `COMPLETED_3600_UPDATES`, `INCOMPLETE`, `HALTED_GUARDRAIL`, or `FAILED`. Prohibits labeling a run complete merely because `last.pt` exists.
 
 ```
 +--------------------------------------------------------------------------------------------------+
 | FINAL OPERATIONAL GATE DECISION:                                                                 |
 |                                                                                                  |
-|   RQ1-TRN-02B-COLAB-AUTHORIZATION: CORRECTED_PENDING_RUNTIME_VERIFICATION                        |
+|   RQ1-TRN-02B-COLAB-AUTHORIZATION: PASS_SOFTWARE                                                  |
 |                                                                                                  |
-| Codebase, staging scripts, cryptographic ledgers, and unit tests (175 passed) are verified.      |
-| Full execution launch is BLOCKED pending:                                                       |
-|   1. Operator top-up / allocation of Colab compute units (~15–20 compute units).                 |
-|   2. Interactive Google Drive mount (colab drivemount -s <session>) by operator.                 |
+| Codebase, bootstrap, launcher scripts, data ledgers, and unit tests (182 passed) are verified.  |
+| Notice: PASS_SOFTWARE does NOT authorize GPU execution. Full execution launch remains BLOCKED:   |
+|   1. Operator allocation of Colab compute units (~15–20 compute units; balance is 0.00).         |
+|   2. Interactive Google Drive mount (colab drivemount -s <session>) by human operator.          |
 |   3. Live runtime staging and storage write verification on authorized Colab VM disk.            |
 +--------------------------------------------------------------------------------------------------+
 ```
@@ -48,9 +52,9 @@ To ensure full scientific reproducibility, all project sources and deliverables 
 | **Frozen Scientific Baseline (Eval)**| `c4a658f8b8e0b656758416d82c0be42323c21a10` | Protocol Z zero-oracle numerical closure and CPU replay. |
 | **Baseline R Archival & Release** | `a200b73b90a137316817bc42df0ba6e0db2c24c5` | RQ1-ARTIFACT-01 Drive archival and private Hugging Face release. |
 | **Preflight R2 Implementation** | `8486cbb3596a0f5d2603dcdf46fd891b5c849840` | Preflight safety closure, unique run-ID, fail-closed guards. |
-| **Historical Packet Header** | `8486cbb3596a0f5d2603dcdf46fd891b5c849840` | Erratum: phantom SHA `96729fe...` corrected to `8486cbb`. |
 | **Checkpoint Registry Base** | `aa6415a8d3a073a3550f209a53e1baa44461ce97` | Global checkpoint index backfill and policy enforcement. |
-| **Current Review Branch** | `fix/rq1-trn-02b-colab-auth-r1` | Operational corrections, verified CLI scripts, and test suite. |
+| **Audited Operational R1 Base** | `a497ec3f0b6dd4c760c4e40296481f61b6426d8d` | Operational corrections and split reconciliation. |
+| **Current Review Branch (R2)** | `fix/rq1-trn-02b-colab-auth-r2` | Deterministic bootstrap, kernel compatibility, and safety fixes. |
 | **Future Execution Commit** | *To be pinned on merge* | Immutable Git commit SHA to be checked out on Colab VM. |
 
 Future training MUST checkout the exact immutable Git commit SHA on the Colab VM, never a floating branch name.
@@ -74,23 +78,16 @@ Verified against authoritative split manifest `manifests/RQ1-SPLIT-01/l2arctic_4
   ```text
   BWC, ERMS, HKK, HQTV, MBMPS, NCC, SKA, SVBI, THV, TLV, TNI, TXHC, YBAA, YDCK, YKWK, ZHAA
   ```
-  *(Erratum note: The historical packet erroneously listed test speakers ABA, HJK, LXC, PNV, validation speaker RRBI, and typo MBMD in TRAIN. This documentation defect has been corrected. The underlying frozen split JSON was unchanged.)*
-
 - **VALIDATION Partition:** Exactly 300 utterances across **2 speakers**:
-  - `NJS`: Utterances 0 to 149 (150 utterances).
-  - `RRBI`: Utterances 150 to 299 (150 utterances).
-
+  - `NJS`: Utterances 0 to 149 (150 utterances)
+  - `RRBI`: Utterances 150 to 299 (150 utterances)
 - **SEALED TEST Partition:** Exactly 900 utterances across **6 speakers**:
   ```text
   ABA, ASI, EBVS, HJK, LXC, PNV
   ```
-
 - **Mathematical Proof of Speaker Disjointness:**
   $$S_{\text{train}} \cap S_{\text{val}} = \emptyset, \quad S_{\text{train}} \cap S_{\text{test}} = \emptyset, \quad S_{\text{val}} \cap S_{\text{test}} = \emptyset$$
   Total corpus census: $16 + 2 + 6 = 24$ speakers; $2,399 + 300 + 900 = 3,599$ utterances ($\Delta = 0$).
-
-- **Official Test Sealing Safeguard:**
-  The authorized archive `fold1_train_val_only.zip` contains exactly 18 speaker directories (`BWC.zip`, `ERMS.zip`, `HKK.zip`, `HQTV.zip`, `MBMPS.zip`, `NCC.zip`, `NJS.zip`, `RRBI.zip`, `SKA.zip`, `SVBI.zip`, `THV.zip`, `TLV.zip`, `TNI.zip`, `TXHC.zip`, `YBAA.zip`, `YDCK.zip`, `YKWK.zip`, `ZHAA.zip`). Test speakers `ABA`, `ASI`, `EBVS`, `HJK`, `LXC`, `PNV` are completely absent. Neither training nor preflight drivers contain any logic capable of accessing test data.
 
 ---
 
@@ -120,15 +117,14 @@ Control Arm C0 and Treatment Arm C1 share an identical training contract, optimi
 | **Gradient Clipping** | Max $L_2$ norm = `1.0` | Max $L_2$ norm = `1.0` | **Identical** |
 
 ### 3.1 Checkpoint Destination Isolation and Conflict Protection
-To prevent accidental reuse, contamination, or clobbering:
 - **Local VM Output Directories:**
-  - Control Arm C0: `checkpoints/RQ1-TRN-02B/C0`
-  - Treatment Arm C1: `checkpoints/RQ1-TRN-02B/C1`
+  - Control Arm C0: `checkpoints/RQ1-TRN-02B/C0[/<RUN_ID>]`
+  - Treatment Arm C1: `checkpoints/RQ1-TRN-02B/C1[/<RUN_ID>]`
 - **Persistent Google Drive Remote Directories:**
-  - Control Arm C0: `<DRIVE_ROOT>/manifests/RQ1-TRN-02B/checkpoints/C0`
-  - Treatment Arm C1: `<DRIVE_ROOT>/manifests/RQ1-TRN-02B/checkpoints/C1`
-- **Fail-Closed Conflict Detection:** If any pre-existing checkpoint artifacts (`last.pt`, `best.pt`, `fixed_budget_checkpoint.pt`, `halted_guardrail.pt`) exist in the output destination and `--resume` is not explicitly passed, training halts immediately with `FileExistsError`.
-- **Execution Run ID Option:** Supports `--run-id <identifier>` to namespace artifacts into distinct execution subdirectories.
+  - Control Arm C0: `<DRIVE_ROOT>/manifests/RQ1-TRN-02B/checkpoints/C0[/<RUN_ID>]`
+  - Treatment Arm C1: `<DRIVE_ROOT>/manifests/RQ1-TRN-02B/checkpoints/C1[/<RUN_ID>]`
+- **Single Predictable Path:** Enforced by `resolve_drive_output_dir` in wrappers and trainer. Prevents duplicate `<RUN_ID>/<RUN_ID>` path construction.
+- **Fail-Closed Conflict Detection:** If any pre-existing checkpoint artifacts (`last.pt`, `best.pt`, `fixed_budget_checkpoint.pt`, `halted_guardrail.pt`) exist in the destination and `--resume` is not explicitly passed, training halts immediately with `FileExistsError`.
 
 ---
 
@@ -137,8 +133,8 @@ To prevent accidental reuse, contamination, or clobbering:
 ### 4.1 Colab CLI Inspection & Verified Command Syntax
 - **CLI Binary:** `/usr/bin/colab` (version `0.7.4`).
 - **Authentication Provider:** OAuth2 (active user `tukhoa040505@gmail.com`).
-- **CLI Syntax Correction:** The Colab CLI does NOT support positional shell command strings such as `colab exec -s S -- "bash cmd"`. Instead, `colab exec` executes a Python script via `-f <script.py>` inside the remote kernel, passing parameters via `--env KEY=VALUE`.
-- **Execution Timeouts:** Default timeout for `colab exec` is 30.0 seconds. Long-running tasks must pass explicit `--timeout`:
+- **Command Syntax:** Verified script execution: `colab exec -s S -f script.py --env KEY=VALUE --timeout SECONDS`.
+- **Execution Timeouts:**
   - Staging & preflight: `--timeout 1800` (30 minutes).
   - Model training: `--timeout 28800` (8 hours).
 
@@ -148,30 +144,12 @@ To prevent accidental reuse, contamination, or clobbering:
 - **Resource Requirement:** ~15–20 compute units for 7–10 T4 GPU-hours (C0: ~3.5–4.5h, C1: ~3.5–4.5h).
 - **BLOCKER:** Google Colab cannot provision GPU runtimes when compute unit balance is 0.00. The operator must purchase or allocate compute units before provisioning.
 
-### 4.3 Google Drive Hierarchy & Staging Architecture
-All persistent assets reside under the authoritative project Google Drive root:
-- **Drive Project Root:** `KLTN-Dataset` (Folder ID: `1Zms4bwv3QYZcmDQAeYolbq-ovrZVRlnK`)
-- **Baseline R Folder:** `11g-5JI5u5JKHxV8u9kyCo4I-SF2JWJLx`
-- **Source Baseline Checkpoint (`best.pt`):**
-  - Drive Path: `manifests/RQ1-TRN-02A/checkpoints/best.pt`
-  - File ID: `10SBhwWd0eAv_ZByBmfJjJZwHywA-LU-I`
-  - Expected SHA-256: `a2445c8d17910bf3c03101f50fc419675e8d1bc012af43af10267a28dbba948b`
-- **Source Authorized Data Archive (`fold1_train_val_only.zip`):**
-  - Drive Path: `manifests/RQ1-TRN-02A/authorized_data/fold1_train_val_only.zip`
-  - File ID: `1xdypDWopd585OjuQeHjxlWOJfU2oiJiY`
-  - Expected SHA-256: `b750eb3bf3971afccd9ab9058a64fa6b3f5781399b9ef0f1294d29bf580784a9`
-
-### 4.4 Staging Workflow on Colab VM Disk
-Streaming audio across a FUSE Drive mount introduces I/O latency and network timeouts. Therefore:
-1. **Interactive Drive Mount:** The human operator executes `colab drivemount -s <session>` (or authorizes mount via Colab UI URL).
-2. **Local Staging:** `audit_scripts/colab_stage_and_verify.py` copies the dataset archive to `/content/data/fold1_train_val_only.zip` and baseline weights to `/content/checkpoints/RQ1-TRN-02A/recovered/best.pt`.
-3. **Cryptographic Validation:** Staged files are hashed on local VM disk and compared against expected SHA-256 digests. If any mismatch occurs, the corrupted file is removed and training is aborted.
-4. **Local Execution:** Model reads audio directly from local VM disk (`/content/data/`).
-
-### 4.5 Atomic Checkpoint Persistence & Logging
-- Epoch boundaries: Checkpoints saved to temporary file (`.tmp`), flushed, and atomically replaced (`os.replace`).
-- Immediate Drive Sync: Copied to persistent Google Drive destination. SHA-256 computed on Drive file and compared with local copy.
-- Log Preservation: Training stdout/stderr captured in local log and continuously synced to `<DRIVE_ROOT>/manifests/RQ1-TRN-02B/checkpoints/<ARM>/training_<arm>.log`.
+### 4.3 Google Drive Hierarchy & Authentic Mount Verification
+- **Drive Project Root:** `KLTN-Dataset` (Folder ID: `1Zms4bwv3QYZcmDQAeYolbq-ovrZVRlnK`).
+- **Mount Verification:** Confirms `/content/drive` is an active FUSE mountpoint (`os.path.ismount`). Rejects unmounted local directories.
+- **Identity Check:** Confirms baseline weights `manifests/RQ1-TRN-02A/checkpoints/best.pt` exist under Drive root and match SHA-256 `a2445c8d17910bf3c03101f50fc419675e8d1bc012af43af10267a28dbba948b`.
+- **Authorized Dataset Archive:** `manifests/RQ1-TRN-02A/authorized_data/fold1_train_val_only.zip` (SHA-256 `b750eb3bf3971afccd9ab9058a64fa6b3f5781399b9ef0f1294d29bf580784a9`).
+- **Interactive Mount Protocol:** The operator executes `colab drivemount -s <session>` in their terminal once per session prior to non-interactive script execution.
 
 ---
 
@@ -202,14 +180,14 @@ colab install -s langfens-rq1-c0 -r requirements.txt
 # Target Immutable Commit (Replace with final approved commit SHA)
 export TARGET_COMMIT="<IMMUTABLE_GIT_COMMIT_SHA>"
 
-# Step 1.1: Clone repo, checkout immutable commit, stage data & verify hashes
+# Step 1.1: Bootstrap repo on fresh VM, checkout commit, stage data & verify hashes
 colab exec -s langfens-rq1-c0 \
   -f audit_scripts/colab_stage_and_verify.py \
   --env ARM=C0 \
   --env TARGET_COMMIT=$TARGET_COMMIT \
   --timeout 1800
 
-# Step 1.2: Execute Control Arm C0 Training (Timeout: 8 hours)
+# Step 1.2: Execute Control Arm C0 Training & Primary Endpoint Verification (Timeout: 8 hours)
 colab exec -s langfens-rq1-c0 \
   -f audit_scripts/colab_train_exec.py \
   --env ARM=C0 \
@@ -247,14 +225,14 @@ colab drivemount -s langfens-rq1-c1
 # Step 3.3: Install dependencies
 colab install -s langfens-rq1-c1 -r requirements.txt
 
-# Step 3.4: Stage data and verify hashes
+# Step 3.4: Bootstrap repo, stage data and verify hashes
 colab exec -s langfens-rq1-c1 \
   -f audit_scripts/colab_stage_and_verify.py \
   --env ARM=C1 \
   --env TARGET_COMMIT=$TARGET_COMMIT \
   --timeout 1800
 
-# Step 3.5: Execute Treatment Arm C1 Training (Timeout: 8 hours)
+# Step 3.5: Execute Treatment Arm C1 Training & Primary Endpoint Verification (Timeout: 8 hours)
 colab exec -s langfens-rq1-c1 \
   -f audit_scripts/colab_train_exec.py \
   --env ARM=C1 \
@@ -301,12 +279,12 @@ python3 audit_scripts/evaluate_rq1_trn_02b.py \
 
 | Test File | Total Tests | Passed | Skipped | Status |
 |---|:---:|:---:|:---:|:---:|
-| `tests/test_rq1_trn_02b_colab_launch.py` | 18 | 18 | 0 | **PASS** |
+| `tests/test_rq1_trn_02b_colab_launch.py` | 25 | 25 | 0 | **PASS** |
 | `tests/test_rq1_trn_02b_preflight_r2_safety.py` | 11 | 11 | 0 | **PASS** |
 | `tests/test_rq1_trn_02b_corrections_r1.py` | 10 | 10 | 0 | **PASS** |
 | `tests/test_rq1_trn_02b_implementation_preflight.py` | 14 | 13 | 1 (AGENTS.md GPU boundary) | **PASS** |
-| **Combined RQ1-TRN-02B Focused Census** | **53** | **52** | **1** | **PASS** |
-| **Full Repository Regression Census** | **179** | **175** | **4** (CUDA-only placeholders) | **PASS** |
+| **Combined RQ1-TRN-02B Focused Census** | **60** | **59** | **1** | **PASS** |
+| **Full Repository Regression Census** | **186** | **182** | **4** (CUDA-only placeholders) | **PASS** |
 
 ---
 
@@ -315,10 +293,13 @@ python3 audit_scripts/evaluate_rq1_trn_02b.py \
 ```text
 ================================================================================
 GATE: RQ1-TRN-02B-COLAB-AUTHORIZATION
-STATUS: CORRECTED_PENDING_RUNTIME_VERIFICATION
+STATUS: PASS_SOFTWARE
 
-All operational scripts, CLI syntax, staging procedures, and scientific split
-provenance are corrected and verified locally (175 passed tests).
+All operational scripts, deterministic bootstrap, notebook kernel execution
+semantics, single output paths, and safe bounded zip inspections are verified
+locally (182 passed tests).
+
+Notice: PASS_SOFTWARE does NOT authorize GPU execution.
 
 OPERATIONAL BLOCKERS:
 1. Compute Quota: Colab compute unit balance is 0.00 units. The human operator

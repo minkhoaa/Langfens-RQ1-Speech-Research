@@ -22,7 +22,7 @@
 | **RQ1-TRN-01B1** | CTC blank collapse stabilization, 2x2 factorial ablation, and acoustic feature dependence validation. | `COMPLETED` | Step 03: Acoustic Conditioning Validation | `73eae7e` | [PROCESS_CHECKPOINT.md](../../manifests/RQ1-TRN-01B1/PROCESS_CHECKPOINT.md) | Proceed to RQ1-TRN-02A | None |
 | **RQ1-TRN-02A** | Two-head Fold 1 baseline training on Colab T4, CPU replay, and Protocol Z zero-oracle numerical closure. | `COMPLETED` | Step 03: Protocol Z & Numerical Closure | `c4a658f` | [PROCESS_CHECKPOINT.md](../../manifests/RQ1-TRN-02A/PROCESS_CHECKPOINT.md) | Proceed to RQ1-ARTIFACT-01 & RQ1-TRN-02B | None |
 | **RQ1-ARTIFACT-01** | Baseline R model archival on Google Drive, native safetensors export, and private Hugging Face release. | `COMPLETED` | Step 02: Safetensors Export & Hugging Face Release | `a200b73` | [PROCESS_CHECKPOINT.md](../../manifests/RQ1-ARTIFACT-01/PROCESS_CHECKPOINT.md) | Ready for downstream acoustic ablations | Public release & HF dataset metadata upload pending |
-| **RQ1-TRN-02B** | Controlled acoustic conditioning ablation (C0 vs C1), preflight R2 safety closure, and Colab launch gate. | `IN_PROGRESS` | Step 04: Colab Auth R1 Corrections | `fix/rq1-trn-02b-colab-auth-r1` | [PROCESS_CHECKPOINT.md](../../manifests/RQ1-TRN-02B/PROCESS_CHECKPOINT.md) | Operator Quota Assignment & Interactive Drive Mount | **BLOCKED:** Compute quota (0.00 units), operator drivemount interaction, live VM staging write test |
+| **RQ1-TRN-02B** | Controlled acoustic conditioning ablation (C0 vs C1), preflight R2 safety closure, and Colab launch gate. | `PASS_SOFTWARE` | Step 05: Colab Auth R2 Launcher Safety Fixes | `fix/rq1-trn-02b-colab-auth-r2` | [PROCESS_CHECKPOINT.md](../../manifests/RQ1-TRN-02B/PROCESS_CHECKPOINT.md) | Operator Quota Assignment & Interactive Drive Mount | **BLOCKED:** Compute quota (0.00 units), operator drivemount interaction, live VM staging write test |
 
 ---
 
@@ -123,7 +123,7 @@
 ### RQ1-TRN-02B — Acoustic Conditioning Design, Implementation and Preflight Safety Closure
 - **Overview Checkpoint:** [manifests/RQ1-TRN-02B/PROCESS_CHECKPOINT.md](../../manifests/RQ1-TRN-02B/PROCESS_CHECKPOINT.md)
 - **Status:** `IN_PROGRESS` | **Evidence Level:** `INDEPENDENTLY_VERIFIED` (Preflight code & design verified; Operational launch `BLOCKED`)
-- **Source Commit:** Commits `8486cbb` through `fix/rq1-trn-02b-colab-auth-r1`
+- **Source Commit:** Commits `8486cbb` through `fix/rq1-trn-02b-colab-auth-r2`
 - **Current Operational Blockers:**
   1. Compute quota balance: measured balance is 0.00 compute units (requires ~15–20 compute units for 7–10 T4 GPU-hours).
   2. Interactive Drive mount: `colab drivemount -s <session>` requires human operator terminal interaction.
@@ -133,6 +133,7 @@
   2. [checkpoints/02-implementation-and-preflight-audit.md](../../manifests/RQ1-TRN-02B/checkpoints/02-implementation-and-preflight-audit.md) — Binary-only prompt dropout implementation in `src/langfens_prep/model.py`, contract regression tests, implementation preflight report.
   3. [checkpoints/03-preflight-r2-safety-closure-and-auth-packet.md](../../manifests/RQ1-TRN-02B/checkpoints/03-preflight-r2-safety-closure-and-auth-packet.md) — Preflight R1/R2 defect resolution, strict resume validation, dual-arm endpoint integrity, unique run-ID fail-closed guards, Colab execution authorization packet.
   4. [checkpoints/04-colab-auth-r1-operational-corrections.md](../../manifests/RQ1-TRN-02B/checkpoints/04-colab-auth-r1-operational-corrections.md) — Colab Auth R1 operational corrections: Fold 1 speaker partition & disjointness proof, commit provenance tiering, non-interactive Colab launch/staging scripts, Google Drive root & file ID ledger, Colab CLI quota audit (0.00 balance blocker), 18 new regression tests.
+  5. [checkpoints/05-colab-auth-r2-launcher-safety-fixes.md](../../manifests/RQ1-TRN-02B/checkpoints/05-colab-auth-r2-launcher-safety-fixes.md) — Colab Auth R2 launcher safety fixes: fresh VM deterministic bootstrap (colab_bootstrap.py), notebook kernel execution compatibility (no __file__), duplicate run-ID elimination, safe bounded zip archive inspection, fail-closed layered readiness queries, authentic Drive persistence checks, primary endpoint classification (182 passed tests).
 
 ---
 
