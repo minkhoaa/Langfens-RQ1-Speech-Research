@@ -37,7 +37,10 @@ tmp/
 # ------------------------------------------------------------------------------
 # 2. Machine Learning Checkpoints, Model Weights & Large Artifacts
 # ------------------------------------------------------------------------------
+/checkpoints/
 checkpoints/
+!manifests/**/checkpoints/
+!manifests/**/checkpoints/*.md
 models/
 artifacts/
 *.pt

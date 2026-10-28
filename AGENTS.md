@@ -32,3 +32,23 @@ Read before repository work. Verify evidence before reporting PASS.
 - Sync each epoch checkpoint to Google Drive immediately; verify remote presence.
 - Keep datasets, archives, checkpoints, model weights, and credentials out of Git.
 - Work on reviewable feature branches. Never force-push, merge into main, or start training without explicit user authorization.
+
+## Mandatory Process Checkpoint Policy
+For every significant research or engineering process:
+
+1. Create or update a Markdown checkpoint at the completion, interruption or blocking of the process.
+2. Record the actual state, inputs, outputs, verification evidence and restart instructions.
+3. Update the global checkpoint index (`docs/process-checkpoints/INDEX.md`).
+4. Include the checkpoint file in the same reviewable commit as the work whenever possible.
+5. Do not report a process as complete without a corresponding checkpoint.
+6. Never mark PASS on unexecuted tests or unverified artifacts.
+7. On failure, record the exact safe restart point before stopping.
+8. On session handoff, read the global index and latest relevant checkpoint before editing or executing.
+9. On restart, verify commit SHA, artifacts, checksums and authorization constraints.
+10. Preserve historical records; append corrections rather than silently rewriting prior evidence.
+
+Checkpoint documentation is mandatory even when the process ends in BLOCKED or PARTIAL state.
+
+For training and GPU workflows, checkpoints must record execution status, last valid model artifact, successful optimizer update counts, skipped updates, and authorization boundaries.
+
+The Markdown checkpoint is a **research/process checkpoint**, not a substitute for a PyTorch `.pt` training-state checkpoint.
