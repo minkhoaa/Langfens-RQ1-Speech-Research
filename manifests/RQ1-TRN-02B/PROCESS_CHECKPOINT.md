@@ -87,6 +87,7 @@ Design and implement the controlled acoustic conditioning ablation (Control Arm 
   - [checkpoints/09-colab-cpu-fp32-feasibility-static-gate.md](checkpoints/09-colab-cpu-fp32-feasibility-static-gate.md)
   - [checkpoints/10-kaggle-t4x2-migration-feasibility-static-review.md](checkpoints/10-kaggle-t4x2-migration-feasibility-static-review.md)
   - [checkpoints/11-kaggle-t4x2-platform-port-and-benchmark-gate.md](checkpoints/11-kaggle-t4x2-platform-port-and-benchmark-gate.md)
+  - [checkpoints/12-kaggle-direct-c0-launch-blockers-and-benchmark-waiver.md](checkpoints/12-kaggle-direct-c0-launch-blockers-and-benchmark-waiver.md)
 
 ## 6. Restart / Recovery Instructions
 - Safe restart point: All preflight tests passing locally on CPU.
@@ -141,3 +142,13 @@ See [checkpoints/11-kaggle-t4x2-platform-port-and-benchmark-gate.md](checkpoints
 - Benchmark status: `NOT_EXECUTED` (0/50 successful updates). Official C0/C1 status: `NOT_STARTED` (0/3600 updates each).
 - Total test census: **222 passed, 4 skipped, 0 failures**.
 
+
+
+## 11. Step 12 — Kaggle direct C0 gate and benchmark waiver (2026-10-28)
+
+See [checkpoints/12-kaggle-direct-c0-launch-blockers-and-benchmark-waiver.md](checkpoints/12-kaggle-direct-c0-launch-blockers-and-benchmark-waiver.md).
+
+- Operator explicitly waived the disposable 50-update GPU feasibility benchmark for this direct-execution plan; this is **not** a benchmark PASS and does not waive genuine runtime safety, data integrity, or scientific invariants.
+- **Execution BLOCKED** by source-confirmed Kaggle defects: remote backend reports success without remote upload/readback, post-run-only mirroring instead of per-epoch, mismatched trainer CLI args, incomplete Baseline R path propagation, optional unverified SHA pin and production mock-gpu bypass. Step 11 historical `222 passed/4 skipped` remains agent-reported, not rerun here.
+- Kaggle staging not independently verified (Step 11 reports private dataset not populated), no authenticated Kaggle runtime access in this review.
+- **Official C0 0/3600, C1 0/3600; benchmark 0/50 waived; no sealed TEST accessed.** Next process: fix source/test gates, stage authorized TRAIN/VAL, verify durable checkpoint mirror and then start C0 on real Kaggle T4 if all gates pass, with Step 13 execution checkpoint.

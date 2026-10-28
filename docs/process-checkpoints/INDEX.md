@@ -22,7 +22,7 @@
 | **RQ1-TRN-01B1** | CTC blank collapse stabilization, 2x2 factorial ablation, and acoustic feature dependence validation. | `COMPLETED` | Step 03: Acoustic Conditioning Validation | `73eae7e` | [PROCESS_CHECKPOINT.md](../../manifests/RQ1-TRN-01B1/PROCESS_CHECKPOINT.md) | Proceed to RQ1-TRN-02A | None |
 | **RQ1-TRN-02A** | Two-head Fold 1 baseline training on Colab T4, CPU replay, and Protocol Z zero-oracle numerical closure. | `COMPLETED` | Step 03: Protocol Z & Numerical Closure | `c4a658f` | [PROCESS_CHECKPOINT.md](../../manifests/RQ1-TRN-02A/PROCESS_CHECKPOINT.md) | Proceed to RQ1-ARTIFACT-01 & RQ1-TRN-02B | None |
 | **RQ1-ARTIFACT-01** | Baseline R model archival on Google Drive, native safetensors export, and private Hugging Face release. | `COMPLETED` | Step 02: Safetensors Export & Hugging Face Release | `a200b73` | [PROCESS_CHECKPOINT.md](../../manifests/RQ1-ARTIFACT-01/PROCESS_CHECKPOINT.md) | Ready for downstream acoustic ablations | Public release & HF dataset metadata upload pending |
-| **RQ1-TRN-02B** | Controlled acoustic conditioning ablation (C0 vs C1), preflight R2 safety closure, and Colab launch gate. | `BLOCKED_RESOURCES` | Step 11: Kaggle T4×2 platform port implemented; benchmark gate pending | `c91aad8` (Step 10; review branch) | [PROCESS_CHECKPOINT.md](../../manifests/RQ1-TRN-02B/PROCESS_CHECKPOINT.md) | Authorize Kaggle private dataset staging & 50-update benchmark; train C0/C1 only if passed | **PENDING:** Private Kaggle dataset staging (`minkhoaa/langfens-rq1-fold1-staging`), operator authorization, actual benchmark |
+| **RQ1-TRN-02B** | Controlled acoustic conditioning ablation (C0 vs C1), preflight R2 safety closure, and Colab launch gate. | `BLOCKED_RESOURCES` | Step 12: Kaggle direct C0 launch static gate; 50-update benchmark waived; execution blocked | `96f7997` (platform-port source inspected; review branch checkpoint follows) | [PROCESS_CHECKPOINT.md](../../manifests/RQ1-TRN-02B/PROCESS_CHECKPOINT.md) | Fix true per-epoch remote mirroring, correct Kaggle trainer invocation, stage authorized dataset, then official C0 | **BLOCKED_IMPLEMENTATION_AND_STAGING:** false SYNCED remote backends, missing staged dataset and launch defects |
 
 ---
 
@@ -122,7 +122,7 @@
 
 ### RQ1-TRN-02B — Acoustic Conditioning Design, Implementation and Preflight Safety Closure
 - **Overview Checkpoint:** [manifests/RQ1-TRN-02B/PROCESS_CHECKPOINT.md](../../manifests/RQ1-TRN-02B/PROCESS_CHECKPOINT.md)
-- **Status:** `BLOCKED_RESOURCES` | **Evidence Level:** source inspection for Steps 09–10, external Kaggle docs for capacity policy; no new runtime measurements.
+- **Status:** `BLOCKED_IMPLEMENTATION_AND_STAGING` | **Evidence Level:** GitHub source inspection through Step 12; historical CLI/quota and test census agent-reported. No current Kaggle execution.
 - **Source Commit:** Commits `8486cbb` through `fix/rq1-trn-02b-colab-auth-r2`
 - **Current Operational Blockers:**
   1. Compute quota balance: measured balance is 0.00 compute units (requires ~15–20 compute units for 7–10 T4 GPU-hours).
@@ -140,6 +140,7 @@
   9. [checkpoints/09-colab-cpu-fp32-feasibility-static-gate.md](../../manifests/RQ1-TRN-02B/checkpoints/09-colab-cpu-fp32-feasibility-static-gate.md) — Pinned-source CPU FP32 static feasibility gate and benchmark acceptance plan; no CPU runtime/optimizer step executed, operator authorization pending.
   10. [checkpoints/10-kaggle-t4x2-migration-feasibility-static-review.md](../../manifests/RQ1-TRN-02B/checkpoints/10-kaggle-t4x2-migration-feasibility-static-review.md) — Kaggle T4×2 GPU capacity, preservation of CUDA FP16 regime, licensing/staging/persistence gates and historical-T4-time extrapolation; no Kaggle benchmark or training.
   11. [checkpoints/11-kaggle-t4x2-platform-port-and-benchmark-gate.md](../../manifests/RQ1-TRN-02B/checkpoints/11-kaggle-t4x2-platform-port-and-benchmark-gate.md) — Kaggle T4×2 platform port implementation, verified 30.00h GPU quota, AGENTS.md amendment, auto-extracted zip handling, durable checkpoint mirror with SHA-256 readback, kernel metadata push with `--no-run`, 32 new regression tests (222 passed total), benchmark gate pending.
+  12. [checkpoints/12-kaggle-direct-c0-launch-blockers-and-benchmark-waiver.md](../../manifests/RQ1-TRN-02B/checkpoints/12-kaggle-direct-c0-launch-blockers-and-benchmark-waiver.md) — Owner waived disposable 50-step benchmark; source review found false remote SYNCED backends, post-run-only sync, wrong trainer arguments and unpinned launch; official C0/C1 remain blocked/not started.
 
 ---
 
