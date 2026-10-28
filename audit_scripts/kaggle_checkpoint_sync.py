@@ -52,6 +52,8 @@ def resolve_hf_token(explicit_token: Optional[str] = None) -> Optional[str]:
         return None
     # Check potential local or staged token file locations
     candidate_token_files = [
+        Path("/kaggle/input/langfens-rq1-fold1-staging/hf_token.txt"),
+        *(list(Path("/kaggle/input").rglob("hf_token.txt")) if Path("/kaggle/input").is_dir() else []),
         Path("/kaggle/working/hf_token.txt"),
         Path("/kaggle/working/.hf_token"),
         Path("/kaggle/working/deploy/kaggle/hf_token.txt"),
