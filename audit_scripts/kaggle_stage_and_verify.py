@@ -305,6 +305,25 @@ def verify_and_stage_fold1_data(
         verify_bounded_zip_speakers(src_p)
         return src_p
 
+    # Case 1b: Direct .bin or .dat uncompressed archive file
+    if src_p.is_file() and src_p.suffix in (".bin", ".dat"):
+        sha = compute_sha256(src_p)
+        if sha != EXPECTED_ZIP_SHA256:
+            raise ValueError(
+                f"FAIL-CLOSED: Fold 1 binary archive SHA-256 mismatch: "
+                f"computed={sha} != expected={EXPECTED_ZIP_SHA256}."
+            )
+        staging_dir = Path(target_staging_dir or "/kaggle/working/staged").resolve()
+        staging_dir.mkdir(parents=True, exist_ok=True)
+        staged_zip = staging_dir / "authorized_RQ1-TRN-02A_fold1_train_val_only.zip"
+        if not staged_zip.exists():
+            try:
+                staged_zip.symlink_to(src_p)
+            except OSError:
+                shutil.copyfile(str(src_p), str(staged_zip))
+        verify_bounded_zip_speakers(staged_zip)
+        return staged_zip
+
     # Case 2: Directory (Kaggle mountpoint under /kaggle/input/...)
     if src_p.is_dir():
         staging_dir = Path(target_staging_dir or "/kaggle/working/staged").resolve()
@@ -441,32 +460,61 @@ def stage_and_verify_kaggle_environment(
 
     # 3. Baseline weights check
     init_ckpt = config.get("initial_checkpoint")
-    baseline_path = Path(init_ckpt) if init_ckpt else None
-    if (not baseline_path or not baseline_path.is_file()) and input_root.is_dir():
-        candidate = input_root / "best.pt"
-        if candidate.is_file():
-            baseline_path = candidate
+    baseline_path = Path(init_ckpt).resolve() if init_ckpt and Path(init_ckpt).is_file() else None
+
+    if not baseline_path and input_root and input_root.is_dir():
+        if (input_root / "best.pt").is_file():
+            baseline_path = input_root / "best.pt"
         else:
             found = list(input_root.rglob("best.pt"))
             if found:
                 baseline_path = found[0]
+
+    # Global search under /kaggle/input if on Kaggle
+    if not baseline_path and Path("/kaggle/input").is_dir():
+        found = list(Path("/kaggle/input").rglob("best.pt"))
+        if found:
+            baseline_path = found[0]
+
     if not baseline_path:
-        baseline_path = Path("checkpoints/RQ1-TRN-02A/recovered/best.pt")
+        baseline_path = Path("checkpoints/RQ1-TRN-02A/recovered/best.pt").resolve()
     baseline_sha = verify_baseline_weights(baseline_path)
 
     # 4. Fold 1 dataset staging & test sealing
     zip_source = config.get("zip_path")
-    zip_path = Path(zip_source) if zip_source and Path(zip_source).exists() else None
-    if not zip_path and input_root.is_dir():
-        # Check for zip file inside input_root
-        zips = list(input_root.glob("*.zip"))
-        outer_zips = [z for z in zips if z.stat().st_size > 500_000_000]
-        if outer_zips:
-            zip_path = outer_zips[0]
+    zip_path = Path(zip_source).resolve() if zip_source and Path(zip_source).exists() else None
+
+    if not zip_path and input_root and input_root.is_dir():
+        bins = list(input_root.rglob("*.bin")) + list(input_root.rglob("*.dat"))
+        large_bins = [b for b in bins if b.stat().st_size > 500_000_000]
+        if large_bins:
+            zip_path = large_bins[0]
         else:
-            zip_path = input_root
+            zips = list(input_root.rglob("*.zip"))
+            large_zips = [z for z in zips if z.stat().st_size > 500_000_000]
+            if large_zips:
+                zip_path = large_zips[0]
+            elif (input_root / "authorized_RQ1-TRN-02A_fold1_train_val_only").is_dir():
+                zip_path = input_root / "authorized_RQ1-TRN-02A_fold1_train_val_only"
+            else:
+                zip_path = input_root
+
+    # Global search under /kaggle/input if on Kaggle
+    if not zip_path and Path("/kaggle/input").is_dir():
+        bins = list(Path("/kaggle/input").rglob("*.bin")) + list(Path("/kaggle/input").rglob("*.dat"))
+        large_bins = [b for b in bins if b.stat().st_size > 500_000_000]
+        if large_bins:
+            zip_path = large_bins[0]
+        else:
+            zips = list(Path("/kaggle/input").rglob("*.zip"))
+            large_zips = [z for z in zips if z.stat().st_size > 500_000_000]
+            if large_zips:
+                zip_path = large_zips[0]
+            else:
+                zip_path = Path("/kaggle/input")
+
     if not zip_path:
-        zip_path = Path("datasets/L2-ARCTIC/authorized_RQ1-TRN-02A_fold1_train_val_only.zip")
+        zip_path = Path("datasets/L2-ARCTIC/authorized_RQ1-TRN-02A_fold1_train_val_only.zip").resolve()
 
     staged_zip = verify_and_stage_fold1_data(
         input_source=zip_path,
