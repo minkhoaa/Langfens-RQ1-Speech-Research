@@ -22,7 +22,7 @@
 | **RQ1-TRN-01B1** | CTC blank collapse stabilization, 2x2 factorial ablation, and acoustic feature dependence validation. | `COMPLETED` | Step 03: Acoustic Conditioning Validation | `73eae7e` | [PROCESS_CHECKPOINT.md](../../manifests/RQ1-TRN-01B1/PROCESS_CHECKPOINT.md) | Proceed to RQ1-TRN-02A | None |
 | **RQ1-TRN-02A** | Two-head Fold 1 baseline training on Colab T4, CPU replay, and Protocol Z zero-oracle numerical closure. | `COMPLETED` | Step 03: Protocol Z & Numerical Closure | `c4a658f` | [PROCESS_CHECKPOINT.md](../../manifests/RQ1-TRN-02A/PROCESS_CHECKPOINT.md) | Proceed to RQ1-ARTIFACT-01 & RQ1-TRN-02B | None |
 | **RQ1-ARTIFACT-01** | Baseline R model archival on Google Drive, native safetensors export, and private Hugging Face release. | `COMPLETED` | Step 02: Safetensors Export & Hugging Face Release | `a200b73` | [PROCESS_CHECKPOINT.md](../../manifests/RQ1-ARTIFACT-01/PROCESS_CHECKPOINT.md) | Ready for downstream acoustic ablations | Public release & HF dataset metadata upload pending |
-| **RQ1-TRN-02B** | Controlled acoustic conditioning ablation (C0 vs C1), preflight R2 safety closure, and Colab launch gate. | `BLOCKED_RESOURCES` | Step 08: Live GPU Runtime & Staging Verification | `fix/rq1-trn-02b-colab-auth-r3` | [PROCESS_CHECKPOINT.md](../../manifests/RQ1-TRN-02B/PROCESS_CHECKPOINT.md) | Operator Quota Assignment & Interactive Drive Mount | **BLOCKED:** Compute quota (0.00 units; requires 15-20 CCU), interactive Drive mount (`colab drivemount`), VM staging write test |
+| **RQ1-TRN-02B** | Controlled acoustic conditioning ablation (C0 vs C1), preflight R2 safety closure, and Colab launch gate. | `BLOCKED_RESOURCES` | Step 09: CPU FP32 static feasibility gate (benchmark NOT EXECUTED) | `2caa2bfc` (source reviewed; checkpoint on review branch) | [PROCESS_CHECKPOINT.md](../../manifests/RQ1-TRN-02B/PROCESS_CHECKPOINT.md) | Authorize isolated Colab CPU FP32 benchmark; actual 50-successful-update measurement | **BLOCKED:** CPU policy approval, CPU runner, authentic Drive staging, live benchmark evidence; GPU route unchanged |
 
 ---
 
@@ -122,7 +122,7 @@
 
 ### RQ1-TRN-02B — Acoustic Conditioning Design, Implementation and Preflight Safety Closure
 - **Overview Checkpoint:** [manifests/RQ1-TRN-02B/PROCESS_CHECKPOINT.md](../../manifests/RQ1-TRN-02B/PROCESS_CHECKPOINT.md)
-- **Status:** `IN_PROGRESS` | **Evidence Level:** `INDEPENDENTLY_VERIFIED` (Preflight code & design verified; Operational launch `BLOCKED`)
+- **Status:** `BLOCKED_RESOURCES` | **Evidence Level:** source inspection for Step 09; historical runtime evidence agent-reported. CPU FP32 benchmark not executed.
 - **Source Commit:** Commits `8486cbb` through `fix/rq1-trn-02b-colab-auth-r2`
 - **Current Operational Blockers:**
   1. Compute quota balance: measured balance is 0.00 compute units (requires ~15–20 compute units for 7–10 T4 GPU-hours).
@@ -137,6 +137,7 @@
   6. [checkpoints/06-colab-auth-r2-final-safety-hotfix.md](../../manifests/RQ1-TRN-02B/checkpoints/06-colab-auth-r2-final-safety-hotfix.md) — Colab Auth R2 final safety hotfix: strict primary endpoint invariants (9/9), negative regression suite (6/6), strict 5-layer executable readiness and fail-closed checks, immutable Git HEAD validation, authenticated Drive hierarchy & API verification (187 passed CPU tests).
   7. [checkpoints/07-colab-auth-r3-trust-boundary-closure.md](../../manifests/RQ1-TRN-02B/checkpoints/07-colab-auth-r3-trust-boundary-closure.md) — Colab Auth R3 trust-boundary closure: fail-closed on unverified Drive identity (no training launch on pending identity), elimination of user-asserted readiness flags, strict descendant Drive containment, removal of --mock-gpu from production launchers (190 passed CPU tests).
   8. [checkpoints/08-live-gpu-runtime-and-staging-verification.md](../../manifests/RQ1-TRN-02B/checkpoints/08-live-gpu-runtime-and-staging-verification.md) — Live GPU runtime and staging verification: probed Colab CCU API (0.00 compute units, 5,836 free tokens), provisioned and verified Tesla T4 GPU (CUDA 13.0, 15GB VRAM), probed credentials propagation endpoint showing unmounted Drive requiring interactive OAuth (`colab drivemount`), demonstrated /dev/tty subshell limitation, released idle GPU session, and provided operator restart instructions.
+  9. [checkpoints/09-colab-cpu-fp32-feasibility-static-gate.md](../../manifests/RQ1-TRN-02B/checkpoints/09-colab-cpu-fp32-feasibility-static-gate.md) — Pinned-source CPU FP32 static feasibility gate and benchmark acceptance plan; no CPU runtime/optimizer step executed, operator authorization pending.
 
 ---
 

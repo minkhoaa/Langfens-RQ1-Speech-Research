@@ -83,6 +83,7 @@ Design and implement the controlled acoustic conditioning ablation (Control Arm 
   - [checkpoints/06-colab-auth-r2-final-safety-hotfix.md](checkpoints/06-colab-auth-r2-final-safety-hotfix.md)
   - [checkpoints/07-colab-auth-r3-trust-boundary-closure.md](checkpoints/07-colab-auth-r3-trust-boundary-closure.md)
   - [checkpoints/08-live-gpu-runtime-and-staging-verification.md](checkpoints/08-live-gpu-runtime-and-staging-verification.md)
+  - [checkpoints/09-colab-cpu-fp32-feasibility-static-gate.md](checkpoints/09-colab-cpu-fp32-feasibility-static-gate.md)
 
 ## 6. Restart / Recovery Instructions
 - Safe restart point: All preflight tests passing locally on CPU.
@@ -103,3 +104,14 @@ Design and implement the controlled acoustic conditioning ablation (Control Arm 
 - Prohibited actions: Never fall back to local GPU/CPU training; never launch Colab runtimes without explicit operator sign-off; never touch sealed test data.
 - PASS_SOFTWARE does not authorize GPU execution.
 - Next milestone: Operator compute unit assignment, interactive Drive mount, and staged Colab launch.
+
+
+## 8. Step 09 — CPU FP32 static feasibility gate (2026-10-28)
+
+See [checkpoints/09-colab-cpu-fp32-feasibility-static-gate.md](checkpoints/09-colab-cpu-fp32-feasibility-static-gate.md).
+
+- Source reviewed at `2caa2bfc4208a16a63fe8f1d5a4d72effccb7ba6`; original GPU R3 implementation and scientific contract unchanged.
+- **Status:** `STATIC_ASSESSMENT_RECORDED`; CPU FP32 benchmark `NOT_EXECUTED` (0/50 successful updates). Official C0 and C1 `NOT_STARTED` (0/3600 each).
+- CPU benchmark requires separate Colab-CPU authorization, narrow GPU-only policy exception, isolated tested FP32 benchmark driver, authentic TRAIN/VAL-only staging, and live timing evidence. No TEST data accessed in this review.
+- The historical 36h20 runtime message is not guaranteed uptime; no measured CPU throughput or RAM headroom yet. CPU vs GPU decision is `PENDING_MEASUREMENT`.
+- Latest real runtime evidence remains Step 08 (agent-reported); no new Colab session or optimizer step was executed. New Step 10 must record measured or blocked CPU benchmark execution and update INDEX.
