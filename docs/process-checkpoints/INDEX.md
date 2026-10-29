@@ -1,8 +1,8 @@
 # LANGFENS — Global Process Checkpoint Registry
 
 **Repository:** `minkhoaa/Langfens-RQ1-Speech-Research`  
-**Last Verified Documentation Commit:** `a200b73b90a137316817bc42df0ba6e0db2c24c5`  
-**Branch:** `docs/process-checkpoints-backfill`  
+**Last Verified Documentation Commit:** `7a3b9ecf5e9efedc480b477f531ebe9318ae3415`  
+**Branch:** `review/rq1-trn-03a-cross-fold-planning`  
 **Registry Maintenance Lead:** Senior ML Research Engineer & Reproducibility Auditor  
 **Policy Authority:** `AGENTS.md` (Mandatory Process Checkpoint Policy)
 
@@ -22,7 +22,8 @@
 | **RQ1-TRN-01B1** | CTC blank collapse stabilization, 2x2 factorial ablation, and acoustic feature dependence validation. | `COMPLETED` | Step 03: Acoustic Conditioning Validation | `73eae7e` | [PROCESS_CHECKPOINT.md](../../manifests/RQ1-TRN-01B1/PROCESS_CHECKPOINT.md) | Proceed to RQ1-TRN-02A | None |
 | **RQ1-TRN-02A** | Two-head Fold 1 baseline training on Colab T4, CPU replay, and Protocol Z zero-oracle numerical closure. | `COMPLETED` | Step 03: Protocol Z & Numerical Closure | `c4a658f` | [PROCESS_CHECKPOINT.md](../../manifests/RQ1-TRN-02A/PROCESS_CHECKPOINT.md) | Proceed to RQ1-ARTIFACT-01 & RQ1-TRN-02B | None |
 | **RQ1-ARTIFACT-01** | Baseline R model archival on Google Drive, native safetensors export, and private Hugging Face release. | `COMPLETED` | Step 02: Safetensors Export & Hugging Face Release | `a200b73` | [PROCESS_CHECKPOINT.md](../../manifests/RQ1-ARTIFACT-01/PROCESS_CHECKPOINT.md) | Ready for downstream acoustic ablations | Public release & HF dataset metadata upload pending |
-| **RQ1-TRN-02B** | Controlled acoustic conditioning ablation (C0 vs C1), preflight R2 safety closure, and Colab launch gate. | `COMPLETED` | Step 14: Kaggle C0 & C1 official training completed; paired remote mirroring verified | `032b0b3` | [PROCESS_CHECKPOINT.md](../../manifests/RQ1-TRN-02B/PROCESS_CHECKPOINT.md) | Proceed to standalone paired counterfactual evaluation across Reference R, Control C0, and Treatment C1 | None |
+| **RQ1-TRN-02B** | Controlled acoustic conditioning ablation (C0 vs C1), preflight R2 safety closure, and Colab launch gate. | `COMPLETED` | Step 16: Final three-model scientific assessment and research gate closure | `7a3b9ec` | [PROCESS_CHECKPOINT.md](../../manifests/RQ1-TRN-02B/PROCESS_CHECKPOINT.md) | Proceed to RQ1-TRN-03A (Cross-Fold Speaker-Independent Generalization Planning) | None |
+| **RQ1-TRN-03A** | Cross-fold speaker-independent generalization planning for Folds 2, 3, and 4; test-isolation policy; independent Baseline R training contract; macro/micro metrics. | `PLANNING_COMPLETE` | Step 01: Cross-Fold Research Plan & Test-Isolation Protocol | `7a3b9ec` | [PROCESS_CHECKPOINT.md](../../manifests/RQ1-TRN-03A/PROCESS_CHECKPOINT.md) | Await operator authorization; implement build_fold_packages.py and train configs | Operator authorization required for staging package generation and Kaggle GPU training |
 
 ---
 
@@ -145,6 +146,20 @@
   14. [checkpoints/14-kaggle-c0-c1-training-completion-and-paired-mirroring.md](../../manifests/RQ1-TRN-02B/checkpoints/14-kaggle-c0-c1-training-completion-and-paired-mirroring.md) — Official Control Arm C0 (3,600 updates, peak AP 0.312170, final PER 22.09%) and Treatment Arm C1 (3,600 updates, peak AP 0.320398, final PER 22.12%) executed on Kaggle Tesla T4x2 GPU; both arms verified COMPLETED_3600_UPDATES; all 8 deliverable checkpoints and history ledgers atomically mirrored to private Hugging Face repository (minkhoaa/langfens-rq1-trn-02b-checkpoints) with SHA-256 readback.
   15. [checkpoints/15-cpu-paired-scientific-evaluation.md](../../manifests/RQ1-TRN-02B/checkpoints/15-cpu-paired-scientific-evaluation.md) — Standalone paired scientific evaluation on local CPU under Protocol O and Protocol Z; 1,000 paired speaker-stratified cluster bootstrap resamples; evaluated primary causal contrast $\Delta_{\text{dropout}} = \text{C1} - \text{C0} = -0.007918$ (95% CI: `[-0.018328, +0.000385]`); acoustic reliance gap change $\Delta_{\text{gap}} = -0.006120$; zero-oracle contrast $\Delta_Z = -0.006590$; CTC PER guardrails preserved; hypothesis determined NOT_SUPPORTED; research gate concluded.
   16. [checkpoints/16-final-three-model-assessment-and-gate-closure.md](../../manifests/RQ1-TRN-02B/checkpoints/16-final-three-model-assessment-and-gate-closure.md) — Final three-model scientific assessment across Reference R, Control C0, and Treatment C1; audited and corrected NJS/RRBI token-count discrepancy (5,011 / 4,945); verified training commit parity; consolidated Protocol O, Protocol Z, bootstrap 95% CIs, and pairwise decision agreements; evaluated exploratory best.pt vs fixed-budget primary results; stated hypothesis verdict as NOT_SUPPORTED on Fold 1 without overstating negative certainty; retained Reference R as primary baseline; closed RQ1-TRN-02B research gate.
+
+### RQ1-TRN-03A — Cross-Fold Speaker-Independent Generalization (Folds 2, 3, 4)
+- **Overview Checkpoint:** [manifests/RQ1-TRN-03A/PROCESS_CHECKPOINT.md](../../manifests/RQ1-TRN-03A/PROCESS_CHECKPOINT.md)
+- **Status:** `PLANNING_COMPLETE; GATE_PENDING_OPERATOR_AUTHORIZATION` | **Evidence Level:** `INDEPENDENTLY_VERIFIED`
+- **Source Commit:** `7a3b9ecf5e9efedc480b477f531ebe9318ae3415`
+- **Research Plan:** [manifests/RQ1-TRN-03A/CROSS_FOLD_RESEARCH_PLAN.md](../../manifests/RQ1-TRN-03A/CROSS_FOLD_RESEARCH_PLAN.md)
+- **Key Methodological Tenets:**
+  - Strict preservation of Fold 1 R/C0/C1 findings and NOT_SUPPORTED dropout verdict.
+  - Three-tier test isolation policy: all four test partitions ($S_{\text{test}}^{(1..4)}$) 100% sealed during validation; physical omission from remote staging packages.
+  - Independent Baseline R training from pretrained Wav2Vec2 (`facebook/wav2vec2-base-960h`); strict prohibition of Fold 1 checkpoint reuse.
+  - Validated two-head architecture preserved (frozen backbone, trainable CTC + Binary heads, disabled diagnosis head, $p=0.00$ prompt dropout).
+  - Macro-averaging (Student's $t$ 95% CI, $df=3$), micro-averaging across 39,576 pooled validation tokens, 1,000-resample cluster bootstrap, and L1-accent disaggregation.
+- **Step Checkpoints:**
+  1. [checkpoints/01-cross-fold-research-plan-and-test-isolation.md](../../manifests/RQ1-TRN-03A/checkpoints/01-cross-fold-research-plan-and-test-isolation.md) — Comprehensive research plan, mathematical speaker partition audit, staging conflict resolution, test-isolation policy, compute resource budgeting (<9% Kaggle quota), and operator approval packet.
 
 ---
 
