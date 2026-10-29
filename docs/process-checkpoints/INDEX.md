@@ -23,7 +23,7 @@
 | **RQ1-TRN-02A** | Two-head Fold 1 baseline training on Colab T4, CPU replay, and Protocol Z zero-oracle numerical closure. | `COMPLETED` | Step 03: Protocol Z & Numerical Closure | `c4a658f` | [PROCESS_CHECKPOINT.md](../../manifests/RQ1-TRN-02A/PROCESS_CHECKPOINT.md) | Proceed to RQ1-ARTIFACT-01 & RQ1-TRN-02B | None |
 | **RQ1-ARTIFACT-01** | Baseline R model archival on Google Drive, native safetensors export, and private Hugging Face release. | `COMPLETED` | Step 02: Safetensors Export & Hugging Face Release | `a200b73` | [PROCESS_CHECKPOINT.md](../../manifests/RQ1-ARTIFACT-01/PROCESS_CHECKPOINT.md) | Ready for downstream acoustic ablations | Public release & HF dataset metadata upload pending |
 | **RQ1-TRN-02B** | Controlled acoustic conditioning ablation (C0 vs C1), preflight R2 safety closure, and Colab launch gate. | `COMPLETED` | Step 16: Final three-model scientific assessment and research gate closure | `7a3b9ec` | [PROCESS_CHECKPOINT.md](../../manifests/RQ1-TRN-02B/PROCESS_CHECKPOINT.md) | Proceed to RQ1-TRN-03A (Cross-Fold Speaker-Independent Generalization Planning) | None |
-| **RQ1-TRN-03A** | Cross-fold speaker-independent generalization planning for Folds 2, 3, and 4; test-isolation policy; independent Baseline R training contract; macro/micro metrics. | `PLANNING_COMPLETE` | Step 01: Cross-Fold Research Plan & Test-Isolation Protocol | `7a3b9ec` | [PROCESS_CHECKPOINT.md](../../manifests/RQ1-TRN-03A/PROCESS_CHECKPOINT.md) | Await operator authorization; implement build_fold_packages.py and train configs | Operator authorization required for staging package generation and Kaggle GPU training |
+| **RQ1-TRN-03A** | Cross-fold speaker-independent generalization planning for Folds 2, 3, and 4; test-isolation policy; independent Baseline R training contract; macro/micro metrics. | `PLANNING_COMPLETE` | Step 02: Protocol Parity Audit & Isolation Corrections | `05796e2` | [PROCESS_CHECKPOINT.md](../../manifests/RQ1-TRN-03A/PROCESS_CHECKPOINT.md) | Await operator authorization; implement build_fold_packages.py and train configs | Operator authorization required for staging package generation and Kaggle GPU training |
 
 ---
 
@@ -150,16 +150,19 @@
 ### RQ1-TRN-03A — Cross-Fold Speaker-Independent Generalization (Folds 2, 3, 4)
 - **Overview Checkpoint:** [manifests/RQ1-TRN-03A/PROCESS_CHECKPOINT.md](../../manifests/RQ1-TRN-03A/PROCESS_CHECKPOINT.md)
 - **Status:** `PLANNING_COMPLETE; GATE_PENDING_OPERATOR_AUTHORIZATION` | **Evidence Level:** `INDEPENDENTLY_VERIFIED`
-- **Source Commit:** `7a3b9ecf5e9efedc480b477f531ebe9318ae3415`
+- **Source Commit:** `05796e25b1f745ddb7772e0d5bda2edd5d0a7f1c`
 - **Research Plan:** [manifests/RQ1-TRN-03A/CROSS_FOLD_RESEARCH_PLAN.md](../../manifests/RQ1-TRN-03A/CROSS_FOLD_RESEARCH_PLAN.md)
 - **Key Methodological Tenets:**
   - Strict preservation of Fold 1 R/C0/C1 findings and NOT_SUPPORTED dropout verdict.
-  - Three-tier test isolation policy: all four test partitions ($S_{\text{test}}^{(1..4)}$) 100% sealed during validation; physical omission from remote staging packages.
-  - Independent Baseline R training from pretrained Wav2Vec2 (`facebook/wav2vec2-base-960h`); strict prohibition of Fold 1 checkpoint reuse.
-  - Validated two-head architecture preserved (frozen backbone, trainable CTC + Binary heads, disabled diagnosis head, $p=0.00$ prompt dropout).
-  - Macro-averaging (Student's $t$ 95% CI, $df=3$), micro-averaging across 39,576 pooled validation tokens, 1,000-resample cluster bootstrap, and L1-accent disaggregation.
+  - Per-fold test isolation: For model $M_k$, $S_{\text{test}}^{(k)}$ is strictly excluded from training, validation, early stopping, threshold calibration, and remote staging (`authorized_RQ1-TRN_fold{k}_train_val_only.zip`). Speakers rotate legitimately across folds according to `l2arctic_4fold_splits.json`.
+  - Exact Fold 1 Baseline R parity: Independent initialization from pretrained Wav2Vec2 (`facebook/wav2vec2-base-960h`); `seed: 1337`, `batch_size: 2`, `gradient_accumulation_steps: 2` (effective batch size 4), `warmup_updates: 100`, cosine schedule over `max_epochs: 25` horizon (~15,000 updates), early stopping patience 5 on validation AP with `blank_fraction < 0.99`.
+  - Dual checkpoint accounting: Independently save and evaluate Fixed-Budget (Epoch 6 / 3,600 updates) and validation `best.pt`.
+  - Acoustic controls: Strictly mandate deterministic within-speaker cyclic shift-1 protocol (`within_speaker_cyclic`).
+  - Metrics & aggregation: Mathematical definitions of FNR ($1 - \text{Recall}$) and FPR ($1 - \text{Specificity}$); Macro AP (Student's $t$ 95% CI, $df=3$), Micro AP across 39,576 pooled validation tokens, speaker-cluster bootstrap (disclosing $G=8$ small-cluster limitations).
+  - Thesis scope demarcation: SpeechOcean762 cross-corpus evaluation and pedagogical pronunciation feedback belong to RQ1; RQ2 is reserved exclusively for Multi-Agent LLM research.
 - **Step Checkpoints:**
-  1. [checkpoints/01-cross-fold-research-plan-and-test-isolation.md](../../manifests/RQ1-TRN-03A/checkpoints/01-cross-fold-research-plan-and-test-isolation.md) — Comprehensive research plan, mathematical speaker partition audit, staging conflict resolution, test-isolation policy, compute resource budgeting (<9% Kaggle quota), and operator approval packet.
+  1. [checkpoints/01-cross-fold-research-plan-and-test-isolation.md](../../manifests/RQ1-TRN-03A/checkpoints/01-cross-fold-research-plan-and-test-isolation.md) — Initial research plan, mathematical speaker partition audit, staging conflict resolution, test-isolation policy, compute resource budgeting, and operator approval packet.
+  2. [checkpoints/02-cross-fold-protocol-parity-and-isolation-corrections.md](../../manifests/RQ1-TRN-03A/checkpoints/02-cross-fold-protocol-parity-and-isolation-corrections.md) — Protocol parity audit against Fold 1 Baseline R implementation, per-fold test isolation refinement, dual checkpoint accounting, within-speaker shift-1 derangement, FNR/FPR disambiguation, small-sample bootstrap limitations, thesis scope demarcation, and automated regression test suite (`tests/test_rq1_trn_03a_protocol_parity_and_isolation.py`).
 
 ---
 

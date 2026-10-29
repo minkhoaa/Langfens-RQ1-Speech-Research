@@ -13,7 +13,7 @@ Read before repository work. Verify evidence before reporting PASS.
 ## Reusable Data Staging & Storage
 - Keep original dataset archives (`l2arctic_release_v5.0.zip`) unchanged on Google Drive; do not re-upload from laptop.
 - Reusable fold packages: Build once per fold from frozen manifests containing ONLY authorized train/validation WAV and TextGrid.
-- Official test sealing: Never stage or extract official test audio/labels. Maintain strict speaker-disjoint isolation.
+- Per-fold test sealing: Never stage or extract active test partition audio/labels for fold $k$ ($S_{\text{test}}^{(k)}$). Maintain strict per-fold speaker-disjoint isolation ($S_{\text{train}}^{(k)} \cap S_{\text{test}}^{(k)} = \emptyset$). Across folds, speakers rotate legitimately according to `manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json`.
 - Colab VM storage (`/content`) is ephemeral: Copy reusable fold package from Drive to VM disk and verify SHA-256 before training.
 - Read audio directly from local VM disk during training; never stream training audio across a Google Drive mount.
 
@@ -34,6 +34,9 @@ Read before repository work. Verify evidence before reporting PASS.
 ## Training Contract & Provenance
 - Split manifest: `manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json` (SHA-256 `7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b`).
 - Fold 1 contract: 2,399 train, 300 val (NJS/RRBI), 900 test SEALED. Two-head objective: CTC + Binary MDD only.
+- Cross-fold contract (Folds 2–4): Independent Baseline R training from original pretrained initialization (`seed: 1337`, `batch_size: 2`, `gradient_accumulation_steps: 2`, `warmup_updates: 100`, cosine schedule over `max_epochs: 25` horizon [~15,000 updates], early stopping patience 5 on validation AP with `blank_fraction < 0.99`). Strictly prohibit warm-starting or fine-tuning from Fold 1 checkpoints.
+- Dual checkpoint accounting: Save and report both the fixed-budget 3,600-update (Epoch 6) checkpoint and the validation-selected `best.pt` checkpoint to avoid confounding training exposure with model performance.
+- Thesis scope boundaries: SpeechOcean762 cross-corpus evaluation and pedagogical pronunciation feedback belong to RQ1. RQ2 is reserved exclusively for Multi-Agent LLM research.
 - Backbone integrity: Pretrained `facebook/wav2vec2-base-960h` (rev `22aad52d435eb6dbaf354bdad9b0da84ce7d6156`) kept frozen in eval.
 - Start CTC decoding with greedy evaluation; use validation only for checkpoint and threshold selection.
 - Never use gold TextGrid timestamps as model inference inputs or claim acoustic diagnosis readiness.
