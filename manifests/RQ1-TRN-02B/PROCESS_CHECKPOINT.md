@@ -1,8 +1,8 @@
 # LANGFENS — RQ1-TRN-02B / Acoustic Conditioning Design, Implementation and Preflight Safety Closure
 
-**Status:** COMPLETED_PAIRED_EVALUATION; HYPOTHESIS_NOT_SUPPORTED (C0 & C1 paired CPU evaluation complete; prompt dropout hypothesis falsified under matched training exposure; Reference R production anchor retained)
+**Status:** COMPLETED_FINAL_ASSESSMENT; RESEARCH_GATE_CLOSED (Final three-model scientific assessment complete; prompt dropout hypothesis NOT_SUPPORTED on Fold 1 under matched exposure; token-count discrepancy audited and resolved; Reference R retained as primary production baseline; research gate closed)
 
-**Recorded at:** 2026-10-29T03:30:00+07:00
+**Recorded at:** 2026-10-29T04:00:00+07:00
 
 **Evidence source:** Commits `6836367` through `032b0b3`, branch `review/rq1-trn-02b-kaggle-official-runs`, `manifests/RQ1-TRN-02B/`
 
@@ -87,6 +87,7 @@ Design and implement the controlled acoustic conditioning ablation (Control Arm 
   - [checkpoints/13-kaggle-c0-execution-blockers-and-persistence-closure.md](checkpoints/13-kaggle-c0-execution-blockers-and-persistence-closure.md)
   - [checkpoints/14-kaggle-c0-c1-training-completion-and-paired-mirroring.md](checkpoints/14-kaggle-c0-c1-training-completion-and-paired-mirroring.md)
   - [checkpoints/15-cpu-paired-scientific-evaluation.md](checkpoints/15-cpu-paired-scientific-evaluation.md)
+  - [checkpoints/16-final-three-model-assessment-and-gate-closure.md](checkpoints/16-final-three-model-assessment-and-gate-closure.md)
 
 ## 6. Restart / Recovery Instructions
 - Safe restart point: All preflight tests passing locally on CPU.
@@ -189,4 +190,23 @@ See [checkpoints/15-cpu-paired-scientific-evaluation.md](checkpoints/15-cpu-pair
 - **Scientific Verdict:** The hypothesis that whole-phone binary prompt dropout improves acoustic conditioning is **NOT_SUPPORTED**.
 - **TEST Partition Isolation:** Strictly sealed (0 test utterances accessed).
 - **Gate Closure:** RQ1-TRN-02B concluded. Production baseline anchor Reference R (`best.pt`) retained.
+
+
+## 15. Step 16 — Final Three-Model Scientific Assessment and Research Gate Closure (2026-10-29)
+
+See [checkpoints/16-final-three-model-assessment-and-gate-closure.md](checkpoints/16-final-three-model-assessment-and-gate-closure.md) and [FINAL_THREE_MODEL_ASSESSMENT.md](FINAL_THREE_MODEL_ASSESSMENT.md).
+
+- **Scope:** Rigorous final scientific synthesis across Reference R (`best.pt`), Control C0 ($p=0.00$), and Treatment C1 ($p=0.25$).
+- **Discrepancy Audit & Resolution:** Investigated the NJS/RRBI token-count discrepancy. Confirmed via raw census of `L2ArcticMDDDataset` that the true non-padding token counts are **NJS = 5,011** and **RRBI = 4,945** (Total = 9,956). The draft numbers (5,162 / 4,794) were an inadvertent prose transcription error in early Markdown text; JSON artifacts and prediction records were already bit-accurate. Corrected across all documentation.
+- **Commit Parity Verification:** Diffed C0 (`ce05e38`) and C1 (`032b0b3`) commits; confirmed the diff contains strictly added Kaggle deployment wrappers (`deploy/kaggle_c1/*`). Zero differences in model architecture, training logic, seed, or loss formulation.
+- **Consolidated Metrics:**
+  - Protocol O Matched AP: Reference R = **0.317021**, Control C0 = **0.310304**, Treatment C1 = **0.302386**.
+  - Acoustic Reliance Gap: Reference R = **0.022299**, Control C0 = **0.017543**, Treatment C1 = **0.011423**.
+  - Protocol Z Zero-Oracle AP: Reference R = **0.313530**, Control C0 = **0.307582**, Treatment C1 = **0.300992** (99.63% token coverage).
+  - Speech Recognition: Control C0 (**22.02%**) and Treatment C1 (**22.01%**) achieve significant CTC PER improvement over Reference R (**23.68%**, $p < 10^{-5}$).
+- **Statistical Significance & Nuance:** Primary causal contrast $\Delta_{\text{dropout}} = \mathbf{-0.007918}$ (95% CI `[-0.018328, +0.000385]`). Because the upper confidence limit crosses zero, the hypothesis is reported as **NOT_SUPPORTED on Fold 1** rather than a definitive negative effect.
+- **Production Baseline Recommendation:** Reference R (`best.pt`) is retained as the authoritative production baseline. Control C0 is retained as a valuable multi-task reference. Treatment C1 is rejected.
+- **Credential Hygiene:** Confirmed zero plaintext credentials in git history; all tokens loaded dynamically via environment variables or local user caches.
+- **Final Research Gate:** RQ1-TRN-02B officially completed and closed. Subsequent research phases are deferred pending operator discussion and authorization.
+
 

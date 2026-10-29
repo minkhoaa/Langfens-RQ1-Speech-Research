@@ -122,15 +122,15 @@ Evaluated at the standard operational decision threshold $\tau = 0.50$ (with his
 
 ## 4. Disaggregated Per-Speaker Analysis
 
-Validation encompasses 150 utterances from speaker `NJS` (female, Vietnamese L1) and 150 utterances from speaker `RRBI` (male, Hindi L1).
+Validation encompasses 150 utterances from speaker `NJS` (female, Vietnamese L1; 5,011 tokens) and 150 utterances from speaker `RRBI` (male, Hindi L1; 4,945 tokens).
 
 | Speaker | Metric | Reference R | Control C0 | Treatment C1 | Causal Delta ($\text{C1} - \text{C0}$) |
 |---|---|:---:|:---:|:---:|:---:|
-| **NJS** (5,162 tokens) | Matched Binary AP | 0.394927 | 0.388309 | 0.390072 | +0.001763 |
+| **NJS** (5,011 tokens) | Matched Binary AP | 0.394927 | 0.388309 | 0.390072 | +0.001763 |
 | | Mismatched Binary AP | 0.378744 | 0.381481 | 0.376702 | -0.004779 |
 | | Acoustic Reliance Gap | 0.016183 | 0.006828 | 0.013370 | +0.006542 |
 | | CTC PER | 23.41% | 21.52% | 21.54% | +0.02% |
-| **RRBI** (4,794 tokens) | Matched Binary AP | 0.251519 | 0.246000 | 0.236243 | **-0.009757** |
+| **RRBI** (4,945 tokens) | Matched Binary AP | 0.251519 | 0.246000 | 0.236243 | **-0.009757** |
 | | Mismatched Binary AP | 0.234979 | 0.230556 | 0.231688 | +0.001132 |
 | | Acoustic Reliance Gap | 0.016540 | 0.015444 | 0.004555 | **-0.010889** |
 | | CTC PER | 23.95% | 22.53% | 22.49% | -0.04% |

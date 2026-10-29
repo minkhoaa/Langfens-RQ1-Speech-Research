@@ -88,10 +88,10 @@ Prior to official evaluation, `audit_scripts/evaluate_rq1_trn_02b.py` was audite
 
 | Speaker | Metric | Control C0 | Treatment C1 | Paired Delta ($\text{C1} - \text{C0}$) |
 |---|---|:---:|:---:|:---:|
-| **NJS** (150 utts / 5,162 tokens) | Matched AP | 0.388309 | 0.390072 | +0.001763 |
+| **NJS** (150 utts / 5,011 tokens) | Matched AP | 0.388309 | 0.390072 | +0.001763 |
 | | Acoustic Gap | 0.006828 | 0.013370 | +0.006542 |
 | | CTC PER | 21.52% | 21.54% | +0.02% |
-| **RRBI** (150 utts / 4,794 tokens) | Matched AP | 0.246000 | 0.236243 | **-0.009757** |
+| **RRBI** (150 utts / 4,945 tokens) | Matched AP | 0.246000 | 0.236243 | **-0.009757** |
 | | Acoustic Gap | 0.015444 | 0.004555 | **-0.010889** |
 | | CTC PER | 22.53% | 22.49% | -0.04% |
 
