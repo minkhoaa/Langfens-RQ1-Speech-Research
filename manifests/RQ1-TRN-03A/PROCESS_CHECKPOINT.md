@@ -92,15 +92,21 @@ Design and specify a mathematically rigorous, leak-free 4-fold cross-validation 
    - Handled Kaggle dataset mounting and auto-extraction: supported outer zip/bin/dat, auto-detected 18 inner speaker archives with immediate test speaker leak audit, and implemented bit-exact reconstruction and SHA-256 verification.
    - Expanded deployment test suite in `tests/test_rq1_trn_03a_kaggle_deployment.py` from 11 to 20 tests (covering missing metadata, mismatched hyperparameters, resume beyond cap, valid recovery at various epochs, auto-extracted zip staging/leak rejection, and token CLI rejection).
    - Full repository regression suite passed: `270 passed, 4 skipped in 129.08s` (100% green).
+14. **Completed Step 05 Dedicated Kaggle Fold 2 Deployment Package:**
+   - Preserved historical C0/C1 deployment directories (`deploy/kaggle/`, `deploy/kaggle_c1/`) and metadata completely unchanged.
+   - Authored dedicated Fold 2 kernel metadata (`deploy/kaggle_fold2/kernel-metadata.json`) targeting Tesla T4x2 GPU, private execution, internet enabled, and private dataset source `minkhoaa/langfens-rq1-fold2-staging`.
+   - Authored dedicated Fold 2 dataset metadata (`deploy/kaggle_fold2/dataset-metadata.json`) under CC BY-NC 4.0 with explicit active test speaker exclusion.
+   - Authored 7-phase execution notebook (`deploy/kaggle_fold2/kaggle_notebook.ipynb`) pinning verified Git commit `407cf04e83704d9e83953e9309e3c7dca8d7154e`, acquiring `HF_TOKEN` strictly via Kaggle Secrets, running preflight staging/persistence checks in `--mode verify_fold2`, and gating training behind `EXECUTE_TRAINING = False` with zero disk token searches and zero CLI token arguments.
+   - Expanded deployment test suite to 24 tests (274 repository tests total) proving metadata validity, notebook hygiene, and C0/C1 preservation.
 
 ---
 
 ## 4. Results & Verification
 - **Split Manifest Invariance:** Verified `l2arctic_4fold_splits.json` SHA-256 `7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b`.
 - **Automated Split Suite:** `python3 audit_scripts/validate_splits.py` passed all 4 core checks with 0 errors.
-- **Automated Regression Suite:** All 270 tests pass (`PYTHONPATH=. .venv/bin/pytest tests/`):
-  - 270 passed, 4 skipped, 1 warning in 129.08s (100% green).
-- **Deployment Test Suite:** `tests/test_rq1_trn_03a_kaggle_deployment.py` passes 20/20 tests in 17.75s (100% green).
+- **Automated Regression Suite:** All 274 tests pass (`PYTHONPATH=. .venv/bin/pytest tests/`):
+  - 274 passed, 4 skipped, 1 warning in 157.53s (100% green).
+- **Deployment Test Suite:** `tests/test_rq1_trn_03a_kaggle_deployment.py` passes 24/24 tests in 31.94s (100% green).
 - **Integration Test Suite (`test_rq1_trn_03a_fold_readiness_integration.py`):**
   - `test_all_fold_configs_parity`: PASS (all 4 configs verified bit-identical).
   - `test_fold_package_isolation_and_contents`: PASS (all packages verified to contain exactly 18 authorized speakers and 0 test speakers).
@@ -122,6 +128,8 @@ Design and specify a mathematically rigorous, leak-free 4-fold cross-validation 
 - **Step Checkpoint 04:** `manifests/RQ1-TRN-03A/checkpoints/04-kaggle-deployment-blockers-closure.md`
 - **Step Checkpoint 04B:** `manifests/RQ1-TRN-03A/checkpoints/04b-kaggle-durability-and-recovery-closure.md`
 - **Step Checkpoint 04C:** `manifests/RQ1-TRN-03A/checkpoints/04c-final-launch-gate-correction.md`
+- **Step Checkpoint 05:** `manifests/RQ1-TRN-03A/checkpoints/05-dedicated-kaggle-fold2-deployment-package.md`
+- **Kaggle Fold 2 Deployment Package:** `deploy/kaggle_fold2/` (`kernel-metadata.json`, `dataset-metadata.json`, `kaggle_notebook.ipynb`)
 - **Kaggle Fold Runner:** `audit_scripts/kaggle_fold_train_exec.py`
 - **Package Builder Script:** `audit_scripts/build_fold_packages.py`
 - **Fold Configuration Files:** `configs/rq1_trn_03a_fold{2,3,4}.yaml`
@@ -137,20 +145,23 @@ Design and specify a mathematically rigorous, leak-free 4-fold cross-validation 
 
 ## 6. Restart / Recovery Instructions
 - **Active Branch:** `review/rq1-trn-03a-cross-fold-planning`
-- **Current State:** Final launch gate corrected and verified ready; awaiting operator authorization.
+- **Current State:** Dedicated Fold 2 deployment package prepared; preflight verified; awaiting operator authorization.
 - **Restart / Recovery Instructions:**
-  - All configurations, packages, trainers, and evaluators are implemented and verified ready.
-  - Zero GPU compute launched; awaiting operator authorization to launch Kaggle GPU training kernels.
-  - Authoritative Kaggle Fold 2 Launch Command:
+  - All configurations, packages, trainers, deployment metadata, and notebooks are implemented and verified ready.
+  - Zero GPU compute launched; awaiting operator authorization to stage datasets and push Kaggle kernel.
+  - Prepared Staging Package Upload Command (Awaiting Authorization):
     ```bash
-    python3 deploy/kaggle/kaggle_entrypoint.py \
-      --mode train_fold2 \
-      --commit-sha <VERIFIED_COMMIT_SHA> \
-      --kaggle-input-dir /kaggle/input/langfens-rq1-fold2-staging \
-      --remote-mirror-backend huggingface \
-      --remote-mirror-target minkhoaa/langfens-rq1-cross-fold-checkpoints
+    mkdir -p /tmp/kaggle_fold2_staging
+    cp deploy/kaggle_fold2/dataset-metadata.json /tmp/kaggle_fold2_staging/
+    cp datasets/L2-ARCTIC/authorized_RQ1-TRN_fold2_train_val_only.zip /tmp/kaggle_fold2_staging/
+    kaggle datasets create -p /tmp/kaggle_fold2_staging -r zip
     ```
-  - Next step upon approval: upload packages to private Kaggle datasets and launch Fold 2 training run.
+  - Prepared Live Preflight Kernel Push Command (Awaiting Authorization):
+    ```bash
+    kaggle kernels push -p deploy/kaggle_fold2/
+    kaggle kernels status minkhoaa/langfens-rq1-fold2-t4x2
+    ```
+  - Next step upon approval: execute staging upload, run preflight kernel, and verify output logs.
 
 ---
 

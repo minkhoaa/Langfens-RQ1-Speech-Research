@@ -688,3 +688,91 @@ def test_child_trainer_rejects_cli_token():
     assert proc.returncode != 0
     assert "strictly prohibited for cross-fold baseline runs" in (proc.stderr + proc.stdout)
 
+
+# ==============================================================================
+# 9. DEDICATED KAGGLE FOLD 2 DEPLOYMENT PACKAGE TESTS
+# ==============================================================================
+
+def test_kaggle_fold2_kernel_metadata():
+    """Proves deploy/kaggle_fold2/kernel-metadata.json conforms strictly to platform requirements."""
+    meta_path = Path("deploy/kaggle_fold2/kernel-metadata.json")
+    assert meta_path.is_file(), f"Missing kernel-metadata.json at {meta_path}"
+
+    meta = json.loads(meta_path.read_text())
+    assert meta["id"] == "minkhoaa/langfens-rq1-fold2-t4x2"
+    assert meta["title"] == "LANGFENS RQ1 Fold 2 Baseline R T4x2"
+    assert meta["code_file"] == "kaggle_notebook.ipynb"
+    assert meta["language"] == "python"
+    assert meta["kernel_type"] == "notebook"
+    assert meta["is_private"] is True
+    assert meta["enable_gpu"] is True
+    assert meta["enable_tpu"] is False
+    assert meta["enable_internet"] is True
+    assert meta["machine_shape"] == "NvidiaTeslaT4"
+    assert meta["dataset_sources"] == ["minkhoaa/langfens-rq1-fold2-staging"]
+    assert meta["competition_sources"] == []
+    assert meta["kernel_sources"] == []
+    assert meta["model_sources"] == []
+
+
+def test_kaggle_fold2_dataset_metadata():
+    """Proves deploy/kaggle_fold2/dataset-metadata.json specifies private staging under CC BY-NC 4.0."""
+    meta_path = Path("deploy/kaggle_fold2/dataset-metadata.json")
+    assert meta_path.is_file(), f"Missing dataset-metadata.json at {meta_path}"
+
+    meta = json.loads(meta_path.read_text())
+    assert meta["id"] == "minkhoaa/langfens-rq1-fold2-staging"
+    assert meta["is_private"] is True
+    assert meta["licenses"][0]["name"] == "CC-BY-NC-4.0"
+    assert "Fold 2" in meta["title"]
+    assert "BWC" in meta["description"]
+    assert "strictly excluded" in meta["description"]
+
+
+def test_kaggle_fold2_notebook_structure_and_hygiene():
+    """Proves dedicated Fold 2 notebook enforces credential hygiene, pinned commit, and gated execution."""
+    nb_path = Path("deploy/kaggle_fold2/kaggle_notebook.ipynb")
+    assert nb_path.is_file(), f"Missing notebook at {nb_path}"
+
+    nb = json.loads(nb_path.read_text())
+    assert nb["nbformat"] == 4
+    cells = nb["cells"]
+    assert len(cells) >= 6
+
+    full_text = ""
+    for c in cells:
+        src = "".join(c.get("source", []))
+        full_text += src + "\n"
+
+    # 1. Pinned commit
+    assert 'PINNED_COMMIT_SHA = "407cf04e83704d9e83953e9309e3c7dca8d7154e"' in full_text
+
+    # 2. Credential hygiene: no token files, no CLI token arguments
+    assert "hf_token.txt" not in full_text
+    assert ".hf_token" not in full_text
+    assert "--remote-mirror-token" not in full_text
+
+    # 3. Uses Kaggle Secrets
+    assert 'UserSecretsClient().get_secret("HF_TOKEN")' in full_text
+
+    # 4. Gated execution
+    assert "EXECUTE_TRAINING = False" in full_text
+    assert "--mode verify_fold2" in full_text
+    assert "--mode train_fold2" in full_text
+
+    # 5. Correct dataset source & remote target
+    assert "langfens-rq1-fold2-staging" in full_text
+    assert "minkhoaa/langfens-rq1-cross-fold-checkpoints" in full_text
+
+
+def test_historical_c0_c1_deployments_intact():
+    """Proves historical C0 and C1 deployment metadata files remain bit-intact and uncorrupted."""
+    c0_meta = json.loads(Path("deploy/kaggle/kernel-metadata.json").read_text())
+    assert c0_meta["id"] == "minkhoaa/langfens-rq1-c0-t4x2"
+    assert c0_meta["dataset_sources"] == ["minkhoaa/langfens-rq1-fold1-staging"]
+
+    c1_meta = json.loads(Path("deploy/kaggle_c1/kernel-metadata.json").read_text())
+    assert c1_meta["id"] == "minkhoaa/langfens-rq1-c1-t4x2"
+    assert c1_meta["dataset_sources"] == ["minkhoaa/langfens-rq1-fold1-staging"]
+
+
