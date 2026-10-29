@@ -19,6 +19,8 @@ weight_decay: 0.01
 scheduler: cosine
 warmup_updates: 100
 max_epochs: 25
+scheduler_horizon_epochs: 25
+execution_cap_epochs: 10
 early_stopping_patience: 5
 gradient_clip_norm: 1.0
 amp: fp16

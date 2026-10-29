@@ -83,14 +83,24 @@ Design and specify a mathematically rigorous, leak-free 4-fold cross-validation 
    - Removed credential-file fallbacks and CLI token arguments; used environment variables / Kaggle Secrets only (`resolve_cross_fold_hf_token()`).
    - Implemented executable mocked checkpoint recovery tests and isolated speaker-leakage tests in `tests/test_rq1_trn_03a_kaggle_deployment.py` (11 tests).
    - Full repository regression suite passed: `261 passed, 4 skipped in 140.23s`.
+13. **Completed Step 04C Final Launch Gate Correction:**
+   - Corrected invalid commit SHA (`2200050`) in Kaggle launch instructions, authoritatively pinning verified Git HEAD.
+   - Strengthened resume metadata, counter, and provenance validation: enforced fail-closed checks on fold identity, manifest digest (`7d6bfdf6...`), git commit SHA, complete pinned hyperparameters (`seed`, `batch_size`, `accum`, `warmup`, `lr`, `weight_decay`, `loss_weights`, `backbone_frozen`, `amp`, `early_stopping_patience`, `grad_scaler_initial_scale`, `pretrained_model`, `pretrained_revision`), update counters (`micro >= updates * accum`), history monotonicity/matching, complete RNG states (python, numpy, torch), and forbidden transfer keys (`initial_checkpoint`, `baseline_checkpoint`, `finetune_from`).
+   - Separated scheduler horizon (25 epochs, ~15,000 updates) from Kaggle execution cap (10 completed epochs, max 6,000 updates); documented historical Fold 1 distinction; enforced 10-epoch execution cap fail-closed across resumed runs; locked 3,600-update / Epoch 6 primary endpoint.
+   - Removed CLI token argument path from cross-fold entrypoint execution modes; kept legacy C0/C1 compatibility strictly isolated.
+   - Enforced strict environment/Kaggle Secrets credential path (`strict_secrets_only=True`) and verified remote persistence write-readback-delete probe for child trainer.
+   - Handled Kaggle dataset mounting and auto-extraction: supported outer zip/bin/dat, auto-detected 18 inner speaker archives with immediate test speaker leak audit, and implemented bit-exact reconstruction and SHA-256 verification.
+   - Expanded deployment test suite in `tests/test_rq1_trn_03a_kaggle_deployment.py` from 11 to 20 tests (covering missing metadata, mismatched hyperparameters, resume beyond cap, valid recovery at various epochs, auto-extracted zip staging/leak rejection, and token CLI rejection).
+   - Full repository regression suite passed: `270 passed, 4 skipped in 129.08s` (100% green).
 
 ---
 
 ## 4. Results & Verification
 - **Split Manifest Invariance:** Verified `l2arctic_4fold_splits.json` SHA-256 `7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b`.
 - **Automated Split Suite:** `python3 audit_scripts/validate_splits.py` passed all 4 core checks with 0 errors.
-- **Automated Regression Suite:** All 261 tests pass (`PYTHONPATH=. .venv/bin/pytest tests/`):
-  - 261 passed, 4 skipped in 140.23s (100% green).
+- **Automated Regression Suite:** All 270 tests pass (`PYTHONPATH=. .venv/bin/pytest tests/`):
+  - 270 passed, 4 skipped, 1 warning in 129.08s (100% green).
+- **Deployment Test Suite:** `tests/test_rq1_trn_03a_kaggle_deployment.py` passes 20/20 tests in 17.75s (100% green).
 - **Integration Test Suite (`test_rq1_trn_03a_fold_readiness_integration.py`):**
   - `test_all_fold_configs_parity`: PASS (all 4 configs verified bit-identical).
   - `test_fold_package_isolation_and_contents`: PASS (all packages verified to contain exactly 18 authorized speakers and 0 test speakers).
@@ -111,6 +121,7 @@ Design and specify a mathematically rigorous, leak-free 4-fold cross-validation 
 - **Step Checkpoint 03:** `manifests/RQ1-TRN-03A/checkpoints/03-fold-readiness-and-trainer-generalization.md`
 - **Step Checkpoint 04:** `manifests/RQ1-TRN-03A/checkpoints/04-kaggle-deployment-blockers-closure.md`
 - **Step Checkpoint 04B:** `manifests/RQ1-TRN-03A/checkpoints/04b-kaggle-durability-and-recovery-closure.md`
+- **Step Checkpoint 04C:** `manifests/RQ1-TRN-03A/checkpoints/04c-final-launch-gate-correction.md`
 - **Kaggle Fold Runner:** `audit_scripts/kaggle_fold_train_exec.py`
 - **Package Builder Script:** `audit_scripts/build_fold_packages.py`
 - **Fold Configuration Files:** `configs/rq1_trn_03a_fold{2,3,4}.yaml`
@@ -126,10 +137,19 @@ Design and specify a mathematically rigorous, leak-free 4-fold cross-validation 
 
 ## 6. Restart / Recovery Instructions
 - **Active Branch:** `review/rq1-trn-03a-cross-fold-planning`
-- **Current State:** Protocol corrected; awaiting operator authorization to begin implementation.
+- **Current State:** Final launch gate corrected and verified ready; awaiting operator authorization.
 - **Restart / Recovery Instructions:**
   - All configurations, packages, trainers, and evaluators are implemented and verified ready.
   - Zero GPU compute launched; awaiting operator authorization to launch Kaggle GPU training kernels.
+  - Authoritative Kaggle Fold 2 Launch Command:
+    ```bash
+    python3 deploy/kaggle/kaggle_entrypoint.py \
+      --mode train_fold2 \
+      --commit-sha <VERIFIED_COMMIT_SHA> \
+      --kaggle-input-dir /kaggle/input/langfens-rq1-fold2-staging \
+      --remote-mirror-backend huggingface \
+      --remote-mirror-target minkhoaa/langfens-rq1-cross-fold-checkpoints
+    ```
   - Next step upon approval: upload packages to private Kaggle datasets and launch Fold 2 training run.
 
 ---

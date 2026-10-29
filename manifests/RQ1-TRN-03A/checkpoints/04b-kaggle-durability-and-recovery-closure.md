@@ -4,7 +4,7 @@
 
 **Recorded at:** 2026-10-29T19:30:00+07:00
 
-**Evidence source:** Commits `2200050fe45eb081056873cc0c3ae4eefcfa8164`, `audit_scripts/train_fold1_ctc_binary.py`, `audit_scripts/kaggle_fold_train_exec.py`, `audit_scripts/kaggle_checkpoint_sync.py`, `tests/test_rq1_trn_03a_kaggle_deployment.py`
+**Evidence source:** Commits `2200050fe45eb081056873cc0c3ae4eefcfa8164` (base) -> `edb4e4971b97404a0d48fd1d59e753560fd46a45` (verified Step 04B closure), `audit_scripts/train_fold1_ctc_binary.py`, `audit_scripts/kaggle_fold_train_exec.py`, `audit_scripts/kaggle_checkpoint_sync.py`, `tests/test_rq1_trn_03a_kaggle_deployment.py`
 
 **Evidence level:** `INDEPENDENTLY_VERIFIED` (Executable Mocked Recovery, Full Test Suite & Durability Verification)
 
@@ -18,7 +18,8 @@ Close all remaining correctness, durability, and recovery gaps before authorizin
 ---
 
 ## 2. Inputs & Dependencies
-- **Base Commit:** `2200050fe45eb081056873cc0c3ae4eefcfa8164` on branch `review/rq1-trn-03a-cross-fold-planning`.
+- **Base Commit:** `2200050fe45eb081056873cc0c3ae4eefcfa8164` (Step 04 parent commit).
+- **Verified Closure Commit:** `edb4e4971b97404a0d48fd1d59e753560fd46a45` on branch `review/rq1-trn-03a-cross-fold-planning`.
 - **Baseline Trainer:** `audit_scripts/train_fold1_ctc_binary.py`.
 - **Kaggle Fold Runner:** `audit_scripts/kaggle_fold_train_exec.py`.
 - **Remote Mirror Module:** `audit_scripts/kaggle_checkpoint_sync.py`.
@@ -121,6 +122,18 @@ Close all remaining correctness, durability, and recovery gaps before authorizin
 ## 6. Restart / Recovery Instructions
 - Review `manifests/RQ1-TRN-03A/checkpoints/04b-kaggle-durability-and-recovery-closure.md`.
 - All technical and durability blockers are resolved.
+- Verified commit closing Step 04B: `edb4e4971b97404a0d48fd1d59e753560fd46a45`.
+- Erratum note: Initial drafting recorded parent commit `2200050` instead of verified HEAD `edb4e4971b97404a0d48fd1d59e753560fd46a45`. Launch instructions are updated accordingly.
+- Kaggle Fold 2 Execution Launch Command (Strict Environment Secrets & Pinned Commit):
+  ```bash
+  python3 deploy/kaggle/kaggle_entrypoint.py \
+    --mode train_fold2 \
+    --commit-sha edb4e4971b97404a0d48fd1d59e753560fd46a45 \
+    --kaggle-input-dir /kaggle/input/langfens-rq1-fold2-staging \
+    --remote-mirror-backend huggingface \
+    --remote-mirror-target minkhoaa/langfens-rq1-cross-fold-checkpoints
+  ```
+- Note: Step 04C provides final launch-gate corrections (scheduler horizon separation, auto-extract staging verification, and strengthened resume validation).
 - Remote Kaggle execution remains stopped awaiting operator approval.
 
 ---

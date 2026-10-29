@@ -28,7 +28,11 @@ def main():
     parser = argparse.ArgumentParser(description="LANGFENS Kaggle Runtime Entrypoint")
     parser.add_argument(
         "--mode",
-        choices=["train_c0", "train_c1", "verify_only", "benchmark", "train_fold", "train_fold2", "train_fold3", "train_fold4"],
+        choices=[
+            "train_c0", "train_c1", "verify_only", "benchmark",
+            "train_fold", "train_fold2", "train_fold3", "train_fold4",
+            "verify_fold", "verify_fold2", "verify_fold3", "verify_fold4"
+        ],
         default="train_c0"
     )
     parser.add_argument("--fold", type=int, choices=[2, 3, 4], default=None, help="Fold index for cross-fold baseline training (2, 3, 4)")
@@ -37,10 +41,19 @@ def main():
     parser.add_argument("--remote-mirror-target", type=str, default=None, help="Remote persistent mirror destination")
     parser.add_argument("--remote-mirror-token", type=str, default=None)
     parser.add_argument("--kaggle-input-dir", type=str, default=None)
+    parser.add_argument("--repo-dir", type=str, default="/kaggle/working/repo", help="Repository directory")
     parser.add_argument("--run-id", type=str, default=None)
     args = parser.parse_args()
 
-    repo_dir = Path("/kaggle/working/repo")
+    # Strict token hygiene: reject CLI tokens for cross-fold baseline runs early
+    if args.mode in ("train_fold", "train_fold2", "train_fold3", "train_fold4", "verify_fold", "verify_fold2", "verify_fold3", "verify_fold4") or (args.fold in (2, 3, 4)):
+        if args.remote_mirror_token:
+            raise ValueError(
+                "FAIL-CLOSED: CLI token argument '--remote-mirror-token' is strictly prohibited for cross-fold baseline execution. "
+                "Pass authentication token strictly via HF_TOKEN environment variable or Kaggle Secrets."
+            )
+
+    repo_dir = Path(args.repo_dir)
     if not repo_dir.exists():
         print("[SETUP] Cloning repository into /kaggle/working/repo...")
         run_command(["git", "clone", "https://github.com/minkhoaa/Langfens-RQ1-Speech-Research.git", str(repo_dir)])
@@ -89,7 +102,7 @@ def main():
     # Set default remote target based on mode
     remote_target = args.remote_mirror_target
     if not remote_target:
-        if args.mode in ("train_fold", "train_fold2", "train_fold3", "train_fold4"):
+        if args.mode in ("train_fold", "train_fold2", "train_fold3", "train_fold4", "verify_fold", "verify_fold2", "verify_fold3", "verify_fold4"):
             remote_target = "minkhoaa/langfens-rq1-cross-fold-checkpoints"
         else:
             remote_target = "minkhoaa/langfens-rq1-trn-02b-checkpoints"
@@ -116,12 +129,38 @@ def main():
         ]
         if kaggle_input:
             cmd.extend(["--kaggle-input-dir", str(kaggle_input)])
-        if args.remote_mirror_token:
-            cmd.extend(["--remote-mirror-token", args.remote_mirror_token])
         if args.run_id:
             cmd.extend(["--run-id", args.run_id])
         subprocess.run(cmd, env=env, check=True)
         print(f"[TRAIN] Training completed for Fold {f_idx}.")
+
+    elif args.mode in ("verify_fold", "verify_fold2", "verify_fold3", "verify_fold4") or (args.mode == "verify_only" and args.fold in (2, 3, 4)):
+        if args.mode == "verify_fold2":
+            f_idx = 2
+        elif args.mode == "verify_fold3":
+            f_idx = 3
+        elif args.mode == "verify_fold4":
+            f_idx = 4
+        else:
+            f_idx = args.fold or 2
+
+        print(f"[VERIFY] Running preflight check-only staging and probe for Fold {f_idx}...")
+        cmd = [
+            sys.executable,
+            str(repo_dir / "audit_scripts" / "kaggle_fold_train_exec.py"),
+            "--fold", str(f_idx),
+            "--commit-sha", args.commit_sha,
+            "--working-dir", "/kaggle/working",
+            "--check-only",
+            "--remote-mirror-backend", args.remote_mirror_backend,
+            "--remote-mirror-target", remote_target,
+        ]
+        if kaggle_input:
+            cmd.extend(["--kaggle-input-dir", str(kaggle_input)])
+        if args.run_id:
+            cmd.extend(["--run-id", args.run_id])
+        subprocess.run(cmd, env=env, check=True)
+        print(f"[VERIFY] Preflight staging check passed for Fold {f_idx}.")
 
     elif args.mode == "verify_only":
         print("[VERIFY] Running preflight staging check...")

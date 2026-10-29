@@ -70,19 +70,41 @@ def test_executable_mocked_checkpoint_recovery():
             for p in trainable:
                 p.fill_(0.42)
 
+        full_cfg = {
+            "seed": 1337,
+            "fold": 2,
+            "pretrained_model": "facebook/wav2vec2-base-960h",
+            "pretrained_revision": "22aad52d435eb6dbaf354bdad9b0da84ce7d6156",
+            "batch_size": 2,
+            "gradient_accumulation_steps": 2,
+            "warmup_updates": 100,
+            "learning_rate": 0.001,
+            "weight_decay": 0.01,
+            "loss_weights": {"ctc": 1.0, "binary": 1.0},
+            "backbone_frozen": True,
+            "amp": "fp16",
+            "early_stopping_patience": 5,
+            "grad_scaler_initial_scale": 4096,
+            "max_epochs": 25,
+            "scheduler_horizon_epochs": 25,
+            "execution_cap_epochs": 10,
+        }
         meta = {
             "fold": 2,
             "split_sha256": "mock_manifest_sha",
-            "config": {
-                "seed": 1337,
-                "pretrained_model": "facebook/wav2vec2-base-960h"
-            }
+            "git_sha": "edb4e4971b97404a0d48fd1d59e753560fd46a45",
+            "config": full_cfg
         }
+        history = [
+            {"epoch": 1, "successful_updates_total": 400, "micro_steps_total": 800},
+            {"epoch": 2, "successful_updates_total": 800, "micro_steps_total": 1600},
+            {"epoch": 3, "successful_updates_total": 1200, "micro_steps_total": 2400},
+        ]
         checkpoint(
             ckpt_path,
             model, optimizer, scheduler, scaler,
             epoch=2, updates=1200, micro=2400, best=0.3125,
-            history=[{"epoch": 1}, {"epoch": 2}, {"epoch": 3}],
+            history=history,
             metadata=meta,
             patience=1, skipped_amp=0, consecutive_skips=0,
             fixed_budget_saved=False
@@ -103,8 +125,7 @@ def test_executable_mocked_checkpoint_recovery():
 
         # 3. Load and validate
         ck = torch.load(ckpt_path, map_location="cpu", weights_only=False)
-        cfg = {"seed": 1337, "pretrained_model": "facebook/wav2vec2-base-960h"}
-        validate_resume_checkpoint(ck, cfg, expected_fold=2, manifest_sha="mock_manifest_sha")
+        validate_resume_checkpoint(ck, full_cfg, expected_fold=2, manifest_sha="mock_manifest_sha")
 
         new_model.load_state_dict(ck["model"])
         new_optimizer.load_state_dict(ck["optimizer"])
@@ -389,3 +410,281 @@ def test_kaggle_entrypoint_mode_dispatch():
     assert "train_fold2" in proc.stdout
     assert "train_fold3" in proc.stdout
     assert "train_fold4" in proc.stdout
+    assert "verify_fold2" in proc.stdout
+    assert "verify_fold3" in proc.stdout
+    assert "verify_fold4" in proc.stdout
+
+
+# ==============================================================================
+# 6. STRENGTHENED RESUME VALIDATION & PROVENANCE TESTS
+# ==============================================================================
+
+def _make_valid_resume_ck(
+    epoch=2,
+    updates=1200,
+    micro=2400,
+    fold=2,
+    manifest_sha="7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b",
+    git_sha="edb4e4971b97404a0d48fd1d59e753560fd46a45",
+    cfg_overrides=None,
+    meta_overrides=None,
+    history=None
+):
+    import random
+    import numpy as np
+    full_cfg = {
+        "seed": 1337,
+        "fold": fold,
+        "pretrained_model": "facebook/wav2vec2-base-960h",
+        "pretrained_revision": "22aad52d435eb6dbaf354bdad9b0da84ce7d6156",
+        "batch_size": 2,
+        "gradient_accumulation_steps": 2,
+        "warmup_updates": 100,
+        "learning_rate": 0.001,
+        "weight_decay": 0.01,
+        "loss_weights": {"ctc": 1.0, "binary": 1.0},
+        "backbone_frozen": True,
+        "amp": "fp16",
+        "early_stopping_patience": 5,
+        "grad_scaler_initial_scale": 4096,
+        "max_epochs": 25,
+        "scheduler_horizon_epochs": 25,
+        "execution_cap_epochs": 10,
+    }
+    if cfg_overrides:
+        full_cfg.update(cfg_overrides)
+
+    meta = {
+        "fold": fold,
+        "split_sha256": manifest_sha,
+        "git_sha": git_sha,
+        "config": full_cfg,
+    }
+    if meta_overrides:
+        meta.update(meta_overrides)
+
+    if history is None:
+        history = [
+            {"epoch": i + 1, "successful_updates_total": (i + 1) * 400, "micro_steps_total": (i + 1) * 800}
+            for i in range(epoch + 1)
+        ]
+        history[-1]["successful_updates_total"] = updates
+        history[-1]["micro_steps_total"] = micro
+
+    return {
+        "model": {"dummy": torch.zeros(1)},
+        "optimizer": {"dummy": 1},
+        "scheduler": {"dummy": 1},
+        "scaler": {"scale": 4096.0},
+        "epoch": epoch,
+        "successful_updates": updates,
+        "micro_steps": micro,
+        "best_ap": 0.3125,
+        "history": history,
+        "rng": {
+            "python": random.getstate(),
+            "numpy": np.random.get_state(),
+            "torch": torch.get_rng_state()
+        },
+        "metadata": meta,
+    }
+
+
+def test_resume_validation_missing_metadata():
+    """Proves validate_resume_checkpoint rejects missing metadata or missing provenance."""
+    manifest_sha = "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b"
+    cfg = _make_valid_resume_ck()["metadata"]["config"]
+
+    # 1. Missing metadata entirely
+    ck_no_meta = _make_valid_resume_ck()
+    del ck_no_meta["metadata"]
+    with pytest.raises(ValueError, match="missing required key 'metadata'"):
+        validate_resume_checkpoint(ck_no_meta, cfg, 2, manifest_sha)
+
+    # 2. Missing fold in metadata
+    ck_no_fold = _make_valid_resume_ck(meta_overrides={"fold": None, "config": {k: v for k, v in cfg.items() if k != "fold"}})
+    with pytest.raises(ValueError, match="missing required fold identity"):
+        validate_resume_checkpoint(ck_no_fold, cfg, 2, manifest_sha)
+
+    # 3. Missing split_sha256 in metadata
+    ck_no_sha = _make_valid_resume_ck(meta_overrides={"split_sha256": None})
+    with pytest.raises(ValueError, match="missing required 'split_sha256'"):
+        validate_resume_checkpoint(ck_no_sha, cfg, 2, manifest_sha)
+
+    # 4. Mismatched split_sha256
+    ck_bad_sha = _make_valid_resume_ck(meta_overrides={"split_sha256": "bad_sha_digest"})
+    with pytest.raises(ValueError, match="Manifest SHA-256 mismatch"):
+        validate_resume_checkpoint(ck_bad_sha, cfg, 2, manifest_sha)
+
+    # 5. Missing git_sha
+    ck_no_git = _make_valid_resume_ck(meta_overrides={"git_sha": ""})
+    with pytest.raises(ValueError, match="missing or empty 'git_sha'"):
+        validate_resume_checkpoint(ck_no_git, cfg, 2, manifest_sha)
+
+
+def test_resume_validation_mismatched_hyperparameters():
+    """Proves validate_resume_checkpoint rejects mismatched hyperparameters and forbidden ancestry."""
+    manifest_sha = "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b"
+    cfg = _make_valid_resume_ck()["metadata"]["config"]
+
+    # 1. Altered seed
+    ck_bad_seed = _make_valid_resume_ck(cfg_overrides={"seed": 42})
+    with pytest.raises(ValueError, match="Hyperparameter mismatch.*seed"):
+        validate_resume_checkpoint(ck_bad_seed, cfg, 2, manifest_sha)
+
+    # 2. Altered learning rate
+    ck_bad_lr = _make_valid_resume_ck(cfg_overrides={"learning_rate": 0.0005})
+    with pytest.raises(ValueError, match="Hyperparameter mismatch.*learning_rate"):
+        validate_resume_checkpoint(ck_bad_lr, cfg, 2, manifest_sha)
+
+    # 3. Altered pretrained revision
+    ck_bad_rev = _make_valid_resume_ck(cfg_overrides={"pretrained_revision": "other_revision"})
+    with pytest.raises(ValueError, match="Hyperparameter mismatch.*pretrained_revision"):
+        validate_resume_checkpoint(ck_bad_rev, cfg, 2, manifest_sha)
+
+    # 4. Forbidden ancestry: initial_checkpoint
+    ck_ancestry = _make_valid_resume_ck(meta_overrides={"initial_checkpoint": "fold1/best.pt"})
+    with pytest.raises(ValueError, match="FAIL-CLOSED: Checkpoint ancestry violation"):
+        validate_resume_checkpoint(ck_ancestry, cfg, 2, manifest_sha)
+
+
+def test_resume_validation_counters_and_rng():
+    """Proves validate_resume_checkpoint rejects counter inconsistencies and incomplete RNG state."""
+    manifest_sha = "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b"
+    cfg = _make_valid_resume_ck()["metadata"]["config"]
+
+    # 1. micro_steps < updates * accum (1200 updates * 2 accum = 2400 required)
+    ck_bad_micro = _make_valid_resume_ck(updates=1200, micro=1500)
+    with pytest.raises(ValueError, match="Counter inconsistency on resume"):
+        validate_resume_checkpoint(ck_bad_micro, cfg, 2, manifest_sha)
+
+    # 2. Missing torch in RNG state
+    ck_bad_rng = _make_valid_resume_ck()
+    del ck_bad_rng["rng"]["torch"]
+    with pytest.raises(ValueError, match="missing required 'torch' generator state"):
+        validate_resume_checkpoint(ck_bad_rng, cfg, 2, manifest_sha)
+
+    # 3. Missing python in RNG state
+    ck_bad_rng2 = _make_valid_resume_ck()
+    del ck_bad_rng2["rng"]["python"]
+    with pytest.raises(ValueError, match="missing required 'python' generator state"):
+        validate_resume_checkpoint(ck_bad_rng2, cfg, 2, manifest_sha)
+
+
+def test_resume_beyond_execution_cap_rejected():
+    """Proves resuming a checkpoint at or past the 10-epoch execution cap fails closed."""
+    manifest_sha = "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b"
+    cfg = _make_valid_resume_ck()["metadata"]["config"]
+
+    # Checkpoint at epoch 9 (10 completed epochs: 0..9)
+    ck_capped = _make_valid_resume_ck(epoch=9, updates=5400, micro=10800)
+    with pytest.raises(ValueError, match="FAIL-CLOSED: Checkpoint already reached or exceeded execution cap of 10 completed epochs"):
+        validate_resume_checkpoint(ck_capped, cfg, 2, manifest_sha)
+
+    # Checkpoint at epoch 10 (11 completed epochs)
+    ck_over_capped = _make_valid_resume_ck(epoch=10, updates=6000, micro=12000)
+    with pytest.raises(ValueError, match="FAIL-CLOSED: Checkpoint already reached or exceeded execution cap of 10 completed epochs"):
+        validate_resume_checkpoint(ck_over_capped, cfg, 2, manifest_sha)
+
+
+def test_valid_checkpoint_recovery_at_various_epochs():
+    """Proves valid checkpoints at Epoch 1, Epoch 3, and Epoch 6 (primary endpoint) pass validation."""
+    manifest_sha = "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b"
+    cfg = _make_valid_resume_ck()["metadata"]["config"]
+
+    # Epoch 1 (epoch=0, 600 updates)
+    ck_ep1 = _make_valid_resume_ck(epoch=0, updates=600, micro=1200)
+    validate_resume_checkpoint(ck_ep1, cfg, 2, manifest_sha)
+
+    # Epoch 6 (epoch=5, 3600 updates - primary fixed budget endpoint)
+    ck_ep6 = _make_valid_resume_ck(epoch=5, updates=3600, micro=7200)
+    validate_resume_checkpoint(ck_ep6, cfg, 2, manifest_sha)
+
+
+# ==============================================================================
+# 7. AUTO-EXTRACTED ZIP STAGING & VERIFICATION
+# ==============================================================================
+
+def test_find_and_stage_auto_extracted_zip():
+    """Proves find_and_stage_fold_package recovers outer zip from 18 auto-extracted speaker archives."""
+    with tempfile.TemporaryDirectory() as tmpdir:
+        work_dir = Path(tmpdir)
+        extracted_staging_dir = work_dir / "kaggle_input" / "langfens-rq1-fold2-staging"
+        extracted_staging_dir.mkdir(parents=True)
+
+        orig_pkg = Path("datasets/L2-ARCTIC/authorized_RQ1-TRN_fold2_train_val_only.zip")
+        with zipfile.ZipFile(orig_pkg, "r") as zf:
+            zf.extractall(extracted_staging_dir)
+
+        # Confirm outer zip does NOT exist in extracted_staging_dir
+        assert not (extracted_staging_dir / orig_pkg.name).exists()
+        # Confirm 18 inner speaker archives exist
+        assert len(list(extracted_staging_dir.glob("*.zip"))) == 18
+
+        # find_and_stage_fold_package must detect and bit-identically rebuild
+        expected_sha = EXPECTED_FOLD_PACKAGE_SHA256[2]
+        staged_zip = find_and_stage_fold_package(
+            fold_idx=2,
+            kaggle_input_dir=extracted_staging_dir,
+            working_dir=work_dir / "vm_disk",
+            expected_sha256=expected_sha
+        )
+        assert staged_zip.is_file()
+        assert compute_sha256(staged_zip) == expected_sha
+
+
+def test_find_and_stage_auto_extracted_with_test_speaker_leak():
+    """Proves auto-extracted directory containing an active test speaker raises PermissionError."""
+    with tempfile.TemporaryDirectory() as tmpdir:
+        work_dir = Path(tmpdir)
+        leaked_dir = work_dir / "kaggle_input" / "leaked_staging"
+        leaked_dir.mkdir(parents=True)
+
+        orig_pkg = Path("datasets/L2-ARCTIC/authorized_RQ1-TRN_fold2_train_val_only.zip")
+        with zipfile.ZipFile(orig_pkg, "r") as zf:
+            zf.extractall(leaked_dir)
+
+        # Plant Fold 2 test speaker 'BWC.zip'
+        (leaked_dir / "BWC.zip").write_bytes(b"dummy_test_speaker_data")
+
+        expected_sha = EXPECTED_FOLD_PACKAGE_SHA256[2]
+        with pytest.raises(PermissionError, match="CRITICAL SAFETY VIOLATION: Test speaker 'BWC'"):
+            find_and_stage_fold_package(
+                fold_idx=2,
+                kaggle_input_dir=leaked_dir,
+                working_dir=work_dir / "vm_disk",
+                expected_sha256=expected_sha
+            )
+
+
+# ==============================================================================
+# 8. ENTRYPOINT & TRAINER CLI ARGUMENT COMPATIBILITY
+# ==============================================================================
+
+def test_kaggle_entrypoint_rejects_cli_token_for_cross_fold():
+    """Proves deploy/kaggle/kaggle_entrypoint.py rejects CLI tokens for cross-fold baseline runs."""
+    cmd = [
+        sys.executable,
+        "deploy/kaggle/kaggle_entrypoint.py",
+        "--mode", "train_fold2",
+        "--commit-sha", "edb4e4971b97404a0d48fd1d59e753560fd46a45",
+        "--remote-mirror-token", "dummy_secret_token",
+    ]
+    proc = subprocess.run(cmd, capture_output=True, text=True)
+    assert proc.returncode != 0
+    assert "CLI token argument '--remote-mirror-token' is strictly prohibited" in proc.stderr
+
+
+def test_child_trainer_rejects_cli_token():
+    """Proves audit_scripts/train_fold1_ctc_binary.py rejects CLI tokens for Folds 2-4."""
+    cmd = [
+        sys.executable,
+        "audit_scripts/train_fold1_ctc_binary.py",
+        "--config", "configs/rq1_trn_03a_fold2.yaml",
+        "--fold", "2",
+        "--remote-mirror-token", "dummy_token"
+    ]
+    proc = subprocess.run(cmd, capture_output=True, text=True)
+    assert proc.returncode != 0
+    assert "strictly prohibited for cross-fold baseline runs" in (proc.stderr + proc.stdout)
+

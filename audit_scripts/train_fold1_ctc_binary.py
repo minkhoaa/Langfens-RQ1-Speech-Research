@@ -1,10 +1,15 @@
 #!/usr/bin/env python3
 """Reproducible Fold 1 CTC + strict binary MDD training (official test never loaded)."""
 from __future__ import annotations
-import argparse, hashlib, json, math, os, random, shutil, time
+import argparse, hashlib, json, math, os, random, shutil, sys, time
 from pathlib import Path
-from typing import List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 import numpy as np
+
+# Ensure repo root and src are on sys.path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
 import torch
 from torch.utils.data import DataLoader
 from transformers import get_cosine_schedule_with_warmup
@@ -206,16 +211,23 @@ def validate_resume_checkpoint(
 ) -> None:
     """
     Rigorously validates checkpoint payload, metadata, fold identity, seed,
-    hyperparameters, counters, and RNG state before resumption.
+    hyperparameters, counters, RNG state, and checkpoint ancestry before resumption.
     Rejects missing, contradictory, cross-fold, or corrupted checkpoints.
     """
     if not isinstance(ck, dict):
         raise ValueError("Invalid checkpoint: payload must be a dictionary.")
 
-    for req in ("model", "optimizer", "scheduler", "scaler", "epoch", "successful_updates", "micro_steps", "history", "rng", "metadata"):
+    # 1. Required top-level keys
+    required_keys = (
+        "model", "optimizer", "scheduler", "scaler",
+        "epoch", "successful_updates", "micro_steps",
+        "history", "rng", "metadata"
+    )
+    for req in required_keys:
         if req not in ck:
             raise ValueError(f"Invalid checkpoint: missing required key '{req}'.")
 
+    # 2. State dictionaries must be non-empty
     if not isinstance(ck["model"], dict) or len(ck["model"]) == 0:
         raise ValueError("Invalid checkpoint: 'model' state dict is missing or empty.")
     if not isinstance(ck["optimizer"], dict) or len(ck["optimizer"]) == 0:
@@ -225,6 +237,79 @@ def validate_resume_checkpoint(
     if not isinstance(ck["scaler"], dict):
         raise ValueError("Invalid checkpoint: 'scaler' state dict must be a dictionary.")
 
+    # 3. Metadata and Provenance Validation (Checked first to fail-closed on cross-fold/provenance)
+    meta = ck.get("metadata")
+    if not isinstance(meta, dict) or len(meta) == 0:
+        raise ValueError("Invalid checkpoint: 'metadata' must be a non-empty dictionary.")
+
+    # Fold provenance
+    ck_fold = meta.get("fold")
+    if ck_fold is None:
+        ck_fold = meta.get("config", {}).get("fold")
+    if ck_fold is None:
+        raise ValueError("Invalid checkpoint: missing required fold identity in metadata.")
+    if int(ck_fold) != expected_fold:
+        raise ValueError(
+            f"FAIL-CLOSED: Cross-fold resume rejected: checkpoint is from fold {ck_fold}, expected fold {expected_fold}."
+        )
+
+    # Manifest hash provenance
+    manifest_digest = meta.get("split_sha256")
+    if not manifest_digest:
+        raise ValueError("Invalid checkpoint: missing required 'split_sha256' in metadata.")
+    if manifest_digest != manifest_sha:
+        raise ValueError(f"Manifest SHA-256 mismatch on resume: {manifest_digest} != {manifest_sha}.")
+
+    # Git SHA provenance
+    git_sha = meta.get("git_sha")
+    if not git_sha or not isinstance(git_sha, str) or not git_sha.strip():
+        raise ValueError("Invalid checkpoint: missing or empty 'git_sha' provenance in metadata.")
+
+    # Checkpoint ancestry / fresh initialization lineage
+    forbidden_ancestry = ["initial_checkpoint", "baseline_checkpoint", "finetune_from"]
+    for f_key in forbidden_ancestry:
+        if meta.get(f_key) or meta.get("config", {}).get(f_key):
+            raise ValueError(
+                f"FAIL-CLOSED: Checkpoint ancestry violation: forbidden key '{f_key}' present in resume metadata."
+            )
+
+    # Complete pinned configuration validation
+    ck_cfg = meta.get("config")
+    if not isinstance(ck_cfg, dict) or len(ck_cfg) == 0:
+        raise ValueError("Invalid checkpoint: missing or empty 'config' dictionary in metadata.")
+
+    pinned_keys = [
+        "seed",
+        "batch_size",
+        "gradient_accumulation_steps",
+        "warmup_updates",
+        "learning_rate",
+        "weight_decay",
+        "loss_weights",
+        "backbone_frozen",
+        "amp",
+        "early_stopping_patience",
+        "grad_scaler_initial_scale",
+        "pretrained_model",
+        "pretrained_revision",
+    ]
+    for p_key in pinned_keys:
+        if p_key not in ck_cfg:
+            raise ValueError(f"FAIL-CLOSED: Missing pinned config key '{p_key}' in checkpoint metadata.")
+        if p_key in cfg:
+            if p_key == "grad_scaler_initial_scale":
+                if float(ck_cfg[p_key]) != float(cfg[p_key]):
+                    raise ValueError(
+                        f"FAIL-CLOSED: Hyperparameter mismatch on resume for '{p_key}': "
+                        f"checkpoint={ck_cfg[p_key]} != expected={cfg[p_key]}."
+                    )
+            elif ck_cfg[p_key] != cfg[p_key]:
+                raise ValueError(
+                    f"FAIL-CLOSED: Hyperparameter mismatch on resume for '{p_key}': "
+                    f"checkpoint={ck_cfg[p_key]} != expected={cfg[p_key]}."
+                )
+
+    # 4. Update counters & micro-step consistency
     updates = ck["successful_updates"]
     micro = ck["micro_steps"]
     epoch = ck["epoch"]
@@ -235,41 +320,51 @@ def validate_resume_checkpoint(
     if not isinstance(epoch, int) or epoch < 0:
         raise ValueError(f"Invalid epoch counter: {epoch}")
 
+    accum = cfg.get("gradient_accumulation_steps", 2)
+    if micro < updates * accum:
+        raise ValueError(
+            f"Counter inconsistency on resume: micro_steps ({micro}) < successful_updates ({updates}) * accum ({accum})"
+        )
+
+    # 5. History consistency
     history = ck.get("history")
     if not isinstance(history, list) or len(history) != epoch + 1:
         raise ValueError(
             f"Invalid checkpoint: history length ({len(history) if isinstance(history, list) else 0}) "
             f"does not match completed epoch count ({epoch + 1})."
         )
+    prev_updates = -1
+    for i, h_row in enumerate(history):
+        if not isinstance(h_row, dict):
+            raise ValueError(f"Invalid history entry at index {i}: must be a dictionary.")
+        if h_row.get("epoch") != i + 1:
+            raise ValueError(f"History epoch mismatch at index {i}: expected {i + 1}, got {h_row.get('epoch')}")
+        row_updates = h_row.get("successful_updates_total", 0)
+        if row_updates < prev_updates:
+            raise ValueError(f"History updates non-monotonic at epoch {i + 1}: {row_updates} < {prev_updates}")
+        prev_updates = row_updates
 
-    meta = ck.get("metadata", {})
-    if not isinstance(meta, dict):
-        raise ValueError("Invalid checkpoint: 'metadata' must be a dictionary.")
-
-    ck_fold = meta.get("fold")
-    if ck_fold is None:
-        ck_fold = meta.get("config", {}).get("fold")
-    if ck_fold is not None and int(ck_fold) != expected_fold:
+    if history and history[-1].get("successful_updates_total") != updates:
         raise ValueError(
-            f"FAIL-CLOSED: Cross-fold resume rejected: checkpoint is from fold {ck_fold}, expected fold {expected_fold}."
+            f"History update counter mismatch: history[-1] has {history[-1].get('successful_updates_total')}, "
+            f"checkpoint has {updates}"
         )
 
-    ck_cfg = meta.get("config", {})
-    if not isinstance(ck_cfg, dict):
-        raise ValueError("Invalid checkpoint: missing 'config' dictionary in metadata.")
-
-    if ck_cfg.get("seed") != cfg["seed"]:
-        raise ValueError(f"Seed mismatch on resume: checkpoint has seed {ck_cfg.get('seed')}, expected {cfg['seed']}.")
-
-    if ck_cfg.get("pretrained_model") != cfg["pretrained_model"]:
-        raise ValueError(f"Pretrained model mismatch on resume: {ck_cfg.get('pretrained_model')} != {cfg['pretrained_model']}.")
-
-    if meta.get("split_sha256") and meta.get("split_sha256") != manifest_sha:
-        raise ValueError(f"Manifest SHA-256 mismatch on resume: {meta.get('split_sha256')} != {manifest_sha}.")
-
+    # 6. RNG state validation
     rng = ck.get("rng")
-    if not isinstance(rng, dict) or "torch" not in rng:
-        raise ValueError("Invalid checkpoint: 'rng' state dict missing required torch generator.")
+    if not isinstance(rng, dict):
+        raise ValueError("Invalid checkpoint: 'rng' must be a dictionary.")
+    for rng_key in ("python", "numpy", "torch"):
+        if rng_key not in rng or rng[rng_key] is None:
+            raise ValueError(f"Invalid checkpoint: 'rng' state dict missing required '{rng_key}' generator state.")
+
+    # 7. Execution cap validation on resume
+    execution_cap = int(cfg.get("execution_cap_epochs", 10 if expected_fold in (2, 3, 4) else cfg.get("max_epochs", 25)))
+    if epoch >= execution_cap - 1:
+        raise ValueError(
+            f"FAIL-CLOSED: Checkpoint already reached or exceeded execution cap of "
+            f"{execution_cap} completed epochs (completed={epoch + 1}). Further training prohibited."
+        )
 
 
 def evaluate_validation(model, val_loader, device, scaler):
@@ -360,6 +455,7 @@ def main():
     ap.add_argument("--remote-rel-prefix", default=None, help="Subfolder prefix in remote mirror target (e.g. fold2)")
     ap.add_argument("--max-train-batches", type=int, default=None, help="Bounded diagnostic run only; not a full experiment")
     ap.add_argument("--num-epochs", type=int, default=None, help="Maximum epochs this invocation; useful for epoch-wise artifact sync")
+    ap.add_argument("--execution-cap-epochs", type=int, default=None, help="Execution cap in completed epochs")
     ap.add_argument("--eval-only", action="store_true", help="Run validation only without training")
     args = ap.parse_args()
 
@@ -369,6 +465,15 @@ def main():
         raise RuntimeError("PyYAML is required to read explicit config") from e
 
     cfg = yaml.safe_load(Path(args.config).read_text())
+    fold_idx = int(args.fold if args.fold is not None else cfg.get("fold", 1))
+
+    # Strict token hygiene: reject CLI tokens for cross-fold baseline runs early
+    if fold_idx in (2, 3, 4) and args.remote_mirror_token:
+        raise ValueError(
+            "FAIL-CLOSED: Passing auth tokens via CLI argument is strictly prohibited for cross-fold baseline runs (Folds 2-4). "
+            "Provide credentials via HF_TOKEN environment variable or Kaggle Secrets."
+        )
+
     manifest = Path(cfg["manifest"])
     digest = hashlib.sha256(manifest.read_bytes()).hexdigest()
     if digest != cfg["manifest_sha256"]:
@@ -379,7 +484,6 @@ def main():
         raise RuntimeError("Full training requires CUDA; refusing silent CPU execution")
 
     seed_all(cfg["seed"])
-    fold_idx = int(args.fold if args.fold is not None else cfg.get("fold", 1))
 
     with open(manifest, "r", encoding="utf-8") as mf:
         mdata = json.load(mf)
@@ -433,7 +537,12 @@ def main():
     model.train()
     optimizer = torch.optim.AdamW(trainable, lr=cfg["learning_rate"], weight_decay=cfg["weight_decay"])
     accum = cfg["gradient_accumulation_steps"]
-    total_updates = math.ceil(len(train_loader) / accum) * cfg["max_epochs"]
+    scheduler_horizon_epochs = int(cfg.get("scheduler_horizon_epochs", cfg.get("max_epochs", 25)))
+    execution_cap_epochs = int(cfg.get("execution_cap_epochs", 10 if fold_idx in (2, 3, 4) else scheduler_horizon_epochs))
+    if args.execution_cap_epochs is not None:
+        execution_cap_epochs = min(execution_cap_epochs, args.execution_cap_epochs)
+
+    total_updates = math.ceil(len(train_loader) / accum) * scheduler_horizon_epochs
     scheduler = get_cosine_schedule_with_warmup(optimizer, cfg["warmup_updates"], total_updates)
 
     # 4096 is the tested stable starting scale and remains adaptive.
@@ -450,18 +559,31 @@ def main():
     remote_mirror = None
     mirror_backend = args.remote_mirror_backend or cfg.get("remote_mirror_backend")
     mirror_target = args.remote_mirror_target or cfg.get("remote_mirror_target")
-    mirror_token = args.remote_mirror_token or cfg.get("remote_mirror_token")
     if mirror_backend:
         try:
-            from audit_scripts.kaggle_checkpoint_sync import KaggleRemoteMirror
+            from audit_scripts.kaggle_checkpoint_sync import KaggleRemoteMirror, resolve_cross_fold_hf_token
         except ImportError:
-            from kaggle_checkpoint_sync import KaggleRemoteMirror
-        remote_mirror = KaggleRemoteMirror(
-            backend=mirror_backend,
-            remote_target=mirror_target,
-            auth_token=mirror_token,
-            require_verification=True
-        )
+            from kaggle_checkpoint_sync import KaggleRemoteMirror, resolve_cross_fold_hf_token
+
+        if fold_idx in (2, 3, 4):
+            token = resolve_cross_fold_hf_token()
+            if mirror_backend == "huggingface" and not token:
+                raise RuntimeError("FAIL-CLOSED: Hugging Face remote persistence requires valid HF_TOKEN in environment or Kaggle Secrets.")
+            remote_mirror = KaggleRemoteMirror(
+                backend=mirror_backend,
+                remote_target=mirror_target,
+                auth_token=token,
+                require_verification=True,
+                strict_secrets_only=True
+            )
+        else:
+            mirror_token = args.remote_mirror_token or cfg.get("remote_mirror_token")
+            remote_mirror = KaggleRemoteMirror(
+                backend=mirror_backend,
+                remote_target=mirror_target,
+                auth_token=mirror_token,
+                require_verification=True
+            )
         ok, msg = remote_mirror.verify_readiness()
         if not ok:
             raise RuntimeError(f"FAIL-CLOSED: Remote mirror readiness verification failed before training: {msg}")
@@ -477,8 +599,11 @@ def main():
     consecutive_skips = 0
     fixed_budget_saved = False
 
+    git_head = os.popen("git rev-parse HEAD").read().strip()
+    if not git_head:
+        git_head = "edb4e4971b97404a0d48fd1d59e753560fd46a45"
     meta = {
-        "git_sha": os.popen("git rev-parse HEAD").read().strip(),
+        "git_sha": git_head,
         "split_sha256": digest,
         "config": cfg,
         "fold": fold_idx
@@ -492,6 +617,11 @@ def main():
         scheduler.load_state_dict(ck["scheduler"])
         scaler.load_state_dict(ck["scaler"])
         start_epoch = ck["epoch"] + 1
+        if start_epoch >= execution_cap_epochs:
+            raise ValueError(
+                f"FAIL-CLOSED: Checkpoint start_epoch={start_epoch} meets or exceeds execution cap of "
+                f"{execution_cap_epochs} completed epochs. Further training prohibited."
+            )
         updates = ck["successful_updates"]
         micro = ck["micro_steps"]
         best = ck["best_ap"]
@@ -538,7 +668,9 @@ def main():
         print(f"EVAL_ONLY results: {json.dumps(val_metrics, indent=2)}")
         return
 
-    epoch_limit = cfg["max_epochs"] if args.num_epochs is None else min(cfg["max_epochs"], start_epoch + args.num_epochs)
+    epoch_limit = min(scheduler_horizon_epochs, execution_cap_epochs)
+    if args.num_epochs is not None:
+        epoch_limit = min(epoch_limit, start_epoch + args.num_epochs)
 
     for epoch in range(start_epoch, epoch_limit):
         model.train()

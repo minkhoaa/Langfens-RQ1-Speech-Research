@@ -61,6 +61,12 @@ SEALED_TEST_SPEAKERS_BY_FOLD: Dict[int, Set[str]] = {
     4: {"NJS", "TLV", "TNI", "TXHC", "YKWK", "ZHAA"},
 }
 
+ALL_SPEAKERS: Set[str] = {
+    "ABA", "ASI", "BWC", "EBVS", "ERMS", "HKK", "HJK", "HQTV",
+    "LXC", "MBMPS", "NCC", "NJS", "PNV", "RRBI", "SKA", "SVBI",
+    "THV", "TLV", "TNI", "TXHC", "YBAA", "YDCK", "YKWK", "ZHAA"
+}
+
 
 def verify_manifest(manifest_path: Path) -> str:
     """Verifies SHA-256 digest of immutable split manifest."""
@@ -105,6 +111,7 @@ def find_and_stage_fold_package(
     """
     Locates the authorized fold package in /kaggle/input or local datasets directory,
     verifies SHA-256 integrity, copies to working staging directory, and verifies test exclusion.
+    Gracefully handles Kaggle auto-extracted datasets with bit-exact reconstruction and verification.
     """
     target_name = f"authorized_RQ1-TRN_fold{fold_idx}_train_val_only.zip"
     staging_dir = working_dir / "staged"
@@ -117,15 +124,83 @@ def find_and_stage_fold_package(
         print(f"[STAGING] Reusing verified staged package on VM disk: {staged_zip}")
         return staged_zip
 
-    # Search candidates
-    search_dirs = []
+    test_spks = SEALED_TEST_SPEAKERS_BY_FOLD.get(fold_idx, set())
+    auth_spks = sorted(ALL_SPEAKERS - test_spks)
+
+    # 1. Primary path: if kaggle_input_dir is provided, inspect it with strict priority
     if kaggle_input_dir:
-        search_dirs.append(Path(kaggle_input_dir))
-    search_dirs.extend([
+        input_p = Path(kaggle_input_dir)
+        if input_p.is_dir():
+            # A. Immediate test speaker exclusion check on input directory
+            for test_spk in test_spks:
+                test_candidates = list(input_p.rglob(f"{test_spk}.zip"))
+                for sub in input_p.iterdir():
+                    if sub.name == test_spk:
+                        test_candidates.append(sub)
+                if any(tc.exists() for tc in test_candidates):
+                    raise PermissionError(
+                        f"CRITICAL SAFETY VIOLATION: Test speaker '{test_spk}' found in staged dataset directory '{input_p}' for Fold {fold_idx}!"
+                    )
+
+            # B. Check for outer package in input directory
+            source_path = None
+            if (input_p / target_name).is_file():
+                source_path = input_p / target_name
+            else:
+                matches = list(input_p.rglob(target_name))
+                if matches:
+                    source_path = matches[0]
+                else:
+                    bin_matches = list(input_p.rglob(f"*fold{fold_idx}*.zip")) + list(input_p.rglob(f"*fold{fold_idx}*.bin")) + list(input_p.rglob(f"*fold{fold_idx}*.dat"))
+                    outer_bins = [bm for bm in bin_matches if bm.is_file() and bm.stat().st_size > 500_000_000]
+                    if outer_bins:
+                        source_path = outer_bins[0]
+
+            if source_path and source_path.is_file():
+                audit_archive_for_test_speaker_leak(source_path, fold_idx)
+                print(f"[STAGING] Found source package in input directory: {source_path} ({source_path.stat().st_size:,} bytes)")
+                src_sha = compute_sha256(source_path)
+                if src_sha != expected_sha256:
+                    raise ValueError(
+                        f"FAIL-CLOSED: Source package SHA-256 mismatch for Fold {fold_idx}: "
+                        f"actual={src_sha} != expected={expected_sha256}"
+                    )
+                tmp_dest = staged_zip.with_suffix(".tmp")
+                shutil.copyfile(str(source_path), str(tmp_dest))
+                os.replace(tmp_dest, staged_zip)
+                audit_archive_for_test_speaker_leak(staged_zip, fold_idx)
+                print(f"[STAGING] Staged and verified package for Fold {fold_idx}: {staged_zip}")
+                return staged_zip
+
+            # C. Check for auto-extracted speaker archives in input directory
+            spk_files = list(input_p.rglob("*.zip"))
+            spk_file_map = {sf.stem: sf for sf in spk_files if sf.is_file()}
+            if set(auth_spks).issubset(spk_file_map.keys()):
+                print(f"[STAGING] Detected auto-extracted dataset in '{input_p}' with all 18 authorized speakers.")
+                tmp_dest = staged_zip.with_suffix(".rebuild_tmp")
+                with zipfile.ZipFile(tmp_dest, "w", zipfile.ZIP_STORED) as out_zf:
+                    for spk in auth_spks:
+                        sf_path = spk_file_map[spk]
+                        zinfo = zipfile.ZipInfo(f"{spk}.zip", (2026, 1, 1, 0, 0, 0))
+                        zinfo.compress_type = zipfile.ZIP_STORED
+                        out_zf.writestr(zinfo, sf_path.read_bytes())
+                os.replace(tmp_dest, staged_zip)
+                staged_sha = compute_sha256(staged_zip)
+                if staged_sha != expected_sha256:
+                    raise ValueError(
+                        f"FAIL-CLOSED: Reconstructed package SHA-256 mismatch for Fold {fold_idx}: "
+                        f"actual={staged_sha} != expected={expected_sha256}"
+                    )
+                audit_archive_for_test_speaker_leak(staged_zip, fold_idx)
+                print(f"[STAGING] Successfully reconstructed and verified outer zip package from auto-extracted speaker archives: {staged_zip}")
+                return staged_zip
+
+    # 2. Fallback search candidates
+    search_dirs = [
         Path("/kaggle/input"),
         Path("datasets/L2-ARCTIC"),
         Path.cwd() / "datasets" / "L2-ARCTIC",
-    ])
+    ]
 
     source_path = None
     for s_dir in search_dirs:
@@ -142,32 +217,71 @@ def find_and_stage_fold_package(
             source_path = matches[0]
             break
         # Also check for .bin or .dat archives if Kaggle renamed it
-        bin_matches = list(s_dir.rglob(f"*fold{fold_idx}*.zip")) + list(s_dir.rglob(f"*fold{fold_idx}*.bin"))
+        bin_matches = list(s_dir.rglob(f"*fold{fold_idx}*.zip")) + list(s_dir.rglob(f"*fold{fold_idx}*.bin")) + list(s_dir.rglob(f"*fold{fold_idx}*.dat"))
         for bm in bin_matches:
             if bm.is_file() and bm.stat().st_size > 500_000_000:
                 source_path = bm
                 break
 
-    if not source_path or not source_path.is_file():
-        raise FileNotFoundError(
-            f"FAIL-CLOSED: Authorized package for Fold {fold_idx} ('{target_name}') not found in search paths: {search_dirs}"
-        )
+    if source_path and source_path.is_file():
+        # Pre-copy test leakage audit
+        audit_archive_for_test_speaker_leak(source_path, fold_idx)
 
-    # Pre-copy test leakage audit
-    audit_archive_for_test_speaker_leak(source_path, fold_idx)
+        print(f"[STAGING] Found source package: {source_path} ({source_path.stat().st_size:,} bytes)")
+        src_sha = compute_sha256(source_path)
+        if src_sha != expected_sha256:
+            raise ValueError(
+                f"FAIL-CLOSED: Source package SHA-256 mismatch for Fold {fold_idx}: "
+                f"actual={src_sha} != expected={expected_sha256}"
+            )
 
-    print(f"[STAGING] Found source package: {source_path} ({source_path.stat().st_size:,} bytes)")
-    src_sha = compute_sha256(source_path)
-    if src_sha != expected_sha256:
-        raise ValueError(
-            f"FAIL-CLOSED: Source package SHA-256 mismatch for Fold {fold_idx}: "
-            f"actual={src_sha} != expected={expected_sha256}"
-        )
+        # Copy to fast local VM disk
+        tmp_dest = staged_zip.with_suffix(".tmp")
+        shutil.copyfile(str(source_path), str(tmp_dest))
+        os.replace(tmp_dest, staged_zip)
+    else:
+        # Check for auto-extracted speaker archives across fallback search_dirs
+        print(f"[STAGING] Outer archive '{target_name}' not found. Checking for Kaggle auto-extracted dataset in search dirs...")
+        reconstructed = False
 
-    # Copy to fast local VM disk
-    tmp_dest = staged_zip.with_suffix(".tmp")
-    shutil.copyfile(str(source_path), str(tmp_dest))
-    os.replace(tmp_dest, staged_zip)
+        for s_dir in search_dirs:
+            if not s_dir.is_dir():
+                continue
+
+            # First, check for active test speaker leak in auto-extracted directory
+            for test_spk in test_spks:
+                test_candidates = list(s_dir.rglob(f"{test_spk}.zip"))
+                for sub in s_dir.iterdir():
+                    if sub.name == test_spk:
+                        test_candidates.append(sub)
+                if any(tc.exists() for tc in test_candidates):
+                    raise PermissionError(
+                        f"CRITICAL SAFETY VIOLATION: Test speaker '{test_spk}' found in staged dataset directory '{s_dir}' for Fold {fold_idx}!"
+                    )
+
+            # Look for inner speaker zip files
+            spk_files = list(s_dir.rglob("*.zip"))
+            spk_file_map = {sf.stem: sf for sf in spk_files if sf.is_file()}
+
+            if set(auth_spks).issubset(spk_file_map.keys()):
+                print(f"[STAGING] Detected auto-extracted dataset in '{s_dir}' with all 18 authorized speakers.")
+                tmp_dest = staged_zip.with_suffix(".rebuild_tmp")
+                with zipfile.ZipFile(tmp_dest, "w", zipfile.ZIP_STORED) as out_zf:
+                    for spk in auth_spks:
+                        sf_path = spk_file_map[spk]
+                        zinfo = zipfile.ZipInfo(f"{spk}.zip", (2026, 1, 1, 0, 0, 0))
+                        zinfo.compress_type = zipfile.ZIP_STORED
+                        out_zf.writestr(zinfo, sf_path.read_bytes())
+
+                os.replace(tmp_dest, staged_zip)
+                reconstructed = True
+                print(f"[STAGING] Successfully reconstructed outer zip package from auto-extracted speaker archives.")
+                break
+
+        if not reconstructed:
+            raise FileNotFoundError(
+                f"FAIL-CLOSED: Authorized package for Fold {fold_idx} ('{target_name}') not found in search paths: {search_dirs}"
+            )
 
     staged_sha = compute_sha256(staged_zip)
     if staged_sha != expected_sha256:
@@ -355,6 +469,12 @@ def classify_fold_training_endpoint(
                 "message": f"history.json has only {len(hist_data) if isinstance(hist_data, list) else 0} epochs, expected >= 6.",
                 "fold": fold_idx
             }
+        if len(hist_data) > 10:
+            return {
+                "status": "FAILED",
+                "message": f"history.json has {len(hist_data)} epochs, exceeding execution cap of 10 epochs.",
+                "fold": fold_idx
+            }
     except Exception as e:
         return {"status": "FAILED", "message": f"Failed to parse history.json: {e}", "fold": fold_idx}
 
@@ -523,6 +643,7 @@ def main():
         "--fold", str(fold_idx),
         "--zip-path", str(staged_zip),
         "--output-dir", str(outdir),
+        "--execution-cap-epochs", "10",
         "--remote-mirror-backend", args.remote_mirror_backend,
         "--remote-mirror-target", args.remote_mirror_target,
         "--remote-rel-prefix", f"fold{fold_idx}/{run_id}",
