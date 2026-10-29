@@ -26,10 +26,15 @@ def run_command(cmd: list[str], cwd: Path | None = None) -> None:
 
 def main():
     parser = argparse.ArgumentParser(description="LANGFENS Kaggle Runtime Entrypoint")
-    parser.add_argument("--mode", choices=["train_c0", "train_c1", "verify_only", "benchmark"], default="train_c0")
+    parser.add_argument(
+        "--mode",
+        choices=["train_c0", "train_c1", "verify_only", "benchmark", "train_fold", "train_fold2", "train_fold3", "train_fold4"],
+        default="train_c0"
+    )
+    parser.add_argument("--fold", type=int, choices=[2, 3, 4], default=None, help="Fold index for cross-fold baseline training (2, 3, 4)")
     parser.add_argument("--commit-sha", type=str, required=True, help="Pinned immutable Git commit SHA to checkout and verify")
     parser.add_argument("--remote-mirror-backend", type=str, default="huggingface")
-    parser.add_argument("--remote-mirror-target", type=str, default="minkhoaa/langfens-rq1-trn-02b-checkpoints")
+    parser.add_argument("--remote-mirror-target", type=str, default=None, help="Remote persistent mirror destination")
     parser.add_argument("--remote-mirror-token", type=str, default=None)
     parser.add_argument("--kaggle-input-dir", type=str, default=None)
     parser.add_argument("--run-id", type=str, default=None)
@@ -81,7 +86,44 @@ def main():
                 break
     print(f"[INPUT] Using Kaggle dataset input path: {kaggle_input}")
 
-    if args.mode == "verify_only":
+    # Set default remote target based on mode
+    remote_target = args.remote_mirror_target
+    if not remote_target:
+        if args.mode in ("train_fold", "train_fold2", "train_fold3", "train_fold4"):
+            remote_target = "minkhoaa/langfens-rq1-cross-fold-checkpoints"
+        else:
+            remote_target = "minkhoaa/langfens-rq1-trn-02b-checkpoints"
+
+    if args.mode in ("train_fold", "train_fold2", "train_fold3", "train_fold4"):
+        if args.mode == "train_fold2":
+            f_idx = 2
+        elif args.mode == "train_fold3":
+            f_idx = 3
+        elif args.mode == "train_fold4":
+            f_idx = 4
+        else:
+            f_idx = args.fold or 2
+
+        print(f"[TRAIN] Running Baseline R training for Fold {f_idx}...")
+        cmd = [
+            sys.executable,
+            str(repo_dir / "audit_scripts" / "kaggle_fold_train_exec.py"),
+            "--fold", str(f_idx),
+            "--commit-sha", args.commit_sha,
+            "--working-dir", "/kaggle/working",
+            "--remote-mirror-backend", args.remote_mirror_backend,
+            "--remote-mirror-target", remote_target,
+        ]
+        if kaggle_input:
+            cmd.extend(["--kaggle-input-dir", str(kaggle_input)])
+        if args.remote_mirror_token:
+            cmd.extend(["--remote-mirror-token", args.remote_mirror_token])
+        if args.run_id:
+            cmd.extend(["--run-id", args.run_id])
+        subprocess.run(cmd, env=env, check=True)
+        print(f"[TRAIN] Training completed for Fold {f_idx}.")
+
+    elif args.mode == "verify_only":
         print("[VERIFY] Running preflight staging check...")
         cmd = [
             sys.executable,
@@ -90,7 +132,7 @@ def main():
             "--kaggle-input-dir", str(kaggle_input),
             "--working-dir", "/kaggle/working",
             "--remote-mirror-backend", args.remote_mirror_backend,
-            "--remote-mirror-target", args.remote_mirror_target,
+            "--remote-mirror-target", remote_target,
         ]
         subprocess.run(cmd, env=env, check=True)
         print("[VERIFY] Preflight staging check passed.")
@@ -121,7 +163,7 @@ def main():
             "--kaggle-input-dir", str(kaggle_input),
             "--working-dir", "/kaggle/working",
             "--remote-mirror-backend", args.remote_mirror_backend,
-            "--remote-mirror-target", args.remote_mirror_target,
+            "--remote-mirror-target", remote_target,
         ]
         if args.remote_mirror_token:
             cmd.extend(["--remote-mirror-token", args.remote_mirror_token])

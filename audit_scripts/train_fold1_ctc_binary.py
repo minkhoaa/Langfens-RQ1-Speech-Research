@@ -141,7 +141,10 @@ def checkpoint(
     patience: int = 0,
     skipped_amp: int = 0,
     consecutive_skips: int = 0,
-    drive_output_dir: str | Path | None = None
+    drive_output_dir: str | Path | None = None,
+    remote_mirror: any = None,
+    remote_rel_prefix: str | None = None,
+    fixed_budget_saved: bool = False
 ):
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_suffix(path.suffix + ".tmp")
@@ -159,7 +162,8 @@ def checkpoint(
         "consecutive_skips": consecutive_skips,
         "history": history,
         "rng": rng_state(),
-        "metadata": metadata
+        "metadata": metadata,
+        "fixed_budget_saved": fixed_budget_saved
     }
     torch.save(payload, tmp)
     os.replace(tmp, path)
@@ -177,6 +181,12 @@ def checkpoint(
         remote_size = drive_path.stat().st_size
         if local_size != remote_size:
             raise IOError(f"Remote checkpoint sync size mismatch: local {local_size} vs remote {remote_size}")
+
+    # Remote Persistent Mirror synchronization (e.g. Hugging Face)
+    if remote_mirror is not None:
+        rel_dest = f"{remote_rel_prefix}/{path.name}" if remote_rel_prefix else path.name
+        res = remote_mirror.mirror_file(path, rel_dest, verify_sha=True)
+        print(f"[REMOTE MIRROR] Mirrored {path.name} -> {res['backend']}:{rel_dest} (SHA: {res['remote_sha256'][:12]}...)", flush=True)
 
 
 def evaluate_validation(model, val_loader, device, scaler):
@@ -257,9 +267,14 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--config", default="configs/rq1_trn_02a_fold1.yaml")
     ap.add_argument("--fold", type=int, default=None, help="Override fold index in config (1..4)")
+    ap.add_argument("--output-dir", default=None, help="Override output directory in config")
     ap.add_argument("--resume", default=None)
     ap.add_argument("--zip-path", default=None, help="Path to zip archive containing authorized audio/TextGrids")
     ap.add_argument("--drive-output-dir", default=None, help="Google Drive destination for remote checkpoint persistence")
+    ap.add_argument("--remote-mirror-backend", default=None, help="Remote persistent mirror backend (huggingface, local_dir)")
+    ap.add_argument("--remote-mirror-target", default=None, help="Remote persistent mirror repository/directory target")
+    ap.add_argument("--remote-mirror-token", default=None, help="Authentication token for remote persistent mirror")
+    ap.add_argument("--remote-rel-prefix", default=None, help="Subfolder prefix in remote mirror target (e.g. fold2)")
     ap.add_argument("--max-train-batches", type=int, default=None, help="Bounded diagnostic run only; not a full experiment")
     ap.add_argument("--num-epochs", type=int, default=None, help="Maximum epochs this invocation; useful for epoch-wise artifact sync")
     ap.add_argument("--eval-only", action="store_true", help="Run validation only without training")
@@ -341,6 +356,34 @@ def main():
     # 4096 is the tested stable starting scale and remains adaptive.
     scaler = torch.amp.GradScaler("cuda", init_scale=float(cfg.get("grad_scaler_initial_scale", 4096.0)), enabled=True)
 
+    # Output directories and remote mirror setup
+    drive_out = args.drive_output_dir or cfg.get("drive_output_dir")
+    outdir = Path(args.output_dir or cfg["output_dir"])
+    outdir.mkdir(parents=True, exist_ok=True)
+    if drive_out:
+        Path(drive_out).mkdir(parents=True, exist_ok=True)
+
+    remote_rel_prefix = args.remote_rel_prefix or cfg.get("remote_rel_prefix", f"fold{fold_idx}")
+    remote_mirror = None
+    mirror_backend = args.remote_mirror_backend or cfg.get("remote_mirror_backend")
+    mirror_target = args.remote_mirror_target or cfg.get("remote_mirror_target")
+    mirror_token = args.remote_mirror_token or cfg.get("remote_mirror_token")
+    if mirror_backend:
+        try:
+            from audit_scripts.kaggle_checkpoint_sync import KaggleRemoteMirror
+        except ImportError:
+            from kaggle_checkpoint_sync import KaggleRemoteMirror
+        remote_mirror = KaggleRemoteMirror(
+            backend=mirror_backend,
+            remote_target=mirror_target,
+            auth_token=mirror_token,
+            require_verification=True
+        )
+        ok, msg = remote_mirror.verify_readiness()
+        if not ok:
+            raise RuntimeError(f"FAIL-CLOSED: Remote mirror readiness verification failed before training: {msg}")
+        print(f"[REMOTE MIRROR] Verified remote persistent mirror: {mirror_backend} -> {mirror_target}", flush=True)
+
     start_epoch = 0
     updates = 0
     micro = 0
@@ -354,7 +397,8 @@ def main():
     meta = {
         "git_sha": os.popen("git rev-parse HEAD").read().strip(),
         "split_sha256": digest,
-        "config": cfg
+        "config": cfg,
+        "fold": fold_idx
     }
 
     if args.resume:
@@ -371,16 +415,10 @@ def main():
         patience = ck.get("patience", 0)
         skipped_amp = ck.get("skipped_amp_attempts_total", 0)
         consecutive_skips = ck.get("consecutive_skips", 0)
-        fixed_budget_saved = (outdir / "fixed_budget_checkpoint.pt").exists()
+        fixed_budget_saved = ck.get("fixed_budget_saved", (outdir / "fixed_budget_checkpoint.pt").exists())
         restore_rng(ck["rng"])
         model.train()
         print(f"Resumed from {args.resume}: start_epoch={start_epoch}, updates={updates}, best_ap={best}, patience={patience}")
-
-    drive_out = args.drive_output_dir or cfg.get("drive_output_dir")
-    outdir = Path(cfg["output_dir"])
-    outdir.mkdir(parents=True, exist_ok=True)
-    if drive_out:
-        Path(drive_out).mkdir(parents=True, exist_ok=True)
 
     if args.eval_only:
         val_metrics = evaluate_validation(model, val_loader, device, scaler)
@@ -468,7 +506,10 @@ def main():
             model, optimizer, scheduler, scaler,
             epoch, updates, micro, best, history, meta,
             patience=patience, skipped_amp=skipped_amp, consecutive_skips=consecutive_skips,
-            drive_output_dir=drive_out
+            drive_output_dir=drive_out,
+            remote_mirror=remote_mirror,
+            remote_rel_prefix=remote_rel_prefix,
+            fixed_budget_saved=fixed_budget_saved
         )
 
         if is_best:
@@ -477,18 +518,24 @@ def main():
                 model, optimizer, scheduler, scaler,
                 epoch, updates, micro, best, history, meta,
                 patience=patience, skipped_amp=skipped_amp, consecutive_skips=consecutive_skips,
-                drive_output_dir=drive_out
+                drive_output_dir=drive_out,
+                remote_mirror=remote_mirror,
+                remote_rel_prefix=remote_rel_prefix,
+                fixed_budget_saved=fixed_budget_saved
             )
 
         if updates >= 3600 and not fixed_budget_saved:
+            fixed_budget_saved = True
             checkpoint(
                 outdir / "fixed_budget_checkpoint.pt",
                 model, optimizer, scheduler, scaler,
                 epoch, updates, micro, best, history, meta,
                 patience=patience, skipped_amp=skipped_amp, consecutive_skips=consecutive_skips,
-                drive_output_dir=drive_out
+                drive_output_dir=drive_out,
+                remote_mirror=remote_mirror,
+                remote_rel_prefix=remote_rel_prefix,
+                fixed_budget_saved=fixed_budget_saved
             )
-            fixed_budget_saved = True
             print(f"[PRIMARY ENDPOINT] Saved fixed_budget_checkpoint.pt at update {updates} (epoch {epoch + 1}).", flush=True)
 
         if patience >= cfg["early_stopping_patience"]:
@@ -502,6 +549,10 @@ def main():
         remote_hist = Path(drive_out) / "history.json"
         shutil.copyfile(str(hist_json), str(remote_hist))
         print(f"Verified remote history persistence: {remote_hist}", flush=True)
+    if remote_mirror is not None:
+        rel_hist = f"{remote_rel_prefix}/history.json" if remote_rel_prefix else "history.json"
+        remote_mirror.mirror_file(hist_json, rel_hist, verify_sha=True)
+        print(f"Verified remote mirror history persistence: {rel_hist}", flush=True)
 
 
 if __name__ == "__main__":

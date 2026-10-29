@@ -65,16 +65,23 @@ Design and specify a mathematically rigorous, leak-free 4-fold cross-validation 
    - Authored fold configurations `configs/rq1_trn_03a_fold{2,3,4}.yaml` with exact bit-level hyperparameter parity.
    - Implemented deterministic packaging utility `audit_scripts/build_fold_packages.py` and built all 3 authorized packages (`authorized_RQ1-TRN_fold{2,3,4}_train_val_only.zip`), physically excluding test speakers.
    - Added integration test suite `tests/test_rq1_trn_03a_fold_readiness_integration.py` (6 tests).
-   - Executed full repository regression test suite: `250 passed, 4 skipped in 140.25s`.
-   - Audited Kaggle private dataset staging and Hugging Face checkpoint destinations with remote SHA-256 readback.
+11. **Completed Step 04 Kaggle Deployment Blockers Closure:**
+   - Remediated trainer resume bug where `outdir` was referenced before initialization in `audit_scripts/train_fold1_ctc_binary.py`. Added `fixed_budget_saved: bool = False` to `checkpoint()` signature.
+   - Implemented dedicated Kaggle runner `audit_scripts/kaggle_fold_train_exec.py` invoking the generalized Baseline R trainer (prohibiting C0/C1 fine-tuning runner and Fold 1 weights).
+   - Enforced fresh pretrained initialization guarantee (`verify_fresh_pretrained_initialization`).
+   - Reused `KaggleRemoteMirror` for atomic per-epoch checkpoint upload to `minkhoaa/langfens-rq1-cross-fold-checkpoints` with SHA-256 readback probe.
+   - Updated `deploy/kaggle/kaggle_entrypoint.py` to support cross-fold training modes (`train_fold2`, `train_fold3`, `train_fold4`).
+   - Implemented comprehensive deployment test suite `tests/test_rq1_trn_03a_kaggle_deployment.py` (8 tests).
+   - Executed full repository regression test suite: `258 passed, 4 skipped in 138.24s`.
+   - Executed deployment preflight dry-run across all three folds with 100% success.
 
 ---
 
 ## 4. Results & Verification
 - **Split Manifest Invariance:** Verified `l2arctic_4fold_splits.json` SHA-256 `7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b`.
 - **Automated Split Suite:** `python3 audit_scripts/validate_splits.py` passed all 4 core checks with 0 errors.
-- **Automated Regression Suite:** All 250 tests pass (`PYTHONPATH=. .venv/bin/pytest tests/`):
-  - 250 passed, 4 skipped in 140.25s (100% green).
+- **Automated Regression Suite:** All 258 tests pass (`PYTHONPATH=. .venv/bin/pytest tests/`):
+  - 258 passed, 4 skipped in 138.24s (100% green).
 - **Integration Test Suite (`test_rq1_trn_03a_fold_readiness_integration.py`):**
   - `test_all_fold_configs_parity`: PASS (all 4 configs verified bit-identical).
   - `test_fold_package_isolation_and_contents`: PASS (all packages verified to contain exactly 18 authorized speakers and 0 test speakers).
@@ -93,10 +100,15 @@ Design and specify a mathematically rigorous, leak-free 4-fold cross-validation 
 - **Step Checkpoint 01:** `manifests/RQ1-TRN-03A/checkpoints/01-cross-fold-research-plan-and-test-isolation.md`
 - **Step Checkpoint 02:** `manifests/RQ1-TRN-03A/checkpoints/02-cross-fold-protocol-parity-and-isolation-corrections.md`
 - **Step Checkpoint 03:** `manifests/RQ1-TRN-03A/checkpoints/03-fold-readiness-and-trainer-generalization.md`
+- **Step Checkpoint 04:** `manifests/RQ1-TRN-03A/checkpoints/04-kaggle-deployment-blockers-closure.md`
+- **Kaggle Fold Runner:** `audit_scripts/kaggle_fold_train_exec.py`
 - **Package Builder Script:** `audit_scripts/build_fold_packages.py`
 - **Fold Configuration Files:** `configs/rq1_trn_03a_fold{2,3,4}.yaml`
 - **Authorized Fold Packages:** `datasets/L2-ARCTIC/authorized_RQ1-TRN_fold{2,3,4}_train_val_only.zip`
-- **Integration Test Suite:** `tests/test_rq1_trn_03a_fold_readiness_integration.py`
+- **Integration Test Suites:**
+  - `tests/test_rq1_trn_03a_protocol_parity_and_isolation.py`
+  - `tests/test_rq1_trn_03a_fold_readiness_integration.py`
+  - `tests/test_rq1_trn_03a_kaggle_deployment.py`
 - **Policy Corrections:** `AGENTS.md` (Per-fold test sealing rule and baseline parity contract)
 - **Updated Global Registry:** `docs/process-checkpoints/INDEX.md`
 
