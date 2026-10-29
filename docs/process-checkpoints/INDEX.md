@@ -122,12 +122,12 @@
 
 ### RQ1-TRN-02B — Acoustic Conditioning Design, Implementation and Preflight Safety Closure
 - **Overview Checkpoint:** [manifests/RQ1-TRN-02B/PROCESS_CHECKPOINT.md](../../manifests/RQ1-TRN-02B/PROCESS_CHECKPOINT.md)
-- **Status:** `BLOCKED_IMPLEMENTATION_AND_STAGING` | **Evidence Level:** GitHub source inspection through Step 12; historical CLI/quota and test census agent-reported. No current Kaggle execution.
-- **Source Commit:** Commits `8486cbb` through `fix/rq1-trn-02b-colab-auth-r2`
-- **Current Operational Blockers:**
-  1. Compute quota balance: measured balance is 0.00 compute units (requires ~15–20 compute units for 7–10 T4 GPU-hours).
-  2. Interactive Drive mount: `colab drivemount -s <session>` requires human operator terminal interaction.
-  3. Live VM staging & Drive write verification on provisioned Colab runtime.
+- **Status:** `COMPLETED` | **Evidence Level:** `INDEPENDENTLY_VERIFIED` (C0 & C1 3,600-update training on Kaggle T4×2 complete; private Hugging Face mirroring verified; standalone CPU paired scientific evaluation complete; prompt dropout hypothesis NOT_SUPPORTED)
+- **Source Commit:** Commits `8486cbb` through `review/rq1-trn-02b-kaggle-official-runs`
+- **Current Operational State:**
+  1. Training completed: Control C0 ($p=0.00$) and Treatment C1 ($p=0.25$) completed strictly 3,600 successful updates on Kaggle Tesla T4 $\times$ 2.
+  2. Persistence verified: All 8 checkpoints and history files atomically mirrored to private Hugging Face repository `minkhoaa/langfens-rq1-trn-02b-checkpoints` with SHA-256 readback.
+  3. Scientific evaluation completed: Standalone paired evaluation on local CPU executed under Protocol O and Protocol Z; 1,000 speaker-stratified cluster bootstrap resamples computed; prompt dropout hypothesis falsified.
 - **Step Checkpoints:**
   1. [checkpoints/01-acoustic-conditioning-design.md](../../manifests/RQ1-TRN-02B/checkpoints/01-acoustic-conditioning-design.md) — Controlled prompt-dropout ablation design (Arm C0 p=0 vs Arm C1 p=0.25), compute budget (6 epochs / 3,600 updates max per arm), primary contrast metric.
   2. [checkpoints/02-implementation-and-preflight-audit.md](../../manifests/RQ1-TRN-02B/checkpoints/02-implementation-and-preflight-audit.md) — Binary-only prompt dropout implementation in `src/langfens_prep/model.py`, contract regression tests, implementation preflight report.
@@ -143,6 +143,7 @@
   12. [checkpoints/12-kaggle-direct-c0-launch-blockers-and-benchmark-waiver.md](../../manifests/RQ1-TRN-02B/checkpoints/12-kaggle-direct-c0-launch-blockers-and-benchmark-waiver.md) — Owner waived disposable 50-step benchmark; source review found false remote SYNCED backends, post-run-only sync, wrong trainer arguments and unpinned launch; official C0/C1 remain blocked/not started.
   13. [checkpoints/13-kaggle-c0-execution-blockers-and-persistence-closure.md](../../manifests/RQ1-TRN-02B/checkpoints/13-kaggle-c0-execution-blockers-and-persistence-closure.md) — Remediation of all 8 Step 12 defects, verified private dataset staging (minkhoaa/langfens-rq1-fold1-staging), genuine Hugging Face remote checkpoint mirror with live write-readback probe, C0 execution attempt, fail-closed Phase 1 GPU check (0 updates), Kaggle phone verification blocker documented.
   14. [checkpoints/14-kaggle-c0-c1-training-completion-and-paired-mirroring.md](../../manifests/RQ1-TRN-02B/checkpoints/14-kaggle-c0-c1-training-completion-and-paired-mirroring.md) — Official Control Arm C0 (3,600 updates, peak AP 0.312170, final PER 22.09%) and Treatment Arm C1 (3,600 updates, peak AP 0.320398, final PER 22.12%) executed on Kaggle Tesla T4x2 GPU; both arms verified COMPLETED_3600_UPDATES; all 8 deliverable checkpoints and history ledgers atomically mirrored to private Hugging Face repository (minkhoaa/langfens-rq1-trn-02b-checkpoints) with SHA-256 readback.
+  15. [checkpoints/15-cpu-paired-scientific-evaluation.md](../../manifests/RQ1-TRN-02B/checkpoints/15-cpu-paired-scientific-evaluation.md) — Standalone paired scientific evaluation on local CPU under Protocol O and Protocol Z; 1,000 paired speaker-stratified cluster bootstrap resamples; evaluated primary causal contrast $\Delta_{\text{dropout}} = \text{C1} - \text{C0} = -0.007918$ (95% CI: `[-0.018328, +0.000385]`); acoustic reliance gap change $\Delta_{\text{gap}} = -0.006120$; zero-oracle contrast $\Delta_Z = -0.006590$; CTC PER guardrails preserved; hypothesis determined NOT_SUPPORTED; research gate concluded.
 
 ---
 
@@ -157,6 +158,8 @@
 | `best.pt` | Production Baseline R Weights | Google Drive (`10SBhwWd0eAv_ZByBmfJjJZwHywA-LU-I`) | `a2445c8d17910bf3c03101f50fc419675e8d1bc012af43af10267a28dbba948b` | Verified |
 | `last.pt` | Epoch 11 Training Run Endpoint | Google Drive (`1VdlhoQHfd9MqjzIkMUEqdqMxhLlJiO-s`) | `bf46fab366363d46082082cf7f088b218f6d8d12851f5a9de706276b789efcb6` | Verified |
 | `model.safetensors` | Exported Native Model Weights | Hugging Face: `minkhoaa/langfens-rq1-fold1-baseline-r` | `a5b9d41f1431ad7a8b9718b4d84a7886e39fe5aff45fe742fbe572819f8babc1` | Verified (Private) |
+| `C0_fixed_budget_checkpoint.pt` | Control C0 3,600-Update Primary Weights | HF: `minkhoaa/langfens-rq1-trn-02b-checkpoints` (`C0/fixed_budget_checkpoint.pt`) | `0dc1d4fbc9a107d4c6bccc92c32b028ebe2ed70647b89520a15dcd80be29e24e` | Verified (Private) |
+| `C1_fixed_budget_checkpoint.pt` | Treatment C1 3,600-Update Primary Weights | HF: `minkhoaa/langfens-rq1-trn-02b-checkpoints` (`C1/fixed_budget_checkpoint.pt`) | `52b0e6c46e46439cbdbd5b977dd9fe42e90db35a14437f210f2b173c40151ea4` | Verified (Private) |
 | `BASELINE_R_ARTIFACT_MANIFEST.json` | Remote Release Ledger | Google Drive (`1yrTbDR9ki0u-kv_TyaCfwqdJw20CbTKP`) | `6222c92b63ea58f584267b39fb3ffc51394562086f90de21bbab8c8c1abe1e22` | Verified |
 
 ---

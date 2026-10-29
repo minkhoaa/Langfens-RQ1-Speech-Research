@@ -212,6 +212,59 @@ def make_within_speaker_perm(boundaries: List[int], total: int, shift: int = 1) 
     return res
 
 
+def enforce_eval_mode_and_zero_dropout(model: torch.nn.Module) -> None:
+    """
+    Enforces strict inference mode:
+    - Sets model.eval() (disabling standard nn.Dropout layers)
+    - Sets binary_prompt_dropout_p = 0.0 (disabling prompt embedding zero-masking)
+    - Verifies model.training is False and binary_prompt_dropout_p is strictly 0.0
+    """
+    model.eval()
+    if hasattr(model, "binary_prompt_dropout_p"):
+        model.binary_prompt_dropout_p = 0.0
+    if model.training:
+        raise RuntimeError("FAIL-CLOSED: Model training flag is True during evaluation!")
+    actual_p = getattr(model, "binary_prompt_dropout_p", 0.0)
+    if actual_p != 0.0:
+        raise RuntimeError(f"FAIL-CLOSED: binary_prompt_dropout_p must be strictly 0.0 during evaluation, got {actual_p}!")
+
+
+def compute_decision_agreement(
+    scores_a: List[float] | np.ndarray,
+    scores_b: List[float] | np.ndarray,
+    threshold: float = 0.50,
+) -> Dict[str, Any]:
+    """Computes overall and positive-class decision agreement between two sets of binary scores."""
+    sa = (np.asarray(scores_a, dtype=np.float64) >= threshold).astype(bool)
+    sb = (np.asarray(scores_b, dtype=np.float64) >= threshold).astype(bool)
+    total = len(sa)
+    if total == 0:
+        return {"threshold": threshold, "total_tokens": 0, "overall_agreement_rate": 0.0}
+    overall_agree = int(np.sum(sa == sb))
+    overall_rate = overall_agree / total
+
+    pos_a = int(np.sum(sa))
+    pos_b = int(np.sum(sb))
+    pos_both = int(np.sum(sa & sb))
+    pos_union = int(np.sum(sa | sb))
+    jaccard = pos_both / pos_union if pos_union > 0 else 1.0
+    agree_rel_a = pos_both / pos_a if pos_a > 0 else 0.0
+    agree_rel_b = pos_both / pos_b if pos_b > 0 else 0.0
+
+    return {
+        "threshold": threshold,
+        "total_tokens": total,
+        "overall_agreement_count": overall_agree,
+        "overall_agreement_rate": round(float(overall_rate), 6),
+        "positives_a": pos_a,
+        "positives_b": pos_b,
+        "positive_agreement_both": pos_both,
+        "positive_agreement_jaccard": round(float(jaccard), 6),
+        "agreement_relative_to_a": round(float(agree_rel_a), 6),
+        "agreement_relative_to_b": round(float(agree_rel_b), 6),
+    }
+
+
 HISTORICAL_REF_R_CTC_PER = 0.2364  # Fixed historical production baseline anchor (23.64%)
 
 
@@ -314,6 +367,8 @@ def validate_paired_checkpoints_compatibility(info_c0: Dict[str, Any], info_c1: 
         if k in cfg_c0 and k in cfg_c1:
             if cfg_c0[k] != cfg_c1[k]:
                 raise RuntimeError(f"Paired comparison invalid: shared training config mismatch on '{k}': C0={cfg_c0[k]} vs C1={cfg_c1[k]}.")
+        elif (k in cfg_c0) != (k in cfg_c1):
+            raise RuntimeError(f"Paired comparison invalid: shared training config asymmetry on '{k}': present in C0={k in cfg_c0} vs C1={k in cfg_c1}.")
 
     # 5. Dropout distinction verification
     p_c0 = float(meta_c0.get("binary_prompt_dropout_p", -1.0))
@@ -340,7 +395,7 @@ def load_eval_model(checkpoint_path: Path | str, device: torch.device) -> Tuple[
         binary_prompt_dropout_p=0.0,  # Strictly 0.0 during evaluation
     )
     model.load_state_dict(state_dict)
-    model.eval()
+    enforce_eval_mode_and_zero_dropout(model)
     model.to(device)
     fingerprint = get_model_weights_fingerprint(model)
     return model, fingerprint
@@ -352,11 +407,14 @@ def run_speaker_stratified_paired_bootstrap(
     speaker_boundaries: List[int],
     n_bootstraps: int = 1000,
     seed: int = 1337,
+    res_r: Optional[List[Dict[str, Any]]] = None,
 ) -> Dict[str, Any]:
     """Performs 1,000 speaker-stratified paired utterance-cluster bootstrap iterations."""
     rng = np.random.RandomState(seed)
     n_total = len(res_c0)
     assert len(res_c1) == n_total, "C0 and C1 result lengths must match"
+    if res_r is not None:
+        assert len(res_r) == n_total, "Reference R and C0 result lengths must match"
 
     bounds = [0] + speaker_boundaries + [n_total]
     strata = [list(range(bounds[i], bounds[i + 1])) for i in range(len(bounds) - 1)]
@@ -365,6 +423,12 @@ def run_speaker_stratified_paired_bootstrap(
     delta_gap = []
     c0_matched = []
     c1_matched = []
+    r_matched = []
+    delta_tuning = []
+    delta_compound = []
+    c0_gap_dist = []
+    c1_gap_dist = []
+    r_gap_dist = []
 
     for _ in range(n_bootstraps):
         boot_idx = []
@@ -377,6 +441,8 @@ def run_speaker_stratified_paired_bootstrap(
         boot_c0_mm = []
         boot_c1_m = []
         boot_c1_mm = []
+        boot_r_m = []
+        boot_r_mm = []
 
         for idx in boot_idx:
             u_c0 = res_c0[idx]
@@ -386,6 +452,10 @@ def run_speaker_stratified_paired_bootstrap(
             boot_c0_mm.extend(u_c0["mismatched_scores"])
             boot_c1_m.extend(u_c1["matched_scores"])
             boot_c1_mm.extend(u_c1["mismatched_scores"])
+            if res_r is not None:
+                u_r = res_r[idx]
+                boot_r_m.extend(u_r["matched_scores"])
+                boot_r_mm.extend(u_r["mismatched_scores"])
 
         if len(set(boot_y)) == 2:
             ap_c0_m = average_precision_binary(boot_y, boot_c0_m)
@@ -398,25 +468,52 @@ def run_speaker_stratified_paired_bootstrap(
 
             c0_matched.append(ap_c0_m)
             c1_matched.append(ap_c1_m)
+            c0_gap_dist.append(gap_c0)
+            c1_gap_dist.append(gap_c1)
             delta_matched.append(ap_c1_m - ap_c0_m)
             delta_gap.append(gap_c1 - gap_c0)
+
+            if res_r is not None:
+                ap_r_m = average_precision_binary(boot_y, boot_r_m)
+                ap_r_mm = average_precision_binary(boot_y, boot_r_mm)
+                gap_r = ap_r_m - ap_r_mm
+                r_matched.append(ap_r_m)
+                r_gap_dist.append(gap_r)
+                delta_tuning.append(ap_c0_m - ap_r_m)
+                delta_compound.append(ap_c1_m - ap_r_m)
 
     def ci95(arr: List[float]) -> Optional[List[float]]:
         if not arr:
             return None
         return [round(float(np.percentile(arr, 2.5)), 6), round(float(np.percentile(arr, 97.5)), 6)]
 
-    return {
+    out = {
         "n_bootstraps": len(delta_matched),
         "c0_matched_ap_mean": round(float(np.mean(c0_matched)), 6) if c0_matched else None,
         "c0_matched_ap_ci95": ci95(c0_matched),
         "c1_matched_ap_mean": round(float(np.mean(c1_matched)), 6) if c1_matched else None,
         "c1_matched_ap_ci95": ci95(c1_matched),
+        "c0_acoustic_gap_mean": round(float(np.mean(c0_gap_dist)), 6) if c0_gap_dist else None,
+        "c0_acoustic_gap_ci95": ci95(c0_gap_dist),
+        "c1_acoustic_gap_mean": round(float(np.mean(c1_gap_dist)), 6) if c1_gap_dist else None,
+        "c1_acoustic_gap_ci95": ci95(c1_gap_dist),
         "delta_dropout_mean": round(float(np.mean(delta_matched)), 6) if delta_matched else None,
         "delta_dropout_ci95": ci95(delta_matched),
         "delta_gap_diff_mean": round(float(np.mean(delta_gap)), 6) if delta_gap else None,
         "delta_gap_diff_ci95": ci95(delta_gap),
     }
+    if res_r is not None:
+        out.update({
+            "reference_r_matched_ap_mean": round(float(np.mean(r_matched)), 6) if r_matched else None,
+            "reference_r_matched_ap_ci95": ci95(r_matched),
+            "reference_r_acoustic_gap_mean": round(float(np.mean(r_gap_dist)), 6) if r_gap_dist else None,
+            "reference_r_acoustic_gap_ci95": ci95(r_gap_dist),
+            "delta_tuning_mean": round(float(np.mean(delta_tuning)), 6) if delta_tuning else None,
+            "delta_tuning_ci95": ci95(delta_tuning),
+            "delta_compound_mean": round(float(np.mean(delta_compound)), 6) if delta_compound else None,
+            "delta_compound_ci95": ci95(delta_compound),
+        })
+    return out
 
 
 def fit_canonical_empirical_prior(train_dataset: Any) -> Dict[str, Any]:
@@ -473,7 +570,7 @@ def evaluate_single_model_protocol_o(
     device: torch.device,
 ) -> Tuple[Dict[str, Any], List[Dict[str, Any]]]:
     """Evaluates a single model under Protocol O (matched and shift-1 mismatched)."""
-    model.eval()
+    enforce_eval_mode_and_zero_dropout(model)
     n_utts = len(val_dataset)
     shift1_perm = make_within_speaker_perm(spk_bounds, n_utts, shift=1)
 
@@ -487,6 +584,18 @@ def evaluate_single_model_protocol_o(
     ctc_inss = 0
     ctc_ref_total = 0
     ctc_hyp_total = 0
+
+    per_speaker_accum = defaultdict(lambda: {
+        "matched_scores": [],
+        "mismatched_scores": [],
+        "labels": [],
+        "ctc_edits": 0,
+        "ctc_subs": 0,
+        "ctc_dels": 0,
+        "ctc_inss": 0,
+        "ctc_ref_total": 0,
+        "ctc_hyp_total": 0,
+    })
 
     utterance_results: List[Dict[str, Any]] = []
 
@@ -504,6 +613,7 @@ def evaluate_single_model_protocol_o(
                 waveforms=w_m,
                 canonical_phone_indices=c_indices,
                 canonical_phone_lengths=c_len,
+                binary_prompt_dropout_p=0.0,
             )
             s_m = torch.sigmoid(out_m.binary_logits.squeeze(0)).cpu().tolist()
 
@@ -513,6 +623,7 @@ def evaluate_single_model_protocol_o(
                 waveforms=w_mm,
                 canonical_phone_indices=c_indices,
                 canonical_phone_lengths=c_len,
+                binary_prompt_dropout_p=0.0,
             )
             s_mm = torch.sigmoid(out_mm.binary_logits.squeeze(0)).cpu().tolist()
 
@@ -540,6 +651,17 @@ def evaluate_single_model_protocol_o(
             ctc_hyp_total += len(hyp)
 
             spk = item["speaker_id"]
+            spa = per_speaker_accum[spk]
+            spa["matched_scores"].extend(valid_m)
+            spa["mismatched_scores"].extend(valid_mm)
+            spa["labels"].extend(valid_lbls)
+            spa["ctc_edits"] += ed
+            spa["ctc_subs"] += su
+            spa["ctc_dels"] += de
+            spa["ctc_inss"] += ins
+            spa["ctc_ref_total"] += len(ref)
+            spa["ctc_hyp_total"] += len(hyp)
+
             utterance_results.append({
                 "utterance_id": item["utterance_id"],
                 "speaker_id": spk,
@@ -557,6 +679,25 @@ def evaluate_single_model_protocol_o(
     cm_50 = calculate_binary_metrics(all_labels, matched_scores, threshold=0.50)
     cm_20 = calculate_binary_metrics(all_labels, matched_scores, threshold=0.20)
 
+    per_speaker_summary = {}
+    for spk, spa in sorted(per_speaker_accum.items()):
+        spk_matched_ap = average_precision_binary(spa["labels"], spa["matched_scores"])
+        spk_mismatched_ap = average_precision_binary(spa["labels"], spa["mismatched_scores"])
+        spk_gap = spk_matched_ap - spk_mismatched_ap
+        spk_per = spa["ctc_edits"] / max(spa["ctc_ref_total"], 1)
+        per_speaker_summary[spk] = {
+            "total_tokens": len(spa["labels"]),
+            "matched_binary_ap": round(float(spk_matched_ap), 6),
+            "mismatched_binary_ap": round(float(spk_mismatched_ap), 6),
+            "matched_minus_mismatched_gap": round(float(spk_gap), 6),
+            "ctc_per": round(float(spk_per), 6),
+            "ctc_edits": spa["ctc_edits"],
+            "ctc_ref_tokens": spa["ctc_ref_total"],
+            "ctc_hyp_tokens": spa["ctc_hyp_total"],
+            "confusion_matrix_tau_50": calculate_binary_metrics(spa["labels"], spa["matched_scores"], threshold=0.50),
+            "confusion_matrix_tau_20": calculate_binary_metrics(spa["labels"], spa["matched_scores"], threshold=0.20),
+        }
+
     summary = {
         "matched_binary_ap": round(float(matched_ap), 6),
         "mismatched_binary_ap": round(float(mismatched_ap), 6),
@@ -567,6 +708,7 @@ def evaluate_single_model_protocol_o(
         "ctc_hyp_tokens": ctc_hyp_total,
         "confusion_matrix_tau_50": cm_50,
         "confusion_matrix_tau_20": cm_20,
+        "per_speaker": per_speaker_summary,
     }
     return summary, utterance_results
 
@@ -632,11 +774,12 @@ def evaluate_models_protocol_z(
 
             z_scores_by_model: Dict[str, List[float]] = {}
             for k, m in models.items():
-                m.eval()
+                enforce_eval_mode_and_zero_dropout(m)
                 out = m(
                     waveforms=audio,
                     canonical_phone_indices=can_idx,
                     canonical_phone_lengths=can_len,
+                    binary_prompt_dropout_p=0.0,
                 )
                 sc = torch.sigmoid(out.binary_logits[0, :len(g2p_phones)]).cpu().tolist()
                 z_scores_by_model[k] = sc
@@ -797,7 +940,27 @@ def run_paired_harness(
 
     # 6. Speaker-Stratified Cluster Bootstrap
     print("[BOOTSTRAP] Running 1,000 speaker-stratified paired utterance-cluster bootstrap...")
-    boot_results = run_speaker_stratified_paired_bootstrap(res_c0, res_c1, spk_bounds, n_bootstraps=1000, seed=1337)
+    boot_results = run_speaker_stratified_paired_bootstrap(
+        res_c0, res_c1, spk_bounds, n_bootstraps=1000, seed=1337, res_r=res_r
+    )
+
+    # Paired Decision Agreements across token predictions
+    all_scores_r = [s for u in res_r for s in u["matched_scores"]]
+    all_scores_c0 = [s for u in res_c0 for s in u["matched_scores"]]
+    all_scores_c1 = [s for u in res_c1 for s in u["matched_scores"]]
+
+    decision_agreements = {
+        "tau_50": {
+            "c1_vs_c0": compute_decision_agreement(all_scores_c1, all_scores_c0, threshold=0.50),
+            "c0_vs_r": compute_decision_agreement(all_scores_c0, all_scores_r, threshold=0.50),
+            "c1_vs_r": compute_decision_agreement(all_scores_c1, all_scores_r, threshold=0.50),
+        },
+        "tau_20": {
+            "c1_vs_c0": compute_decision_agreement(all_scores_c1, all_scores_c0, threshold=0.20),
+            "c0_vs_r": compute_decision_agreement(all_scores_c0, all_scores_r, threshold=0.20),
+            "c1_vs_r": compute_decision_agreement(all_scores_c1, all_scores_r, threshold=0.20),
+        },
+    }
 
     # 7. Protocol Z Secondary Zero-Oracle Evaluation
     proto_z_report = None
@@ -871,6 +1034,7 @@ def run_paired_harness(
             "ctc_per_guardrail_pass": overall_guardrail_pass,
             "is_completed_primary_causal_estimate": is_primary_causal,
         },
+        "paired_decision_agreements": decision_agreements,
         "speaker_stratified_bootstrap_95ci": boot_results,
         "protocol_z_zero_oracle": proto_z_report,
     }
@@ -878,6 +1042,39 @@ def run_paired_harness(
     report_path = output_dir / "PAIRED_EVALUATION_REPORT.json"
     report_path.write_text(json.dumps(report, indent=2) + "\n")
     print(f"\n[REPORT] Saved paired evaluation report to {report_path}")
+
+    # Save detailed paired prediction records
+    prediction_records = []
+    for idx_u in range(len(res_r)):
+        u_r = res_r[idx_u]
+        u_c0 = res_c0[idx_u]
+        u_c1 = res_c1[idx_u]
+        assert u_r["utterance_id"] == u_c0["utterance_id"] == u_c1["utterance_id"]
+        assert u_r["labels"] == u_c0["labels"] == u_c1["labels"]
+        prediction_records.append({
+            "utterance_id": u_r["utterance_id"],
+            "speaker_id": u_r["speaker_id"],
+            "labels": u_r["labels"],
+            "reference_r": {
+                "matched_scores": u_r["matched_scores"],
+                "mismatched_scores": u_r["mismatched_scores"],
+            },
+            "control_c0": {
+                "matched_scores": u_c0["matched_scores"],
+                "mismatched_scores": u_c0["mismatched_scores"],
+            },
+            "treatment_c1": {
+                "matched_scores": u_c1["matched_scores"],
+                "mismatched_scores": u_c1["mismatched_scores"],
+            },
+        })
+    pred_path = output_dir / "PAIRED_PREDICTION_RECORDS.json"
+    pred_path.write_text(json.dumps({
+        "manifest_sha256": compute_sha256(manifest_path),
+        "total_utterances": len(prediction_records),
+        "utterances": prediction_records,
+    }, indent=2) + "\n")
+    print(f"[REPORT] Saved paired prediction records to {pred_path}")
 
     # Guardrail Enforcement across both arms
     if not overall_guardrail_pass and strict_guardrails:
@@ -893,6 +1090,114 @@ def run_paired_harness(
         )
 
     return report
+
+
+def execute_dry_run_audit(
+    manifest_path: Path,
+    ref_ckpt: Path,
+    c0_ckpt: Path,
+    c1_ckpt: Path,
+    authorized_zip: Optional[str] = None,
+    prompts_path: Optional[str] = None,
+    skip_protocol_z: bool = False,
+    allow_incomplete_endpoints: bool = False,
+) -> Dict[str, Any]:
+    """
+    Executes a comprehensive, non-mutating preflight dry-run audit:
+    - Verifies presence and SHA-256 digests of split manifest, Reference R, C0, and C1 checkpoints.
+    - Validates endpoint readiness for C0 and C1 (budget completion, guardrail status, arm ID).
+    - Validates cross-arm compatibility (shared hyperparameters, seed, split digest, cold reset initialization).
+    - Verifies authorized audio ZIP presence and SHA-256 (if provided).
+    - Verifies Protocol Z prompts file presence and valid JSON structure (if not skipped).
+    - Verifies dry instantiation and strict dropout enforcement on CPU for all models.
+    """
+    print("[DRY-RUN] Initiating rigorous preflight audit...")
+
+    # 1. Manifest
+    if not manifest_path.is_file():
+        raise FileNotFoundError(f"[DRY-RUN] Split manifest not found: {manifest_path}")
+    manifest_sha = compute_sha256(manifest_path)
+    expected_manifest_sha = "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b"
+    if manifest_sha != expected_manifest_sha:
+        raise RuntimeError(f"[DRY-RUN] Manifest SHA mismatch: {manifest_sha} != {expected_manifest_sha}")
+    print(f"  [PASS] Split manifest SHA-256 verified: {manifest_sha}")
+
+    # 2. Reference Checkpoint
+    if not ref_ckpt.is_file():
+        raise FileNotFoundError(f"[DRY-RUN] Reference R checkpoint not found: {ref_ckpt}")
+    ref_sha = compute_sha256(ref_ckpt)
+    expected_ref_sha = "a2445c8d17910bf3c03101f50fc419675e8d1bc012af43af10267a28dbba948b"
+    if ref_sha != expected_ref_sha:
+        raise RuntimeError(f"[DRY-RUN] Reference R checkpoint SHA mismatch: {ref_sha} != {expected_ref_sha}")
+    print(f"  [PASS] Reference R checkpoint SHA-256 verified: {ref_sha}")
+
+    # 3. Control C0 Checkpoint
+    if not c0_ckpt.is_file():
+        raise FileNotFoundError(f"[DRY-RUN] Control C0 checkpoint not found: {c0_ckpt}")
+    c0_sha = compute_sha256(c0_ckpt)
+    print(f"  [PASS] Control C0 checkpoint present, SHA-256: {c0_sha}")
+
+    # 4. Treatment C1 Checkpoint
+    if not c1_ckpt.is_file():
+        raise FileNotFoundError(f"[DRY-RUN] Treatment C1 checkpoint not found: {c1_ckpt}")
+    c1_sha = compute_sha256(c1_ckpt)
+    print(f"  [PASS] Treatment C1 checkpoint present, SHA-256: {c1_sha}")
+
+    # 5. Endpoint Readiness
+    meta_c0 = validate_endpoint_readiness(c0_ckpt, "C0", allow_incomplete=allow_incomplete_endpoints)
+    print(f"  [PASS] Control C0 endpoint readiness verified (successful_updates={meta_c0['successful_updates']}).")
+    meta_c1 = validate_endpoint_readiness(c1_ckpt, "C1", allow_incomplete=allow_incomplete_endpoints)
+    print(f"  [PASS] Treatment C1 endpoint readiness verified (successful_updates={meta_c1['successful_updates']}).")
+
+    # 6. Paired Compatibility
+    validate_paired_checkpoints_compatibility(meta_c0, meta_c1)
+    print("  [PASS] C0 and C1 paired training contract & hyperparameter compatibility verified.")
+
+    # 7. Authorized ZIP
+    if authorized_zip:
+        zp = Path(authorized_zip)
+        if not zp.is_file():
+            raise FileNotFoundError(f"[DRY-RUN] Authorized ZIP archive not found: {zp}")
+        zip_sha = compute_sha256(zp)
+        expected_zip_sha = "b750eb3bf3971afccd9ab9058a64fa6b3f5781399b9ef0f1294d29bf580784a9"
+        if zip_sha != expected_zip_sha:
+            raise RuntimeError(f"[DRY-RUN] Authorized ZIP SHA mismatch: {zip_sha} != {expected_zip_sha}")
+        print(f"  [PASS] Authorized ZIP SHA-256 verified: {zip_sha}")
+
+    # 8. Protocol Z Prompts
+    if not skip_protocol_z and prompts_path:
+        pp = Path(prompts_path)
+        if not pp.is_file():
+            raise FileNotFoundError(f"[DRY-RUN] Protocol Z prompts JSON not found: {pp}")
+        with open(pp, "r", encoding="utf-8") as pf:
+            prompts_dict = json.load(pf)
+        if not isinstance(prompts_dict, dict) or len(prompts_dict) == 0:
+            raise ValueError(f"[DRY-RUN] Protocol Z prompts file {pp} is empty or invalid.")
+        print(f"  [PASS] Protocol Z prompts verified ({len(prompts_dict)} prompts loaded).")
+
+    # 9. Dry Model Instantiation and Exact Dropout Check
+    device_cpu = torch.device("cpu")
+    model_r, fp_r = load_eval_model(ref_ckpt, device_cpu)
+    model_c0, fp_c0 = load_eval_model(c0_ckpt, device_cpu)
+    model_c1, fp_c1 = load_eval_model(c1_ckpt, device_cpu)
+    for name, m in [("Reference R", model_r), ("Control C0", model_c0), ("Treatment C1", model_c1)]:
+        if m.training:
+            raise RuntimeError(f"[DRY-RUN] Model {name} is in training mode during dry run!")
+        if getattr(m, "binary_prompt_dropout_p", 0.0) != 0.0:
+            raise RuntimeError(f"[DRY-RUN] Model {name} has binary_prompt_dropout_p != 0.0 ({m.binary_prompt_dropout_p})!")
+    print("  [PASS] All model architectures instantiated with exact zero-dropout evaluation contracts.")
+
+    print("[DRY-RUN] All preflight integrity checks PASSED successfully. System ready for evaluation.")
+    return {
+        "status": "PASS",
+        "manifest_sha256": manifest_sha,
+        "ref_sha256": ref_sha,
+        "c0_sha256": c0_sha,
+        "c1_sha256": c1_sha,
+        "c0_metadata": meta_c0,
+        "c1_metadata": meta_c1,
+        "fingerprints": {"reference_r": fp_r, "control_c0": fp_c0, "treatment_c1": fp_c1},
+    }
 
 
 def main():
@@ -937,7 +1242,16 @@ def main():
     print("=" * 80)
 
     if args.dry_run:
-        print("[DRY-RUN] Verified checkpoint and manifest hashes successfully. No inference executed.")
+        execute_dry_run_audit(
+            manifest_path=manifest_path,
+            ref_ckpt=ref_ckpt,
+            c0_ckpt=c0_ckpt,
+            c1_ckpt=c1_ckpt,
+            authorized_zip=args.authorized_zip,
+            prompts_path=args.prompts,
+            skip_protocol_z=args.skip_protocol_z,
+            allow_incomplete_endpoints=args.allow_incomplete_endpoints,
+        )
         return
 
     device = torch.device(args.device)

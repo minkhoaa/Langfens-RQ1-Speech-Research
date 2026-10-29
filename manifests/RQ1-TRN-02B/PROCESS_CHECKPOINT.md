@@ -1,8 +1,8 @@
 # LANGFENS — RQ1-TRN-02B / Acoustic Conditioning Design, Implementation and Preflight Safety Closure
 
-**Status:** COMPLETED_TRAINING_BOTH_ARMS (C0 & C1 3,600 updates completed; all checkpoints mirrored; ready for paired scientific evaluation)
+**Status:** COMPLETED_PAIRED_EVALUATION; HYPOTHESIS_NOT_SUPPORTED (C0 & C1 paired CPU evaluation complete; prompt dropout hypothesis falsified under matched training exposure; Reference R production anchor retained)
 
-**Recorded at:** 2026-10-29T02:30:00+07:00
+**Recorded at:** 2026-10-29T03:30:00+07:00
 
 **Evidence source:** Commits `6836367` through `032b0b3`, branch `review/rq1-trn-02b-kaggle-official-runs`, `manifests/RQ1-TRN-02B/`
 
@@ -86,6 +86,7 @@ Design and implement the controlled acoustic conditioning ablation (Control Arm 
   - [checkpoints/12-kaggle-direct-c0-launch-blockers-and-benchmark-waiver.md](checkpoints/12-kaggle-direct-c0-launch-blockers-and-benchmark-waiver.md)
   - [checkpoints/13-kaggle-c0-execution-blockers-and-persistence-closure.md](checkpoints/13-kaggle-c0-execution-blockers-and-persistence-closure.md)
   - [checkpoints/14-kaggle-c0-c1-training-completion-and-paired-mirroring.md](checkpoints/14-kaggle-c0-c1-training-completion-and-paired-mirroring.md)
+  - [checkpoints/15-cpu-paired-scientific-evaluation.md](checkpoints/15-cpu-paired-scientific-evaluation.md)
 
 ## 6. Restart / Recovery Instructions
 - Safe restart point: All preflight tests passing locally on CPU.
@@ -172,3 +173,20 @@ See [checkpoints/14-kaggle-c0-c1-training-completion-and-paired-mirroring.md](ch
 - **Total GPU Time:** 0.53 hours across both arms combined (29.47h remaining of 30.00h weekly quota).
 - **Invariants Preserved:** Both arms satisfied all 9 endpoint invariants (`COMPLETED_3600_UPDATES`). Sealed TEST partition remained strictly untouched.
 - **Next Milestone:** Standalone CPU paired counterfactual evaluation via `audit_scripts/evaluate_rq1_trn_02b.py`.
+
+
+## 14. Step 15 — CPU Paired Scientific Evaluation & Hypothesis Determination (2026-10-29)
+
+See [checkpoints/15-cpu-paired-scientific-evaluation.md](checkpoints/15-cpu-paired-scientific-evaluation.md) and [PAIRED_SCIENTIFIC_EVALUATION.md](PAIRED_SCIENTIFIC_EVALUATION.md).
+
+- **Execution Environment:** Local Laptop CPU (`torch 2.14.1+cpu`, Python 3.14.8), strict inference mode, zero weights mutation verified.
+- **Primary Matched-Budget Causal Contrast ($\Delta_{\text{dropout}} = \text{C1} - \text{C0}$):** Control C0 AP = **0.310304** vs Treatment C1 AP = **0.302386** ($\Delta = \mathbf{-0.007918}$; 1,000-resample speaker-stratified cluster bootstrap 95% CI: **`[-0.018328, +0.000385]`**).
+- **Acoustic Reliance Gap ($\Delta_{\text{gap}}$):** Control C0 = **0.017543** vs Treatment C1 = **0.011423** ($\Delta = \mathbf{-0.006120}$; 95% CI `[-0.019675, +0.005596]`). C1's acoustic gap spans zero (`[-0.003024, +0.025217]`).
+- **Canonical Prior Comparison:** Static train-only canonical phone error prior AP = **0.303063**; Treatment C1 (**0.302386**) performs below the dictionary prior.
+- **Protocol Z (Zero-Oracle Inference):** Aligned-only AP: Control C0 = **0.307582** vs Treatment C1 = **0.300992** ($\Delta = \mathbf{-0.006590}$, coverage 99.63%).
+- **CTC PER Guardrails:** Control C0 = 22.02%, Treatment C1 = 22.01%, Reference R = 23.68%. Both arms improved CTC PER without guardrail degradation.
+- **Exploratory Secondary Checkpoints (`best.pt`):** C0 `best.pt` (Epoch 4 / 2,400 updates) AP = 0.314170; C1 `best.pt` (Epoch 1 / 600 updates) AP = 0.321258. Post-peak C1 performance degraded monotonically across epochs 2–6 (0.3204 $\to$ 0.3023). Exposure confounder forbids superseding fixed-budget primary results.
+- **Scientific Verdict:** The hypothesis that whole-phone binary prompt dropout improves acoustic conditioning is **NOT_SUPPORTED**.
+- **TEST Partition Isolation:** Strictly sealed (0 test utterances accessed).
+- **Gate Closure:** RQ1-TRN-02B concluded. Production baseline anchor Reference R (`best.pt`) retained.
+
