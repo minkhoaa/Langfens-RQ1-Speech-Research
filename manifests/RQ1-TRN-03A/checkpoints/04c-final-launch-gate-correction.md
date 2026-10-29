@@ -4,7 +4,7 @@
 
 **Recorded at:** 2026-10-29T21:00:00+07:00
 
-**Evidence source:** Commits `edb4e4971b97404a0d48fd1d59e753560fd46a45`, `audit_scripts/train_fold1_ctc_binary.py`, `audit_scripts/kaggle_fold_train_exec.py`, `deploy/kaggle/kaggle_entrypoint.py`, `configs/rq1_trn_03a_fold{2,3,4}.yaml`, `tests/test_rq1_trn_03a_kaggle_deployment.py`
+**Evidence source:** Commits `edb4e4971b97404a0d48fd1d59e753560fd46a45` (base) -> `c9d2060110b6c429fb2d0d8973755fc86149156c` (implementation), `audit_scripts/train_fold1_ctc_binary.py`, `audit_scripts/kaggle_fold_train_exec.py`, `deploy/kaggle/kaggle_entrypoint.py`, `configs/rq1_trn_03a_fold{2,3,4}.yaml`, `tests/test_rq1_trn_03a_kaggle_deployment.py`
 
 **Evidence level:** `INDEPENDENTLY_VERIFIED` (Executable Mocked Recovery, Full Test Suite & Durability Verification)
 
@@ -27,6 +27,7 @@ Execute final launch-gate corrections before authorizing Kaggle GPU execution fo
 
 ## 2. Inputs & Dependencies
 - **Base Commit:** `edb4e4971b97404a0d48fd1d59e753560fd46a45` on branch `review/rq1-trn-03a-cross-fold-planning`.
+- **Implementation Commit:** `c9d2060110b6c429fb2d0d8973755fc86149156c`.
 - **Baseline Trainer:** `audit_scripts/train_fold1_ctc_binary.py`.
 - **Kaggle Fold Runner:** `audit_scripts/kaggle_fold_train_exec.py`.
 - **Kaggle Entrypoint:** `deploy/kaggle/kaggle_entrypoint.py`.
