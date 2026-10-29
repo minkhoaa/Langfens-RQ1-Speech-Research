@@ -32,6 +32,25 @@ def compute_sha256(path: Path | str) -> str:
     return h.hexdigest()
 
 
+def resolve_cross_fold_hf_token() -> Optional[str]:
+    """
+    Resolves Hugging Face API token strictly from environment variables or Kaggle Secrets.
+    Strictly prohibits reading from candidate token files in datasets or repository trees.
+    """
+    for k in ("HF_TOKEN", "HUGGINGFACE_TOKEN", "HUGGING_FACE_HUB_TOKEN"):
+        v = os.environ.get(k)
+        if v and v.strip():
+            return v.strip()
+    try:
+        from kaggle_secrets import UserSecretsClient  # type: ignore
+        v = UserSecretsClient().get_secret("HF_TOKEN")
+        if v and v.strip():
+            return v.strip()
+    except Exception:
+        pass
+    return None
+
+
 def resolve_hf_token(explicit_token: Optional[str] = None) -> Optional[str]:
     """Resolves Hugging Face API token from argument, environment, Kaggle secrets, or cache."""
     if explicit_token:
@@ -88,6 +107,7 @@ class KaggleRemoteMirror:
         auth_token: Optional[str] = None,
         require_verification: bool = True,
         allow_local_test: bool = False,
+        strict_secrets_only: bool = False,
     ):
         backend_lower = backend.lower()
         if backend_lower not in self.SUPPORTED_BACKENDS:
@@ -97,7 +117,11 @@ class KaggleRemoteMirror:
             )
         self.backend = backend_lower
         self.remote_target = str(remote_target) if remote_target else os.environ.get("KAGGLE_REMOTE_MIRROR_TARGET")
-        self.auth_token = auth_token or os.environ.get("KAGGLE_REMOTE_MIRROR_TOKEN")
+        self.strict_secrets_only = strict_secrets_only
+        if strict_secrets_only:
+            self.auth_token = resolve_cross_fold_hf_token()
+        else:
+            self.auth_token = auth_token or os.environ.get("KAGGLE_REMOTE_MIRROR_TOKEN")
         self.require_verification = require_verification
         self.allow_local_test = allow_local_test
         self._verified = False
@@ -140,7 +164,7 @@ class KaggleRemoteMirror:
                 return False, f"FAIL-CLOSED: Failed to access local mirror directory '{p}': {e}"
 
         elif self.backend == "huggingface":
-            token = resolve_hf_token(self.auth_token)
+            token = self.auth_token or (resolve_cross_fold_hf_token() if self.strict_secrets_only else resolve_hf_token(self.auth_token))
             if not token:
                 return (
                     False,
@@ -272,7 +296,7 @@ class KaggleRemoteMirror:
             }
 
         elif self.backend == "huggingface":
-            token = resolve_hf_token(self.auth_token)
+            token = self.auth_token or (resolve_cross_fold_hf_token() if self.strict_secrets_only else resolve_hf_token(self.auth_token))
             if not token:
                 raise RuntimeError("FAIL-CLOSED: Hugging Face token missing during mirror_file.")
 
@@ -321,3 +345,69 @@ class KaggleRemoteMirror:
             f"FAIL-CLOSED: Genuine durable upload not implemented for backend '{self.backend}'. "
             "Never mark simulated uploads as successful."
         )
+
+    def file_exists(self, remote_rel_path: str) -> bool:
+        """Checks if a file exists in the remote persistent store."""
+        if self.backend == "local_dir":
+            return (Path(self.remote_target) / remote_rel_path).is_file()
+        elif self.backend == "gdrive":
+            return (Path(self.remote_target) / remote_rel_path).is_file()
+        elif self.backend == "huggingface":
+            token = self.auth_token or (resolve_cross_fold_hf_token() if self.strict_secrets_only else resolve_hf_token(self.auth_token))
+            if not token:
+                return False
+            try:
+                from huggingface_hub import HfApi  # type: ignore
+                api = HfApi(token=token)
+                files = api.list_repo_files(repo_id=str(self.remote_target), repo_type="model")
+                return remote_rel_path in files
+            except Exception:
+                return False
+        return False
+
+    def download_file(
+        self,
+        remote_rel_path: str,
+        local_dest_path: Path | str,
+        verify_sha: bool = True
+    ) -> Path:
+        """
+        Downloads a file from the remote persistent store to local destination.
+        Verifies SHA-256 if available.
+        """
+        dest_p = Path(local_dest_path).resolve()
+        dest_p.parent.mkdir(parents=True, exist_ok=True)
+
+        if self.backend == "local_dir":
+            src_p = Path(self.remote_target) / remote_rel_path
+            if not src_p.is_file():
+                raise FileNotFoundError(f"File not found in local mirror: {src_p}")
+            shutil.copyfile(str(src_p), str(dest_p))
+            return dest_p
+
+        elif self.backend == "gdrive":
+            src_p = Path(self.remote_target) / remote_rel_path
+            if not src_p.is_file():
+                raise FileNotFoundError(f"File not found in Google Drive mirror: {src_p}")
+            shutil.copyfile(str(src_p), str(dest_p))
+            return dest_p
+
+        elif self.backend == "huggingface":
+            token = self.auth_token or (resolve_cross_fold_hf_token() if self.strict_secrets_only else resolve_hf_token(self.auth_token))
+            if not token:
+                raise RuntimeError("FAIL-CLOSED: Hugging Face token missing for download.")
+            from huggingface_hub import hf_hub_download  # type: ignore
+            repo_id = str(self.remote_target)
+            downloaded = hf_hub_download(
+                repo_id=repo_id,
+                filename=remote_rel_path,
+                token=token,
+                local_dir=str(dest_p.parent),
+                repo_type="model"
+            )
+            downloaded_p = Path(downloaded)
+            if downloaded_p.resolve() != dest_p:
+                shutil.copyfile(str(downloaded_p), str(dest_p))
+            return dest_p
+
+        raise ValueError(f"Unsupported backend for download: {self.backend}")

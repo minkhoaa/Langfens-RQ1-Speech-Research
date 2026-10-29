@@ -74,14 +74,23 @@ Design and specify a mathematically rigorous, leak-free 4-fold cross-validation 
    - Implemented comprehensive deployment test suite `tests/test_rq1_trn_03a_kaggle_deployment.py` (8 tests).
    - Executed full repository regression test suite: `258 passed, 4 skipped in 138.24s`.
    - Executed deployment preflight dry-run across all three folds with 100% success.
+12. **Completed Step 04B Kaggle Durability & Recovery Closure:**
+   - Enforced immutable fixed-budget checkpoint lock at strictly 3,600 updates and Epoch 6 (`is_fixed_budget_endpoint=True`), preventing later epoch weights from overwriting verified 3,600-update artifacts.
+   - Implemented `validate_resume_checkpoint()` validating state dicts, fold identity, seed, model ancestry, and strictly rejecting cross-fold resume.
+   - Implemented recovery of `fixed_budget_checkpoint.pt` from `remote_mirror` when resuming past Epoch 6.
+   - Mandated verified private remote persistence (`huggingface`) for production Kaggle execution, rejecting empty targets or disabled verification.
+   - Enforced per-epoch `history.json` upload with SHA-256 readback.
+   - Removed credential-file fallbacks and CLI token arguments; used environment variables / Kaggle Secrets only (`resolve_cross_fold_hf_token()`).
+   - Implemented executable mocked checkpoint recovery tests and isolated speaker-leakage tests in `tests/test_rq1_trn_03a_kaggle_deployment.py` (11 tests).
+   - Full repository regression suite passed: `261 passed, 4 skipped in 140.23s`.
 
 ---
 
 ## 4. Results & Verification
 - **Split Manifest Invariance:** Verified `l2arctic_4fold_splits.json` SHA-256 `7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b`.
 - **Automated Split Suite:** `python3 audit_scripts/validate_splits.py` passed all 4 core checks with 0 errors.
-- **Automated Regression Suite:** All 258 tests pass (`PYTHONPATH=. .venv/bin/pytest tests/`):
-  - 258 passed, 4 skipped in 138.24s (100% green).
+- **Automated Regression Suite:** All 261 tests pass (`PYTHONPATH=. .venv/bin/pytest tests/`):
+  - 261 passed, 4 skipped in 140.23s (100% green).
 - **Integration Test Suite (`test_rq1_trn_03a_fold_readiness_integration.py`):**
   - `test_all_fold_configs_parity`: PASS (all 4 configs verified bit-identical).
   - `test_fold_package_isolation_and_contents`: PASS (all packages verified to contain exactly 18 authorized speakers and 0 test speakers).
@@ -101,6 +110,7 @@ Design and specify a mathematically rigorous, leak-free 4-fold cross-validation 
 - **Step Checkpoint 02:** `manifests/RQ1-TRN-03A/checkpoints/02-cross-fold-protocol-parity-and-isolation-corrections.md`
 - **Step Checkpoint 03:** `manifests/RQ1-TRN-03A/checkpoints/03-fold-readiness-and-trainer-generalization.md`
 - **Step Checkpoint 04:** `manifests/RQ1-TRN-03A/checkpoints/04-kaggle-deployment-blockers-closure.md`
+- **Step Checkpoint 04B:** `manifests/RQ1-TRN-03A/checkpoints/04b-kaggle-durability-and-recovery-closure.md`
 - **Kaggle Fold Runner:** `audit_scripts/kaggle_fold_train_exec.py`
 - **Package Builder Script:** `audit_scripts/build_fold_packages.py`
 - **Fold Configuration Files:** `configs/rq1_trn_03a_fold{2,3,4}.yaml`

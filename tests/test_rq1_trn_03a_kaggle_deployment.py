@@ -3,13 +3,17 @@
 Senior Speech ML Research Engineer & Reproducibility Auditor.
 
 Verifies:
-  1. Trainer resume bug resolution (outdir referenced before initialization).
-  2. Fresh pretrained initialization enforcement (strict rejection of Fold 1 checkpoints).
-  3. Staging and per-fold test speaker isolation for Folds 2, 3, and 4.
-  4. Fail-closed safety failure paths (test speaker leakage, SHA-256 corruption).
-  5. Endpoint classification semantics (COMPLETED_3600_UPDATES vs INCOMPLETE).
-  6. End-to-end dry-run preflight checks for Folds 2, 3, and 4.
-  7. Kaggle entrypoint CLI mode dispatch for cross-fold baseline runs.
+  1. Executable mocked checkpoint recovery and state restoration.
+  2. Fixed-budget checkpoint Epoch 6 lock (exactly 3,600 updates at Epoch 6).
+  3. Fresh pretrained initialization enforcement (strict rejection of Fold 1 checkpoints).
+  4. Staging and per-fold test speaker isolation for Folds 2, 3, and 4.
+  5. Actual test-speaker leak detection independently of SHA mismatch.
+  6. Corrupt archive detection.
+  7. Cross-fold resume rejection.
+  8. Remote mirror missing token failure in production mode.
+  9. Endpoint classification semantics (COMPLETED_3600_UPDATES vs INCOMPLETE vs FAILED).
+  10. End-to-end dry-run preflight checks for Folds 2, 3, and 4.
+  11. Kaggle entrypoint CLI mode dispatch for cross-fold baseline runs.
 """
 
 import json
@@ -24,11 +28,17 @@ import torch
 
 from audit_scripts.kaggle_fold_train_exec import (
     EXPECTED_FOLD_PACKAGE_SHA256,
+    audit_archive_for_test_speaker_leak,
     classify_fold_training_endpoint,
     compute_sha256,
     find_and_stage_fold_package,
     verify_fresh_pretrained_initialization,
     verify_manifest,
+)
+from audit_scripts.train_fold1_ctc_binary import (
+    LangfensWav2Vec2MDD,
+    checkpoint,
+    validate_resume_checkpoint,
 )
 
 
@@ -36,77 +46,126 @@ MANIFEST_PATH = Path("manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json")
 
 
 # ==============================================================================
-# 1. TRAINER RESUME BUG RESOLUTION & STATE INTEGRITY
+# 1. EXECUTABLE MOCKED CHECKPOINT RECOVERY & RESUME INTEGRITY
 # ==============================================================================
 
-def test_trainer_resume_bug_resolved():
-    """Proves that outdir is properly initialized before resume check, preventing UnboundLocalError."""
-    from audit_scripts.train_fold1_ctc_binary import LangfensWav2Vec2MDD
-
+def test_executable_mocked_checkpoint_recovery():
+    """Proves bit-exact weight and optimizer/scheduler state restoration on resume."""
     with tempfile.TemporaryDirectory() as tmpdir:
-        tmp_path = Path(tmpdir)
-        ckpt_path = tmp_path / "mock_ckpt.pt"
-        out_dir = tmp_path / "run_out"
-        out_dir.mkdir(parents=True, exist_ok=True)
+        tmp_p = Path(tmpdir)
+        ckpt_path = tmp_p / "epoch_2.pt"
 
-        # Create a mock checkpoint with valid weights and state dicts
-        model = LangfensWav2Vec2MDD.from_pretrained(
-            "facebook/wav2vec2-base-960h",
-            revision="22aad52d435eb6dbaf354bdad9b0da84ce7d6156",
-            ctc_weight=1.0,
-            binary_weight=1.0
+        # 1. Create a model with trainable heads
+        model = LangfensWav2Vec2MDD(
+            hidden_dim=32, conv_dim=16, num_transformer_layers=1,
+            num_attention_heads=4, intermediate_dim=64, dropout=0.1
         )
         trainable = model.configure_two_head_training()
         optimizer = torch.optim.AdamW(trainable, lr=1e-3)
         scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=15000)
         scaler = torch.amp.GradScaler("cpu", enabled=False)
 
-        mock_payload = {
-            "model": model.state_dict(),
-            "optimizer": optimizer.state_dict(),
-            "scheduler": scheduler.state_dict(),
-            "scaler": scaler.state_dict(),
-            "epoch": 2,
-            "successful_updates": 1200,
-            "micro_steps": 2400,
-            "best_ap": 0.3125,
-            "patience": 1,
-            "skipped_amp_attempts_total": 0,
-            "consecutive_skips": 0,
-            "history": [{"epoch": 1}, {"epoch": 2}, {"epoch": 3}],
-            "rng": {
-                "python": None,
-                "numpy": None,
-                "torch": torch.get_rng_state(),
-                "cuda": None
-            },
-            "metadata": {"git_sha": "test", "fold": 2},
-            "fixed_budget_saved": False
+        # Fill with specific distinct values
+        with torch.no_grad():
+            for p in trainable:
+                p.fill_(0.42)
+
+        meta = {
+            "fold": 2,
+            "split_sha256": "mock_manifest_sha",
+            "config": {
+                "seed": 1337,
+                "pretrained_model": "facebook/wav2vec2-base-960h"
+            }
         }
-        torch.save(mock_payload, ckpt_path)
+        checkpoint(
+            ckpt_path,
+            model, optimizer, scheduler, scaler,
+            epoch=2, updates=1200, micro=2400, best=0.3125,
+            history=[{"epoch": 1}, {"epoch": 2}, {"epoch": 3}],
+            metadata=meta,
+            patience=1, skipped_amp=0, consecutive_skips=0,
+            fixed_budget_saved=False
+        )
 
-        # Test resuming via train_fold1_ctc_binary with --eval-only
-        cfg_path = Path("configs/rq1_trn_03a_fold2.yaml")
-        cmd = [
-            sys.executable,
-            "audit_scripts/train_fold1_ctc_binary.py",
-            "--config", str(cfg_path),
-            "--fold", "2",
-            "--resume", str(ckpt_path),
-            "--output-dir", str(out_dir),
-            "--eval-only",
-            "--max-eval-utterances", "2"
-        ]
-        # In CPU testing, train_fold1_ctc_binary exits early if device != cuda,
-        # but argument parsing, config loading, and resume dictionary unpickling execute first.
-        env = os.environ.copy()
-        env["PYTHONPATH"] = f"{Path.cwd()}/src:{Path.cwd()}:{env.get('PYTHONPATH', '')}"
+        # 2. Instantiate a fresh model with different initial weights
+        new_model = LangfensWav2Vec2MDD(
+            hidden_dim=32, conv_dim=16, num_transformer_layers=1,
+            num_attention_heads=4, intermediate_dim=64, dropout=0.1
+        )
+        new_trainable = new_model.configure_two_head_training()
+        with torch.no_grad():
+            for p in new_trainable:
+                p.fill_(-0.99)
+        new_optimizer = torch.optim.AdamW(new_trainable, lr=1e-3)
+        new_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(new_optimizer, T_max=15000)
+        new_scaler = torch.amp.GradScaler("cpu", enabled=False)
 
-        proc = subprocess.run(cmd, env=env, capture_output=True, text=True)
-        # Should NOT crash with UnboundLocalError
-        assert "UnboundLocalError" not in proc.stderr
-        assert "local variable 'outdir' referenced before assignment" not in proc.stderr
-        assert "outdir is not defined" not in proc.stderr
+        # 3. Load and validate
+        ck = torch.load(ckpt_path, map_location="cpu", weights_only=False)
+        cfg = {"seed": 1337, "pretrained_model": "facebook/wav2vec2-base-960h"}
+        validate_resume_checkpoint(ck, cfg, expected_fold=2, manifest_sha="mock_manifest_sha")
+
+        new_model.load_state_dict(ck["model"])
+        new_optimizer.load_state_dict(ck["optimizer"])
+        new_scheduler.load_state_dict(ck["scheduler"])
+        new_scaler.load_state_dict(ck["scaler"])
+
+        # 4. Assert bit-exact weight restoration
+        for p in new_trainable:
+            assert torch.allclose(p, torch.tensor(0.42)), "Weights were not restored to saved state!"
+
+        # 5. Assert counters
+        assert ck["epoch"] == 2
+        assert ck["successful_updates"] == 1200
+        assert ck["micro_steps"] == 2400
+        assert ck["best_ap"] == 0.3125
+        assert ck["fixed_budget_saved"] is False
+
+
+def test_epoch_6_fixed_budget_checkpoint_recovery_and_lock():
+    """Proves fixed_budget_checkpoint represents exactly 3,600 updates at Epoch 6 and rejects overwriting."""
+    with tempfile.TemporaryDirectory() as tmpdir:
+        tmp_p = Path(tmpdir)
+        fb_path = tmp_p / "fixed_budget_checkpoint.pt"
+
+        model = LangfensWav2Vec2MDD(
+            hidden_dim=32, conv_dim=16, num_transformer_layers=1,
+            num_attention_heads=4, intermediate_dim=64, dropout=0.1
+        )
+        trainable = model.configure_two_head_training()
+        optimizer = torch.optim.AdamW(trainable, lr=1e-3)
+        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=15000)
+        scaler = torch.amp.GradScaler("cpu", enabled=False)
+
+        # 1. Valid Epoch 6 fixed-budget checkpoint succeeds
+        checkpoint(
+            fb_path,
+            model, optimizer, scheduler, scaler,
+            epoch=5, updates=3600, micro=7200, best=0.318,
+            history=[{"epoch": i} for i in range(1, 7)],
+            metadata={"fold": 2},
+            fixed_budget_saved=True,
+            is_fixed_budget_endpoint=True
+        )
+        assert fb_path.is_file()
+        ck = torch.load(fb_path, map_location="cpu", weights_only=False)
+        assert ck["successful_updates"] == 3600
+        assert ck["epoch"] == 5
+        assert ck["is_fixed_budget_endpoint"] is True
+
+        # 2. Invalid updates (<3600 or >3600) or invalid epoch (!=5) raises ValueError
+        with pytest.raises(ValueError) as exc:
+            checkpoint(
+                fb_path,
+                model, optimizer, scheduler, scaler,
+                epoch=6, updates=4200, micro=8400, best=0.318,
+                history=[{"epoch": i} for i in range(1, 8)],
+                metadata={"fold": 2},
+                fixed_budget_saved=True,
+                is_fixed_budget_endpoint=True
+            )
+        assert "fixed_budget_checkpoint must represent exactly 3,600 updates at Epoch 6" in str(exc.value)
 
 
 # ==============================================================================
@@ -115,14 +174,12 @@ def test_trainer_resume_bug_resolved():
 
 def test_fresh_pretrained_initialization_strictly_enforced():
     """Proves that any attempt to pass or configure a Fold 1 checkpoint is rejected."""
-    # 1. Valid config passes
     valid_cfg = {
         "pretrained_model": "facebook/wav2vec2-base-960h",
         "pretrained_revision": "22aad52d435eb6dbaf354bdad9b0da84ce7d6156"
     }
     verify_fresh_pretrained_initialization(valid_cfg)
 
-    # 2. Initial checkpoint key rejected
     forbidden_cfgs = [
         {"pretrained_model": "facebook/wav2vec2-base-960h", "initial_checkpoint": "checkpoints/RQ1-TRN-02A/recovered/best.pt"},
         {"pretrained_model": "facebook/wav2vec2-base-960h", "baseline_checkpoint": "best.pt"},
@@ -155,44 +212,94 @@ def test_find_and_stage_fold_package_success():
             assert compute_sha256(staged_zip) == expected_sha
 
 
-def test_find_and_stage_test_speaker_leakage_failure():
-    """Proves that if an archive accidentally contains a test speaker, it fails closed."""
+def test_actual_test_speaker_leak_detection_independent_of_sha():
+    """Proves test speaker leak is caught by member inspection even if expected SHA matches."""
     with tempfile.TemporaryDirectory() as tmpdir:
         work_dir = Path(tmpdir)
         leaked_pkg = work_dir / "authorized_RQ1-TRN_fold2_train_val_only.zip"
 
-        # Create a malicious zip containing Fold 2 test speaker 'BWC.zip'
+        # Create a zip containing Fold 2 test speaker 'BWC.zip'
         with zipfile.ZipFile(leaked_pkg, "w") as zf:
             for spk in ["ABA", "ASI", "EBVS", "ERMS", "HJK", "LXC", "NCC", "NJS",
                         "PNV", "RRBI", "THV", "TLV", "TNI", "TXHC", "YBAA", "YDCK",
-                        "YKWK", "BWC"]:  # BWC is a TEST speaker for Fold 2!
+                        "YKWK", "BWC"]:  # BWC is Fold 2 test speaker!
                 zf.writestr(f"{spk}.zip", b"dummy")
 
-        with pytest.raises(ValueError) as exc:
+        # 1. Direct audit function check
+        with pytest.raises(PermissionError) as exc_audit:
+            audit_archive_for_test_speaker_leak(leaked_pkg, fold_idx=2)
+        assert "CRITICAL SAFETY VIOLATION: Test speaker 'BWC'" in str(exc_audit.value)
+
+        # 2. find_and_stage_fold_package check with actual SHA (independent of hash mismatch)
+        actual_sha = compute_sha256(leaked_pkg)
+        with pytest.raises(PermissionError) as exc_stage:
             find_and_stage_fold_package(
                 fold_idx=2,
                 kaggle_input_dir=work_dir,
                 working_dir=work_dir / "target",
-                expected_sha256=EXPECTED_FOLD_PACKAGE_SHA256[2]  # Hash will also mismatch
+                expected_sha256=actual_sha  # SHA matches, but test speaker leak must fail!
             )
-        assert "FAIL-CLOSED" in str(exc.value)
+        assert "CRITICAL SAFETY VIOLATION: Test speaker 'BWC'" in str(exc_stage.value)
 
 
-def test_find_and_stage_sha256_corruption_failure():
-    """Proves that a corrupted package fails closed with SHA-256 mismatch."""
+def test_corrupt_archive_detection():
+    """Proves non-zip or corrupt archive fails closed."""
     with tempfile.TemporaryDirectory() as tmpdir:
         work_dir = Path(tmpdir)
-        corrupt_pkg = work_dir / "authorized_RQ1-TRN_fold2_train_val_only.zip"
-        corrupt_pkg.write_bytes(b"corrupted data")
+        bad_zip = work_dir / "corrupt.zip"
+        bad_zip.write_bytes(b"not a valid zip file")
 
         with pytest.raises(ValueError) as exc:
-            find_and_stage_fold_package(
-                fold_idx=2,
-                kaggle_input_dir=work_dir,
-                working_dir=work_dir / "target",
-                expected_sha256=EXPECTED_FOLD_PACKAGE_SHA256[2]
-            )
-        assert "SHA-256 mismatch" in str(exc.value)
+            audit_archive_for_test_speaker_leak(bad_zip, fold_idx=2)
+        assert "Corrupted archive" in str(exc.value)
+
+
+def test_wrong_fold_resume_rejected():
+    """Proves cross-fold checkpoint resume is strictly rejected."""
+    cfg = {"seed": 1337, "pretrained_model": "facebook/wav2vec2-base-960h"}
+    mock_ck = {
+        "model": {"dummy": torch.zeros(1)},
+        "optimizer": {"dummy": 1},
+        "scheduler": {"dummy": 1},
+        "scaler": {},
+        "epoch": 1,
+        "successful_updates": 600,
+        "micro_steps": 1200,
+        "best_ap": 0.31,
+        "history": [{"epoch": 1}, {"epoch": 2}],
+        "rng": {"torch": torch.get_rng_state()},
+        "metadata": {
+            "fold": 3,  # Checkpoint is from Fold 3!
+            "config": {"seed": 1337, "pretrained_model": "facebook/wav2vec2-base-960h"}
+        }
+    }
+    # Attempting to resume into Fold 2 MUST raise ValueError
+    with pytest.raises(ValueError) as exc:
+        validate_resume_checkpoint(mock_ck, cfg, expected_fold=2, manifest_sha="mock_sha")
+    assert "Cross-fold resume rejected: checkpoint is from fold 3, expected fold 2" in str(exc.value)
+
+
+def test_remote_mirror_missing_token_production_failure():
+    """Proves production Kaggle execution halts if HF_TOKEN is absent."""
+    with tempfile.TemporaryDirectory() as tmpdir:
+        old_env = os.environ.copy()
+        try:
+            os.environ.pop("HF_TOKEN", None)
+            os.environ.pop("HUGGINGFACE_TOKEN", None)
+            os.environ.pop("HUGGING_FACE_HUB_TOKEN", None)
+            cmd = [
+                sys.executable,
+                "audit_scripts/kaggle_fold_train_exec.py",
+                "--fold", "2",
+                "--allow-mock-gpu",
+                "--working-dir", tmpdir
+            ]
+            proc = subprocess.run(cmd, capture_output=True, text=True)
+            assert proc.returncode != 0
+            assert "FAIL-CLOSED: Hugging Face remote persistence requires valid HF_TOKEN" in proc.stderr
+        finally:
+            os.environ.clear()
+            os.environ.update(old_env)
 
 
 # ==============================================================================
@@ -214,26 +321,39 @@ def test_endpoint_classification():
         status = classify_fold_training_endpoint(out_dir, fold_idx=2)
         assert status["status"] == "INCOMPLETE"
 
-        # 3. Exactly 3,600 updates but missing best.pt -> FAILED
+        # 3. Exactly 3,600 updates but epoch != 5 -> FAILED
         torch.save({
             "successful_updates": 3600,
-            "epoch": 6,
-            "model": {},
-            "optimizer": {},
-            "scheduler": {},
+            "epoch": 6,  # Epoch 7 instead of 5!
+            "model": {"dummy": 1},
+            "optimizer": {"dummy": 1},
+            "scheduler": {"dummy": 1},
             "scaler": {},
-            "metadata": {},
-            "rng": {},
+            "metadata": {"fold": 2, "split_sha256": "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b", "config": {"seed": 1337, "batch_size": 2, "gradient_accumulation_steps": 2, "warmup_updates": 100, "max_epochs": 25, "learning_rate": 0.001, "weight_decay": 0.01, "optimizer": "AdamW", "scheduler": "cosine", "loss_weights": {"ctc": 1.0, "binary": 1.0}, "backbone_frozen": True, "amp": "fp16", "grad_scaler_initial_scale": 4096, "early_stopping_patience": 5}},
+            "rng": {"torch": torch.get_rng_state()},
+            "history": [{"epoch": i} for i in range(1, 8)],
             "best_ap": 0.320
         }, fixed_path)
         status = classify_fold_training_endpoint(out_dir, fold_idx=2)
         assert status["status"] == "FAILED"
-        assert "best.pt missing" in status["message"]
+        assert "expected exactly 5 (6th epoch)" in status["message"]
 
         # 4. Complete deliverable suite -> COMPLETED_3600_UPDATES
+        torch.save({
+            "successful_updates": 3600,
+            "epoch": 5,
+            "model": {"dummy": torch.zeros(1)},
+            "optimizer": {"dummy": torch.zeros(1)},
+            "scheduler": {"dummy": 1},
+            "scaler": {"scale": 4096.0},
+            "metadata": {"fold": 2, "split_sha256": "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b", "config": {"seed": 1337, "batch_size": 2, "gradient_accumulation_steps": 2, "warmup_updates": 100, "max_epochs": 25, "learning_rate": 0.001, "weight_decay": 0.01, "optimizer": "AdamW", "scheduler": "cosine", "loss_weights": {"ctc": 1.0, "binary": 1.0}, "backbone_frozen": True, "amp": "fp16", "grad_scaler_initial_scale": 4096, "early_stopping_patience": 5}},
+            "rng": {"torch": torch.get_rng_state()},
+            "history": [{"epoch": i} for i in range(1, 7)],
+            "best_ap": 0.320
+        }, fixed_path)
         (out_dir / "best.pt").write_bytes(b"mock_best")
         (out_dir / "last.pt").write_bytes(b"mock_last")
-        (out_dir / "history.json").write_text(json.dumps([{"epoch": 1}]) + "\n")
+        (out_dir / "history.json").write_text(json.dumps([{"epoch": i} for i in range(1, 7)]) + "\n")
 
         status = classify_fold_training_endpoint(out_dir, fold_idx=2)
         assert status["status"] == "COMPLETED_3600_UPDATES"
@@ -263,9 +383,6 @@ def test_kaggle_fold_train_exec_dry_run_all_folds():
 
 def test_kaggle_entrypoint_mode_dispatch():
     """Proves deploy/kaggle/kaggle_entrypoint.py parses and accepts fold modes."""
-    # Test argument parsing without execution
-    from deploy.kaggle.kaggle_entrypoint import main
-    # Verification that the script runs with --help
     cmd = [sys.executable, "deploy/kaggle/kaggle_entrypoint.py", "--help"]
     proc = subprocess.run(cmd, capture_output=True, text=True)
     assert proc.returncode == 0

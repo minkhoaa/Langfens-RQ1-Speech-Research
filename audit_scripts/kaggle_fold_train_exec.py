@@ -38,10 +38,10 @@ import torch
 import yaml
 
 try:
-    from audit_scripts.kaggle_checkpoint_sync import KaggleRemoteMirror, compute_sha256, resolve_hf_token
+    from audit_scripts.kaggle_checkpoint_sync import KaggleRemoteMirror, compute_sha256, resolve_cross_fold_hf_token
     from audit_scripts.kaggle_stage_and_verify import verify_kaggle_gpu_device
 except ImportError:
-    from kaggle_checkpoint_sync import KaggleRemoteMirror, compute_sha256, resolve_hf_token
+    from kaggle_checkpoint_sync import KaggleRemoteMirror, compute_sha256, resolve_cross_fold_hf_token
     from kaggle_stage_and_verify import verify_kaggle_gpu_device
 
 
@@ -74,6 +74,28 @@ def verify_manifest(manifest_path: Path) -> str:
     return digest
 
 
+def audit_archive_for_test_speaker_leak(zip_path: Path | str, fold_idx: int) -> None:
+    """
+    Rigorously inspects an archive's members to detect and reject active test speaker leakage.
+    Operates independently of SHA-256 verification.
+    """
+    p = Path(zip_path)
+    if not p.is_file():
+        raise FileNotFoundError(f"Archive not found: {p}")
+    test_spks = SEALED_TEST_SPEAKERS_BY_FOLD.get(fold_idx, set())
+    try:
+        with zipfile.ZipFile(p, "r") as zf:
+            members = set(zf.namelist())
+            packaged_spks = {m.replace(".zip", "") for m in members if m.endswith(".zip")}
+            for test_spk in test_spks:
+                if test_spk in packaged_spks or f"{test_spk}.zip" in members:
+                    raise PermissionError(
+                        f"CRITICAL SAFETY VIOLATION: Test speaker '{test_spk}' found in staged archive for Fold {fold_idx}!"
+                    )
+    except zipfile.BadZipFile as e:
+        raise ValueError(f"Corrupted archive: {p} is not a valid zip file ({e})")
+
+
 def find_and_stage_fold_package(
     fold_idx: int,
     kaggle_input_dir: Optional[Path | str],
@@ -91,6 +113,7 @@ def find_and_stage_fold_package(
 
     # If already staged and verified, reuse
     if staged_zip.is_file() and compute_sha256(staged_zip) == expected_sha256:
+        audit_archive_for_test_speaker_leak(staged_zip, fold_idx)
         print(f"[STAGING] Reusing verified staged package on VM disk: {staged_zip}")
         return staged_zip
 
@@ -130,6 +153,9 @@ def find_and_stage_fold_package(
             f"FAIL-CLOSED: Authorized package for Fold {fold_idx} ('{target_name}') not found in search paths: {search_dirs}"
         )
 
+    # Pre-copy test leakage audit
+    audit_archive_for_test_speaker_leak(source_path, fold_idx)
+
     print(f"[STAGING] Found source package: {source_path} ({source_path.stat().st_size:,} bytes)")
     src_sha = compute_sha256(source_path)
     if src_sha != expected_sha256:
@@ -149,16 +175,13 @@ def find_and_stage_fold_package(
             f"FAIL-CLOSED: Staged package copy SHA-256 corrupted: {staged_sha} != {expected_sha256}"
         )
 
-    # Verify physical test speaker exclusion inside the archive
+    # Post-copy test speaker exclusion audit
+    audit_archive_for_test_speaker_leak(staged_zip, fold_idx)
+
     with zipfile.ZipFile(staged_zip, "r") as zf:
         members = set(zf.namelist())
         packaged_spks = {m.replace(".zip", "") for m in members if m.endswith(".zip")}
         assert len(packaged_spks) == 18, f"Expected 18 inner speaker archives, got {len(packaged_spks)}"
-        for test_spk in SEALED_TEST_SPEAKERS_BY_FOLD[fold_idx]:
-            if test_spk in packaged_spks or f"{test_spk}.zip" in members:
-                raise PermissionError(
-                    f"CRITICAL SAFETY VIOLATION: Test speaker '{test_spk}' found in staged archive for Fold {fold_idx}!"
-                )
 
     print(f"[STAGING] Staged and verified package for Fold {fold_idx}: {staged_zip} (18 speakers, 0 test speakers)")
     return staged_zip
@@ -183,14 +206,18 @@ def verify_fresh_pretrained_initialization(config: Dict[str, Any]) -> None:
 def classify_fold_training_endpoint(
     output_dir: Path | str,
     fold_idx: int,
-    expected_updates: int = 3600
+    expected_updates: int = 3600,
+    expected_commit: Optional[str] = None
 ) -> Dict[str, Any]:
     """
-    Verifies that the training run produced the required deliverable checkpoints:
-    1. fixed_budget_checkpoint.pt with exactly expected_updates (3,600)
+    Rigorously verifies that the training run produced the required deliverable checkpoints:
+    1. fixed_budget_checkpoint.pt with EXACTLY expected_updates (3,600) and epoch == 5 (6th completed epoch).
     2. best.pt
     3. last.pt
-    4. history.json
+    4. history.json (at least 6 completed epochs)
+    5. Correct fold in metadata (meta['fold'] == fold_idx).
+    6. Immutable manifest SHA-256 match.
+    7. Pinned configuration hyperparameter invariants.
     """
     p_dir = Path(output_dir).resolve()
     fixed_file = p_dir / "fixed_budget_checkpoint.pt"
@@ -217,22 +244,100 @@ def classify_fold_training_endpoint(
     if not isinstance(ck_fixed, dict):
         return {"status": "FAILED", "message": "fixed_budget_checkpoint is not a dictionary.", "fold": fold_idx}
 
-    updates = ck_fixed.get("successful_updates", 0)
-    if updates < expected_updates:
+    updates = ck_fixed.get("successful_updates")
+    epoch = ck_fixed.get("epoch")
+
+    # Invariant 1: updates == 3600
+    if updates != expected_updates:
         return {
-            "status": "INCOMPLETE",
-            "message": f"fixed_budget_checkpoint has only {updates} / {expected_updates} updates.",
+            "status": "INCOMPLETE" if (updates is not None and updates < expected_updates) else "FAILED",
+            "message": f"fixed_budget_checkpoint has updates={updates}, expected exactly {expected_updates}.",
             "fold": fold_idx
         }
 
-    for req_key in ("model", "optimizer", "scheduler", "scaler", "metadata", "rng"):
+    # Invariant 2: epoch == 5 (0-indexed, meaning 6th completed epoch)
+    if epoch != 5:
+        return {
+            "status": "FAILED",
+            "message": f"fixed_budget_checkpoint has epoch={epoch}, expected exactly 5 (6th epoch).",
+            "fold": fold_idx
+        }
+
+    # Invariant 3: Required top-level payload keys
+    for req_key in ("model", "optimizer", "scheduler", "scaler", "metadata", "rng", "history"):
         if req_key not in ck_fixed:
             return {
                 "status": "FAILED",
                 "message": f"fixed_budget_checkpoint missing required key '{req_key}'.",
                 "fold": fold_idx
             }
+    if not isinstance(ck_fixed["model"], dict) or len(ck_fixed["model"]) == 0:
+        return {"status": "FAILED", "message": "fixed_budget_checkpoint model state dict missing or empty.", "fold": fold_idx}
+    if not isinstance(ck_fixed["optimizer"], dict) or len(ck_fixed["optimizer"]) == 0:
+        return {"status": "FAILED", "message": "fixed_budget_checkpoint optimizer state dict missing or empty.", "fold": fold_idx}
 
+    meta = ck_fixed.get("metadata", {})
+    if not isinstance(meta, dict):
+        return {"status": "FAILED", "message": "fixed_budget_checkpoint metadata is not a dict.", "fold": fold_idx}
+
+    # Invariant 4: Correct fold identity
+    ck_fold = meta.get("fold")
+    if ck_fold is None:
+        ck_fold = meta.get("config", {}).get("fold")
+    if ck_fold is None or int(ck_fold) != fold_idx:
+        return {
+            "status": "FAILED",
+            "message": f"Fold identity mismatch in checkpoint: found fold {ck_fold}, expected {fold_idx}.",
+            "fold": fold_idx
+        }
+
+    # Invariant 5: Immutable split manifest SHA-256
+    if meta.get("split_sha256") != EXPECTED_MANIFEST_SHA256:
+        return {
+            "status": "FAILED",
+            "message": f"Manifest SHA-256 mismatch in checkpoint: {meta.get('split_sha256')} != {EXPECTED_MANIFEST_SHA256}.",
+            "fold": fold_idx
+        }
+
+    # Invariant 6: Pinned configuration provenance
+    ck_cfg = meta.get("config", {})
+    if not isinstance(ck_cfg, dict):
+        return {"status": "FAILED", "message": "Checkpoint metadata missing config dict.", "fold": fold_idx}
+
+    cfg_invariants = {
+        "seed": 1337,
+        "batch_size": 2,
+        "gradient_accumulation_steps": 2,
+        "warmup_updates": 100,
+        "max_epochs": 25,
+        "learning_rate": 0.001,
+        "weight_decay": 0.01,
+        "optimizer": "AdamW",
+        "scheduler": "cosine",
+        "loss_weights": {"ctc": 1.0, "binary": 1.0},
+        "backbone_frozen": True,
+        "amp": "fp16",
+        "grad_scaler_initial_scale": 4096,
+        "early_stopping_patience": 5,
+    }
+    for k_inv, expected_val in cfg_invariants.items():
+        if ck_cfg.get(k_inv) != expected_val:
+            return {
+                "status": "FAILED",
+                "message": f"Configuration invariant violated in checkpoint: {k_inv}={ck_cfg.get(k_inv)}, expected {expected_val}.",
+                "fold": fold_idx
+            }
+
+    # Invariant 7: Git commit verification if provided
+    if expected_commit and meta.get("git_sha"):
+        if meta.get("git_sha").lower() != expected_commit.lower():
+            return {
+                "status": "FAILED",
+                "message": f"Git commit SHA mismatch in checkpoint: {meta.get('git_sha')} != {expected_commit}.",
+                "fold": fold_idx
+            }
+
+    # Invariant 8: best.pt, last.pt, and history.json
     if not best_file.is_file():
         return {"status": "FAILED", "message": f"best.pt missing in {p_dir}.", "fold": fold_idx}
 
@@ -242,15 +347,27 @@ def classify_fold_training_endpoint(
     if not hist_file.is_file():
         return {"status": "FAILED", "message": f"history.json missing in {p_dir}.", "fold": fold_idx}
 
+    try:
+        hist_data = json.loads(hist_file.read_text())
+        if not isinstance(hist_data, list) or len(hist_data) < 6:
+            return {
+                "status": "INCOMPLETE",
+                "message": f"history.json has only {len(hist_data) if isinstance(hist_data, list) else 0} epochs, expected >= 6.",
+                "fold": fold_idx
+            }
+    except Exception as e:
+        return {"status": "FAILED", "message": f"Failed to parse history.json: {e}", "fold": fold_idx}
+
     return {
         "status": "COMPLETED_3600_UPDATES",
         "fold": fold_idx,
         "successful_updates": updates,
-        "epoch": ck_fixed.get("epoch"),
+        "epoch": epoch,
         "best_val_ap": ck_fixed.get("best_ap"),
         "fixed_budget_sha256": compute_sha256(fixed_file),
         "best_sha256": compute_sha256(best_file),
         "last_sha256": compute_sha256(last_file),
+        "history_sha256": compute_sha256(hist_file),
         "history_path": str(hist_file)
     }
 
@@ -264,7 +381,6 @@ def main():
     parser.add_argument("--working-dir", type=str, default="/kaggle/working")
     parser.add_argument("--remote-mirror-backend", type=str, default="huggingface")
     parser.add_argument("--remote-mirror-target", type=str, default="minkhoaa/langfens-rq1-cross-fold-checkpoints")
-    parser.add_argument("--remote-mirror-token", type=str, default=None, help="Token (optional; defaults to HF_TOKEN env / Kaggle Secrets)")
     parser.add_argument("--run-id", type=str, default=None, help="Unique run ID (defaults to baseline_r_fold{k})")
     parser.add_argument("--check-only", action="store_true", help="Run preflight staging and remote probe without training")
     parser.add_argument("--dry-run", action="store_true", help="Simulate execution without GPU requirement")
@@ -347,20 +463,46 @@ def main():
 
     # 7. Remote mirror setup & readiness probe
     remote_mirror = None
-    if args.remote_mirror_backend:
+    if not args.dry_run:
+        if not args.remote_mirror_backend or args.remote_mirror_backend != "huggingface":
+            raise RuntimeError(
+                "FAIL-CLOSED: Production Kaggle runs strictly require 'huggingface' remote persistence backend. "
+                f"Got '{args.remote_mirror_backend}'."
+            )
+        if not args.remote_mirror_target or not args.remote_mirror_target.strip():
+            raise RuntimeError("FAIL-CLOSED: Production Kaggle runs require explicit remote mirror target repository.")
+
+        # Require authentication token from environment or Kaggle Secrets only
+        token = resolve_cross_fold_hf_token()
+        if not token:
+            raise RuntimeError(
+                "FAIL-CLOSED: Hugging Face remote persistence requires valid HF_TOKEN in environment or Kaggle Secrets."
+            )
+
         remote_mirror = KaggleRemoteMirror(
             backend=args.remote_mirror_backend,
             remote_target=args.remote_mirror_target,
-            auth_token=args.remote_mirror_token,
-            require_verification=not args.dry_run,
+            auth_token=token,
+            require_verification=not args.allow_mock_gpu,
+            strict_secrets_only=True
         )
-        if not args.dry_run and not args.allow_mock_gpu:
+        if not args.allow_mock_gpu:
             ok, msg = remote_mirror.verify_readiness()
             if not ok:
                 raise RuntimeError(f"FAIL-CLOSED: Remote mirror readiness verification failed: {msg}")
-            print(f"[REMOTE MIRROR] Verified remote persistent mirror to {args.remote_mirror_backend}:{args.remote_mirror_target}")
+            print(f"[REMOTE MIRROR] Verified private remote persistent mirror to {args.remote_mirror_backend}:{args.remote_mirror_target}")
         else:
-            print(f"[REMOTE MIRROR] Remote mirror configured ({args.remote_mirror_backend}:{args.remote_mirror_target}); live probe skipped in dry-run/mock mode.")
+            print(f"[REMOTE MIRROR] Mock GPU mode: HF_TOKEN verified; live network probe skipped.")
+    else:
+        token = resolve_cross_fold_hf_token()
+        remote_mirror = KaggleRemoteMirror(
+            backend=args.remote_mirror_backend,
+            remote_target=args.remote_mirror_target,
+            auth_token=token,
+            require_verification=False,
+            strict_secrets_only=True
+        )
+        print(f"[REMOTE MIRROR] Remote mirror configured ({args.remote_mirror_backend}:{args.remote_mirror_target}); live probe skipped in dry-run/mock mode.")
 
     # Check-only exit
     if args.check_only:
@@ -385,8 +527,6 @@ def main():
         "--remote-mirror-target", args.remote_mirror_target,
         "--remote-rel-prefix", f"fold{fold_idx}/{run_id}",
     ]
-    if args.remote_mirror_token:
-        cmd.extend(["--remote-mirror-token", args.remote_mirror_token])
     if args.resume:
         cmd.extend(["--resume", str(args.resume)])
 

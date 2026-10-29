@@ -144,8 +144,16 @@ def checkpoint(
     drive_output_dir: str | Path | None = None,
     remote_mirror: any = None,
     remote_rel_prefix: str | None = None,
-    fixed_budget_saved: bool = False
+    fixed_budget_saved: bool = False,
+    is_fixed_budget_endpoint: bool = False
 ):
+    if is_fixed_budget_endpoint:
+        if updates != 3600 or epoch != 5:
+            raise ValueError(
+                f"FAIL-CLOSED: fixed_budget_checkpoint must represent exactly 3,600 updates at Epoch 6. "
+                f"Got updates={updates}, epoch={epoch}"
+            )
+
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_suffix(path.suffix + ".tmp")
     payload = {
@@ -163,7 +171,8 @@ def checkpoint(
         "history": history,
         "rng": rng_state(),
         "metadata": metadata,
-        "fixed_budget_saved": fixed_budget_saved
+        "fixed_budget_saved": fixed_budget_saved,
+        "is_fixed_budget_endpoint": is_fixed_budget_endpoint
     }
     torch.save(payload, tmp)
     os.replace(tmp, path)
@@ -187,6 +196,80 @@ def checkpoint(
         rel_dest = f"{remote_rel_prefix}/{path.name}" if remote_rel_prefix else path.name
         res = remote_mirror.mirror_file(path, rel_dest, verify_sha=True)
         print(f"[REMOTE MIRROR] Mirrored {path.name} -> {res['backend']}:{rel_dest} (SHA: {res['remote_sha256'][:12]}...)", flush=True)
+
+
+def validate_resume_checkpoint(
+    ck: Dict[str, Any],
+    cfg: Dict[str, Any],
+    expected_fold: int,
+    manifest_sha: str
+) -> None:
+    """
+    Rigorously validates checkpoint payload, metadata, fold identity, seed,
+    hyperparameters, counters, and RNG state before resumption.
+    Rejects missing, contradictory, cross-fold, or corrupted checkpoints.
+    """
+    if not isinstance(ck, dict):
+        raise ValueError("Invalid checkpoint: payload must be a dictionary.")
+
+    for req in ("model", "optimizer", "scheduler", "scaler", "epoch", "successful_updates", "micro_steps", "history", "rng", "metadata"):
+        if req not in ck:
+            raise ValueError(f"Invalid checkpoint: missing required key '{req}'.")
+
+    if not isinstance(ck["model"], dict) or len(ck["model"]) == 0:
+        raise ValueError("Invalid checkpoint: 'model' state dict is missing or empty.")
+    if not isinstance(ck["optimizer"], dict) or len(ck["optimizer"]) == 0:
+        raise ValueError("Invalid checkpoint: 'optimizer' state dict is missing or empty.")
+    if not isinstance(ck["scheduler"], dict) or len(ck["scheduler"]) == 0:
+        raise ValueError("Invalid checkpoint: 'scheduler' state dict is missing or empty.")
+    if not isinstance(ck["scaler"], dict):
+        raise ValueError("Invalid checkpoint: 'scaler' state dict must be a dictionary.")
+
+    updates = ck["successful_updates"]
+    micro = ck["micro_steps"]
+    epoch = ck["epoch"]
+    if not isinstance(updates, int) or updates < 0:
+        raise ValueError(f"Invalid successful_updates counter: {updates}")
+    if not isinstance(micro, int) or micro < 0:
+        raise ValueError(f"Invalid micro_steps counter: {micro}")
+    if not isinstance(epoch, int) or epoch < 0:
+        raise ValueError(f"Invalid epoch counter: {epoch}")
+
+    history = ck.get("history")
+    if not isinstance(history, list) or len(history) != epoch + 1:
+        raise ValueError(
+            f"Invalid checkpoint: history length ({len(history) if isinstance(history, list) else 0}) "
+            f"does not match completed epoch count ({epoch + 1})."
+        )
+
+    meta = ck.get("metadata", {})
+    if not isinstance(meta, dict):
+        raise ValueError("Invalid checkpoint: 'metadata' must be a dictionary.")
+
+    ck_fold = meta.get("fold")
+    if ck_fold is None:
+        ck_fold = meta.get("config", {}).get("fold")
+    if ck_fold is not None and int(ck_fold) != expected_fold:
+        raise ValueError(
+            f"FAIL-CLOSED: Cross-fold resume rejected: checkpoint is from fold {ck_fold}, expected fold {expected_fold}."
+        )
+
+    ck_cfg = meta.get("config", {})
+    if not isinstance(ck_cfg, dict):
+        raise ValueError("Invalid checkpoint: missing 'config' dictionary in metadata.")
+
+    if ck_cfg.get("seed") != cfg["seed"]:
+        raise ValueError(f"Seed mismatch on resume: checkpoint has seed {ck_cfg.get('seed')}, expected {cfg['seed']}.")
+
+    if ck_cfg.get("pretrained_model") != cfg["pretrained_model"]:
+        raise ValueError(f"Pretrained model mismatch on resume: {ck_cfg.get('pretrained_model')} != {cfg['pretrained_model']}.")
+
+    if meta.get("split_sha256") and meta.get("split_sha256") != manifest_sha:
+        raise ValueError(f"Manifest SHA-256 mismatch on resume: {meta.get('split_sha256')} != {manifest_sha}.")
+
+    rng = ck.get("rng")
+    if not isinstance(rng, dict) or "torch" not in rng:
+        raise ValueError("Invalid checkpoint: 'rng' state dict missing required torch generator.")
 
 
 def evaluate_validation(model, val_loader, device, scaler):
@@ -403,6 +486,7 @@ def main():
 
     if args.resume:
         ck = torch.load(args.resume, map_location="cpu", weights_only=False)
+        validate_resume_checkpoint(ck=ck, cfg=cfg, expected_fold=fold_idx, manifest_sha=digest)
         model.load_state_dict(ck["model"])
         optimizer.load_state_dict(ck["optimizer"])
         scheduler.load_state_dict(ck["scheduler"])
@@ -411,14 +495,43 @@ def main():
         updates = ck["successful_updates"]
         micro = ck["micro_steps"]
         best = ck["best_ap"]
-        history = ck["history"]
+        history = list(ck["history"])
         patience = ck.get("patience", 0)
         skipped_amp = ck.get("skipped_amp_attempts_total", 0)
         consecutive_skips = ck.get("consecutive_skips", 0)
-        fixed_budget_saved = ck.get("fixed_budget_saved", (outdir / "fixed_budget_checkpoint.pt").exists())
         restore_rng(ck["rng"])
         model.train()
         print(f"Resumed from {args.resume}: start_epoch={start_epoch}, updates={updates}, best_ap={best}, patience={patience}")
+
+        # Safe recovery of fixed_budget_checkpoint.pt
+        fixed_path = outdir / "fixed_budget_checkpoint.pt"
+        if fixed_path.exists():
+            ck_fb = torch.load(fixed_path, map_location="cpu", weights_only=False)
+            if ck_fb.get("successful_updates") == 3600 and ck_fb.get("epoch") == 5:
+                fixed_budget_saved = True
+                print(f"[RECOVERY] Verified existing fixed_budget_checkpoint.pt at 3,600 updates (Epoch 6). Locked.", flush=True)
+            else:
+                raise ValueError(
+                    f"FAIL-CLOSED: Pre-existing fixed_budget_checkpoint.pt invalid: updates={ck_fb.get('successful_updates')}, epoch={ck_fb.get('epoch')}"
+                )
+        elif ck.get("epoch", 0) >= 5 or ck.get("successful_updates", 0) >= 3600:
+            if remote_mirror is not None:
+                rel_fb = f"{remote_rel_prefix}/fixed_budget_checkpoint.pt" if remote_rel_prefix else "fixed_budget_checkpoint.pt"
+                print(f"[RECOVERY] Local fixed_budget_checkpoint missing. Attempting remote recovery from {rel_fb}...", flush=True)
+                try:
+                    recovered_path = remote_mirror.download_file(rel_fb, fixed_path)
+                    ck_rec = torch.load(recovered_path, map_location="cpu", weights_only=False)
+                    if ck_rec.get("successful_updates") == 3600 and ck_rec.get("epoch") == 5:
+                        fixed_budget_saved = True
+                        print(f"[RECOVERY] Recovered verified fixed_budget_checkpoint.pt from remote mirror. Locked.", flush=True)
+                    else:
+                        raise ValueError(f"Recovered fixed_budget_checkpoint has updates={ck_rec.get('successful_updates')}")
+                except Exception as e:
+                    raise RuntimeError(f"FAIL-CLOSED: Resuming past Epoch 6 requires verified fixed_budget_checkpoint.pt, but recovery failed: {e}")
+            else:
+                raise RuntimeError("FAIL-CLOSED: Resuming past Epoch 6 without fixed_budget_checkpoint.pt and without remote mirror.")
+        else:
+            fixed_budget_saved = False
 
     if args.eval_only:
         val_metrics = evaluate_validation(model, val_loader, device, scaler)
@@ -524,7 +637,8 @@ def main():
                 fixed_budget_saved=fixed_budget_saved
             )
 
-        if updates >= 3600 and not fixed_budget_saved:
+        # Check for primary matched-budget endpoint: strictly at Epoch 6 with exactly 3,600 updates
+        if epoch == 5 and updates == 3600 and not fixed_budget_saved:
             fixed_budget_saved = True
             checkpoint(
                 outdir / "fixed_budget_checkpoint.pt",
@@ -534,9 +648,22 @@ def main():
                 drive_output_dir=drive_out,
                 remote_mirror=remote_mirror,
                 remote_rel_prefix=remote_rel_prefix,
-                fixed_budget_saved=fixed_budget_saved
+                fixed_budget_saved=True,
+                is_fixed_budget_endpoint=True
             )
-            print(f"[PRIMARY ENDPOINT] Saved fixed_budget_checkpoint.pt at update {updates} (epoch {epoch + 1}).", flush=True)
+            print(f"[PRIMARY ENDPOINT] Saved verified fixed_budget_checkpoint.pt at update {updates} (epoch {epoch + 1}).", flush=True)
+
+        # Persist training history locally and remotely after each epoch
+        hist_json = outdir / "history.json"
+        hist_json.write_text(json.dumps(history, indent=2) + "\n")
+        if drive_out:
+            remote_hist = Path(drive_out) / "history.json"
+            shutil.copyfile(str(hist_json), str(remote_hist))
+            if remote_hist.stat().st_size != hist_json.stat().st_size:
+                raise IOError(f"Remote history sync size mismatch: {hist_json.stat().st_size} vs {remote_hist.stat().st_size}")
+        if remote_mirror is not None:
+            rel_hist = f"{remote_rel_prefix}/history.json" if remote_rel_prefix else "history.json"
+            remote_mirror.mirror_file(hist_json, rel_hist, verify_sha=True)
 
         if patience >= cfg["early_stopping_patience"]:
             print(f"Early stopping triggered after {patience} epochs without validation AP improvement.", flush=True)
