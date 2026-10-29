@@ -231,6 +231,7 @@ def load_production_model(ckpt_path: Path, device: torch.device) -> Tuple[Langfe
 def parse_args():
     parser = argparse.ArgumentParser(description="LANGFENS Protocol Z Evaluation & Verification")
     parser.add_argument("--checkpoint", type=str, default="checkpoints/RQ1-TRN-02A/recovered/best.pt")
+    parser.add_argument("--fold", type=int, default=1, choices=[1, 2, 3, 4], help="Fold index (1..4)")
     parser.add_argument("--manifest", type=str, default="manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json")
     parser.add_argument("--split", type=str, default="val", choices=["val"], help="Protocol Z strictly evaluates on 'val' split only")
     parser.add_argument("--authorized_zip", type=str, default="datasets/L2-ARCTIC/authorized_RQ1-TRN-02A_fold1_train_val_only.zip")
@@ -259,11 +260,12 @@ def main():
     # 0. Split Integrity & Prohibition Safeguard
     with open(args.manifest, "r", encoding="utf-8") as f_manifest:
         splits_json = json.load(f_manifest)
-    fold1_info = splits_json["folds"][0]
-    fold1_val_spks = set(fold1_info["val"]["speakers"])
-    fold1_test_spks = set(fold1_info["test"]["speakers"])
-    assert fold1_val_spks == {"NJS", "RRBI"}, f"Manifest Fold 1 val mismatch: {fold1_val_spks}"
-    assert fold1_test_spks == {"ABA", "ASI", "EBVS", "HJK", "LXC", "PNV"}, f"Manifest Fold 1 test mismatch: {fold1_test_spks}"
+    fold_info = next((f for f in splits_json["folds"] if f["fold_index"] == args.fold), None)
+    if fold_info is None:
+        raise ValueError(f"Fold {args.fold} not found in manifest: {args.manifest}")
+    fold_val_spks = set(fold_info["val"]["speakers"])
+    fold_test_spks = set(fold_info["test"]["speakers"])
+    print(f"[SPLIT] Fold {args.fold} val speakers: {sorted(fold_val_spks)}, test speakers: {sorted(fold_test_spks)}")
 
     # 1. Verify G2P Frontend & Pinned CMUdict
     print("\n[FRONTEND] Initializing deterministic CMUdict G2P frontend...")
@@ -281,7 +283,7 @@ def main():
     print(f"\n[DATASET] Initializing ZeroOracleL2ArcticDataset from {args.manifest}...")
     z_dataset = ZeroOracleL2ArcticDataset(
         split_manifest_path=args.manifest,
-        fold=1,
+        fold=args.fold,
         split="val",
         prompts_source=args.prompts,
         g2p_frontend=g2p,
@@ -295,17 +297,17 @@ def main():
     print(f"[SCORING] Loading Gold reference dataset for offline scoring...")
     gold_dataset = L2ArcticMDDDataset(
         split_manifest_path=args.manifest,
-        fold=1,
+        fold=args.fold,
         split="val",
         zip_path=args.authorized_zip,
         max_samples=args.max_eval_utterances
     )
 
     # 5. Train Prior Dataset (For predeclared train-only imputation)
-    print(f"[SCORING] Fitting train-only canonical empirical prior on Fold 1 train items...")
+    print(f"[SCORING] Fitting train-only canonical empirical prior on Fold {args.fold} train items...")
     train_dataset = L2ArcticMDDDataset(
         split_manifest_path=args.manifest,
-        fold=1,
+        fold=args.fold,
         split="train",
         zip_path=args.authorized_zip
     )
@@ -407,8 +409,8 @@ def main():
     full_gold_labels = []
 
     per_speaker_data = {
-        "NJS": {"aligned_z": [], "aligned_o": [], "labels": [], "b1_scores": [], "full_labels": []},
-        "RRBI": {"aligned_z": [], "aligned_o": [], "labels": [], "b1_scores": [], "full_labels": []}
+        spk: {"aligned_z": [], "aligned_o": [], "labels": [], "b1_scores": [], "full_labels": []}
+        for spk in sorted(fold_val_spks)
     }
 
     total_gold_tokens = 0
@@ -566,6 +568,7 @@ def main():
             "evaluation_date": time.strftime("%Y-%m-%d %H:%M:%S"),
             "evaluator_script": "audit_scripts/evaluate_protocol_z.py",
             "git_sha": os.popen("git rev-parse HEAD").read().strip(),
+            "fold": args.fold,
             "checkpoint_path": str(args.checkpoint),
             "checkpoint_sha256": ckpt_meta["sha256"],
             "checkpoint_epoch": ckpt_meta["epoch"],

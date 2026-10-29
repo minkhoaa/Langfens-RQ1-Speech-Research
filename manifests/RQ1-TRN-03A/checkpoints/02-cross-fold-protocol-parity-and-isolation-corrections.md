@@ -59,7 +59,7 @@ To prevent confounding training exposure with model performance:
 
 ### 3.6 Correction of Thesis Scope Boundaries
 - Confirmed that SpeechOcean762 cross-corpus evaluation and pedagogical pronunciation feedback belong to RQ1.
-- Confirmed that RQ2 is reserved exclusively for Multi-Agent LLM conversational pedagogical systems.
+- Confirmed that RQ2 is reserved exclusively for Multi-Agent Automated Test Generation.
 
 ---
 

@@ -20,7 +20,7 @@ With the successful completion and closure of Phase RQ1-TRN-02B (where whole-pho
 3. **Thesis Proposal Fulfillment:** The master engineering thesis protocol specified 4-Fold Speaker-Independent Cross-Validation as the authoritative benchmark. Completing Folds 2, 3, and 4 establishes the empirical baseline of RQ1.
 4. **Thesis Scope Demarcation:** 
    - **Research Question 1 (RQ1):** Encompasses speech acoustic foundation models, multi-task mispronunciation detection, substitution diagnosis, cross-fold speaker generalization, cross-corpus zero-shot transfer on SpeechOcean762, and phonological pronunciation feedback.
-   - **Research Question 2 (RQ2):** Reserved exclusively for Multi-Agent LLM orchestration, pedagogical dialogue planning, and conversational tutoring agents.
+   - **Research Question 2 (RQ2):** Reserved exclusively for Multi-Agent Automated Test Generation.
 
 ### 1.2 Non-Negotiable Operational Boundaries
 In strict adherence to `AGENTS.md`:
@@ -280,7 +280,7 @@ Detailed RQ1 Execution Roadmap
     └── Pedagogical feedback generation (articulatory guidance, phoneme substitution trees)
 ```
 
-*(Note: RQ2 is preserved exclusively for Multi-Agent LLM conversational pedagogical systems).*
+*(Note: RQ2 is preserved exclusively for Multi-Agent Automated Test Generation).*
 
 ---
 
@@ -336,6 +336,6 @@ In compliance with `AGENTS.md` ("Never start training without explicit user auth
 4. **Approval of Kaggle GPU Compute Allocation:**
    - Approve allocation of ~3.6 hours of Kaggle GPU quota (Tesla T4 $\times$ 2) across 3 training runs.
 5. **Approval of Thesis Scope Boundaries:**
-   - Confirm that SpeechOcean762 cross-corpus evaluation and pedagogical pronunciation feedback remain under RQ1, with RQ2 reserved exclusively for Multi-Agent LLM systems.
+   - Confirm that SpeechOcean762 cross-corpus evaluation and pedagogical pronunciation feedback remain under RQ1, with RQ2 reserved exclusively for Multi-Agent Automated Test Generation.
 
 **STATUS: EXECUTION HALTED. AWAITING OPERATOR REVIEW AND APPROVAL OF ITEMS 1–5.**

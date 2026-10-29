@@ -256,6 +256,7 @@ def evaluate_validation(model, val_loader, device, scaler):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--config", default="configs/rq1_trn_02a_fold1.yaml")
+    ap.add_argument("--fold", type=int, default=None, help="Override fold index in config (1..4)")
     ap.add_argument("--resume", default=None)
     ap.add_argument("--zip-path", default=None, help="Path to zip archive containing authorized audio/TextGrids")
     ap.add_argument("--drive-output-dir", default=None, help="Google Drive destination for remote checkpoint persistence")
@@ -280,11 +281,24 @@ def main():
         raise RuntimeError("Full training requires CUDA; refusing silent CPU execution")
 
     seed_all(cfg["seed"])
+    fold_idx = int(args.fold if args.fold is not None else cfg.get("fold", 1))
+
+    with open(manifest, "r", encoding="utf-8") as mf:
+        mdata = json.load(mf)
+    fold_obj = next((f for f in mdata["folds"] if f["fold_index"] == fold_idx), None)
+    if fold_obj is None:
+        raise ValueError(f"Fold {fold_idx} not found in manifest {manifest}")
+    expected_train = fold_obj["train"]["utterance_count"]
+    expected_val = fold_obj["val"]["utterance_count"]
+
     zip_path = args.zip_path or cfg.get("zip_path", "datasets/L2-ARCTIC/original/l2arctic_release_v5.0.zip")
-    train = L2ArcticMDDDataset(str(manifest), 1, "train", policy="strict", zip_path=zip_path)
-    val = L2ArcticMDDDataset(str(manifest), 1, "val", policy="strict", zip_path=zip_path)
-    if len(train) != 2399 or len(val) != 300:
-        raise RuntimeError(f"Unexpected split sizes train={len(train)} val={len(val)}")
+    train = L2ArcticMDDDataset(str(manifest), fold_idx, "train", policy="strict", zip_path=zip_path)
+    val = L2ArcticMDDDataset(str(manifest), fold_idx, "val", policy="strict", zip_path=zip_path)
+    if len(train) != expected_train or len(val) != expected_val:
+        raise RuntimeError(
+            f"Unexpected split sizes for fold {fold_idx}: train={len(train)} (expected {expected_train}), "
+            f"val={len(val)} (expected {expected_val})"
+        )
 
     collate = LangfensMDDCollate()
     train_loader = DataLoader(
@@ -335,6 +349,7 @@ def main():
     patience = 0
     skipped_amp = 0
     consecutive_skips = 0
+    fixed_budget_saved = False
 
     meta = {
         "git_sha": os.popen("git rev-parse HEAD").read().strip(),
@@ -356,6 +371,7 @@ def main():
         patience = ck.get("patience", 0)
         skipped_amp = ck.get("skipped_amp_attempts_total", 0)
         consecutive_skips = ck.get("consecutive_skips", 0)
+        fixed_budget_saved = (outdir / "fixed_budget_checkpoint.pt").exists()
         restore_rng(ck["rng"])
         model.train()
         print(f"Resumed from {args.resume}: start_epoch={start_epoch}, updates={updates}, best_ap={best}, patience={patience}")
@@ -463,6 +479,17 @@ def main():
                 patience=patience, skipped_amp=skipped_amp, consecutive_skips=consecutive_skips,
                 drive_output_dir=drive_out
             )
+
+        if updates >= 3600 and not fixed_budget_saved:
+            checkpoint(
+                outdir / "fixed_budget_checkpoint.pt",
+                model, optimizer, scheduler, scaler,
+                epoch, updates, micro, best, history, meta,
+                patience=patience, skipped_amp=skipped_amp, consecutive_skips=consecutive_skips,
+                drive_output_dir=drive_out
+            )
+            fixed_budget_saved = True
+            print(f"[PRIMARY ENDPOINT] Saved fixed_budget_checkpoint.pt at update {updates} (epoch {epoch + 1}).", flush=True)
 
         if patience >= cfg["early_stopping_patience"]:
             print(f"Early stopping triggered after {patience} epochs without validation AP improvement.", flush=True)

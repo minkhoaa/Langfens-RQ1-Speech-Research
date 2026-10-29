@@ -1,8 +1,8 @@
-# LANGFENS — RQ1-TRN-03A / Cross-Fold Speaker-Independent Generalization Planning (Corrected Protocol)
+# LANGFENS — RQ1-TRN-03A / Cross-Fold Speaker-Independent Generalization Planning (Readiness Verified)
 
-**Status:** `PLANNING_COMPLETE; GATE_PENDING_OPERATOR_AUTHORIZATION`
+**Status:** `READINESS_VERIFIED; GATE_PENDING_OPERATOR_AUTHORIZATION`
 
-**Recorded at:** 2026-10-29T16:00:00+07:00
+**Recorded at:** 2026-10-29T17:45:00+07:00
 
 **Evidence source:** Commits `7a3b9ecf5e9efedc480b477f531ebe9318ae3415`, `05796e25b1f745ddb7772e0d5bda2edd5d0a7f1c`, `configs/rq1_trn_02a_fold1.yaml`, `audit_scripts/train_fold1_ctc_binary.py`, `manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json`
 
@@ -56,18 +56,32 @@ Design and specify a mathematically rigorous, leak-free 4-fold cross-validation 
    - Mandated reporting both macro, micro, and disaggregated per-speaker metrics.
 8. **Corrected Thesis Scope Boundaries:**
    - Confirmed that SpeechOcean762 cross-corpus evaluation and pedagogical pronunciation feedback belong to RQ1.
-   - Confirmed that RQ2 is reserved exclusively for Multi-Agent LLM conversational tutoring systems.
-9. **Added Comprehensive Regression Test Suite:**
-   - Implemented `tests/test_rq1_trn_03a_protocol_parity_and_isolation.py` (8 new tests, 100% passing).
-   - Verified that the full repository regression suite passes: `244 passed, 4 skipped in 148.07s`.
+   - Confirmed that RQ2 is reserved exclusively for Multi-Agent Automated Test Generation.
+9. **Added Comprehensive Protocol Regression Test Suite:**
+   - Implemented `tests/test_rq1_trn_03a_protocol_parity_and_isolation.py` (8 tests, 100% passing).
+10. **Completed Step 03 Fold Readiness Implementation & Verification:**
+   - Generalized baseline trainer (`audit_scripts/train_fold1_ctc_binary.py`) to support `cfg["fold"] = 2, 3, 4` dynamically with manifest-derived split-size assertions and dual checkpointing (`fixed_budget_checkpoint.pt` at update 3,600 and validation `best.pt`).
+   - Generalized Protocol O and Protocol Z evaluators (`evaluate_fold1_ctc_binary.py` and `evaluate_protocol_z.py`) with dynamic speaker transition detection and within-speaker cyclic derangement across all 4 folds.
+   - Authored fold configurations `configs/rq1_trn_03a_fold{2,3,4}.yaml` with exact bit-level hyperparameter parity.
+   - Implemented deterministic packaging utility `audit_scripts/build_fold_packages.py` and built all 3 authorized packages (`authorized_RQ1-TRN_fold{2,3,4}_train_val_only.zip`), physically excluding test speakers.
+   - Added integration test suite `tests/test_rq1_trn_03a_fold_readiness_integration.py` (6 tests).
+   - Executed full repository regression test suite: `250 passed, 4 skipped in 140.25s`.
+   - Audited Kaggle private dataset staging and Hugging Face checkpoint destinations with remote SHA-256 readback.
 
 ---
 
 ## 4. Results & Verification
 - **Split Manifest Invariance:** Verified `l2arctic_4fold_splits.json` SHA-256 `7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b`.
 - **Automated Split Suite:** `python3 audit_scripts/validate_splits.py` passed all 4 core checks with 0 errors.
-- **Protocol Parity & Isolation Suite:** `PYTHONPATH=. .venv/bin/pytest tests/test_rq1_trn_03a_protocol_parity_and_isolation.py` passed 8 tests in 5.78s.
-- **Full Repository Suite:** `PYTHONPATH=. .venv/bin/pytest tests/` passed 244 tests with 0 failures.
+- **Automated Regression Suite:** All 250 tests pass (`PYTHONPATH=. .venv/bin/pytest tests/`):
+  - 250 passed, 4 skipped in 140.25s (100% green).
+- **Integration Test Suite (`test_rq1_trn_03a_fold_readiness_integration.py`):**
+  - `test_all_fold_configs_parity`: PASS (all 4 configs verified bit-identical).
+  - `test_fold_package_isolation_and_contents`: PASS (all packages verified to contain exactly 18 authorized speakers and 0 test speakers).
+  - `test_l2arctic_dataset_loader_all_folds`: PASS (loads 2,400/299 for Fold 2, 2,400/300 for Fold 3, 2,399/300 for Fold 4).
+  - `test_dataset_loader_fails_closed_on_test_split`: PASS (fails closed with `KeyError` on test audio access).
+  - `test_trainer_split_and_horizon_across_folds`: PASS (verifies 600 updates/epoch, 15,000 horizon, 3,600 fixed budget).
+  - `test_within_speaker_cyclic_derangement_all_folds`: PASS (verifies 0 self-matches, 0 cross-speaker leaks for all folds).
 - **Per-Fold Isolation Proved:** For every fold $k$, $S_{\text{train}}^{(k)} \cap S_{\text{test}}^{(k)} = \emptyset$, $S_{\text{val}}^{(k)} \cap S_{\text{test}}^{(k)} = \emptyset$, and $S_{\text{train}}^{(k)} \cap S_{\text{val}}^{(k)} = \emptyset$.
 - **Test Isolation Maintained:** Zero test audio or TextGrid files accessed, extracted, staged, or evaluated.
 
@@ -78,7 +92,11 @@ Design and specify a mathematically rigorous, leak-free 4-fold cross-validation 
 - **Phase Overview Checkpoint:** `manifests/RQ1-TRN-03A/PROCESS_CHECKPOINT.md`
 - **Step Checkpoint 01:** `manifests/RQ1-TRN-03A/checkpoints/01-cross-fold-research-plan-and-test-isolation.md`
 - **Step Checkpoint 02:** `manifests/RQ1-TRN-03A/checkpoints/02-cross-fold-protocol-parity-and-isolation-corrections.md`
-- **New Regression Test Suite:** `tests/test_rq1_trn_03a_protocol_parity_and_isolation.py`
+- **Step Checkpoint 03:** `manifests/RQ1-TRN-03A/checkpoints/03-fold-readiness-and-trainer-generalization.md`
+- **Package Builder Script:** `audit_scripts/build_fold_packages.py`
+- **Fold Configuration Files:** `configs/rq1_trn_03a_fold{2,3,4}.yaml`
+- **Authorized Fold Packages:** `datasets/L2-ARCTIC/authorized_RQ1-TRN_fold{2,3,4}_train_val_only.zip`
+- **Integration Test Suite:** `tests/test_rq1_trn_03a_fold_readiness_integration.py`
 - **Policy Corrections:** `AGENTS.md` (Per-fold test sealing rule and baseline parity contract)
 - **Updated Global Registry:** `docs/process-checkpoints/INDEX.md`
 
@@ -87,11 +105,10 @@ Design and specify a mathematically rigorous, leak-free 4-fold cross-validation 
 ## 6. Restart / Recovery Instructions
 - **Active Branch:** `review/rq1-trn-03a-cross-fold-planning`
 - **Current State:** Protocol corrected; awaiting operator authorization to begin implementation.
-- **Next Safe Step:** Upon receiving operator authorization:
-  1. Implement `audit_scripts/build_fold_packages.py` to create `authorized_RQ1-TRN_fold{2,3,4}_train_val_only.zip`.
-  2. Implement `configs/rq1_trn_03a_fold{2,3,4}.yaml` configuration files with `seed: 1337`, `batch_size: 2`, `accum: 2`, `warmup: 100`, `max_epochs: 25`.
-  3. Verify staging packages with automated partition audit tests.
-  4. Submit Kaggle GPU training kernels.
+- **Restart / Recovery Instructions:**
+  - All configurations, packages, trainers, and evaluators are implemented and verified ready.
+  - Zero GPU compute launched; awaiting operator authorization to launch Kaggle GPU training kernels.
+  - Next step upon approval: upload packages to private Kaggle datasets and launch Fold 2 training run.
 
 ---
 

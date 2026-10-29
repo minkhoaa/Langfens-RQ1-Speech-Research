@@ -449,6 +449,7 @@ def run_utterance_clustered_bootstrap(
 def main():
     parser = argparse.ArgumentParser(description="RQ1-TRN-02A CPU-Only Evaluation & Replay")
     parser.add_argument("--config", default="configs/rq1_trn_02a_fold1.yaml", help="Path to experiment config")
+    parser.add_argument("--fold", type=int, default=None, help="Override fold index (1..4). If omitted, read from config.")
     parser.add_argument("--checkpoint", default="checkpoints/RQ1-TRN-02A/recovered/best.pt", help="Path to checkpoint")
     parser.add_argument("--zip-path", default=None, help="Path to authorized train/val audio zip")
     parser.add_argument("--device", default="cpu", help="Device (cpu strictly enforced/default)")
@@ -505,13 +506,23 @@ def main():
     initial_fingerprint = get_model_weights_fingerprint(model)
     print(f"[INTEGRITY] Pre-evaluation model fingerprint: {initial_fingerprint}")
 
+    # Determine fold index and expected partition sizes
+    fold_idx = int(args.fold if args.fold is not None else cfg.get("fold", 1))
+    with open(manifest_path, "r", encoding="utf-8") as mf:
+        mdata = json.load(mf)
+    fold_obj = next((f for f in mdata["folds"] if f["fold_index"] == fold_idx), None)
+    if fold_obj is None:
+        raise ValueError(f"Fold {fold_idx} not found in manifest: {manifest_path}")
+    expected_val = fold_obj["val"]["utterance_count"]
+    val_spks = fold_obj["val"]["speakers"]
+
     # Load validation dataset
-    val_dataset = L2ArcticMDDDataset(str(manifest_path), fold=1, split="val", policy="strict", zip_path=zip_path)
-    if len(val_dataset) != 300:
-        raise ValueError(f"Expected 300 validation utterances, found {len(val_dataset)}")
+    val_dataset = L2ArcticMDDDataset(str(manifest_path), fold=fold_idx, split="val", policy="strict", zip_path=zip_path)
+    if len(val_dataset) != expected_val:
+        raise ValueError(f"Expected {expected_val} validation utterances for fold {fold_idx}, found {len(val_dataset)}")
 
     eval_count = min(len(val_dataset), args.max_eval_utterances) if args.max_eval_utterances else len(val_dataset)
-    print(f"[DATASET] Evaluating {eval_count} utterances (Fold 1 validation: NJS & RRBI)...")
+    print(f"[DATASET] Evaluating {eval_count} utterances (Fold {fold_idx} validation: {' & '.join(val_spks)})...")
 
     # Evaluate validation utterances (Condition 1: Matched Audio)
     matched_scores = []
@@ -665,13 +676,14 @@ def main():
         print("[CONTROLS] Running acoustic contribution controls...")
 
         # Condition 2: Mismatched Audio
-        # Create deterministic derangement within speakers (or across set)
+        # Create deterministic derangement within speakers across validation set
         n_eval = len(utterance_results)
-        # Check speaker boundary
-        spk_counts = [sum(1 for u in utterance_results if u["speaker"] == "NJS")]
+        # Check speaker boundaries dynamically across utterance results
+        speaker_transitions = [i for i in range(1, n_eval) if utterance_results[i]["speaker"] != utterance_results[i - 1]["speaker"]]
+        spk_counts = speaker_transitions if speaker_transitions else [n_eval]
         derange_indices = generate_derangement_indices(
             n_eval,
-            method="within_speaker_cyclic" if len(spk_counts) == 1 and spk_counts[0] < n_eval else "cyclic",
+            method="within_speaker_cyclic" if len(spk_counts) >= 1 and spk_counts[0] < n_eval else "cyclic",
             speaker_boundaries=spk_counts if spk_counts[0] < n_eval else None
         )
 
@@ -715,9 +727,9 @@ def main():
 
         mismatched_binary_metrics = calculate_binary_metrics(matched_labels, mismatched_scores)
 
-        # Condition 3: Canonical Empirical Prior Baseline (learned strictly from Fold 1 Train)
-        print("[CONTROLS] Fitting Canonical-Only Empirical Prior strictly on Fold 1 Train (2,399 utterances)...")
-        train_dataset = L2ArcticMDDDataset(str(manifest_path), fold=1, split="train", policy="strict", zip_path=zip_path)
+        # Condition 3: Canonical Empirical Prior Baseline (learned strictly from Fold k Train)
+        print(f"[CONTROLS] Fitting Canonical-Only Empirical Prior strictly on Fold {fold_idx} Train ({fold_obj['train']['utterance_count']} utterances)...")
+        train_dataset = L2ArcticMDDDataset(str(manifest_path), fold=fold_idx, split="train", policy="strict", zip_path=zip_path)
         canonical_prior_data = fit_canonical_empirical_prior(train_dataset)
         canonical_prior_metrics = evaluate_canonical_prior(
             [val_dataset[i] for i in range(processed_utts)],
@@ -778,8 +790,7 @@ def main():
             for p_mode in ["shift_1", "shift_2", "shift_75", "reverse"]:
                 p_indices = make_within_speaker_perm(p_mode, spk_counts if spk_counts[0] < n_eval else [], n_eval)
                 p_scores_all = []
-                p_scores_njs = []
-                p_scores_rrbi = []
+                p_scores_by_spk = defaultdict(list)
 
                 for idx, p_donor in enumerate(p_indices):
                     orig_item = val_dataset[idx]
@@ -793,19 +804,17 @@ def main():
                     v_mask = orig_item["binary_labels"] != -100
                     sc_p = torch.sigmoid(out_p.binary_logits[0]).cpu()[v_mask].tolist()
                     p_scores_all.extend(sc_p)
-
-                    if orig_item["speaker_id"] == "NJS":
-                        p_scores_njs.extend(sc_p)
-                    else:
-                        p_scores_rrbi.extend(sc_p)
+                    p_scores_by_spk[orig_item["speaker_id"]].extend(sc_p)
 
                 ap_p_all = average_precision_binary(matched_labels, p_scores_all)
-                ap_p_njs = average_precision_binary(per_speaker_matched["NJS"]["labels"], p_scores_njs)
-                ap_p_rrbi = average_precision_binary(per_speaker_matched["RRBI"]["labels"], p_scores_rrbi)
+                spk_aps = {}
+                for spk_name in val_spks:
+                    if spk_name in per_speaker_matched and len(set(per_speaker_matched[spk_name]["labels"])) == 2:
+                        spk_aps[f"{spk_name.lower()}_ap"] = round(float(average_precision_binary(per_speaker_matched[spk_name]["labels"], p_scores_by_spk[spk_name])), 6)
+
                 permutation_sensitivity[p_mode] = {
                     "overall_ap": round(float(ap_p_all), 6),
-                    "njs_ap": round(float(ap_p_njs), 6),
-                    "rrbi_ap": round(float(ap_p_rrbi), 6),
+                    **spk_aps,
                     "delta_ap_over_matched": round(float(matched_binary_metrics["average_precision"] - ap_p_all), 6)
                 }
 
@@ -966,14 +975,14 @@ def main():
     print(f"\n[REPORT] Successfully saved evaluation report to: {out_file}")
 
     # Export paired prediction records for independent statistical verification (Task D)
-    if args.max_eval_utterances is None or args.max_eval_utterances >= 300:
+    if args.max_eval_utterances is None or args.max_eval_utterances >= expected_val:
         corrections_dir = out_dir / "corrections"
         corrections_dir.mkdir(parents=True, exist_ok=True)
         pred_export = {
             "metadata": {
-                "description": "Per-utterance matched and mismatched prediction records for Fold 1 validation",
+                "description": f"Per-utterance matched and mismatched prediction records for Fold {fold_idx} validation",
                 "split": "val",
-                "fold": 1,
+                "fold": fold_idx,
                 "total_utterances": len(utterance_results),
                 "total_phone_tokens": len(matched_labels),
                 "total_error_tokens": sum(matched_labels),
@@ -981,7 +990,7 @@ def main():
                 "checkpoint_sha256": ckpt_info["sha256"],
                 "schema": {
                     "record_id": "L2-ARCTIC utterance record identifier (e.g. l2arctic_NJS_arctic_a0003)",
-                    "speaker": "Speaker code (NJS or RRBI)",
+                    "speaker": f"Speaker code ({' or '.join(val_spks)})",
                     "utterance_id": "ARCTIC utterance ID",
                     "mismatched_audio_record_id": "Utterance record ID of the donor audio under shift_1 derangement",
                     "canonical_phone_indices": "Canonical ARPAbet phoneme indices fed to model cross-attention",

@@ -36,7 +36,7 @@ Read before repository work. Verify evidence before reporting PASS.
 - Fold 1 contract: 2,399 train, 300 val (NJS/RRBI), 900 test SEALED. Two-head objective: CTC + Binary MDD only.
 - Cross-fold contract (Folds 2–4): Independent Baseline R training from original pretrained initialization (`seed: 1337`, `batch_size: 2`, `gradient_accumulation_steps: 2`, `warmup_updates: 100`, cosine schedule over `max_epochs: 25` horizon [~15,000 updates], early stopping patience 5 on validation AP with `blank_fraction < 0.99`). Strictly prohibit warm-starting or fine-tuning from Fold 1 checkpoints.
 - Dual checkpoint accounting: Save and report both the fixed-budget 3,600-update (Epoch 6) checkpoint and the validation-selected `best.pt` checkpoint to avoid confounding training exposure with model performance.
-- Thesis scope boundaries: SpeechOcean762 cross-corpus evaluation and pedagogical pronunciation feedback belong to RQ1. RQ2 is reserved exclusively for Multi-Agent LLM research.
+- Thesis scope boundaries: SpeechOcean762 cross-corpus evaluation and pedagogical pronunciation feedback belong to RQ1. RQ2 is reserved exclusively for Multi-Agent Automated Test Generation.
 - Backbone integrity: Pretrained `facebook/wav2vec2-base-960h` (rev `22aad52d435eb6dbaf354bdad9b0da84ce7d6156`) kept frozen in eval.
 - Start CTC decoding with greedy evaluation; use validation only for checkpoint and threshold selection.
 - Never use gold TextGrid timestamps as model inference inputs or claim acoustic diagnosis readiness.
