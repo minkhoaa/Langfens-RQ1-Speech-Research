@@ -780,3 +780,147 @@ def test_historical_c0_c1_deployments_intact():
     assert c1_meta["dataset_sources"] == ["minkhoaa/langfens-rq1-fold1-staging"]
 
 
+# ==============================================================================
+# 10. SIMPLIFIED CLI-FIRST DEPLOYMENT PACKAGES (SEPARATE ENTRYPOINTS)
+# ==============================================================================
+
+def test_kaggle_fold2_simplified_preflight_package():
+    """Proves dedicated preflight package is self-contained, gated, and independently runnable."""
+    preflight_dir = Path("deploy/kaggle_fold2_preflight")
+    assert preflight_dir.is_dir(), f"Missing directory at {preflight_dir}"
+
+    meta_path = preflight_dir / "kernel-metadata.json"
+    assert meta_path.is_file(), f"Missing kernel-metadata.json at {meta_path}"
+    meta = json.loads(meta_path.read_text())
+    assert meta["id"] == "minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2"
+    assert meta["code_file"] == "kaggle_preflight.ipynb"
+    assert meta["language"] == "python"
+    assert meta["kernel_type"] == "notebook"
+    assert meta["is_private"] is True
+    assert meta["enable_gpu"] is True
+    assert meta["enable_tpu"] is False
+    assert meta["enable_internet"] is True
+    assert meta["machine_shape"] == "NvidiaTeslaT4"
+    assert meta["dataset_sources"] == ["minkhoaa/langfens-rq1-fold2-staging"]
+
+    dataset_path = preflight_dir / "dataset-metadata.json"
+    assert dataset_path.is_file()
+    dmeta = json.loads(dataset_path.read_text())
+    assert dmeta["id"] == "minkhoaa/langfens-rq1-fold2-staging"
+    assert dmeta["is_private"] is True
+    assert dmeta["licenses"][0]["name"] == "CC-BY-NC-4.0"
+
+    nb_path = preflight_dir / "kaggle_preflight.ipynb"
+    assert nb_path.is_file()
+    nb = json.loads(nb_path.read_text())
+    assert nb["nbformat"] == 4
+    cells = nb["cells"]
+    assert len(cells) == 5
+
+    full_text = "\n".join("".join(c.get("source", [])) for c in cells)
+
+    # Invariants
+    assert 'PINNED_COMMIT_SHA = "407cf04e83704d9e83953e9309e3c7dca8d7154e"' in full_text
+    assert 'UserSecretsClient().get_secret("HF_TOKEN")' in full_text
+    assert "hf_token.txt" not in full_text
+    assert ".hf_token" not in full_text
+    assert "--remote-mirror-token" not in full_text
+    assert '"--mode", "verify_fold2"' in full_text
+    assert "[PREFLIGHT] Preflight verification PASSED successfully." in full_text
+
+    # Prohibitions: No training execution, no execution flag
+    assert '"--mode", "train_fold2"' not in full_text
+    assert "EXECUTE_TRAINING" not in full_text
+
+
+def test_kaggle_fold2_simplified_train_package():
+    """Proves dedicated training package executes preflight first and fails closed on any error."""
+    train_dir = Path("deploy/kaggle_fold2_train")
+    assert train_dir.is_dir(), f"Missing directory at {train_dir}"
+
+    meta_path = train_dir / "kernel-metadata.json"
+    assert meta_path.is_file(), f"Missing kernel-metadata.json at {meta_path}"
+    meta = json.loads(meta_path.read_text())
+    assert meta["id"] == "minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2"
+    assert meta["code_file"] == "kaggle_train.ipynb"
+    assert meta["language"] == "python"
+    assert meta["kernel_type"] == "notebook"
+    assert meta["is_private"] is True
+    assert meta["enable_gpu"] is True
+    assert meta["enable_tpu"] is False
+    assert meta["enable_internet"] is True
+    assert meta["machine_shape"] == "NvidiaTeslaT4"
+    assert meta["dataset_sources"] == ["minkhoaa/langfens-rq1-fold2-staging"]
+
+    dataset_path = train_dir / "dataset-metadata.json"
+    assert dataset_path.is_file()
+    dmeta = json.loads(dataset_path.read_text())
+    assert dmeta["id"] == "minkhoaa/langfens-rq1-fold2-staging"
+    assert dmeta["is_private"] is True
+
+    nb_path = train_dir / "kaggle_train.ipynb"
+    assert nb_path.is_file()
+    nb = json.loads(nb_path.read_text())
+    assert nb["nbformat"] == 4
+    cells = nb["cells"]
+    assert len(cells) == 7
+
+    full_text = "\n".join("".join(c.get("source", [])) for c in cells)
+
+    # Invariants
+    assert 'PINNED_COMMIT_SHA = "407cf04e83704d9e83953e9309e3c7dca8d7154e"' in full_text
+    assert 'UserSecretsClient().get_secret("HF_TOKEN")' in full_text
+    assert "hf_token.txt" not in full_text
+    assert ".hf_token" not in full_text
+    assert "--remote-mirror-token" not in full_text
+
+    # Mandatory preflight gate precedes training
+    preflight_pos = full_text.index('"verify_fold2"')
+    train_pos = full_text.index('"train_fold2"')
+    assert preflight_pos < train_pos, "Preflight must strictly precede training invocation"
+    assert "subprocess.run(preflight_cmd, check=True)" in full_text
+    assert "subprocess.run(train_cmd, check=True)" in full_text
+
+    # Endpoint classification
+    assert "classify_fold_training_endpoint" in full_text
+    assert "COMPLETED_3600_UPDATES" in full_text
+
+    # No manual toggle flag in training package
+    assert "EXECUTE_TRAINING = False" not in full_text
+
+
+def test_preflight_and_training_entrypoint_separation():
+    """Proves complete independence of preflight and training packages with pinned parity."""
+    preflight_nb = json.loads(Path("deploy/kaggle_fold2_preflight/kaggle_preflight.ipynb").read_text())
+    train_nb = json.loads(Path("deploy/kaggle_fold2_train/kaggle_train.ipynb").read_text())
+
+    # Preflight has 5 cells, Train has 7 cells
+    assert len(preflight_nb["cells"]) == 5
+    assert len(train_nb["cells"]) == 7
+
+    # Both share exact same hardware, secrets, and checkout cells
+    for i in (1, 2, 3):
+        assert preflight_nb["cells"][i]["source"] == train_nb["cells"][i]["source"]
+
+    # Preflight has zero training references
+    preflight_text = "\n".join("".join(c.get("source", [])) for c in preflight_nb["cells"])
+    assert "train_fold2" not in preflight_text
+    assert "classify_fold_training_endpoint" not in preflight_text
+
+
+def test_existing_fold2_deployment_unchanged():
+    """Proves original deploy/kaggle_fold2 package remains unchanged and bit-intact."""
+    existing_meta = Path("deploy/kaggle_fold2/kernel-metadata.json")
+    assert existing_meta.is_file()
+    meta = json.loads(existing_meta.read_text())
+    assert meta["id"] == "minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2"
+    assert meta["code_file"] == "kaggle_notebook.ipynb"
+
+    existing_nb = Path("deploy/kaggle_fold2/kaggle_notebook.ipynb")
+    assert existing_nb.is_file()
+    nb = json.loads(existing_nb.read_text())
+    full_text = "\n".join("".join(c.get("source", [])) for c in nb["cells"])
+    assert "EXECUTE_TRAINING = False" in full_text
+
+
+
