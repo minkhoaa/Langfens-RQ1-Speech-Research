@@ -4,7 +4,7 @@
 
 **Recorded at:** 2026-10-29T23:00:00+07:00
 
-**Evidence source:** Commits `407cf04e83704d9e83953e9309e3c7dca8d7154e` (base) -> `ddd090ab0501a5e186e8da6181f185c7bb1e1eb0` (implementation), `deploy/kaggle_fold2/kernel-metadata.json`, `deploy/kaggle_fold2/dataset-metadata.json`, `deploy/kaggle_fold2/kaggle_notebook.ipynb`, `tests/test_rq1_trn_03a_kaggle_deployment.py`
+**Evidence source:** Commits `407cf04e83704d9e83953e9309e3c7dca8d7154e` (training source base) -> `822813a5796b4bf5ba80281b37b03886fcfa5a44` (final deployment package), `deploy/kaggle_fold2/kernel-metadata.json`, `deploy/kaggle_fold2/dataset-metadata.json`, `deploy/kaggle_fold2/kaggle_notebook.ipynb`, `tests/test_rq1_trn_03a_kaggle_deployment.py`
 
 **Evidence level:** `INDEPENDENTLY_VERIFIED` (Deployment Package Audit & Test Suite, 274/274 tests green)
 
@@ -25,8 +25,8 @@ Prepare a dedicated, private Kaggle execution package for Fold 2 Baseline R trai
 ---
 
 ## 2. Inputs & Dependencies
-- **Base Commit:** `407cf04e83704d9e83953e9309e3c7dca8d7154e` on branch `review/rq1-trn-03a-cross-fold-planning`.
-- **Implementation Commit:** `ddd090ab0501a5e186e8da6181f185c7bb1e1eb0`.
+- **Base Training Source Commit:** `407cf04e83704d9e83953e9309e3c7dca8d7154e` (pinned training codebase).
+- **Deployment Packaging Commit:** `822813a5796b4bf5ba80281b37b03886fcfa5a44`.
 - **Fold 2 Staging Package:** `datasets/L2-ARCTIC/authorized_RQ1-TRN_fold2_train_val_only.zip` (SHA-256 `112cc9e0cc5e37e5fa034df504eca019dd6ad438c96cb642335ecf10a802f0d9`).
 - **Fold 2 Pinned Config:** `configs/rq1_trn_03a_fold2.yaml`.
 - **Kaggle Execution Coordinator:** `deploy/kaggle/kaggle_entrypoint.py`.
