@@ -819,8 +819,8 @@ def test_kaggle_fold2_simplified_preflight_package():
 
     full_text = "\n".join("".join(c.get("source", [])) for c in cells)
 
-    # Invariants
-    assert 'PINNED_COMMIT_SHA = "407cf04e83704d9e83953e9309e3c7dca8d7154e"' in full_text
+    # Invariants in preflight
+    assert 'PINNED_COMMIT_SHA = "cc56b82ca1a9a6ceeca85929e07db4cac8537348"' in full_text
     assert 'UserSecretsClient().get_secret("HF_TOKEN")' in full_text
     assert "hf_token.txt" not in full_text
     assert ".hf_token" not in full_text
@@ -867,8 +867,8 @@ def test_kaggle_fold2_simplified_train_package():
 
     full_text = "\n".join("".join(c.get("source", [])) for c in cells)
 
-    # Invariants
-    assert 'PINNED_COMMIT_SHA = "407cf04e83704d9e83953e9309e3c7dca8d7154e"' in full_text
+    # Invariants in train
+    assert 'PINNED_COMMIT_SHA = "cc56b82ca1a9a6ceeca85929e07db4cac8537348"' in full_text
     assert 'UserSecretsClient().get_secret("HF_TOKEN")' in full_text
     assert "hf_token.txt" not in full_text
     assert ".hf_token" not in full_text
@@ -921,6 +921,29 @@ def test_existing_fold2_deployment_unchanged():
     nb = json.loads(existing_nb.read_text())
     full_text = "\n".join("".join(c.get("source", [])) for c in nb["cells"])
     assert "EXECUTE_TRAINING = False" in full_text
+
+
+def test_kaggle_fold2_smoke_package():
+    """Proves dedicated smoke test package enforces preflight-first, 1 epoch cap, and smoke run ID."""
+    smoke_dir = Path("deploy/kaggle_fold2_smoke")
+    assert smoke_dir.is_dir(), f"Missing directory at {smoke_dir}"
+
+    meta = json.loads((smoke_dir / "kernel-metadata.json").read_text())
+    assert meta["id"] == "minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2-preflight"
+    assert meta["code_file"] == "kaggle_smoke.ipynb"
+    assert meta["machine_shape"] == "NvidiaTeslaT4"
+
+    nb = json.loads((smoke_dir / "kaggle_smoke.ipynb").read_text())
+    assert len(nb["cells"]) == 7
+    full_text = "\n".join("".join(c.get("source", [])) for c in nb["cells"])
+
+    assert 'PINNED_COMMIT_SHA = "cc56b82ca1a9a6ceeca85929e07db4cac8537348"' in full_text
+    assert 'UserSecretsClient().get_secret("HF_TOKEN")' in full_text
+    assert '"--mode", "verify_fold2"' in full_text
+    assert '"--run-id", "fold2_smoke_1epoch"' in full_text
+    assert '"--execution-cap-epochs", "1"' in full_text
+    assert "subprocess.run(preflight_cmd, check=True)" in full_text
+    assert "subprocess.run(smoke_cmd, check=True)" in full_text
 
 
 def test_kaggle_fold_train_exec_smoke_and_cap_args():
