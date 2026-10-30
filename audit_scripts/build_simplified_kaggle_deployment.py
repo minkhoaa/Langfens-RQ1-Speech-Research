@@ -443,9 +443,9 @@ def make_train_notebook() -> dict:
     }
 
 
-def make_kernel_metadata(code_file: str, title: str) -> dict:
+def make_kernel_metadata(kernel_id: str, code_file: str, title: str) -> dict:
     return {
-        "id": "minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2",
+        "id": kernel_id,
         "title": title,
         "code_file": code_file,
         "language": "python",
@@ -491,7 +491,7 @@ def main():
 
     # 1. Preflight package
     (preflight_dir / "kernel-metadata.json").write_text(
-        json.dumps(make_kernel_metadata("kaggle_preflight.ipynb", "LANGFENS RQ1 Fold 2 Baseline R T4x2 (Preflight)"), indent=2) + "\n"
+        json.dumps(make_kernel_metadata("minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2-preflight", "kaggle_preflight.ipynb", "LANGFENS RQ1 Fold 2 Baseline R T4x2 (Preflight)"), indent=2) + "\n"
     )
     (preflight_dir / "dataset-metadata.json").write_text(
         json.dumps(make_dataset_metadata(), indent=2) + "\n"
@@ -503,7 +503,7 @@ def main():
 
     # 2. Training package
     (train_dir / "kernel-metadata.json").write_text(
-        json.dumps(make_kernel_metadata("kaggle_train.ipynb", "LANGFENS RQ1 Fold 2 Baseline R T4x2"), indent=2) + "\n"
+        json.dumps(make_kernel_metadata("minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2", "kaggle_train.ipynb", "LANGFENS RQ1 Fold 2 Baseline R T4x2"), indent=2) + "\n"
     )
     (train_dir / "dataset-metadata.json").write_text(
         json.dumps(make_dataset_metadata(), indent=2) + "\n"

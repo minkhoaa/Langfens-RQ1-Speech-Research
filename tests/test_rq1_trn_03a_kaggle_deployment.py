@@ -792,7 +792,7 @@ def test_kaggle_fold2_simplified_preflight_package():
     meta_path = preflight_dir / "kernel-metadata.json"
     assert meta_path.is_file(), f"Missing kernel-metadata.json at {meta_path}"
     meta = json.loads(meta_path.read_text())
-    assert meta["id"] == "minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2"
+    assert meta["id"] == "minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2-preflight"
     assert meta["code_file"] == "kaggle_preflight.ipynb"
     assert meta["language"] == "python"
     assert meta["kernel_type"] == "notebook"
