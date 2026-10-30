@@ -929,7 +929,7 @@ def test_kaggle_fold2_smoke_package():
     assert smoke_dir.is_dir(), f"Missing directory at {smoke_dir}"
 
     meta = json.loads((smoke_dir / "kernel-metadata.json").read_text())
-    assert meta["id"] == "minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2-preflight"
+    assert meta["id"] == "minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2"
     assert meta["code_file"] == "kaggle_smoke.ipynb"
     assert meta["machine_shape"] == "NvidiaTeslaT4"
 

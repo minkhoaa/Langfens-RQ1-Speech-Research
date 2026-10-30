@@ -751,7 +751,7 @@ def main():
 
     # 2. Smoke training package (1 epoch, run ID fold2_smoke_1epoch)
     (smoke_dir / "kernel-metadata.json").write_text(
-        json.dumps(make_kernel_metadata("minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2-preflight", "kaggle_smoke.ipynb", "LANGFENS RQ1 Fold 2 Baseline R T4x2 (Preflight)"), indent=2) + "\n"
+        json.dumps(make_kernel_metadata("minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2", "kaggle_smoke.ipynb", "LANGFENS RQ1 Fold 2 Baseline R T4x2"), indent=2) + "\n"
     )
     (smoke_dir / "dataset-metadata.json").write_text(
         json.dumps(make_dataset_metadata(), indent=2) + "\n"
