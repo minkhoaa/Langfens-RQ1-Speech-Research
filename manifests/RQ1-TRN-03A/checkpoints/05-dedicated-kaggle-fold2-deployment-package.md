@@ -63,17 +63,20 @@ Prepare a dedicated, private Kaggle execution package for Fold 2 Baseline R trai
 - **Scope & Isolation:** Staged archive contains strictly 18 train/val speakers. Active test partition speakers (`BWC`, `HKK`, `HQTV`, `MBMPS`, `SKA`, `SVBI`) are 100% physically excluded.
 
 ### 3.4 Seven-Phase Audited Notebook Design (`deploy/kaggle_fold2/kaggle_notebook.ipynb`)
-1. **Cell 0 (Markdown):** Monograph recording scientific protocol, bit-level hyperparameter contract, dual checkpoint accounting, test exclusion policy, and Kaggle Secrets authentication.
-2. **Cell 1 (Code — Phase 1: Hardware & Device Verification):**
-   Runs `!nvidia-smi`, verifies CUDA availability, asserts presence of Tesla T4 accelerator.
+1. **Cell 0 (Markdown):** Monograph recording scientific protocol, bit-level hyperparameter contract, dual checkpoint accounting, test exclusion policy, and Kaggle Secrets authentication. Explicitly records reviewed training source commit `407cf04e83704d9e83953e9309e3c7dca8d7154e`.
+2. **Cell 1 (Code — Phase 1: Hardware & Environment Verification):**
+   Executes checked `subprocess.run(["nvidia-smi"], check=True)`, verifies CUDA availability, asserts presence of Tesla T4 accelerator, and validates core dependency imports (`torch`, `yaml`, `transformers`, `huggingface_hub`).
 3. **Cell 2 (Code — Phase 2: Credentials & Secrets Resolution):**
    Reads `HF_TOKEN` strictly from `kaggle_secrets.UserSecretsClient().get_secret("HF_TOKEN")`. Sets `os.environ["HF_TOKEN"]`. Completely eliminates all local disk candidate searches (`hf_token.txt`, `.hf_token`).
 4. **Cell 3 (Code — Phase 3: Clone, Checkout & Verify Tree):**
-   Clones repository into `/kaggle/working/repo`, checks out pinned commit `407cf04e83704d9e83953e9309e3c7dca8d7154e`, asserts bit-exact match against `git rev-parse HEAD`, asserts clean working tree (`git status --porcelain`), and configures `sys.path`.
+   Clones repository into `/kaggle/working/repo` via checked subprocess, checks out pinned reviewed training source commit `407cf04e83704d9e83953e9309e3c7dca8d7154e`, asserts bit-exact match against `git rev-parse HEAD`, asserts clean working tree (`git status --porcelain`), and configures `sys.path`.
 5. **Cell 4 (Code — Phase 4: Staging Audit & Preflight Verification):**
-   Audits `/kaggle/input/langfens-rq1-fold2-staging` contents. Dispatches `deploy/kaggle/kaggle_entrypoint.py --mode verify_fold2`, executing archive SHA-256 verification (including automatic outer zip reconstruction if auto-extracted by Kaggle), 0 test speaker leak audit, and authenticated Hugging Face write-readback-delete probe without training.
+   Audits `/kaggle/input/langfens-rq1-fold2-staging` contents. Dispatches `deploy/kaggle/kaggle_entrypoint.py --mode verify_fold2` via checked subprocess `subprocess.run(preflight_cmd, check=True)` (replacing all IPython `!python3` calls), executing archive SHA-256 verification (including automatic outer zip reconstruction if auto-extracted by Kaggle), 0 test speaker leak audit, and authenticated Hugging Face write-readback-delete probe without training. Sets `PREFLIGHT_PASSED = True` upon success.
 6. **Cell 5 (Code — Phase 5: Gated Official Training Execution):**
-   Protected by `EXECUTE_TRAINING = False` gate. Running top-to-bottom stops safely after preflight verification. Only upon explicit operator authorization (`EXECUTE_TRAINING = True`) does it invoke `kaggle_entrypoint.py --mode train_fold2`.
+   Protected by a dual fail-closed safety gate:
+   - Requires `PREFLIGHT_PASSED == True` (raises `RuntimeError` if preflight was not executed or failed).
+   - Requires `EXECUTE_TRAINING == True` (remains `False` by default; prints gate message).
+   Running top-to-bottom stops safely after preflight verification. Only upon explicit operator authorization (`EXECUTE_TRAINING = True`) does it invoke `kaggle_entrypoint.py --mode train_fold2` via checked `subprocess.run(train_cmd, check=True)`. Zero `--remote-mirror-token` CLI arguments exist. Sets `TRAINING_COMPLETED = True` upon completion.
 7. **Cell 6 (Code — Phase 6: Post-Training Endpoint Classification):**
    Invokes `classify_fold_training_endpoint` on `/kaggle/working/checkpoints/fold2/baseline_r_fold2` validating invariant completion: `fixed_budget_checkpoint.pt` (Epoch 6 / 3,600 updates), `best.pt`, `last.pt`, and `history.json` ($\ge 6$, $\le 10$ epochs).
 

@@ -755,10 +755,14 @@ def test_kaggle_fold2_notebook_structure_and_hygiene():
     # 3. Uses Kaggle Secrets
     assert 'UserSecretsClient().get_secret("HF_TOKEN")' in full_text
 
-    # 4. Gated execution
+    # 4. Gated execution and checked subprocess calls
     assert "EXECUTE_TRAINING = False" in full_text
-    assert "--mode verify_fold2" in full_text
-    assert "--mode train_fold2" in full_text
+    assert "!python3" not in full_text
+    assert "subprocess.run(preflight_cmd, check=True)" in full_text
+    assert "subprocess.run(train_cmd, check=True)" in full_text
+    assert "PREFLIGHT_PASSED" in full_text
+    assert '"--mode", "verify_fold2"' in full_text
+    assert '"--mode", "train_fold2"' in full_text
 
     # 5. Correct dataset source & remote target
     assert "langfens-rq1-fold2-staging" in full_text
