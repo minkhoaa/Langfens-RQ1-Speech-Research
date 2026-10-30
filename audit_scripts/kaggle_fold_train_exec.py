@@ -506,6 +506,7 @@ def main():
     parser.add_argument("--dry-run", action="store_true", help="Simulate execution without GPU requirement")
     parser.add_argument("--allow-mock-gpu", action="store_true", help="Allow CPU execution for test harnesses")
     parser.add_argument("--resume", type=str, default=None, help="Path to checkpoint to resume")
+    parser.add_argument("--execution-cap-epochs", type=int, default=10, help="Maximum epochs to execute (default: 10)")
     args = parser.parse_args()
 
     fold_idx = args.fold
@@ -643,7 +644,7 @@ def main():
         "--fold", str(fold_idx),
         "--zip-path", str(staged_zip),
         "--output-dir", str(outdir),
-        "--execution-cap-epochs", "10",
+        "--execution-cap-epochs", str(args.execution_cap_epochs),
         "--remote-mirror-backend", args.remote_mirror_backend,
         "--remote-mirror-target", args.remote_mirror_target,
         "--remote-rel-prefix", f"fold{fold_idx}/{run_id}",
@@ -670,7 +671,10 @@ def main():
 
     print(f"[ENDPOINT] Final endpoint classification: {endpoint_status['status']}")
     if endpoint_status["status"] != "COMPLETED_3600_UPDATES":
-        raise RuntimeError(f"Training did not achieve COMPLETED_3600_UPDATES: {endpoint_status}")
+        if args.execution_cap_epochs < 6 or (args.run_id and "smoke" in args.run_id):
+            print(f"[SMOKE] Smoke run completed: status={endpoint_status['status']} as expected for capped run ({args.execution_cap_epochs} epochs).")
+        else:
+            raise RuntimeError(f"Training did not achieve COMPLETED_3600_UPDATES: {endpoint_status}")
 
     print("=" * 80)
     print(f"FOLD {fold_idx} TRAINING EXECUTION COMPLETED SUCCESSFULLY")

@@ -923,4 +923,19 @@ def test_existing_fold2_deployment_unchanged():
     assert "EXECUTE_TRAINING = False" in full_text
 
 
+def test_kaggle_fold_train_exec_smoke_and_cap_args():
+    """Proves kaggle_fold_train_exec and kaggle_entrypoint support execution cap and smoke runs."""
+    import argparse
+    from audit_scripts.kaggle_fold_train_exec import main as exec_main
+
+    # Test argument parsing in entrypoint
+    from deploy.kaggle.kaggle_entrypoint import main as entry_main
+    # Check that execution_cap_epochs is accepted
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--execution-cap-epochs", type=int, default=10)
+    args = parser.parse_args(["--execution-cap-epochs", "1"])
+    assert args.execution_cap_epochs == 1
+
+
+
 

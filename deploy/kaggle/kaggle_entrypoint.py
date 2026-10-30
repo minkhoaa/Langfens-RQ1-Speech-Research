@@ -43,6 +43,7 @@ def main():
     parser.add_argument("--kaggle-input-dir", type=str, default=None)
     parser.add_argument("--repo-dir", type=str, default="/kaggle/working/repo", help="Repository directory")
     parser.add_argument("--run-id", type=str, default=None)
+    parser.add_argument("--execution-cap-epochs", type=int, default=None, help="Capped execution epochs")
     args = parser.parse_args()
 
     # Strict token hygiene: reject CLI tokens for cross-fold baseline runs early
@@ -131,6 +132,8 @@ def main():
             cmd.extend(["--kaggle-input-dir", str(kaggle_input)])
         if args.run_id:
             cmd.extend(["--run-id", args.run_id])
+        if args.execution_cap_epochs is not None:
+            cmd.extend(["--execution-cap-epochs", str(args.execution_cap_epochs)])
         subprocess.run(cmd, env=env, check=True)
         print(f"[TRAIN] Training completed for Fold {f_idx}.")
 
