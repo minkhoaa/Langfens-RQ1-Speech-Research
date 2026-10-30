@@ -163,11 +163,8 @@ Design and specify a mathematically rigorous, leak-free 4-fold cross-validation 
 
 ## 6. Restart / Recovery Instructions
 - **Active Branch:** `review/rq1-trn-03a-cross-fold-planning`
-- **Current State:** Step 09 audit completed; BLOCKED at smoke verification gate (`SMOKE_VERIFICATION_EVIDENCE_ABSENT`). The smoke kernel (`minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2-smoke`) was staged in Step 08 with `--no-run`, but zero code cells executed and zero checkpoints exist on Hugging Face because `HF_TOKEN` must be attached via Kaggle Web UI before "Save & Run All". The official training package (`deploy/kaggle_fold2_train/`) has been fully reconciled (explicit `--run-id baseline_r_fold2`, matching output directory, and HF prefix) and staged to Kaggle via `push --no-run` (Version 3).
-- **Unblocking & Execution Protocol:**
-  1. **Execute Smoke Kernel First (Mandatory Gate):** Open `https://www.kaggle.com/code/minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2-smoke`, attach `HF_TOKEN` under **Add-ons -> Secrets**, and click **"Save & Run All"**.
-  2. **Verify Smoke Artifacts:** Verify 1 completed epoch (~600 updates, valid VAL AP/PER) and remote mirroring to Hugging Face (`minkhoaa/langfens-rq1-cross-fold-checkpoints` under `fold2/fold2_smoke_1epoch/`).
-  3. **Launch Official Training Kernel:** After smoke passes, open `https://www.kaggle.com/code/minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2`, attach `HF_TOKEN` under **Add-ons -> Secrets**, and click **"Save & Run All"** (10 completed epochs, fixed budget at Epoch 6 / 3,600 updates, mirrored to `fold2/baseline_r_fold2/`).
+- **Current State:** Step 09 (Official Fold 2 Baseline R Training) successfully completed and cryptographically verified (`COMPLETED; INDEPENDENTLY_VERIFIED`). Smoke run passed 1 epoch; official training run completed 7 epochs (4,200 updates total) on Dual Tesla T4 GPUs before early stopping at patience 5; fixed budget locked at Epoch 6 / 3,600 updates (`fixed_budget_checkpoint.pt`, SHA-256 `ab4c589445feac...`); best validation AP `0.2170` at Epoch 2 (`best.pt`, SHA-256 `b9032ee9ba8d...`); all artifacts mirrored to private Hugging Face repo `minkhoaa/langfens-rq1-cross-fold-checkpoints` under `fold2/baseline_r_fold2/`.
+- **Next Phase Dispatch:** Step 10 — Fold 3 Remote Staging & Training Preparation (`configs/rq1_trn_03a_fold3.yaml`, `authorized_RQ1-TRN_fold3_train_val_only.zip`).
 
 ---
 
