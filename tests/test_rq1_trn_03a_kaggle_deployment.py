@@ -1055,6 +1055,99 @@ def test_kaggle_fold2_training_run_id_reconciliation():
     assert '`cc56b82ca1a9a6ceeca85929e07db4cac8537348`' in preflight_text
 
 
+def test_kaggle_fold3_three_entrypoints_isolation():
+    """Proves Fold 3 preflight, smoke, and official train packages have unique IDs, titles, and configs."""
+    pkgs = {
+        "preflight": Path("deploy/kaggle_fold3_preflight"),
+        "smoke": Path("deploy/kaggle_fold3_smoke"),
+        "train": Path("deploy/kaggle_fold3_train"),
+    }
+    ids = {}
+    titles = {}
+    code_files = {}
+
+    for name, path in pkgs.items():
+        assert path.is_dir(), f"Missing directory at {path}"
+        meta = json.loads((path / "kernel-metadata.json").read_text())
+        dmeta = json.loads((path / "dataset-metadata.json").read_text())
+
+        ids[name] = meta["id"]
+        titles[name] = meta["title"]
+        code_files[name] = meta["code_file"]
+
+        assert meta["language"] == "python"
+        assert meta["kernel_type"] == "notebook"
+        assert meta["is_private"] is True
+        assert meta["enable_gpu"] is True
+        assert meta["enable_tpu"] is False
+        assert meta["enable_internet"] is True
+        assert meta["machine_shape"] == "NvidiaTeslaT4"
+        assert meta["dataset_sources"] == ["minkhoaa/langfens-rq1-fold3-staging"]
+
+        assert dmeta["id"] == "minkhoaa/langfens-rq1-fold3-staging"
+        assert dmeta["is_private"] is True
+        assert "ERMS, NCC, RRBI, THV, YBAA, YDCK strictly excluded" in dmeta["description"]
+
+        # Immutable pinned commit
+        nb = json.loads((path / meta["code_file"]).read_text())
+        full_text = "\n".join("".join(c.get("source", [])) for c in nb["cells"])
+        assert 'PINNED_COMMIT_SHA = "cc56b82ca1a9a6ceeca85929e07db4cac8537348"' in full_text
+
+    # Unique IDs and titles
+    assert len(set(ids.values())) == 3
+    assert ids["preflight"] == "minkhoaa/langfens-rq1-fold-3-baseline-r-t4x2-preflight"
+    assert ids["smoke"] == "minkhoaa/langfens-rq1-fold-3-baseline-r-t4x2-smoke"
+    assert ids["train"] == "minkhoaa/langfens-rq1-fold-3-baseline-r-t4x2"
+
+    assert len(set(titles.values())) == 3
+    assert titles["preflight"] == "LANGFENS RQ1 Fold 3 Baseline R T4x2 (Preflight)"
+    assert titles["smoke"] == "LANGFENS RQ1 Fold 3 Baseline R T4x2 (Smoke)"
+    assert titles["train"] == "LANGFENS RQ1 Fold 3 Baseline R T4x2"
+
+
+def test_kaggle_fold3_staging_and_speaker_isolation():
+    """Proves Fold 3 staging package metadata and authorized archive maintain bit-exact test isolation."""
+    staging_meta = json.loads(Path("deploy/kaggle_fold3_staging/dataset-metadata.json").read_text())
+    assert staging_meta["id"] == "minkhoaa/langfens-rq1-fold3-staging"
+    assert staging_meta["is_private"] is True
+
+    zip_path = Path("datasets/L2-ARCTIC/authorized_RQ1-TRN_fold3_train_val_only.zip")
+    assert zip_path.is_file()
+
+    import hashlib, zipfile
+    data = zip_path.read_bytes()
+    sha = hashlib.sha256(data).hexdigest()
+    assert sha == "e81ac9e5d95a68d7f02c7b2ea8e5f1e9fd89b047926ffeeb4d096b0a3a5378a2"
+
+    with zipfile.ZipFile(zip_path) as zf:
+        spk = set(n.replace(".zip", "") for n in zf.namelist())
+        assert len(spk) == 18
+        test_spk = {"ERMS", "NCC", "RRBI", "THV", "YBAA", "YDCK"}
+        assert len(spk & test_spk) == 0, f"Leakage: {spk & test_spk}"
+
+
+def test_kaggle_fold3_training_invariants():
+    """Proves Fold 3 training and smoke notebooks enforce preflight-first, isolated paths, and post classification."""
+    train_nb = json.loads(Path("deploy/kaggle_fold3_train/kaggle_train.ipynb").read_text())
+    train_text = "\n".join("".join(c.get("source", [])) for c in train_nb["cells"])
+
+    assert '"--mode", "verify_fold3"' in train_text
+    assert '"--mode", "train_fold3"' in train_text
+    assert '"--run-id", "baseline_r_fold3"' in train_text
+    assert '"/kaggle/working/checkpoints/fold3/baseline_r_fold3"' in train_text
+    assert 'fold_idx=3' in train_text
+    assert 'COMPLETED_3600_UPDATES' in train_text
+
+    smoke_nb = json.loads(Path("deploy/kaggle_fold3_smoke/kaggle_smoke.ipynb").read_text())
+    smoke_text = "\n".join("".join(c.get("source", [])) for c in smoke_nb["cells"])
+
+    assert '"--mode", "verify_fold3"' in smoke_text
+    assert '"--mode", "train_fold3"' in smoke_text
+    assert '"--run-id", "fold3_smoke_1epoch"' in smoke_text
+    assert '"--execution-cap-epochs", "1"' in smoke_text
+    assert '"/kaggle/working/checkpoints/fold3/fold3_smoke_1epoch"' in smoke_text
+
+
 
 
 

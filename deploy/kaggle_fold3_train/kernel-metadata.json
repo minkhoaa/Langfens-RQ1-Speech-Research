@@ -1,0 +1,18 @@
+{
+  "id": "minkhoaa/langfens-rq1-fold-3-baseline-r-t4x2",
+  "title": "LANGFENS RQ1 Fold 3 Baseline R T4x2",
+  "code_file": "kaggle_train.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "machine_shape": "NvidiaTeslaT4",
+  "dataset_sources": [
+    "minkhoaa/langfens-rq1-fold3-staging"
+  ],
+  "competition_sources": [],
+  "kernel_sources": [],
+  "model_sources": []
+}

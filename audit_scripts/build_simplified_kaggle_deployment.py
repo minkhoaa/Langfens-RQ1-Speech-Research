@@ -2,16 +2,20 @@
 """
 LANGFENS — RQ1-TRN-03A: Generator for Simplified Kaggle CLI Deployment Packages.
 
-Creates dedicated, independent preflight and training deployment packages:
-  - deploy/kaggle_fold2_preflight/
-  - deploy/kaggle_fold2_train/
+Creates dedicated, independent preflight, smoke, and training deployment packages
+for cross-fold execution (Folds 2, 3, etc.):
+  - deploy/kaggle_fold{k}_staging/
+  - deploy/kaggle_fold{k}_preflight/
+  - deploy/kaggle_fold{k}_smoke/
+  - deploy/kaggle_fold{k}_train/
 
 Replaces notebook execution flags with separate entrypoints independently
-runnable via `kaggle kernels push`.
+runnable via `kaggle kernels push --no-run`.
 """
 
 from __future__ import annotations
 
+import argparse
 import json
 from pathlib import Path
 
@@ -19,28 +23,51 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 PINNED_COMMIT_SHA = "cc56b82ca1a9a6ceeca85929e07db4cac8537348"
 
+FOLD_SPECS = {
+    2: {
+        "dataset_slug": "minkhoaa/langfens-rq1-fold2-staging",
+        "dataset_title": "LANGFENS RQ1 Fold 2 Train/Val Staging Package",
+        "dataset_sha256": "112cc9e0cc5e37e5fa034df504eca019dd6ad438c96cb642335ecf10a802f0d9",
+        "test_speakers": "BWC, HKK, HQTV, MBMPS, SKA, SVBI",
+        "preflight_slug": "minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2-preflight",
+        "smoke_slug": "minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2-smoke",
+        "train_slug": "minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2",
+    },
+    3: {
+        "dataset_slug": "minkhoaa/langfens-rq1-fold3-staging",
+        "dataset_title": "LANGFENS RQ1 Fold 3 Train/Val Staging Package",
+        "dataset_sha256": "e81ac9e5d95a68d7f02c7b2ea8e5f1e9fd89b047926ffeeb4d096b0a3a5378a2",
+        "test_speakers": "ERMS, NCC, RRBI, THV, YBAA, YDCK",
+        "preflight_slug": "minkhoaa/langfens-rq1-fold-3-baseline-r-t4x2-preflight",
+        "smoke_slug": "minkhoaa/langfens-rq1-fold-3-baseline-r-t4x2-smoke",
+        "train_slug": "minkhoaa/langfens-rq1-fold-3-baseline-r-t4x2",
+    },
+}
 
-def make_preflight_notebook() -> dict:
+
+def make_preflight_notebook(fold_idx: int = 2) -> dict:
+    spec = FOLD_SPECS[fold_idx]
+    test_speakers_fmt = ", ".join(f"`{s.strip()}`" for s in spec["test_speakers"].split(","))
     cells = [
         {
             "cell_type": "markdown",
             "id": "markdown-overview",
             "metadata": {},
             "source": [
-                "# LANGFENS — RQ1-TRN-03A: Dedicated Fold 2 Preflight Verification on Kaggle Tesla T4x2\n",
-                "Official preflight verification notebook for Fold 2 Baseline R (`KAGGLE_T4_CUDA_FP16_AMP`).\n",
+                f"# LANGFENS — RQ1-TRN-03A: Dedicated Fold {fold_idx} Preflight Verification on Kaggle Tesla T4x2\n",
+                f"Official preflight verification notebook for Fold {fold_idx} Baseline R (`KAGGLE_T4_CUDA_FP16_AMP`).\n",
                 "\n",
                 "## Operational Role & Safety Invariants\n",
                 "- **Role:** Independent, standalone preflight staging and persistence verification.\n",
                 "- **Preflight Only:** Zero training steps, zero optimizer updates, zero model weights generated.\n",
                 "- **Hardware Target:** Tesla T4 × 2 GPU (`Driver: >=580`, `CUDA: >=13.0`, 15,360 MiB VRAM per GPU).\n",
-                "- **Dataset Staging:** Authorized Fold 2 Train+Val package (`minkhoaa/langfens-rq1-fold2-staging`).\n",
-                "- **Sealed Test Isolation:** Active test speakers (`BWC`, `HKK`, `HQTV`, `MBMPS`, `SKA`, `SVBI`) are 100% physically absent.\n",
+                f"- **Dataset Staging:** Authorized Fold {fold_idx} Train+Val package (`{spec['dataset_slug']}`).\n",
+                f"- **Sealed Test Isolation:** Active test speakers ({test_speakers_fmt}) are 100% physically absent.\n",
                 "- **Manifest Integrity:** Verifies split manifest SHA-256 (`7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b`).\n",
-                "- **Dataset Integrity:** Verifies fold package SHA-256 (`112cc9e0cc5e37e5fa034df504eca019dd6ad438c96cb642335ecf10a802f0d9`).\n",
+                f"- **Dataset Integrity:** Verifies fold package SHA-256 (`{spec['dataset_sha256']}`).\n",
                 "- **Remote Persistence Probe:** Validates live authenticated write-readback-delete probe to private Hugging Face model repository `minkhoaa/langfens-rq1-cross-fold-checkpoints`.\n",
                 "- **Credential Hygiene:** Resolves `HF_TOKEN` strictly via Kaggle Secrets (`UserSecretsClient`). Zero token files on disk, zero CLI token arguments.\n",
-                "- **Reviewed Training Base Commit:** `cc56b82ca1a9a6ceeca85929e07db4cac8537348`.\n"
+                f"- **Reviewed Training Base Commit:** `{PINNED_COMMIT_SHA}`.\n"
             ]
         },
         {
@@ -150,14 +177,14 @@ def make_preflight_notebook() -> dict:
             "metadata": {},
             "outputs": [],
             "source": [
-                "# Phase 4: Staging Audit & Preflight Verification (verify_fold2)\n",
+                f"# Phase 4: Staging Audit & Preflight Verification (verify_fold{fold_idx})\n",
                 "# Executes preflight staging check, validates split manifest SHA, verifies 0 test speaker\n",
                 "# leakage, checks auto-extracted outer zip reconstruction, and executes live Hugging Face\n",
                 "# write-readback-delete probe. Zero model weights or training steps are executed in this entrypoint.\n",
                 "import subprocess, sys\n",
                 "from pathlib import Path\n",
                 "\n",
-                "staging_input = Path(\"/kaggle/input/langfens-rq1-fold2-staging\")\n",
+                f"staging_input = Path(\"/kaggle/input/{spec['dataset_slug'].split('/')[-1]}\")\n",
                 "print(f\"[INPUT AUDIT] Checking dataset input directory: {staging_input}\")\n",
                 "if staging_input.is_dir():\n",
                 "    print(f\"[INPUT AUDIT] Directory contents: {[p.name for p in staging_input.iterdir()]}\")\n",
@@ -167,7 +194,7 @@ def make_preflight_notebook() -> dict:
                 "preflight_cmd = [\n",
                 "    sys.executable,\n",
                 "    \"deploy/kaggle/kaggle_entrypoint.py\",\n",
-                "    \"--mode\", \"verify_fold2\",\n",
+                f"    \"--mode\", \"verify_fold{fold_idx}\",\n",
                 "    \"--commit-sha\", PINNED_COMMIT_SHA,\n",
                 "    \"--kaggle-input-dir\", str(staging_input),\n",
                 "    \"--remote-mirror-backend\", \"huggingface\",\n",
@@ -202,27 +229,28 @@ def make_preflight_notebook() -> dict:
     }
 
 
-def make_smoke_notebook() -> dict:
+def make_smoke_notebook(fold_idx: int = 2) -> dict:
+    spec = FOLD_SPECS[fold_idx]
     cells = [
         {
             "cell_type": "markdown",
             "id": "markdown-overview",
             "metadata": {},
             "source": [
-                "# LANGFENS — RQ1-TRN-03A: Dedicated Fold 2 Smoke Training on Kaggle Tesla T4x2\n",
-                "Official 1-epoch smoke execution notebook for Fold 2 Baseline R (`KAGGLE_T4_CUDA_FP16_AMP`).\n",
+                f"# LANGFENS — RQ1-TRN-03A: Dedicated Fold {fold_idx} Smoke Training on Kaggle Tesla T4x2\n",
+                f"Official 1-epoch smoke execution notebook for Fold {fold_idx} Baseline R (`KAGGLE_T4_CUDA_FP16_AMP`).\n",
                 "\n",
                 "## Smoke Protocol & Operational Invariants\n",
                 "- **Scope:** Strictly 1 completed epoch (max ~600 updates) for execution and persistence verification.\n",
-                "- **Run ID:** `fold2_smoke_1epoch` (isolated checkpoint hierarchy; zero interference with official Baseline R).\n",
+                f"- **Run ID:** `fold{fold_idx}_smoke_1epoch` (isolated checkpoint hierarchy; zero interference with official Baseline R).\n",
                 "- **Architecture:** Two-head Wav2Vec2 + Binary MDD (frozen backbone `facebook/wav2vec2-base-960h`, rev `22aad52d435eb6dbaf354bdad9b0da84ce7d6156`)\n",
                 "- **Initialization:** Strictly fresh pretrained initialization; zero warm-start from Fold 1.\n",
                 "- **Seeding & Precision:** Seed 1337, CUDA FP16 AMP (`init_scale: 4096.0`), AdamW (`lr: 1e-3`, `weight_decay: 0.01`).\n",
                 "- **Batching & Step Dynamics:** `batch_size: 2`, `gradient_accumulation_steps: 2` (effective batch size = 4 utterances per update).\n",
                 "- **Scheduler Horizon:** 25 epochs (~15,000 updates, 100 warmup updates) preserving Fold 1 Baseline R cosine decay rate.\n",
                 "- **Execution Cap:** Strictly 1 completed epoch (~600 updates).\n",
-                "- **Data & Test Isolation:** Authorized Fold 2 Train+Val package (18 speakers; 6 test speakers strictly excluded).\n",
-                "- **Remote Mirroring:** Per-epoch atomic mirror to private Hugging Face repo `minkhoaa/langfens-rq1-cross-fold-checkpoints` under prefix `fold2/fold2_smoke_1epoch/` with SHA-256 readback.\n",
+                f"- **Data & Test Isolation:** Authorized Fold {fold_idx} Train+Val package (18 speakers; 6 test speakers strictly excluded).\n",
+                f"- **Remote Mirroring:** Per-epoch atomic mirror to private Hugging Face repo `minkhoaa/langfens-rq1-cross-fold-checkpoints` under prefix `fold{fold_idx}/fold{fold_idx}_smoke_1epoch/` with SHA-256 readback.\n",
                 "- **Mandatory Preflight Gate:** Runs preflight first and fails closed on any error before training begins.\n",
                 f"- **Reviewed Training Base Commit:** `{PINNED_COMMIT_SHA}`.\n"
             ]
@@ -338,7 +366,7 @@ def make_smoke_notebook() -> dict:
                 "import subprocess, sys\n",
                 "from pathlib import Path\n",
                 "\n",
-                "staging_input = Path(\"/kaggle/input/langfens-rq1-fold2-staging\")\n",
+                f"staging_input = Path(\"/kaggle/input/{spec['dataset_slug'].split('/')[-1]}\")\n",
                 "print(f\"[PREFLIGHT-GATE] Auditing dataset input directory: {staging_input}\")\n",
                 "if staging_input.is_dir():\n",
                 "    print(f\"[PREFLIGHT-GATE] Directory contents: {[p.name for p in staging_input.iterdir()]}\")\n",
@@ -348,7 +376,7 @@ def make_smoke_notebook() -> dict:
                 "preflight_cmd = [\n",
                 "    sys.executable,\n",
                 "    \"deploy/kaggle/kaggle_entrypoint.py\",\n",
-                "    \"--mode\", \"verify_fold2\",\n",
+                f"    \"--mode\", \"verify_fold{fold_idx}\",\n",
                 "    \"--commit-sha\", PINNED_COMMIT_SHA,\n",
                 "    \"--kaggle-input-dir\", str(staging_input),\n",
                 "    \"--remote-mirror-backend\", \"huggingface\",\n",
@@ -369,13 +397,13 @@ def make_smoke_notebook() -> dict:
             "metadata": {},
             "outputs": [],
             "source": [
-                "# Phase 5: Isolated Smoke Training Execution (1 epoch, run ID fold2_smoke_1epoch)\n",
+                f"# Phase 5: Isolated Smoke Training Execution (1 epoch, run ID fold{fold_idx}_smoke_1epoch)\n",
                 "import subprocess, sys\n",
                 "from pathlib import Path\n",
                 "\n",
                 "print(\"=\" * 80)\n",
-                "print(\"[SMOKE LAUNCH] Starting Fold 2 Smoke Training on Tesla T4...\")\n",
-                "print(f\"[SMOKE LAUNCH] Run ID: fold2_smoke_1epoch\")\n",
+                f"print(\"[SMOKE LAUNCH] Starting Fold {fold_idx} Smoke Training on Tesla T4...\")\n",
+                f"print(f\"[SMOKE LAUNCH] Run ID: fold{fold_idx}_smoke_1epoch\")\n",
                 "print(f\"[SMOKE LAUNCH] Execution Cap: 1 completed epoch (~600 updates)\")\n",
                 "print(f\"[SMOKE LAUNCH] Pinned Commit SHA: {PINNED_COMMIT_SHA}\")\n",
                 "print(\"=\" * 80)\n",
@@ -383,10 +411,10 @@ def make_smoke_notebook() -> dict:
                 "smoke_cmd = [\n",
                 "    sys.executable,\n",
                 "    \"deploy/kaggle/kaggle_entrypoint.py\",\n",
-                "    \"--mode\", \"train_fold2\",\n",
+                f"    \"--mode\", \"train_fold{fold_idx}\",\n",
                 "    \"--commit-sha\", PINNED_COMMIT_SHA,\n",
                 "    \"--kaggle-input-dir\", str(staging_input),\n",
-                "    \"--run-id\", \"fold2_smoke_1epoch\",\n",
+                f"    \"--run-id\", \"fold{fold_idx}_smoke_1epoch\",\n",
                 "    \"--execution-cap-epochs\", \"1\",\n",
                 "    \"--remote-mirror-backend\", \"huggingface\",\n",
                 "    \"--remote-mirror-target\", \"minkhoaa/langfens-rq1-cross-fold-checkpoints\",\n",
@@ -394,7 +422,7 @@ def make_smoke_notebook() -> dict:
                 "print(\"[SMOKE LAUNCH] Executing checked command:\")\n",
                 "print(\"  \" + \" \".join(smoke_cmd))\n",
                 "subprocess.run(smoke_cmd, check=True)\n",
-                "print(\"[SMOKE LAUNCH] Fold 2 Smoke training subprocess completed successfully.\")\n"
+                f"print(\"[SMOKE LAUNCH] Fold {fold_idx} Smoke training subprocess completed successfully.\")\n"
             ]
         },
         {
@@ -408,7 +436,7 @@ def make_smoke_notebook() -> dict:
                 "import json\n",
                 "from pathlib import Path\n",
                 "\n",
-                "smoke_dir = Path(\"/kaggle/working/checkpoints/fold2/fold2_smoke_1epoch\")\n",
+                f"smoke_dir = Path(\"/kaggle/working/checkpoints/fold{fold_idx}/fold{fold_idx}_smoke_1epoch\")\n",
                 "print(f\"[VERIFY SMOKE] Checking smoke directory: {smoke_dir}\")\n",
                 "assert smoke_dir.is_dir(), f\"Smoke output directory missing: {smoke_dir}\"\n",
                 "assert (smoke_dir / \"last.pt\").is_file(), f\"Missing last.pt in {smoke_dir}\"\n",
@@ -448,15 +476,17 @@ def make_smoke_notebook() -> dict:
     }
 
 
-def make_train_notebook() -> dict:
+def make_train_notebook(fold_idx: int = 2) -> dict:
+    spec = FOLD_SPECS[fold_idx]
+    test_speakers_fmt = ", ".join(f"`{s.strip()}`" for s in spec["test_speakers"].split(","))
     cells = [
         {
             "cell_type": "markdown",
             "id": "markdown-overview",
             "metadata": {},
             "source": [
-                "# LANGFENS — RQ1-TRN-03A: Dedicated Fold 2 Baseline R Training on Kaggle Tesla T4x2\n",
-                "Official execution notebook for Fold 2 Baseline R training (`KAGGLE_T4_CUDA_FP16_AMP`).\n",
+                f"# LANGFENS — RQ1-TRN-03A: Dedicated Fold {fold_idx} Baseline R Training on Kaggle Tesla T4x2\n",
+                f"Official execution notebook for Fold {fold_idx} Baseline R training (`KAGGLE_T4_CUDA_FP16_AMP`).\n",
                 "\n",
                 "## Scientific Protocol & Provenance Invariants\n",
                 "- **Architecture:** Two-head Wav2Vec2 + Binary MDD (frozen backbone `facebook/wav2vec2-base-960h`, revision `22aad52d435eb6dbaf354bdad9b0da84ce7d6156`)\n",
@@ -470,17 +500,17 @@ def make_train_notebook() -> dict:
                 "  - Fixed-Budget Primary Endpoint: Strictly captured and locked at Epoch 6 / 3,600 updates (`fixed_budget_checkpoint.pt`).\n",
                 "  - Validation-Selected Endpoint: Captured at peak validation AP prior to early stopping (`best.pt`, patience 5).\n",
                 "- **Data & Test Isolation:**\n",
-                "  - Dataset: Authorized Fold 2 Train+Val package (`minkhoaa/langfens-rq1-fold2-staging`).\n",
-                "  - Sealed Test Exclusion: Active test speakers (`BWC`, `HKK`, `HQTV`, `MBMPS`, `SKA`, `SVBI`) are 100% physically absent.\n",
+                f"  - Dataset: Authorized Fold {fold_idx} Train+Val package (`{spec['dataset_slug']}`).\n",
+                f"  - Sealed Test Exclusion: Active test speakers ({test_speakers_fmt}) are 100% physically absent.\n",
                 "- **Credential & Durability Hygiene:**\n",
                 "  - Authentication: strictly via Kaggle Secrets (`HF_TOKEN`) or environment variables; zero token file fallbacks.\n",
-                "  - Remote Mirroring: Per-epoch atomic mirror to private Hugging Face repo `minkhoaa/langfens-rq1-cross-fold-checkpoints` with SHA-256 readback.\n",
+                f"  - Remote Mirroring: Per-epoch atomic mirror to private Hugging Face repo `minkhoaa/langfens-rq1-cross-fold-checkpoints` with SHA-256 readback.\n",
                 "- **Run ID & Persistence Hierarchy:**\n",
-                "  - Run ID: `baseline_r_fold2`.\n",
-                "  - Local Checkpoints: `/kaggle/working/checkpoints/fold2/baseline_r_fold2`.\n",
-                "  - Remote Mirror: private Hugging Face repo `minkhoaa/langfens-rq1-cross-fold-checkpoints` under prefix `fold2/baseline_r_fold2/` with SHA-256 readback.\n",
+                f"  - Run ID: `baseline_r_fold{fold_idx}`.\n",
+                f"  - Local Checkpoints: `/kaggle/working/checkpoints/fold{fold_idx}/baseline_r_fold{fold_idx}`.\n",
+                f"  - Remote Mirror: private Hugging Face repo `minkhoaa/langfens-rq1-cross-fold-checkpoints` under prefix `fold{fold_idx}/baseline_r_fold{fold_idx}/` with SHA-256 readback.\n",
                 "- **Mandatory Preflight Gate:** Runs preflight first and fails closed on any error before training begins.\n",
-                "- **Reviewed Training Source Commit:** `cc56b82ca1a9a6ceeca85929e07db4cac8537348` (pinned training codebase).\n"
+                f"- **Reviewed Training Source Commit:** `{PINNED_COMMIT_SHA}` (pinned training codebase).\n"
             ]
         },
         {
@@ -590,12 +620,12 @@ def make_train_notebook() -> dict:
             "metadata": {},
             "outputs": [],
             "source": [
-                "# Phase 4: Mandatory Preflight Check (Fail-Closed Gate)\n",
+                f"# Phase 4: Mandatory Preflight Check (Fail-Closed Gate)\n",
                 "# Training entrypoint executes preflight checks first; fails closed immediately on any error.\n",
                 "import subprocess, sys\n",
                 "from pathlib import Path\n",
                 "\n",
-                "staging_input = Path(\"/kaggle/input/langfens-rq1-fold2-staging\")\n",
+                f"staging_input = Path(\"/kaggle/input/{spec['dataset_slug'].split('/')[-1]}\")\n",
                 "print(f\"[PREFLIGHT-GATE] Auditing dataset input directory: {staging_input}\")\n",
                 "if staging_input.is_dir():\n",
                 "    print(f\"[PREFLIGHT-GATE] Directory contents: {[p.name for p in staging_input.iterdir()]}\")\n",
@@ -605,7 +635,7 @@ def make_train_notebook() -> dict:
                 "preflight_cmd = [\n",
                 "    sys.executable,\n",
                 "    \"deploy/kaggle/kaggle_entrypoint.py\",\n",
-                "    \"--mode\", \"verify_fold2\",\n",
+                f"    \"--mode\", \"verify_fold{fold_idx}\",\n",
                 "    \"--commit-sha\", PINNED_COMMIT_SHA,\n",
                 "    \"--kaggle-input-dir\", str(staging_input),\n",
                 "    \"--remote-mirror-backend\", \"huggingface\",\n",
@@ -626,27 +656,27 @@ def make_train_notebook() -> dict:
             "metadata": {},
             "outputs": [],
             "source": [
-                "# Phase 5: Official Training Execution (train_fold2)\n",
-                "# Preflight verified; launching official Fold 2 Baseline R training.\n",
+                f"# Phase 5: Official Training Execution (train_fold{fold_idx})\n",
+                f"# Preflight verified; launching official Fold {fold_idx} Baseline R training.\n",
                 "print(\"=\" * 80)\n",
-                "print(\"[LAUNCH] Starting Official Fold 2 Baseline R Training on Tesla T4...\")\n",
+                f"print(\"[LAUNCH] Starting Official Fold {fold_idx} Baseline R Training on Tesla T4...\")\n",
                 "print(f\"[LAUNCH] Pinned Commit SHA: {PINNED_COMMIT_SHA}\")\n",
                 "print(\"=\" * 80)\n",
                 "\n",
                 "train_cmd = [\n",
                 "    sys.executable,\n",
                 "    \"deploy/kaggle/kaggle_entrypoint.py\",\n",
-                "    \"--mode\", \"train_fold2\",\n",
+                f"    \"--mode\", \"train_fold{fold_idx}\",\n",
                 "    \"--commit-sha\", PINNED_COMMIT_SHA,\n",
                 "    \"--kaggle-input-dir\", str(staging_input),\n",
-                "    \"--run-id\", \"baseline_r_fold2\",\n",
+                f"    \"--run-id\", \"baseline_r_fold{fold_idx}\",\n",
                 "    \"--remote-mirror-backend\", \"huggingface\",\n",
                 "    \"--remote-mirror-target\", \"minkhoaa/langfens-rq1-cross-fold-checkpoints\",\n",
                 "]\n",
                 "print(\"[LAUNCH] Executing checked command:\")\n",
                 "print(\"  \" + \" \".join(train_cmd))\n",
                 "subprocess.run(train_cmd, check=True)\n",
-                "print(\"[LAUNCH] Fold 2 Baseline R training subprocess completed successfully.\")\n"
+                f"print(\"[LAUNCH] Fold {fold_idx} Baseline R training subprocess completed successfully.\")\n"
             ]
         },
         {
@@ -664,8 +694,8 @@ def make_train_notebook() -> dict:
                 "# 4. Pinned configuration parity.\n",
                 "from audit_scripts.kaggle_fold_train_exec import classify_fold_training_endpoint\n",
                 "res = classify_fold_training_endpoint(\n",
-                "    \"/kaggle/working/checkpoints/fold2/baseline_r_fold2\",\n",
-                "    fold_idx=2,\n",
+                f"    \"/kaggle/working/checkpoints/fold{fold_idx}/baseline_r_fold{fold_idx}\",\n",
+                f"    fold_idx={fold_idx},\n",
                 "    expected_commit=PINNED_COMMIT_SHA\n",
                 ")\n",
                 "print(\"=\" * 80)\n",
@@ -694,7 +724,7 @@ def make_train_notebook() -> dict:
     }
 
 
-def make_kernel_metadata(kernel_id: str, code_file: str, title: str) -> dict:
+def make_kernel_metadata(kernel_id: str, code_file: str, title: str, dataset_slug: str) -> dict:
     return {
         "id": kernel_id,
         "title": title,
@@ -707,7 +737,7 @@ def make_kernel_metadata(kernel_id: str, code_file: str, title: str) -> dict:
         "enable_internet": True,
         "machine_shape": "NvidiaTeslaT4",
         "dataset_sources": [
-            "minkhoaa/langfens-rq1-fold2-staging"
+            dataset_slug
         ],
         "competition_sources": [],
         "kernel_sources": [],
@@ -715,10 +745,11 @@ def make_kernel_metadata(kernel_id: str, code_file: str, title: str) -> dict:
     }
 
 
-def make_dataset_metadata() -> dict:
+def make_dataset_metadata(fold_idx: int = 2) -> dict:
+    spec = FOLD_SPECS[fold_idx]
     return {
-        "title": "LANGFENS RQ1 Fold 2 Train/Val Staging Package",
-        "id": "minkhoaa/langfens-rq1-fold2-staging",
+        "title": spec["dataset_title"],
+        "id": spec["dataset_slug"],
         "licenses": [
             {
                 "name": "CC-BY-NC-4.0"
@@ -726,57 +757,74 @@ def make_dataset_metadata() -> dict:
         ],
         "is_private": True,
         "description": (
-            "Authorized Fold 2 Train+Val audio archive (18 speakers) for LANGFENS RQ1-TRN-03A. "
-            "Contains NO active test partition audio or annotations (BWC, HKK, HQTV, MBMPS, SKA, SVBI strictly excluded). "
-            "Strictly for authorized private research under CC BY-NC 4.0."
+            f"Authorized Fold {fold_idx} Train+Val audio archive (18 speakers) for LANGFENS RQ1-TRN-03A. "
+            f"Contains NO active test partition audio or annotations ({spec['test_speakers']} strictly excluded). "
+            f"Strictly for authorized private research under CC BY-NC 4.0."
         )
     }
 
 
-def main():
-    preflight_dir = REPO_ROOT / "deploy" / "kaggle_fold2_preflight"
-    smoke_dir = REPO_ROOT / "deploy" / "kaggle_fold2_smoke"
-    train_dir = REPO_ROOT / "deploy" / "kaggle_fold2_train"
+def build_fold_packages(fold_idx: int):
+    spec = FOLD_SPECS[fold_idx]
+    prefix = f"kaggle_fold{fold_idx}"
+
+    preflight_dir = REPO_ROOT / "deploy" / f"{prefix}_preflight"
+    smoke_dir = REPO_ROOT / "deploy" / f"{prefix}_smoke"
+    train_dir = REPO_ROOT / "deploy" / f"{prefix}_train"
 
     preflight_dir.mkdir(parents=True, exist_ok=True)
     smoke_dir.mkdir(parents=True, exist_ok=True)
     train_dir.mkdir(parents=True, exist_ok=True)
 
+    dmeta = make_dataset_metadata(fold_idx)
+
+    # 0. Staging package (dataset metadata for kaggle datasets create)
+    if fold_idx >= 3:
+        staging_dir = REPO_ROOT / "deploy" / f"{prefix}_staging"
+        staging_dir.mkdir(parents=True, exist_ok=True)
+        (staging_dir / "dataset-metadata.json").write_text(json.dumps(dmeta, indent=2) + "\n")
+        print(f"[BUILD] Generated Staging Metadata at {staging_dir}")
+
     # 1. Preflight package
     (preflight_dir / "kernel-metadata.json").write_text(
-        json.dumps(make_kernel_metadata("minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2-preflight", "kaggle_preflight.ipynb", "LANGFENS RQ1 Fold 2 Baseline R T4x2 (Preflight)"), indent=2) + "\n"
+        json.dumps(make_kernel_metadata(spec["preflight_slug"], "kaggle_preflight.ipynb", f"LANGFENS RQ1 Fold {fold_idx} Baseline R T4x2 (Preflight)", spec["dataset_slug"]), indent=2) + "\n"
     )
-    (preflight_dir / "dataset-metadata.json").write_text(
-        json.dumps(make_dataset_metadata(), indent=2) + "\n"
-    )
+    (preflight_dir / "dataset-metadata.json").write_text(json.dumps(dmeta, indent=2) + "\n")
     (preflight_dir / "kaggle_preflight.ipynb").write_text(
-        json.dumps(make_preflight_notebook(), indent=2) + "\n"
+        json.dumps(make_preflight_notebook(fold_idx), indent=2) + "\n"
     )
-    print(f"[BUILD] Generated Preflight Package at {preflight_dir}")
+    print(f"[BUILD] Generated Fold {fold_idx} Preflight Package at {preflight_dir}")
 
-    # 2. Smoke training package (1 epoch, run ID fold2_smoke_1epoch)
+    # 2. Smoke training package (1 epoch, run ID fold{k}_smoke_1epoch)
     (smoke_dir / "kernel-metadata.json").write_text(
-        json.dumps(make_kernel_metadata("minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2-smoke", "kaggle_smoke.ipynb", "LANGFENS RQ1 Fold 2 Baseline R T4x2 (Smoke)"), indent=2) + "\n"
+        json.dumps(make_kernel_metadata(spec["smoke_slug"], "kaggle_smoke.ipynb", f"LANGFENS RQ1 Fold {fold_idx} Baseline R T4x2 (Smoke)", spec["dataset_slug"]), indent=2) + "\n"
     )
-    (smoke_dir / "dataset-metadata.json").write_text(
-        json.dumps(make_dataset_metadata(), indent=2) + "\n"
-    )
+    (smoke_dir / "dataset-metadata.json").write_text(json.dumps(dmeta, indent=2) + "\n")
     (smoke_dir / "kaggle_smoke.ipynb").write_text(
-        json.dumps(make_smoke_notebook(), indent=2) + "\n"
+        json.dumps(make_smoke_notebook(fold_idx), indent=2) + "\n"
     )
-    print(f"[BUILD] Generated Smoke Package at {smoke_dir}")
+    print(f"[BUILD] Generated Fold {fold_idx} Smoke Package at {smoke_dir}")
 
     # 3. Official training package (10 epochs, Baseline R)
     (train_dir / "kernel-metadata.json").write_text(
-        json.dumps(make_kernel_metadata("minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2", "kaggle_train.ipynb", "LANGFENS RQ1 Fold 2 Baseline R T4x2"), indent=2) + "\n"
+        json.dumps(make_kernel_metadata(spec["train_slug"], "kaggle_train.ipynb", f"LANGFENS RQ1 Fold {fold_idx} Baseline R T4x2", spec["dataset_slug"]), indent=2) + "\n"
     )
-    (train_dir / "dataset-metadata.json").write_text(
-        json.dumps(make_dataset_metadata(), indent=2) + "\n"
-    )
+    (train_dir / "dataset-metadata.json").write_text(json.dumps(dmeta, indent=2) + "\n")
     (train_dir / "kaggle_train.ipynb").write_text(
-        json.dumps(make_train_notebook(), indent=2) + "\n"
+        json.dumps(make_train_notebook(fold_idx), indent=2) + "\n"
     )
-    print(f"[BUILD] Generated Training Package at {train_dir}")
+    print(f"[BUILD] Generated Fold {fold_idx} Training Package at {train_dir}")
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Build Kaggle deployment packages for cross-fold baseline.")
+    parser.add_argument("--folds", type=int, nargs="+", default=[2, 3], help="Folds to build (e.g. 2 3)")
+    args = parser.parse_args()
+
+    for f in args.folds:
+        if f not in FOLD_SPECS:
+            raise ValueError(f"Unsupported fold: {f}. Supported folds: {list(FOLD_SPECS.keys())}")
+        build_fold_packages(f)
 
 
 if __name__ == "__main__":
