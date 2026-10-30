@@ -39,7 +39,7 @@ Under explicit operator authorization limited strictly to private Kaggle dataset
 The live preflight execution on Kaggle Tesla T4 produced the following verifiable evidence:
 
 ```text
-Fri Oct 30 03:10:07 2026       
+Fri Oct 30 03:21:58 2026       
 +-----------------------------------------------------------------------------------------+
 | NVIDIA-SMI 580.178.04             Driver Version: 580.178.04     CUDA Version: 13.0     |
 +-----------------------------------------+------------------------+----------------------+
@@ -48,7 +48,7 @@ Fri Oct 30 03:10:07 2026
 |                                         |                        |               MIG M. |
 |=========================================+========================+======================|
 |   0  Tesla T4                       Off |   00000000:00:04.0 Off |                    0 |
-| N/A   52C    P8             10W /   70W |       0MiB /  15360MiB |      0%      Default |
+| N/A   51C    P8              9W /   70W |       0MiB /  15360MiB |      0%      Default |
 +-----------------------------------------+------------------------+----------------------+
 |   1  Tesla T4                       Off |   00000000:00:05.0 Off |                    0 |
 | N/A   52C    P8             10W /   70W |       0MiB /  15360MiB |      0%      Default |
