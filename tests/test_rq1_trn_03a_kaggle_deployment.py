@@ -1040,6 +1040,21 @@ def test_kaggle_workflow_agents_policy():
     assert "Hugging Face stores verified checkpoints" in content
 
 
+def test_kaggle_fold2_training_run_id_reconciliation():
+    """Proves official training package reconciles run ID baseline_r_fold2 with Phase 6 and HF mirror."""
+    train_nb = json.loads(Path("deploy/kaggle_fold2_train/kaggle_train.ipynb").read_text())
+    full_text = "\n".join("".join(c.get("source", [])) for c in train_nb["cells"])
+
+    assert '"--run-id", "baseline_r_fold2"' in full_text
+    assert '"/kaggle/working/checkpoints/fold2/baseline_r_fold2"' in full_text
+    assert 'fold2/baseline_r_fold2' in full_text
+    assert 'PINNED_COMMIT_SHA = "cc56b82ca1a9a6ceeca85929e07db4cac8537348"' in full_text
+
+    preflight_nb = json.loads(Path("deploy/kaggle_fold2_preflight/kaggle_preflight.ipynb").read_text())
+    preflight_text = "\n".join("".join(c.get("source", [])) for c in preflight_nb["cells"])
+    assert '`cc56b82ca1a9a6ceeca85929e07db4cac8537348`' in preflight_text
+
+
 
 
 

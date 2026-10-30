@@ -143,6 +143,7 @@ Design and specify a mathematically rigorous, leak-free 4-fold cross-validation 
 - **Step Checkpoint 06:** `manifests/RQ1-TRN-03A/checkpoints/06-fold2-remote-staging-and-preflight-report.md`
 - **Step Checkpoint 07:** `manifests/RQ1-TRN-03A/checkpoints/07-simplified-kaggle-cli-deployment.md`
 - **Step Checkpoint 08:** `manifests/RQ1-TRN-03A/checkpoints/08-permanent-kaggle-workflow-and-fold2-smoke-readiness.md`
+- **Step Checkpoint 09:** `manifests/RQ1-TRN-03A/checkpoints/09-official-fold2-baseline-r-training-launch-gate.md`
 - **Kaggle Fold 2 Preflight Package:** `deploy/kaggle_fold2_preflight/` (`kernel-metadata.json`, `dataset-metadata.json`, `kaggle_preflight.ipynb`)
 - **Kaggle Fold 2 Smoke Package:** `deploy/kaggle_fold2_smoke/` (`kernel-metadata.json`, `dataset-metadata.json`, `kaggle_smoke.ipynb`)
 - **Kaggle Fold 2 Training Package:** `deploy/kaggle_fold2_train/` (`kernel-metadata.json`, `dataset-metadata.json`, `kaggle_train.ipynb`)
@@ -162,19 +163,11 @@ Design and specify a mathematically rigorous, leak-free 4-fold cross-validation 
 
 ## 6. Restart / Recovery Instructions
 - **Active Branch:** `review/rq1-trn-03a-cross-fold-planning`
-- **Current State:** Dedicated Fold 2 smoke package staged (`deploy/kaggle_fold2_smoke/`), remote staging dataset live, 3-package isolation verified; ready for smoke deployment via CLI.
-- **Smoke Deployment & Execution Protocol:**
-  1. Push smoke kernel via CLI without immediate run:
-     ```bash
-     kaggle kernels push -p deploy/kaggle_fold2_smoke/ --no-run
-     ```
-  2. Open Kaggle Web UI at `https://www.kaggle.com/code/minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2-smoke`, attach `HF_TOKEN` in **Add-ons -> Secrets**, and click **"Save & Run All"**.
-  3. Monitor execution via CLI:
-     ```bash
-     kaggle kernels status minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2-smoke
-     kaggle kernels output minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2-smoke
-     ```
-  4. Verify mirrored checkpoint and report on Hugging Face (`minkhoaa/langfens-rq1-cross-fold-checkpoints` under `fold2/fold2_smoke_1epoch/`).
+- **Current State:** Step 09 audit completed; BLOCKED at smoke verification gate (`SMOKE_VERIFICATION_EVIDENCE_ABSENT`). The smoke kernel (`minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2-smoke`) was staged in Step 08 with `--no-run`, but zero code cells executed and zero checkpoints exist on Hugging Face because `HF_TOKEN` must be attached via Kaggle Web UI before "Save & Run All". The official training package (`deploy/kaggle_fold2_train/`) has been fully reconciled (explicit `--run-id baseline_r_fold2`, matching output directory, and HF prefix) and staged to Kaggle via `push --no-run` (Version 3).
+- **Unblocking & Execution Protocol:**
+  1. **Execute Smoke Kernel First (Mandatory Gate):** Open `https://www.kaggle.com/code/minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2-smoke`, attach `HF_TOKEN` under **Add-ons -> Secrets**, and click **"Save & Run All"**.
+  2. **Verify Smoke Artifacts:** Verify 1 completed epoch (~600 updates, valid VAL AP/PER) and remote mirroring to Hugging Face (`minkhoaa/langfens-rq1-cross-fold-checkpoints` under `fold2/fold2_smoke_1epoch/`).
+  3. **Launch Official Training Kernel:** After smoke passes, open `https://www.kaggle.com/code/minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2`, attach `HF_TOKEN` under **Add-ons -> Secrets**, and click **"Save & Run All"** (10 completed epochs, fixed budget at Epoch 6 / 3,600 updates, mirrored to `fold2/baseline_r_fold2/`).
 
 ---
 

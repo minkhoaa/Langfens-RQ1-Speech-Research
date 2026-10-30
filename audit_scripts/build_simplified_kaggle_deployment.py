@@ -40,7 +40,7 @@ def make_preflight_notebook() -> dict:
                 "- **Dataset Integrity:** Verifies fold package SHA-256 (`112cc9e0cc5e37e5fa034df504eca019dd6ad438c96cb642335ecf10a802f0d9`).\n",
                 "- **Remote Persistence Probe:** Validates live authenticated write-readback-delete probe to private Hugging Face model repository `minkhoaa/langfens-rq1-cross-fold-checkpoints`.\n",
                 "- **Credential Hygiene:** Resolves `HF_TOKEN` strictly via Kaggle Secrets (`UserSecretsClient`). Zero token files on disk, zero CLI token arguments.\n",
-                "- **Reviewed Training Base Commit:** `407cf04e83704d9e83953e9309e3c7dca8d7154e`.\n"
+                "- **Reviewed Training Base Commit:** `cc56b82ca1a9a6ceeca85929e07db4cac8537348`.\n"
             ]
         },
         {
@@ -475,8 +475,12 @@ def make_train_notebook() -> dict:
                 "- **Credential & Durability Hygiene:**\n",
                 "  - Authentication: strictly via Kaggle Secrets (`HF_TOKEN`) or environment variables; zero token file fallbacks.\n",
                 "  - Remote Mirroring: Per-epoch atomic mirror to private Hugging Face repo `minkhoaa/langfens-rq1-cross-fold-checkpoints` with SHA-256 readback.\n",
+                "- **Run ID & Persistence Hierarchy:**\n",
+                "  - Run ID: `baseline_r_fold2`.\n",
+                "  - Local Checkpoints: `/kaggle/working/checkpoints/fold2/baseline_r_fold2`.\n",
+                "  - Remote Mirror: private Hugging Face repo `minkhoaa/langfens-rq1-cross-fold-checkpoints` under prefix `fold2/baseline_r_fold2/` with SHA-256 readback.\n",
                 "- **Mandatory Preflight Gate:** Runs preflight first and fails closed on any error before training begins.\n",
-                "- **Reviewed Training Source Commit:** `407cf04e83704d9e83953e9309e3c7dca8d7154e` (pinned training codebase).\n"
+                "- **Reviewed Training Source Commit:** `cc56b82ca1a9a6ceeca85929e07db4cac8537348` (pinned training codebase).\n"
             ]
         },
         {
@@ -635,6 +639,7 @@ def make_train_notebook() -> dict:
                 "    \"--mode\", \"train_fold2\",\n",
                 "    \"--commit-sha\", PINNED_COMMIT_SHA,\n",
                 "    \"--kaggle-input-dir\", str(staging_input),\n",
+                "    \"--run-id\", \"baseline_r_fold2\",\n",
                 "    \"--remote-mirror-backend\", \"huggingface\",\n",
                 "    \"--remote-mirror-target\", \"minkhoaa/langfens-rq1-cross-fold-checkpoints\",\n",
                 "]\n",
