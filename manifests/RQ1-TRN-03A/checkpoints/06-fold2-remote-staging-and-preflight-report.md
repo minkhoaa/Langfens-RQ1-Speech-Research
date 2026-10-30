@@ -1,10 +1,10 @@
 # LANGFENS — RQ1-TRN-03A / 06-Fold 2 Remote Staging & Live Preflight Report
 
-**Status:** `PREFLIGHT_EXECUTED; NO-GO_FOR_TRAINING (PENDING_KAGGLE_SECRET_ATTACHMENT)`
+**Status:** `PREFLIGHT_EXECUTED; HF_REPO_PROVISIONED; GATE_PENDING_KAGGLE_SECRET_ATTACHMENT`
 
-**Recorded at:** 2026-10-30T10:15:00+07:00
+**Recorded at:** 2026-10-30T10:45:00+07:00
 
-**Evidence source:** Kaggle CLI, live remote kernel execution logs `minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2`, remote dataset `minkhoaa/langfens-rq1-fold2-staging`, `tests/test_rq1_trn_03a_kaggle_deployment.py`
+**Evidence source:** Kaggle CLI, live remote kernel execution logs `minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2`, remote dataset `minkhoaa/langfens-rq1-fold2-staging`, private Hugging Face model repository `minkhoaa/langfens-rq1-cross-fold-checkpoints`, `tests/test_rq1_trn_03a_kaggle_deployment.py`
 
 **Evidence level:** `INDEPENDENTLY_VERIFIED` (Live Kaggle Hardware Execution, API Readback & Cryptographic Ledgers)
 
@@ -14,12 +14,18 @@
 
 ## 1. Executive Summary
 
-Under explicit operator authorization limited strictly to private Kaggle dataset staging and non-training live preflight execution:
+Under explicit operator authorization limited strictly to private Kaggle dataset staging, Hugging Face checkpoint repository provisioning, and non-training live preflight execution:
 1. **Private Staging Dataset Uploaded & Verified:** Created and verified private Kaggle dataset `minkhoaa/langfens-rq1-fold2-staging` containing the immutable archive `authorized_RQ1-TRN_fold2_train_val_only.bin` (767,978,303 bytes, SHA-256 `112cc9e0cc5e37e5fa034df504eca019dd6ad438c96cb642335ecf10a802f0d9`). Active test partition speakers (`BWC`, `HKK`, `HQTV`, `MBMPS`, `SKA`, `SVBI`) are 100% physically absent.
 2. **Dedicated Kernel Pushed with Gated Training:** Created and executed private Kaggle kernel `minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2` targeting `machine_shape: NvidiaTeslaT4` with `EXECUTE_TRAINING = False` and `PREFLIGHT_PASSED = False`.
 3. **Live Hardware Verification:** Remote execution verified dual Nvidia Tesla T4 GPUs (`Driver: 580.178.04`, `CUDA: 13.0`, 15,360 MiB VRAM per GPU), PyTorch `2.11.0+cu128`, Transformers `5.16.1`, and Hugging Face Hub `1.29.0`.
-4. **Credential Fail-Closed Assertion Verified:** In Cell 2, the notebook's credential hygiene guardrail operated exactly as designed: it detected that `HF_TOKEN` was not yet attached to the freshly created kernel in the Kaggle UI, raised a fail-closed `RuntimeError`, and halted execution before staging extraction or training could occur.
-5. **Zero Training Invariant Preserved:** 0 training steps, 0 optimizer updates, 0 backward passes executed. All test partitions remain 100% sealed.
+4. **Hugging Face Checkpoint Repository Provisioned & Verified:**
+   - Identified root cause of preflight HTTP 404: `minkhoaa/langfens-rq1-cross-fold-checkpoints` had not yet been created on Hugging Face.
+   - Authenticated via authorized token without logging or exporting credentials.
+   - Provisioned private model repository `minkhoaa/langfens-rq1-cross-fold-checkpoints` with `private=True`, `repo_type="model"`.
+   - Verified repository identity (`info.id == "minkhoaa/langfens-rq1-cross-fold-checkpoints"`), author (`minkhoaa`), and strict private visibility (`info.private is True`).
+   - Executed live authenticated write-readback-delete probe using `KaggleRemoteMirror(strict_secrets_only=True)`: verified bit-exact SHA-256 match, verified probe cleanup (0 temporary probe files remaining), and confirmed zero unintended public artifacts.
+5. **Credential Fail-Closed Assertion Verified on Kaggle VM:** In Cell 2, the notebook's credential hygiene guardrail operated exactly as designed: it detected that `HF_TOKEN` was not yet attached to the freshly created kernel in the Kaggle UI, raised a fail-closed `RuntimeError`, and halted execution before staging extraction or training could occur.
+6. **Zero Training Invariant Preserved:** 0 training steps, 0 optimizer updates, 0 backward passes executed. All test partitions remain 100% sealed.
 
 ---
 
@@ -30,7 +36,7 @@ Under explicit operator authorization limited strictly to private Kaggle dataset
 | **Kaggle Dataset** | `minkhoaa/langfens-rq1-fold2-staging`<br>[Link](https://www.kaggle.com/datasets/minkhoaa/langfens-rq1-fold2-staging) | Authorized Fold 2 Train/Val Package (18 speakers) | `is_private: true`<br>(CC BY-NC 4.0) | 767,978,303 bytes<br>SHA-256: `112cc9e0cc5e...` | **VERIFIED** |
 | **Kaggle Kernel** | `minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2`<br>[Link](https://www.kaggle.com/code/minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2) | Dedicated Fold 2 Preflight & Execution Notebook | `is_private: true` | Pinned commit:<br>`407cf04e83704d9e...` | **PREFLIGHT_EXECUTED** |
 | **Kaggle Accelerator** | `minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2` | Dual Tesla T4 (FP16 AMP) | Private | 2 GPUs $\times$ 15,360 MiB | **VERIFIED_TESLA_T4** |
-| **HF Persistent Repo** | `minkhoaa/langfens-rq1-cross-fold-checkpoints` | Private Remote Checkpoint Store | `private` | Target folder:<br>`fold2/` | **TARGET_PINNED** |
+| **HF Persistent Repo** | `minkhoaa/langfens-rq1-cross-fold-checkpoints`<br>[Link](https://huggingface.co/minkhoaa/langfens-rq1-cross-fold-checkpoints) | Private Remote Checkpoint Store | `private: true`<br>(Model repo) | Target prefix:<br>`fold2/` | **PROVISIONED_AND_VERIFIED_PRIVATE** |
 
 ---
 
@@ -76,14 +82,23 @@ Attach HF_TOKEN under Add-ons -> Secrets in the Kaggle notebook.
 
 ## 4. Actionable Platform Blocker & Resolution
 
-### Exact Blocker:
-Kaggle requires user secret permissions to be explicitly granted per notebook. Because `minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2` was newly created via the Kaggle CLI API, the `HF_TOKEN` secret is not yet attached to the notebook session.
+### Root Cause of Preflight HTTP 404 (RESOLVED):
+- **Finding:** The Kaggle preflight runner received an HTTP 404 error during Hugging Face repository access because `minkhoaa/langfens-rq1-cross-fold-checkpoints` had not yet been provisioned on Hugging Face.
+- **Remediation Completed:**
+  - Authenticated via existing authorized `HF_TOKEN` (zero token logging or export).
+  - Verified user identity `minkhoaa` with model repository write permissions.
+  - Provisioned private model repository `minkhoaa/langfens-rq1-cross-fold-checkpoints` (`private=True`, `repo_type="model"`).
+  - Executed live authenticated write-readback-delete probe using `KaggleRemoteMirror(strict_secrets_only=True)`: verified SHA-256 match, verified probe cleanup (0 temporary probe files remaining).
+  - HTTP 404 blocker is **100% RESOLVED**.
+
+### Remaining Platform Blocker (Kaggle Secret Binding):
+Kaggle requires user secret permissions to be explicitly granted per notebook. Because `minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2` was newly created via the Kaggle CLI API, the `HF_TOKEN` secret must be checked in the notebook editor UI.
 
 ### Resolution Steps (Operator Action Required):
 1. Navigate to: [https://www.kaggle.com/code/minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2](https://www.kaggle.com/code/minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2).
 2. Click **Edit** to open the notebook editor.
 3. In the top navigation bar, select **Add-ons -> Secrets**.
-4. Check the checkbox next to **`HF_TOKEN`** to grant the notebook access to your Hugging Face write token.
+4. Check the checkbox next to **`HF_TOKEN`** (granting access to your Hugging Face write token).
 5. Click **Save** / **Save Version** (Quick Save or Run All).
 6. Once attached, `kaggle kernels push -p deploy/kaggle_fold2/` will allow `UserSecretsClient().get_secret("HF_TOKEN")` to retrieve the token and proceed through Phase 4 (`verify_fold2`), executing the write-readback-delete probe to `minkhoaa/langfens-rq1-cross-fold-checkpoints`.
 
@@ -97,13 +112,14 @@ Kaggle requires user secret permissions to be explicitly granted per notebook. B
 | **Gate 2: Private Dataset Staging** | Verify private upload of `authorized_RQ1-TRN_fold2_train_val_only.bin`, size (767,978,303 B), SHA-256 (`112cc9e0...`), and CC BY-NC 4.0 license. | Uploaded as immutable `.bin` to `minkhoaa/langfens-rq1-fold2-staging`; 18 authorized speakers verified; 0 test speakers. | **GO** |
 | **Gate 3: Pinned Commit Parity** | Verify notebook checks out reviewed training commit `407cf04e83704d9e83953e9309e3c7dca8d7154e`. | Pinned commit invariant enforced in Cell 3 via checked subprocess and `assert actual_head == PINNED_COMMIT_SHA`. | **GO** |
 | **Gate 4: Preflight Gating & Safety** | Verify preflight is mandatory and `EXECUTE_TRAINING = False` by default. | `PREFLIGHT_PASSED = False` initialized; Cell 5 fails closed with `RuntimeError` if preflight is not verified. | **GO** |
-| **Gate 5: Remote Persistence Credentials** | Verify authenticated write-readback-delete probe to Hugging Face before training. | Blocked at Cell 2 awaiting secret attachment in Kaggle UI. | **NO-GO (PENDING_SECRET)** |
-| **Gate 6: Operator Authorization** | Explicit operator sign-off to execute Fold 2 Baseline R model training. | Awaiting resolution of Gate 5 and operator training authorization packet. | **NO-GO (PENDING_AUTH)** |
+| **Gate 5: Remote Persistence Repository** | Verify private Hugging Face checkpoint repository exists, is private, and write-readback-delete probe passes. | Provisioned `minkhoaa/langfens-rq1-cross-fold-checkpoints` (`private=True`, `repo_type="model"`). Live write-readback-delete probe verified `ok=True`. | **GO (VERIFIED)** |
+| **Gate 5b: Kaggle Secret Attachment** | Verify `HF_TOKEN` access from Kaggle notebook session. | Awaiting checkbox selection in Kaggle notebook UI under Add-ons -> Secrets. | **NO-GO (PENDING_UI_CHECK)** |
+| **Gate 6: Operator Authorization** | Explicit operator sign-off to execute Fold 2 Baseline R model training. | Awaiting resolution of Gate 5b and operator training authorization packet. | **NO-GO (PENDING_AUTH)** |
 
 ### Final Launch Determination:
 **NO-GO FOR MODEL TRAINING.**  
-The environment is verified on hardware and staging, but training remains strictly blocked until:
-1. `HF_TOKEN` is attached to the kernel under Add-ons -> Secrets.
+The remote repository is provisioned and verified, hardware and staging are verified, but training remains strictly blocked until:
+1. `HF_TOKEN` is checked in the Kaggle UI under Add-ons -> Secrets.
 2. Phase 4 preflight probe completes with verified `PREFLIGHT_PASSED = True`.
 3. Explicit operator authorization is granted to set `EXECUTE_TRAINING = True`.
 
