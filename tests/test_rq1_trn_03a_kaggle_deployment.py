@@ -699,7 +699,7 @@ def test_kaggle_fold2_kernel_metadata():
     assert meta_path.is_file(), f"Missing kernel-metadata.json at {meta_path}"
 
     meta = json.loads(meta_path.read_text())
-    assert meta["id"] == "minkhoaa/langfens-rq1-fold2-t4x2"
+    assert meta["id"] == "minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2"
     assert meta["title"] == "LANGFENS RQ1 Fold 2 Baseline R T4x2"
     assert meta["code_file"] == "kaggle_notebook.ipynb"
     assert meta["language"] == "python"

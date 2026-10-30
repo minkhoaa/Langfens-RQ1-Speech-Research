@@ -98,6 +98,12 @@ Design and specify a mathematically rigorous, leak-free 4-fold cross-validation 
    - Authored dedicated Fold 2 dataset metadata (`deploy/kaggle_fold2/dataset-metadata.json`) under CC BY-NC 4.0 with explicit active test speaker exclusion.
    - Authored 7-phase execution notebook (`deploy/kaggle_fold2/kaggle_notebook.ipynb`) pinning verified Git commit `407cf04e83704d9e83953e9309e3c7dca8d7154e`, acquiring `HF_TOKEN` strictly via Kaggle Secrets, running preflight staging/persistence checks in `--mode verify_fold2`, and gating training behind `EXECUTE_TRAINING = False` with zero disk token searches and zero CLI token arguments.
    - Expanded deployment test suite to 24 tests (274 repository tests total) proving metadata validity, notebook hygiene, and C0/C1 preservation.
+15. **Completed Step 06 Fold 2 Remote Staging & Live Preflight Execution:**
+   - Under explicit operator authorization, uploaded authorized Fold 2 train/val package to private Kaggle dataset `minkhoaa/langfens-rq1-fold2-staging` as immutable binary package `authorized_RQ1-TRN_fold2_train_val_only.bin` (767,978,303 bytes, SHA-256 `112cc9e0cc5e37e5fa034df504eca019dd6ad438c96cb642335ecf10a802f0d9`). Active test partition speakers (`BWC, HKK, HQTV, MBMPS, SKA, SVBI`) 100% physically absent.
+   - Pushed dedicated private kernel `minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2` to Kaggle GPU runtime with `EXECUTE_TRAINING = False` and `PREFLIGHT_PASSED = False`.
+   - Live hardware execution independently verified dual Tesla T4 GPUs (`NVIDIA-SMI 580.178.04`, CUDA 13.0, 15,360 MiB per GPU), PyTorch 2.11.0, Transformers 5.16.1.
+   - Credential fail-closed guardrail in Cell 2 operated as designed: threw `RuntimeError` due to missing `HF_TOKEN` secret attachment in the Kaggle UI, halting execution safely before staging unpacking or training.
+   - Recorded preflight report in `manifests/RQ1-TRN-03A/checkpoints/06-fold2-remote-staging-and-preflight-report.md`; determined NO-GO for training pending secret attachment and verified write-readback-delete probe.
 
 ---
 
@@ -129,6 +135,7 @@ Design and specify a mathematically rigorous, leak-free 4-fold cross-validation 
 - **Step Checkpoint 04B:** `manifests/RQ1-TRN-03A/checkpoints/04b-kaggle-durability-and-recovery-closure.md`
 - **Step Checkpoint 04C:** `manifests/RQ1-TRN-03A/checkpoints/04c-final-launch-gate-correction.md`
 - **Step Checkpoint 05:** `manifests/RQ1-TRN-03A/checkpoints/05-dedicated-kaggle-fold2-deployment-package.md`
+- **Step Checkpoint 06:** `manifests/RQ1-TRN-03A/checkpoints/06-fold2-remote-staging-and-preflight-report.md`
 - **Kaggle Fold 2 Deployment Package:** `deploy/kaggle_fold2/` (`kernel-metadata.json`, `dataset-metadata.json`, `kaggle_notebook.ipynb`)
 - **Kaggle Fold Runner:** `audit_scripts/kaggle_fold_train_exec.py`
 - **Package Builder Script:** `audit_scripts/build_fold_packages.py`
@@ -145,23 +152,18 @@ Design and specify a mathematically rigorous, leak-free 4-fold cross-validation 
 
 ## 6. Restart / Recovery Instructions
 - **Active Branch:** `review/rq1-trn-03a-cross-fold-planning`
-- **Current State:** Dedicated Fold 2 deployment package prepared; preflight verified; awaiting operator authorization.
+- **Current State:** Remote staging package uploaded; live preflight executed; NO-GO for training pending Kaggle Secret attachment.
 - **Restart / Recovery Instructions:**
-  - All configurations, packages, trainers, deployment metadata, and notebooks are implemented and verified ready.
-  - Zero GPU compute launched; awaiting operator authorization to stage datasets and push Kaggle kernel.
-  - Prepared Staging Package Upload Command (Awaiting Authorization):
-    ```bash
-    mkdir -p /tmp/kaggle_fold2_staging
-    cp deploy/kaggle_fold2/dataset-metadata.json /tmp/kaggle_fold2_staging/
-    cp datasets/L2-ARCTIC/authorized_RQ1-TRN_fold2_train_val_only.zip /tmp/kaggle_fold2_staging/
-    kaggle datasets create -p /tmp/kaggle_fold2_staging -r zip
-    ```
-  - Prepared Live Preflight Kernel Push Command (Awaiting Authorization):
-    ```bash
-    kaggle kernels push -p deploy/kaggle_fold2/
-    kaggle kernels status minkhoaa/langfens-rq1-fold2-t4x2
-    ```
-  - Next step upon approval: execute staging upload, run preflight kernel, and verify output logs.
+  1. Operator must attach `HF_TOKEN` secret to kernel `minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2` at:
+     `https://www.kaggle.com/code/minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2` under **Add-ons -> Secrets**.
+  2. Re-push preflight kernel to verify authenticated write-readback-delete probe:
+     ```bash
+     kaggle kernels push -p deploy/kaggle_fold2/
+     kaggle kernels status minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2
+     kaggle kernels output minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2
+     ```
+  3. Verify Cell 4 preflight log confirmation: `[PREFLIGHT] Preflight verification PASSED successfully.`
+  4. Await explicit operator authorization before enabling `EXECUTE_TRAINING = True`.
 
 ---
 
