@@ -1,6 +1,6 @@
 {
-  "id": "minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2",
-  "title": "LANGFENS RQ1 Fold 2 Baseline R T4x2",
+  "id": "minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2-smoke",
+  "title": "LANGFENS RQ1 Fold 2 Baseline R T4x2 (Smoke)",
   "code_file": "kaggle_smoke.ipynb",
   "language": "python",
   "kernel_type": "notebook",

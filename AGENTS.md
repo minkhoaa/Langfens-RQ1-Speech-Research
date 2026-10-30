@@ -24,7 +24,11 @@ Read before repository work. Verify evidence before reporting PASS.
 - Resource hygiene: Always release idle runtimes promptly (`colab stop -s <name>`) to preserve compute units.
 
 ## Kaggle CLI & Operational Safety
-- Provision GPU runtimes via official Kaggle CLI (`kaggle kernels push`) with `machine_shape: NvidiaTeslaT4`, `enable_gpu: true`, `is_private: true`.
+- Permanent Kaggle Workflow:
+  - CLI deploy: Push kernel code and metadata via `kaggle kernels push -p <package-dir> --no-run` to stage without immediate background run.
+  - Kaggle Web UI: Open kernel editor, attach user secret `HF_TOKEN` (via Add-ons -> Secrets), and start execution via "Save & Run All".
+  - CLI monitoring & storage: Monitor status/logs via `kaggle kernels status <slug>` and `kaggle kernels output <slug>`; Hugging Face stores verified checkpoints atomically with cryptographic SHA-256 readback.
+- Kernel metadata standards: target `machine_shape: NvidiaTeslaT4`, `enable_gpu: true`, `is_private: true`.
 - Monitor weekly GPU accelerator quota via `kaggle quota`. Stop if quota is exhausted or insufficient.
 - Resource hygiene: Keep notebooks, scripts, and staged datasets strictly private under CC BY-NC 4.0; never publish public assets.
 - Ephemeral containment: Read immutable inputs from `/kaggle/input`; write temporary artifacts to `/kaggle/working` (subject to 20 GB ceiling).

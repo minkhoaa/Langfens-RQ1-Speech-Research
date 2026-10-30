@@ -104,15 +104,20 @@ Design and specify a mathematically rigorous, leak-free 4-fold cross-validation 
    - Live hardware execution independently verified dual Tesla T4 GPUs (`NVIDIA-SMI 580.178.04`, CUDA 13.0, 15,360 MiB per GPU), PyTorch 2.11.0, Transformers 5.16.1.
    - Credential fail-closed guardrail in Cell 2 operated as designed: threw `RuntimeError` due to missing `HF_TOKEN` secret attachment in the Kaggle UI, halting execution safely before staging unpacking or training.
    - Recorded preflight report in `manifests/RQ1-TRN-03A/checkpoints/06-fold2-remote-staging-and-preflight-report.md`; determined NO-GO for training pending secret attachment and verified write-readback-delete probe.
+16. **Completed Step 08 Permanent Kaggle Workflow & Fold 2 Smoke Readiness:**
+   - Formally codified permanent Kaggle workflow in `AGENTS.md`: CLI deploy with `kaggle kernels push -p <pkg> --no-run`, Kaggle Web UI secret attachment (`HF_TOKEN`) and "Save & Run All", non-interactive CLI monitoring (`status`/`output`), and verified atomic checkpoint mirroring on Hugging Face.
+   - Assigned unique, collision-free smoke slug `minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2-smoke` and matching title `LANGFENS RQ1 Fold 2 Baseline R T4x2 (Smoke)`, fully preserving preflight (`minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2-preflight`) and official training (`minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2`) kernel packages.
+   - Verified all 4 operational invariants: pinned immutable base commit `cc56b82ca1a9a6ceeca85929e07db4cac8537348`, 1-epoch execution cap (`--execution-cap-epochs 1`), isolated run ID `fold2_smoke_1epoch` (`/kaggle/working/checkpoints/fold2/fold2_smoke_1epoch/` and remote prefix `fold2/fold2_smoke_1epoch/`), and private dataset `minkhoaa/langfens-rq1-fold2-staging`.
+   - Added automated regression tests proving 3-way package isolation and `AGENTS.md` policy compliance (285 tests passed, 1 skipped).
 
 ---
 
 ## 4. Results & Verification
 - **Split Manifest Invariance:** Verified `l2arctic_4fold_splits.json` SHA-256 `7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b`.
 - **Automated Split Suite:** `python3 audit_scripts/validate_splits.py` passed all 4 core checks with 0 errors.
-- **Automated Regression Suite:** All 274 tests pass (`PYTHONPATH=. .venv/bin/pytest tests/`):
-  - 274 passed, 4 skipped, 1 warning in 157.53s (100% green).
-- **Deployment Test Suite:** `tests/test_rq1_trn_03a_kaggle_deployment.py` passes 24/24 tests in 31.94s (100% green).
+- **Automated Regression Suite:** All 285 tests pass (`PYTHONPATH=. .venv-cuda/bin/pytest tests/`):
+  - 285 passed, 1 skipped, 1 warning in 172.19s (100% green).
+- **Deployment Test Suite:** `tests/test_rq1_trn_03a_kaggle_deployment.py` passes 32/32 tests (100% green).
 - **Integration Test Suite (`test_rq1_trn_03a_fold_readiness_integration.py`):**
   - `test_all_fold_configs_parity`: PASS (all 4 configs verified bit-identical).
   - `test_fold_package_isolation_and_contents`: PASS (all packages verified to contain exactly 18 authorized speakers and 0 test speakers).
@@ -136,7 +141,12 @@ Design and specify a mathematically rigorous, leak-free 4-fold cross-validation 
 - **Step Checkpoint 04C:** `manifests/RQ1-TRN-03A/checkpoints/04c-final-launch-gate-correction.md`
 - **Step Checkpoint 05:** `manifests/RQ1-TRN-03A/checkpoints/05-dedicated-kaggle-fold2-deployment-package.md`
 - **Step Checkpoint 06:** `manifests/RQ1-TRN-03A/checkpoints/06-fold2-remote-staging-and-preflight-report.md`
-- **Kaggle Fold 2 Deployment Package:** `deploy/kaggle_fold2/` (`kernel-metadata.json`, `dataset-metadata.json`, `kaggle_notebook.ipynb`)
+- **Step Checkpoint 07:** `manifests/RQ1-TRN-03A/checkpoints/07-simplified-kaggle-cli-deployment.md`
+- **Step Checkpoint 08:** `manifests/RQ1-TRN-03A/checkpoints/08-permanent-kaggle-workflow-and-fold2-smoke-readiness.md`
+- **Kaggle Fold 2 Preflight Package:** `deploy/kaggle_fold2_preflight/` (`kernel-metadata.json`, `dataset-metadata.json`, `kaggle_preflight.ipynb`)
+- **Kaggle Fold 2 Smoke Package:** `deploy/kaggle_fold2_smoke/` (`kernel-metadata.json`, `dataset-metadata.json`, `kaggle_smoke.ipynb`)
+- **Kaggle Fold 2 Training Package:** `deploy/kaggle_fold2_train/` (`kernel-metadata.json`, `dataset-metadata.json`, `kaggle_train.ipynb`)
+- **Kaggle Fold 2 Deployment Package (Preserved):** `deploy/kaggle_fold2/` (`kernel-metadata.json`, `dataset-metadata.json`, `kaggle_notebook.ipynb`)
 - **Kaggle Fold Runner:** `audit_scripts/kaggle_fold_train_exec.py`
 - **Package Builder Script:** `audit_scripts/build_fold_packages.py`
 - **Fold Configuration Files:** `configs/rq1_trn_03a_fold{2,3,4}.yaml`
@@ -145,25 +155,26 @@ Design and specify a mathematically rigorous, leak-free 4-fold cross-validation 
   - `tests/test_rq1_trn_03a_protocol_parity_and_isolation.py`
   - `tests/test_rq1_trn_03a_fold_readiness_integration.py`
   - `tests/test_rq1_trn_03a_kaggle_deployment.py`
-- **Policy Corrections:** `AGENTS.md` (Per-fold test sealing rule and baseline parity contract)
+- **Policy Corrections:** `AGENTS.md` (Permanent Kaggle workflow, per-fold test sealing rule, baseline parity contract)
 - **Updated Global Registry:** `docs/process-checkpoints/INDEX.md`
 
 ---
 
 ## 6. Restart / Recovery Instructions
 - **Active Branch:** `review/rq1-trn-03a-cross-fold-planning`
-- **Current State:** Remote staging package uploaded; live preflight executed; NO-GO for training pending Kaggle Secret attachment.
-- **Restart / Recovery Instructions:**
-  1. Operator must attach `HF_TOKEN` secret to kernel `minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2` at:
-     `https://www.kaggle.com/code/minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2` under **Add-ons -> Secrets**.
-  2. Re-push preflight kernel to verify authenticated write-readback-delete probe:
+- **Current State:** Dedicated Fold 2 smoke package staged (`deploy/kaggle_fold2_smoke/`), remote staging dataset live, 3-package isolation verified; ready for smoke deployment via CLI.
+- **Smoke Deployment & Execution Protocol:**
+  1. Push smoke kernel via CLI without immediate run:
      ```bash
-     kaggle kernels push -p deploy/kaggle_fold2/
-     kaggle kernels status minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2
-     kaggle kernels output minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2
+     kaggle kernels push -p deploy/kaggle_fold2_smoke/ --no-run
      ```
-  3. Verify Cell 4 preflight log confirmation: `[PREFLIGHT] Preflight verification PASSED successfully.`
-  4. Await explicit operator authorization before enabling `EXECUTE_TRAINING = True`.
+  2. Open Kaggle Web UI at `https://www.kaggle.com/code/minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2-smoke`, attach `HF_TOKEN` in **Add-ons -> Secrets**, and click **"Save & Run All"**.
+  3. Monitor execution via CLI:
+     ```bash
+     kaggle kernels status minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2-smoke
+     kaggle kernels output minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2-smoke
+     ```
+  4. Verify mirrored checkpoint and report on Hugging Face (`minkhoaa/langfens-rq1-cross-fold-checkpoints` under `fold2/fold2_smoke_1epoch/`).
 
 ---
 

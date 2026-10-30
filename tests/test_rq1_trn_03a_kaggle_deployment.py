@@ -929,9 +929,21 @@ def test_kaggle_fold2_smoke_package():
     assert smoke_dir.is_dir(), f"Missing directory at {smoke_dir}"
 
     meta = json.loads((smoke_dir / "kernel-metadata.json").read_text())
-    assert meta["id"] == "minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2"
+    assert meta["id"] == "minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2-smoke"
+    assert meta["title"] == "LANGFENS RQ1 Fold 2 Baseline R T4x2 (Smoke)"
     assert meta["code_file"] == "kaggle_smoke.ipynb"
     assert meta["machine_shape"] == "NvidiaTeslaT4"
+    assert meta["is_private"] is True
+    assert meta["enable_gpu"] is True
+    assert meta["enable_internet"] is True
+    assert meta["dataset_sources"] == ["minkhoaa/langfens-rq1-fold2-staging"]
+
+    dataset_path = smoke_dir / "dataset-metadata.json"
+    assert dataset_path.is_file()
+    dmeta = json.loads(dataset_path.read_text())
+    assert dmeta["id"] == "minkhoaa/langfens-rq1-fold2-staging"
+    assert dmeta["is_private"] is True
+    assert dmeta["licenses"][0]["name"] == "CC-BY-NC-4.0"
 
     nb = json.loads((smoke_dir / "kaggle_smoke.ipynb").read_text())
     assert len(nb["cells"]) == 7
@@ -939,11 +951,15 @@ def test_kaggle_fold2_smoke_package():
 
     assert 'PINNED_COMMIT_SHA = "cc56b82ca1a9a6ceeca85929e07db4cac8537348"' in full_text
     assert 'UserSecretsClient().get_secret("HF_TOKEN")' in full_text
+    assert "hf_token.txt" not in full_text
+    assert ".hf_token" not in full_text
+    assert "--remote-mirror-token" not in full_text
     assert '"--mode", "verify_fold2"' in full_text
     assert '"--run-id", "fold2_smoke_1epoch"' in full_text
     assert '"--execution-cap-epochs", "1"' in full_text
     assert "subprocess.run(preflight_cmd, check=True)" in full_text
     assert "subprocess.run(smoke_cmd, check=True)" in full_text
+    assert 'assert len(hist) == 1' in full_text
 
 
 def test_kaggle_fold_train_exec_smoke_and_cap_args():
@@ -958,6 +974,71 @@ def test_kaggle_fold_train_exec_smoke_and_cap_args():
     parser.add_argument("--execution-cap-epochs", type=int, default=10)
     args = parser.parse_args(["--execution-cap-epochs", "1"])
     assert args.execution_cap_epochs == 1
+
+
+def test_kaggle_fold2_three_entrypoints_isolation():
+    """Proves preflight, smoke, and official train packages have unique non-colliding IDs and titles."""
+    pkgs = {
+        "preflight": Path("deploy/kaggle_fold2_preflight"),
+        "smoke": Path("deploy/kaggle_fold2_smoke"),
+        "train": Path("deploy/kaggle_fold2_train"),
+    }
+    ids = {}
+    titles = {}
+    code_files = {}
+
+    for name, path in pkgs.items():
+        assert path.is_dir(), f"Missing package directory: {path}"
+        meta = json.loads((path / "kernel-metadata.json").read_text())
+        ids[name] = meta["id"]
+        titles[name] = meta["title"]
+        code_files[name] = meta["code_file"]
+
+        # Shared operational standards
+        assert meta["machine_shape"] == "NvidiaTeslaT4"
+        assert meta["is_private"] is True
+        assert meta["enable_gpu"] is True
+        assert meta["enable_internet"] is True
+        assert meta["dataset_sources"] == ["minkhoaa/langfens-rq1-fold2-staging"]
+
+        # Immutable pinned commit
+        nb = json.loads((path / meta["code_file"]).read_text())
+        full_text = "\n".join("".join(c.get("source", [])) for c in nb["cells"])
+        assert 'PINNED_COMMIT_SHA = "cc56b82ca1a9a6ceeca85929e07db4cac8537348"' in full_text
+
+    # Proves all 3 packages have pairwise distinct kernel IDs (zero collision)
+    assert len(set(ids.values())) == 3, f"Duplicate kernel IDs found: {ids}"
+    assert ids["preflight"] == "minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2-preflight"
+    assert ids["smoke"] == "minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2-smoke"
+    assert ids["train"] == "minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2"
+
+    # Proves all 3 packages have pairwise distinct titles
+    assert len(set(titles.values())) == 3, f"Duplicate titles found: {titles}"
+    assert titles["preflight"] == "LANGFENS RQ1 Fold 2 Baseline R T4x2 (Preflight)"
+    assert titles["smoke"] == "LANGFENS RQ1 Fold 2 Baseline R T4x2 (Smoke)"
+    assert titles["train"] == "LANGFENS RQ1 Fold 2 Baseline R T4x2"
+
+    # Proves distinct code files
+    assert len(set(code_files.values())) == 3, f"Duplicate code files found: {code_files}"
+    assert code_files["preflight"] == "kaggle_preflight.ipynb"
+    assert code_files["smoke"] == "kaggle_smoke.ipynb"
+    assert code_files["train"] == "kaggle_train.ipynb"
+
+
+def test_kaggle_workflow_agents_policy():
+    """Proves AGENTS.md records permanent Kaggle workflow: push --no-run, Web UI Save & Run All, CLI monitor."""
+    agents_path = Path("AGENTS.md")
+    assert agents_path.is_file()
+    content = agents_path.read_text()
+
+    assert "Permanent Kaggle Workflow:" in content
+    assert "kaggle kernels push -p <package-dir> --no-run" in content
+    assert "HF_TOKEN" in content
+    assert "Save & Run All" in content
+    assert "kaggle kernels status <slug>" in content
+    assert "kaggle kernels output <slug>" in content
+    assert "Hugging Face stores verified checkpoints" in content
+
 
 
 
