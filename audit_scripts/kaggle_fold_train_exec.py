@@ -113,16 +113,23 @@ def find_and_stage_fold_package(
     verifies SHA-256 integrity, copies to working staging directory, and verifies test exclusion.
     Gracefully handles Kaggle auto-extracted datasets with bit-exact reconstruction and verification.
     """
-    target_name = f"authorized_RQ1-TRN_fold{fold_idx}_train_val_only.zip"
+    target_names = [
+        f"authorized_RQ1-TRN_fold{fold_idx}_train_val_only.zip",
+        f"authorized_RQ1-TRN-02A_fold{fold_idx}_train_val_only.zip",
+    ]
+    target_name = target_names[0]
     staging_dir = working_dir / "staged"
     staging_dir.mkdir(parents=True, exist_ok=True)
-    staged_zip = staging_dir / target_name
 
     # If already staged and verified, reuse
-    if staged_zip.is_file() and compute_sha256(staged_zip) == expected_sha256:
-        audit_archive_for_test_speaker_leak(staged_zip, fold_idx)
-        print(f"[STAGING] Reusing verified staged package on VM disk: {staged_zip}")
-        return staged_zip
+    for t_name in target_names:
+        candidate_staged = staging_dir / t_name
+        if candidate_staged.is_file() and compute_sha256(candidate_staged) == expected_sha256:
+            audit_archive_for_test_speaker_leak(candidate_staged, fold_idx)
+            print(f"[STAGING] Reusing verified staged package on VM disk: {candidate_staged}")
+            return candidate_staged
+
+    staged_zip = staging_dir / target_name
 
     test_spks = SEALED_TEST_SPEAKERS_BY_FOLD.get(fold_idx, set())
     auth_spks = sorted(ALL_SPEAKERS - test_spks)
@@ -144,17 +151,24 @@ def find_and_stage_fold_package(
 
             # B. Check for outer package in input directory
             source_path = None
-            if (input_p / target_name).is_file():
-                source_path = input_p / target_name
-            else:
-                matches = list(input_p.rglob(target_name))
+            for t_name in target_names:
+                if (input_p / t_name).is_file():
+                    source_path = input_p / t_name
+                    target_name = t_name
+                    staged_zip = staging_dir / target_name
+                    break
+                matches = list(input_p.rglob(t_name))
                 if matches:
                     source_path = matches[0]
-                else:
-                    bin_matches = list(input_p.rglob(f"*fold{fold_idx}*.zip")) + list(input_p.rglob(f"*fold{fold_idx}*.bin")) + list(input_p.rglob(f"*fold{fold_idx}*.dat"))
-                    outer_bins = [bm for bm in bin_matches if bm.is_file() and bm.stat().st_size > 500_000_000]
-                    if outer_bins:
-                        source_path = outer_bins[0]
+                    target_name = t_name
+                    staged_zip = staging_dir / target_name
+                    break
+
+            if not source_path:
+                bin_matches = list(input_p.rglob(f"*fold{fold_idx}*.zip")) + list(input_p.rglob(f"*fold{fold_idx}*.bin")) + list(input_p.rglob(f"*fold{fold_idx}*.dat"))
+                outer_bins = [bm for bm in bin_matches if bm.is_file() and bm.stat().st_size > 500_000_000]
+                if outer_bins:
+                    source_path = outer_bins[0]
 
             if source_path and source_path.is_file():
                 audit_archive_for_test_speaker_leak(source_path, fold_idx)
@@ -207,14 +221,21 @@ def find_and_stage_fold_package(
         if not s_dir.is_dir():
             continue
         # Direct file check
-        candidate = s_dir / target_name
-        if candidate.is_file():
-            source_path = candidate
-            break
-        # Search nested within staging dataset directory
-        matches = list(s_dir.rglob(target_name))
-        if matches:
-            source_path = matches[0]
+        for t_name in target_names:
+            candidate = s_dir / t_name
+            if candidate.is_file():
+                source_path = candidate
+                target_name = t_name
+                staged_zip = staging_dir / target_name
+                break
+            # Search nested within staging dataset directory
+            matches = list(s_dir.rglob(t_name))
+            if matches:
+                source_path = matches[0]
+                target_name = t_name
+                staged_zip = staging_dir / target_name
+                break
+        if source_path:
             break
         # Also check for .bin or .dat archives if Kaggle renamed it
         bin_matches = list(s_dir.rglob(f"*fold{fold_idx}*.zip")) + list(s_dir.rglob(f"*fold{fold_idx}*.bin")) + list(s_dir.rglob(f"*fold{fold_idx}*.dat"))
@@ -222,6 +243,8 @@ def find_and_stage_fold_package(
             if bm.is_file() and bm.stat().st_size > 500_000_000:
                 source_path = bm
                 break
+        if source_path:
+            break
 
     if source_path and source_path.is_file():
         # Pre-copy test leakage audit
@@ -321,7 +344,8 @@ def classify_fold_training_endpoint(
     output_dir: Path | str,
     fold_idx: int,
     expected_updates: int = 3600,
-    expected_commit: Optional[str] = None
+    expected_commit: Optional[str] = None,
+    expected_arm: Optional[str] = None
 ) -> Dict[str, Any]:
     """
     Rigorously verifies that the training run produced the required deliverable checkpoints:
@@ -442,6 +466,34 @@ def classify_fold_training_endpoint(
                 "fold": fold_idx
             }
 
+    # Invariant 6b: Arm-specific loss and configuration verification
+    if expected_arm:
+        ck_arm = ck_cfg.get("arm")
+        if ck_arm != expected_arm:
+            return {
+                "status": "FAILED",
+                "message": f"Arm mismatch in checkpoint: found arm '{ck_arm}', expected '{expected_arm}'.",
+                "fold": fold_idx
+            }
+
+    loss_type = ck_cfg.get("binary_loss_type", "bce")
+    if loss_type == "focal":
+        if ck_cfg.get("focal_gamma") != 2.0 or ck_cfg.get("focal_alpha") != 0.75:
+            return {
+                "status": "FAILED",
+                "message": f"Arm 2A focal loss parameter violation in checkpoint: gamma={ck_cfg.get('focal_gamma')} (exp 2.0), alpha={ck_cfg.get('focal_alpha')} (exp 0.75).",
+                "fold": fold_idx
+            }
+    elif loss_type == "bce":
+        pos_w = ck_cfg.get("binary_pos_weight")
+        if expected_arm in ("Arm2B_Weighted", "pilot_arm2b_weighted") or (pos_w is not None):
+            if pos_w is None or abs(float(pos_w) - 8.40) > 1e-3:
+                return {
+                    "status": "FAILED",
+                    "message": f"Arm 2B class-weight parameter violation in checkpoint: pos_weight={pos_w} (exp 8.40).",
+                    "fold": fold_idx
+                }
+
     # Invariant 7: Git commit verification if provided
     if expected_commit and meta.get("git_sha"):
         if meta.get("git_sha").lower() != expected_commit.lower():
@@ -493,15 +545,16 @@ def classify_fold_training_endpoint(
 
 
 def main():
-    parser = argparse.ArgumentParser(description="LANGFENS Kaggle Fold Training Driver (Folds 2–4)")
-    parser.add_argument("--fold", type=int, choices=[2, 3, 4], required=True, help="Fold index (2, 3, or 4)")
-    parser.add_argument("--config", type=str, default=None, help="Path to config YAML (defaults to configs/rq1_trn_03a_fold{k}.yaml)")
+    parser = argparse.ArgumentParser(description="LANGFENS Kaggle Fold Training Driver (Folds 1–4)")
+    parser.add_argument("--fold", type=int, choices=[1, 2, 3, 4], required=True, help="Fold index (1, 2, 3, or 4)")
+    parser.add_argument("--arm", type=str, default=None, help="Experiment arm (e.g. Arm2A_Focal, Arm2B_Weighted)")
+    parser.add_argument("--config", type=str, default=None, help="Path to config YAML (defaults to configs/rq1_trn_03a_fold{k}.yaml or pilot configs)")
     parser.add_argument("--commit-sha", type=str, default=None, help="Expected immutable Git commit SHA")
     parser.add_argument("--kaggle-input-dir", type=str, default=None, help="Path to Kaggle input staging directory")
     parser.add_argument("--working-dir", type=str, default="/kaggle/working")
     parser.add_argument("--remote-mirror-backend", type=str, default="huggingface")
     parser.add_argument("--remote-mirror-target", type=str, default="minkhoaa/langfens-rq1-cross-fold-checkpoints")
-    parser.add_argument("--run-id", type=str, default=None, help="Unique run ID (defaults to baseline_r_fold{k})")
+    parser.add_argument("--run-id", type=str, default=None, help="Unique run ID (defaults to baseline_r_fold{k} or pilot_arm*)")
     parser.add_argument("--check-only", action="store_true", help="Run preflight staging and remote probe without training")
     parser.add_argument("--dry-run", action="store_true", help="Simulate execution without GPU requirement")
     parser.add_argument("--allow-mock-gpu", action="store_true", help="Allow CPU execution for test harnesses")
@@ -510,7 +563,18 @@ def main():
     args = parser.parse_args()
 
     fold_idx = args.fold
-    cfg_path = Path(args.config or f"configs/rq1_trn_03a_fold{fold_idx}.yaml")
+    if args.config:
+        cfg_path = Path(args.config)
+    elif fold_idx == 1:
+        if args.arm == "Arm2A_Focal" or (args.run_id and "arm2a" in args.run_id):
+            cfg_path = Path("configs/rq1_trn_03b_pilot_arm2a_focal.yaml")
+        elif args.arm == "Arm2B_Weighted" or (args.run_id and "arm2b" in args.run_id):
+            cfg_path = Path("configs/rq1_trn_03b_pilot_arm2b_weighted.yaml")
+        else:
+            cfg_path = Path("configs/rq1_trn_02a_fold1.yaml")
+    else:
+        cfg_path = Path(f"configs/rq1_trn_03a_fold{fold_idx}.yaml")
+
     if not cfg_path.is_file():
         raise FileNotFoundError(f"Config file not found: {cfg_path}")
 
@@ -518,7 +582,10 @@ def main():
         cfg = yaml.safe_load(cf)
 
     print("=" * 80)
-    print(f"LANGFENS — Kaggle T4 Baseline R Runner for Fold {fold_idx}")
+    if fold_idx in (2, 3, 4) and not args.arm:
+        print(f"LANGFENS — Kaggle T4 Baseline R Runner for Fold {fold_idx}")
+    else:
+        print(f"LANGFENS — Kaggle T4 Runner for Fold {fold_idx} (Arm: {args.arm or cfg.get('arm', 'Baseline_R')})")
     print(f"Configuration: {cfg_path}")
     print("=" * 80)
 
@@ -559,8 +626,25 @@ def main():
         working_dir = (Path.cwd() / "checkpoints" / "kaggle_working").resolve()
         working_dir.mkdir(parents=True, exist_ok=True)
 
-    run_id = args.run_id or f"baseline_r_fold{fold_idx}"
-    outdir = working_dir / "checkpoints" / f"fold{fold_idx}" / run_id
+    if args.run_id:
+        run_id = args.run_id
+    elif fold_idx == 1:
+        if args.arm == "Arm2A_Focal":
+            run_id = "pilot_arm2a_focal"
+        elif args.arm == "Arm2B_Weighted":
+            run_id = "pilot_arm2b_weighted"
+        else:
+            run_id = "baseline_r_fold1"
+    else:
+        run_id = f"baseline_r_fold{fold_idx}"
+
+    is_pilot = (fold_idx == 1 and (args.arm in ("Arm2A_Focal", "Arm2B_Weighted") or (run_id and "pilot" in run_id) or "03b" in str(cfg_path)))
+    if is_pilot:
+        outdir = working_dir / "checkpoints" / "RQ1-TRN-03B" / run_id
+        remote_rel_prefix = f"pilot/{run_id}"
+    else:
+        outdir = working_dir / "checkpoints" / f"fold{fold_idx}" / run_id
+        remote_rel_prefix = f"fold{fold_idx}/{run_id}"
 
     # Conflict detection
     if not args.resume and not args.check_only and not args.dry_run and outdir.is_dir():
@@ -647,12 +731,12 @@ def main():
         "--execution-cap-epochs", str(args.execution_cap_epochs),
         "--remote-mirror-backend", args.remote_mirror_backend,
         "--remote-mirror-target", args.remote_mirror_target,
-        "--remote-rel-prefix", f"fold{fold_idx}/{run_id}",
+        "--remote-rel-prefix", remote_rel_prefix,
     ]
     if args.resume:
         cmd.extend(["--resume", str(args.resume)])
 
-    print(f"\n[LAUNCH] Starting Baseline R training for Fold {fold_idx}...")
+    print(f"\n[LAUNCH] Starting training for Fold {fold_idx} (run_id: {run_id})...")
     t0 = time.time()
     env = os.environ.copy()
     env["PYTHONPATH"] = f"{repo_dir}/src:{repo_dir}:{env.get('PYTHONPATH', '')}"
@@ -662,12 +746,16 @@ def main():
     print(f"[LAUNCH] Training subprocess finished in {elapsed:.1f}s.")
 
     # 9. Verify and classify endpoint
-    endpoint_status = classify_fold_training_endpoint(outdir, fold_idx)
+    endpoint_status = classify_fold_training_endpoint(
+        output_dir=outdir,
+        fold_idx=fold_idx,
+        expected_arm=args.arm or cfg.get("arm")
+    )
     report_path = outdir / "training_endpoint_report.json"
     report_path.write_text(json.dumps(endpoint_status, indent=2) + "\n")
 
     if remote_mirror is not None:
-        remote_mirror.mirror_file(report_path, f"fold{fold_idx}/{run_id}/training_endpoint_report.json", verify_sha=True)
+        remote_mirror.mirror_file(report_path, f"{remote_rel_prefix}/training_endpoint_report.json", verify_sha=True)
 
     print(f"[ENDPOINT] Final endpoint classification: {endpoint_status['status']}")
     if endpoint_status["status"] != "COMPLETED_3600_UPDATES":

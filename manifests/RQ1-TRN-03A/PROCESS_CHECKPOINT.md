@@ -119,18 +119,28 @@ Design and specify a mathematically rigorous, leak-free 4-fold cross-validation 
    - Formally disclosed validation reuse and model-selection bias, certifying that validation comparisons cannot claim independent statistical confirmation (reserved for Phase RQ1-EVAL-01).
    - Designed 2-stage execution flow (Fold 1 Pilot ~1.7 GPU hours, full 4-fold ~2.5 GPU hours; total ~4.2 GPU hours < 14% of weekly Kaggle quota) structured behind 4 explicit authorization gates (Gate A passed; Gates B, C, D pending operator approval).
    - Implemented 10 new regression tests in `tests/test_rq1_trn_03b_experimental_design.py` (310 passed total, 100% green).
+18. **Completed Step 16 Kaggle Pilot Deployment Readiness:**
+   - Fixed Kaggle integration gap: generalized `audit_scripts/kaggle_fold_train_exec.py` and `deploy/kaggle/kaggle_entrypoint.py` to support Fold 1 pilot modes (`train_pilot_arm2a`, `train_pilot_arm2b`, `verify_pilot_arm2a`, `verify_pilot_arm2b`).
+   - Isolated RQ1-TRN-03B pilot output routing to local `/kaggle/working/checkpoints/RQ1-TRN-03B/pilot_arm2{a,b}_*` and remote HF prefix `pilot/pilot_arm2{a,b}_*`, eliminating collision with Baseline R artifacts.
+   - Prepared 6 dedicated private Kaggle deployment packages in `deploy/kaggle_pilot_arm2{a,b}_{preflight,smoke,train}/` with unique slugs, T4x2 GPU profile, private dataset attachment (`minkhoaa/langfens-rq1-fold1-staging`), and strict Kaggle Secrets credential hygiene.
+   - Verified Fold 1 train/val archive SHA (`b750eb3b...`), 18-speaker census, and zero active test leakage (`ABA, ASI, EBVS, HJK, LXC, PNV` 100% physically absent).
+   - Enforced fresh pretrained initialization (`seed: 1337`), pinned commit, arm-specific loss verification in endpoint classifier, and strict cross-arm resume rejection.
+   - Audited $pos\_weight = 8.40$ derivation: clarified that $8.40$ is derived from out-of-fold validation macro prevalence ($10.643\%$), representing an intentional 1.47× overweighting of error tokens relative to training empirical frequency ($14.91\%, w=5.71$) to aggressively elevate Recall.
+   - Added 10 regression tests in `tests/test_rq1_trn_03b_kaggle_pilot_deployment.py` (320 passed total, 100% green).
+   - Certified Gate B readiness; halted execution pending operator review and launch authorization.
 
 ---
 
 ## 4. Results & Verification
 - **Split Manifest Invariance:** Verified `l2arctic_4fold_splits.json` SHA-256 `7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b`.
 - **Automated Split Suite:** `python3 audit_scripts/validate_splits.py` passed all 4 core checks with 0 errors.
-- **Automated Regression Suite:** All 310 tests pass (`PYTHONPATH=. .venv-cuda/bin/pytest tests/`):
-  - 310 passed, 1 skipped, 1 warning in 166.52s (100% green).
+- **Automated Regression Suite:** All 320 tests pass (`PYTHONPATH=. .venv-cuda/bin/pytest tests/`):
+  - 320 passed, 1 skipped, 1 warning in 209.47s (100% green).
 - **Deployment & Closure Test Suites:**
-  - `tests/test_rq1_trn_03a_kaggle_deployment.py` passes 32/32 tests (100% green).
+  - `tests/test_rq1_trn_03a_kaggle_deployment.py` passes 39/39 tests (100% green).
   - `tests/test_rq1_trn_03a_four_fold_closure.py` passes 8/8 tests (100% green).
   - `tests/test_rq1_trn_03b_experimental_design.py` passes 10/10 tests (100% green).
+  - `tests/test_rq1_trn_03b_kaggle_pilot_deployment.py` passes 10/10 tests (100% green).
 - **Integration Test Suite (`test_rq1_trn_03a_fold_readiness_integration.py`):**
   - `test_all_fold_configs_parity`: PASS (all 4 configs verified bit-identical).
   - `test_fold_package_isolation_and_contents`: PASS (all packages verified to contain exactly 18 authorized speakers and 0 test speakers).
@@ -163,6 +173,7 @@ Design and specify a mathematically rigorous, leak-free 4-fold cross-validation 
 - **Step Checkpoint 13:** `manifests/RQ1-TRN-03A/checkpoints/13-four-fold-validation-synthesis-and-closure.md`
 - **Step Checkpoint 14:** `manifests/RQ1-TRN-03A/checkpoints/14-scientific-errata-and-model-improvement-readiness.md`
 - **Step Checkpoint 15:** `manifests/RQ1-TRN-03A/checkpoints/15-rq1-trn-03b-experimental-design-and-readiness.md`
+- **Step Checkpoint 16:** `manifests/RQ1-TRN-03A/checkpoints/16-kaggle-pilot-deployment-readiness.md`
 - **Four-Fold Evaluation Synthesis Report:** `manifests/RQ1-TRN-03A/evaluation/FOUR_FOLD_VALIDATION_REPORT.json` (SHA-256 `43f7de4e...`)
 - **Complete Prediction Records Archive:** `manifests/RQ1-TRN-03A/evaluation/FOUR_FOLD_PAIRED_PREDICTION_RECORDS.json.gz`
 - **Four-Fold Summary CSV:** `manifests/RQ1-TRN-03A/evaluation/four_fold_metrics_summary.csv`
@@ -190,6 +201,14 @@ Design and specify a mathematically rigorous, leak-free 4-fold cross-validation 
   - `tests/test_rq1_trn_03a_kaggle_deployment.py`
   - `tests/test_rq1_trn_03a_four_fold_closure.py`
   - `tests/test_rq1_trn_03b_experimental_design.py`
+  - `tests/test_rq1_trn_03b_kaggle_pilot_deployment.py`
+- **Kaggle Pilot Deployment Packages:**
+  - `deploy/kaggle_pilot_arm2a_preflight/` (`kernel-metadata.json`, `dataset-metadata.json`, `kaggle_preflight.ipynb`)
+  - `deploy/kaggle_pilot_arm2a_smoke/` (`kernel-metadata.json`, `dataset-metadata.json`, `kaggle_smoke.ipynb`)
+  - `deploy/kaggle_pilot_arm2a_train/` (`kernel-metadata.json`, `dataset-metadata.json`, `kaggle_train.ipynb`)
+  - `deploy/kaggle_pilot_arm2b_preflight/` (`kernel-metadata.json`, `dataset-metadata.json`, `kaggle_preflight.ipynb`)
+  - `deploy/kaggle_pilot_arm2b_smoke/` (`kernel-metadata.json`, `dataset-metadata.json`, `kaggle_smoke.ipynb`)
+  - `deploy/kaggle_pilot_arm2b_train/` (`kernel-metadata.json`, `dataset-metadata.json`, `kaggle_train.ipynb`)
 - **RQ1-TRN-03B Pinned Configurations:**
   - Pilot: `configs/rq1_trn_03b_pilot_arm2a_focal.yaml`, `configs/rq1_trn_03b_pilot_arm2b_weighted.yaml`
   - Full 4-Fold Arm 2A: `configs/rq1_trn_03b_arm2a_fold{1,2,3,4}.yaml`
@@ -201,11 +220,13 @@ Design and specify a mathematically rigorous, leak-free 4-fold cross-validation 
 
 ## 6. Restart / Recovery Instructions
 - **Active Branch:** `review/rq1-trn-03a-cross-fold-planning`
-- **Current State:** Step 15 completed successfully (`COMPLETED; GATE_A_PASSED_DESIGN_READY`).
-  - All 5 Step 14 residual errata closed and verified.
-  - Baseline R benchmarks, checkpoints, hashes, and per-fold test isolation preserved intact.
-  - Phase RQ1-TRN-03B experimental design, mathematical loss contracts (`MaskedFocalBCEWithLogitsLoss`, class-weighted BCE), and pinned configurations complete.
-  - Gate A passed (local static design and unit testing). Gate B (Remote-GPU Pilot on Fold 1) requires explicit operator authorization before execution. All 310 regression tests passing.
+- **Current State:** Step 16 completed successfully (`COMPLETED; GATE_B_DEPLOYMENT_READY`).
+  - Generalized Kaggle execution harness to support Fold 1 pilot modes with zero regression to Baseline R Folds 2–4.
+  - Authored all 6 dedicated Kaggle pilot packages (preflight, smoke, train for both Arm 2A Focal and Arm 2B Weighted) targeting `minkhoaa/langfens-rq1-fold1-staging` on Tesla T4x2.
+  - Verified Fold 1 archive SHA-256 (`b750eb3b...`), 18-speaker census, and zero active test leakage.
+  - Audited pos_weight=8.40 derivation (1.47x over-weighting for Recall elevation vs 5.71 training empirical ratio).
+  - Validated resume safety, wrong-arm checkpoint rejection, missing secrets fail-closed, and non-T4 GPU rejection.
+  - Gate B readiness certified. Execution halted pending operator authorization. All 320 regression tests passing.
 
 ---
 

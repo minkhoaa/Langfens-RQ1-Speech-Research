@@ -30,12 +30,16 @@ def main():
         "--mode",
         choices=[
             "train_c0", "train_c1", "verify_only", "benchmark",
-            "train_fold", "train_fold2", "train_fold3", "train_fold4",
-            "verify_fold", "verify_fold2", "verify_fold3", "verify_fold4"
+            "train_fold", "train_fold1", "train_fold2", "train_fold3", "train_fold4",
+            "verify_fold", "verify_fold1", "verify_fold2", "verify_fold3", "verify_fold4",
+            "train_pilot_arm2a", "train_pilot_arm2b",
+            "verify_pilot_arm2a", "verify_pilot_arm2b"
         ],
         default="train_c0"
     )
-    parser.add_argument("--fold", type=int, choices=[2, 3, 4], default=None, help="Fold index for cross-fold baseline training (2, 3, 4)")
+    parser.add_argument("--fold", type=int, choices=[1, 2, 3, 4], default=None, help="Fold index for cross-fold baseline or pilot training (1, 2, 3, 4)")
+    parser.add_argument("--arm", type=str, default=None, help="Experiment arm (e.g. Arm2A_Focal, Arm2B_Weighted)")
+    parser.add_argument("--config", type=str, default=None, help="Path to training config YAML")
     parser.add_argument("--commit-sha", type=str, required=True, help="Pinned immutable Git commit SHA to checkout and verify")
     parser.add_argument("--remote-mirror-backend", type=str, default="huggingface")
     parser.add_argument("--remote-mirror-target", type=str, default=None, help="Remote persistent mirror destination")
@@ -46,13 +50,19 @@ def main():
     parser.add_argument("--execution-cap-epochs", type=int, default=None, help="Capped execution epochs")
     args = parser.parse_args()
 
-    # Strict token hygiene: reject CLI tokens for cross-fold baseline runs early
-    if args.mode in ("train_fold", "train_fold2", "train_fold3", "train_fold4", "verify_fold", "verify_fold2", "verify_fold3", "verify_fold4") or (args.fold in (2, 3, 4)):
-        if args.remote_mirror_token:
-            raise ValueError(
-                "FAIL-CLOSED: CLI token argument '--remote-mirror-token' is strictly prohibited for cross-fold baseline execution. "
-                "Pass authentication token strictly via HF_TOKEN environment variable or Kaggle Secrets."
-            )
+    # Strict token hygiene: reject CLI tokens for cross-fold baseline and pilot runs early
+    is_fold_or_pilot = (
+        args.mode.startswith("train_fold") or
+        args.mode.startswith("verify_fold") or
+        args.mode.startswith("train_pilot") or
+        args.mode.startswith("verify_pilot") or
+        (args.fold in (1, 2, 3, 4))
+    )
+    if is_fold_or_pilot and args.remote_mirror_token:
+        raise ValueError(
+            "FAIL-CLOSED: CLI token argument '--remote-mirror-token' is strictly prohibited for cross-fold and pilot execution. "
+            "Pass authentication token strictly via HF_TOKEN environment variable or Kaggle Secrets."
+        )
 
     repo_dir = Path(args.repo_dir)
     if not repo_dir.exists():
@@ -103,13 +113,66 @@ def main():
     # Set default remote target based on mode
     remote_target = args.remote_mirror_target
     if not remote_target:
-        if args.mode in ("train_fold", "train_fold2", "train_fold3", "train_fold4", "verify_fold", "verify_fold2", "verify_fold3", "verify_fold4"):
+        if is_fold_or_pilot:
             remote_target = "minkhoaa/langfens-rq1-cross-fold-checkpoints"
         else:
             remote_target = "minkhoaa/langfens-rq1-trn-02b-checkpoints"
 
-    if args.mode in ("train_fold", "train_fold2", "train_fold3", "train_fold4"):
-        if args.mode == "train_fold2":
+    if args.mode in ("train_pilot_arm2a", "train_pilot_arm2b"):
+        arm_name = "Arm2A_Focal" if args.mode == "train_pilot_arm2a" else "Arm2B_Weighted"
+        cfg_name = "rq1_trn_03b_pilot_arm2a_focal.yaml" if args.mode == "train_pilot_arm2a" else "rq1_trn_03b_pilot_arm2b_weighted.yaml"
+        run_id = args.run_id or ("pilot_arm2a_focal" if args.mode == "train_pilot_arm2a" else "pilot_arm2b_weighted")
+        cfg_path = Path(args.config) if args.config else (repo_dir / "configs" / cfg_name)
+
+        print(f"[TRAIN] Running RQ1-TRN-03B Pilot training for Arm {arm_name} on Fold 1...")
+        cmd = [
+            sys.executable,
+            str(repo_dir / "audit_scripts" / "kaggle_fold_train_exec.py"),
+            "--fold", "1",
+            "--arm", arm_name,
+            "--config", str(cfg_path),
+            "--commit-sha", args.commit_sha,
+            "--working-dir", "/kaggle/working",
+            "--remote-mirror-backend", args.remote_mirror_backend,
+            "--remote-mirror-target", remote_target,
+            "--run-id", run_id,
+        ]
+        if kaggle_input:
+            cmd.extend(["--kaggle-input-dir", str(kaggle_input)])
+        if args.execution_cap_epochs is not None:
+            cmd.extend(["--execution-cap-epochs", str(args.execution_cap_epochs)])
+        subprocess.run(cmd, env=env, check=True)
+        print(f"[TRAIN] Pilot training completed for Arm {arm_name}.")
+
+    elif args.mode in ("verify_pilot_arm2a", "verify_pilot_arm2b"):
+        arm_name = "Arm2A_Focal" if args.mode == "verify_pilot_arm2a" else "Arm2B_Weighted"
+        cfg_name = "rq1_trn_03b_pilot_arm2a_focal.yaml" if args.mode == "verify_pilot_arm2a" else "rq1_trn_03b_pilot_arm2b_weighted.yaml"
+        run_id = args.run_id or ("pilot_arm2a_focal" if args.mode == "verify_pilot_arm2a" else "pilot_arm2b_weighted")
+        cfg_path = Path(args.config) if args.config else (repo_dir / "configs" / cfg_name)
+
+        print(f"[VERIFY] Running preflight check-only staging and probe for Arm {arm_name} on Fold 1...")
+        cmd = [
+            sys.executable,
+            str(repo_dir / "audit_scripts" / "kaggle_fold_train_exec.py"),
+            "--fold", "1",
+            "--arm", arm_name,
+            "--config", str(cfg_path),
+            "--commit-sha", args.commit_sha,
+            "--working-dir", "/kaggle/working",
+            "--check-only",
+            "--remote-mirror-backend", args.remote_mirror_backend,
+            "--remote-mirror-target", remote_target,
+            "--run-id", run_id,
+        ]
+        if kaggle_input:
+            cmd.extend(["--kaggle-input-dir", str(kaggle_input)])
+        subprocess.run(cmd, env=env, check=True)
+        print(f"[VERIFY] Preflight staging check passed for Arm {arm_name}.")
+
+    elif args.mode in ("train_fold", "train_fold1", "train_fold2", "train_fold3", "train_fold4"):
+        if args.mode == "train_fold1":
+            f_idx = 1
+        elif args.mode == "train_fold2":
             f_idx = 2
         elif args.mode == "train_fold3":
             f_idx = 3
@@ -118,7 +181,7 @@ def main():
         else:
             f_idx = args.fold or 2
 
-        print(f"[TRAIN] Running Baseline R training for Fold {f_idx}...")
+        print(f"[TRAIN] Running training for Fold {f_idx}...")
         cmd = [
             sys.executable,
             str(repo_dir / "audit_scripts" / "kaggle_fold_train_exec.py"),
@@ -128,6 +191,10 @@ def main():
             "--remote-mirror-backend", args.remote_mirror_backend,
             "--remote-mirror-target", remote_target,
         ]
+        if args.arm:
+            cmd.extend(["--arm", args.arm])
+        if args.config:
+            cmd.extend(["--config", args.config])
         if kaggle_input:
             cmd.extend(["--kaggle-input-dir", str(kaggle_input)])
         if args.run_id:
@@ -137,8 +204,10 @@ def main():
         subprocess.run(cmd, env=env, check=True)
         print(f"[TRAIN] Training completed for Fold {f_idx}.")
 
-    elif args.mode in ("verify_fold", "verify_fold2", "verify_fold3", "verify_fold4") or (args.mode == "verify_only" and args.fold in (2, 3, 4)):
-        if args.mode == "verify_fold2":
+    elif args.mode in ("verify_fold", "verify_fold1", "verify_fold2", "verify_fold3", "verify_fold4") or (args.mode == "verify_only" and args.fold in (1, 2, 3, 4)):
+        if args.mode == "verify_fold1":
+            f_idx = 1
+        elif args.mode == "verify_fold2":
             f_idx = 2
         elif args.mode == "verify_fold3":
             f_idx = 3
@@ -158,6 +227,10 @@ def main():
             "--remote-mirror-backend", args.remote_mirror_backend,
             "--remote-mirror-target", remote_target,
         ]
+        if args.arm:
+            cmd.extend(["--arm", args.arm])
+        if args.config:
+            cmd.extend(["--config", args.config])
         if kaggle_input:
             cmd.extend(["--kaggle-input-dir", str(kaggle_input)])
         if args.run_id:
