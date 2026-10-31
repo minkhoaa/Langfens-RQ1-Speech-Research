@@ -242,7 +242,7 @@ def parse_args():
     parser.add_argument("--prompts", type=str, default="resources/L2-ARCTIC/prompts.json")
     parser.add_argument("--output_dir", type=str, default="manifests/RQ1-TRN-02A/evaluation_reconciliation/zero_oracle_verification")
     parser.add_argument("--protocol_o_records", type=str, default=None, help="Path to Protocol O PAIRED_PREDICTION_RECORDS.json for paired comparison")
-    parser.add_argument("--device", type=str, default="cpu")
+    parser.add_argument("--device", type=str, default="cuda" if torch.cuda.is_available() else "cpu", help="Device (default cuda if available, else cpu)")
     parser.add_argument("--tie_break", type=str, default="sub_first", choices=["sub_first", "del_first", "ins_first"])
     parser.add_argument("--max_eval_utterances", type=int, default=None)
     return parser.parse_args()

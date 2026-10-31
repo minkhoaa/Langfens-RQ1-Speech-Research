@@ -150,7 +150,9 @@ Design and specify a mathematically rigorous, leak-free 4-fold cross-validation 
 - **Step Checkpoint 11:** `manifests/RQ1-TRN-03A/checkpoints/11-official-fold3-baseline-r-training-and-fold4-staging.md`
 - **Step Checkpoint 12:** `manifests/RQ1-TRN-03A/checkpoints/12-official-fold4-baseline-r-training-closure.md`
 - **Step Checkpoint 13:** `manifests/RQ1-TRN-03A/checkpoints/13-four-fold-validation-synthesis-and-closure.md`
+- **Step Checkpoint 14:** `manifests/RQ1-TRN-03A/checkpoints/14-scientific-errata-and-model-improvement-readiness.md`
 - **Four-Fold Evaluation Synthesis Report:** `manifests/RQ1-TRN-03A/evaluation/FOUR_FOLD_VALIDATION_REPORT.json`
+- **Complete Prediction Records Archive:** `manifests/RQ1-TRN-03A/evaluation/FOUR_FOLD_PAIRED_PREDICTION_RECORDS.json.gz`
 - **Four-Fold Summary CSV:** `manifests/RQ1-TRN-03A/evaluation/four_fold_metrics_summary.csv`
 - **Eight-Speaker Validation CSV:** `manifests/RQ1-TRN-03A/evaluation/eight_speakers_validation_breakdown.csv`
 - **Cross-Fold Evaluation Harness:** `audit_scripts/evaluate_cross_fold_validation.py`
@@ -182,16 +184,18 @@ Design and specify a mathematically rigorous, leak-free 4-fold cross-validation 
 
 ## 6. Restart / Recovery Instructions
 - **Active Branch:** `review/rq1-trn-03a-cross-fold-planning`
-- **Current State:** Steps 12 & 13 completed successfully (`COMPLETED; GATE_PASSED_FOR_PHASE_CLOSURE`).
+- **Current State:** Steps 12, 13, and 14 completed successfully (`COMPLETED; GATE_PASSED_FOR_PHASE_CLOSURE`).
   - Fold 4 training executed and verified on Hugging Face (`minkhoaa/langfens-rq1-cross-fold-checkpoints`): fixed budget primary locked at Epoch 6 / 3,600 updates (`fixed_budget_checkpoint.pt`, SHA-256 `c502271f...`), peak at Epoch 3 (`best.pt`, AP 0.3154, SHA-256 `3daa8ca0...`), endpoint at Epoch 8 (`last.pt`, SHA-256 `894a1248...`), 0 skipped AMP updates, classification `COMPLETED_3600_UPDATES`.
-  - Four-fold out-of-fold validation replay completed across all 39,576 tokens / 8 validation speakers under Protocol O and Protocol Z.
-  - Primary fixed-budget performance: Macro AP 0.279214 +/- 0.026468 (95% CI [0.194991, 0.363436]), Micro AP 0.272582, Macro Acoustic Gap +0.013060 (95% CI [+0.000299, +0.025820]), Macro CTC PER 23.90% +/- 0.31%, Protocol Z Aligned AP 0.277563 (99.64% coverage).
-  - All 298 regression tests passing (1 skipped locally per `AGENTS.md` GPU prohibition). Phase RQ1-TRN-03A is officially closed.
+  - Four-fold out-of-fold validation replay completed across all 39,576 tokens / 8 validation speakers under Protocol O and Protocol Z on CUDA.
+  - Primary fixed-budget performance: Macro AP 0.279207 +/- 0.026467 (95% CI [0.194990, 0.363424]), Micro AP 0.272580, Macro Acoustic Gap +0.013064 (95% CI [+0.000344, +0.025784]), Macro CTC PER 23.90% +/- 0.31%, Protocol Z Aligned AP 0.277553 (99.64% coverage).
+  - Scientific errata audit completed (Step 14): evaluator provenance certified (commit 618e86d), best-checkpoint zero-crossing CI reconciled ([-0.000530, +0.022978]), macro prevalence corrected (10.6430%), token-level predictions archived (39,576 tokens, 4,213 errors, SHA-256 355b6e23...) and mirrored to Hugging Face.
+  - Phase RQ1-TRN-03A is officially closed. Scientific proposal established for RQ1-TRN-03B. All 300 tests passing.
 
 ---
 
 ## 7. Remaining Work & Safety Boundaries
-- **Phase Status:** Phase RQ1-TRN-03A is officially CLOSED.
+- **Phase Status:** Phase RQ1-TRN-03A is officially CLOSED. Ready for Phase RQ1-TRN-03B upon operator authorization.
 - **Safety Boundaries:**
   - DO NOT access, unseal, or evaluate active test split files ($S_{\text{test}}^{(1..4)}$) for any fold.
-  - Execution strictly terminates after validation analysis. DO NOT proceed to RQ1-EVAL-01 without explicit operator authorization.
+  - In RQ1-TRN-03B, all model interventions must be evaluated strictly on the pooled 4-fold validation sets (39,576 tokens).
+  - Execution strictly terminates before RQ1-TRN-03B or RQ1-EVAL-01 without separate explicit operator authorization.

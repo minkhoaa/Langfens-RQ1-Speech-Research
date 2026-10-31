@@ -23,6 +23,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import gzip
 import hashlib
 import json
 import math
@@ -191,8 +192,9 @@ def evaluate_single_fold_checkpoint(
 
     print(f"[DATASET] Loaded {len(val_dataset)} validation utterances for Fold {fold_idx}. Evaluating {n_utts}...")
 
-    # Collect predictions for Condition 1: Matched Audio
+    # Collect predictions for Condition 1: Matched Audio and Condition 2: Mismatched Audio
     matched_scores_all = []
+    mismatched_scores_all = []
     matched_labels_all = []
     ctc_refs_all = []
     ctc_hyps_all = []
@@ -283,12 +285,16 @@ def evaluate_single_fold_checkpoint(
                 canonical_phone_lengths=can_len,
             )
             scores_mm = torch.sigmoid(out_mm.binary_logits[0]).cpu().tolist()
+            assert len(scores_mm) == len(g_labels)
+            mismatched_scores_all.extend(scores_mm)
             per_speaker_records[spk]["scores_mismatched"].extend(scores_mm)
 
             per_utterance_data.append({
                 "record_id": rec_id,
+                "fold": fold_idx,
                 "speaker": spk,
                 "utterance_id": uid,
+                "canonical_phones": [CTC_INDEX_TO_PHONE[idx.item()] for idx in item["canonical_phone_indices"]],
                 "labels": g_labels,
                 "matched_scores": scores_m,
                 "mismatched_scores": scores_mm,
@@ -300,13 +306,13 @@ def evaluate_single_fold_checkpoint(
     eval_duration = time.time() - t0
     post_fingerprint = get_model_weights_fingerprint(model)
     assert init_fingerprint == post_fingerprint, "CRITICAL: Model weights modified during evaluation!"
+    assert len(matched_scores_all) == len(mismatched_scores_all) == len(matched_labels_all), (
+        f"Length mismatch: matched {len(matched_scores_all)}, mismatched {len(mismatched_scores_all)}, labels {len(matched_labels_all)}"
+    )
 
-    # Calculate Protocol O binary metrics
+    # Calculate Protocol O binary metrics with strictly aligned prediction vectors
     matched_ap = average_precision_binary(matched_labels_all, matched_scores_all)
-    all_mismatched_scores = []
-    for spk in sorted(per_speaker_records.keys()):
-        all_mismatched_scores.extend(per_speaker_records[spk]["scores_mismatched"])
-    mismatched_ap = average_precision_binary(matched_labels_all, all_mismatched_scores)
+    mismatched_ap = average_precision_binary(matched_labels_all, mismatched_scores_all)
     delta_gap = matched_ap - mismatched_ap
 
     # Calculate binary operating point metrics (tau = 0.50 and tau = 0.20)
@@ -488,7 +494,7 @@ def evaluate_single_fold_checkpoint(
         "raw_predictions": {
             "matched_labels": matched_labels_all,
             "matched_scores": matched_scores_all,
-            "mismatched_scores": all_mismatched_scores,
+            "mismatched_scores": mismatched_scores_all,
         },
         "per_utterance": per_utterance_data,
     }
@@ -499,7 +505,7 @@ def main():
     parser.add_argument("--manifest", default="manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json")
     parser.add_argument("--prompts", default="resources/L2-ARCTIC/prompts.json")
     parser.add_argument("--output_dir", default="manifests/RQ1-TRN-03A/evaluation")
-    parser.add_argument("--device", default="cpu")
+    parser.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu", help="Device (default cuda if available, else cpu)")
     parser.add_argument("--max_eval_utterances", type=int, default=None, help="Diagnostic run override")
     args = parser.parse_args()
 
@@ -576,6 +582,7 @@ def main():
     macro_prior_ap = compute_student_t_ci(fb_prior_aps)
     macro_margin = compute_student_t_ci(fb_margins)
     macro_ctc_per = compute_student_t_ci(fb_ctc_pers)
+    macro_prev = compute_student_t_ci([fixed_budget_results[f]["prevalence"] for f in [1, 2, 3, 4]])
     macro_proto_z_aligned = compute_student_t_ci(fb_proto_z_aligned)
     macro_proto_z_b1 = compute_student_t_ci(fb_proto_z_b1)
 
@@ -718,7 +725,7 @@ def main():
         "Val L1 Profiles": "Spanish, Hindi, Arabic, Mandarin, Korean",
         "Val Tokens": "39,576 total (9,894/fold)",
         "Val Errors": "4,213 total (1,053/fold)",
-        "Val Prev": f"{macro_matched_ap['mean']:.4%}",
+        "Val Prev": f"{macro_prev['mean']:.4%}",
         "Epoch": 6,
         "Updates": 3600,
         "Matched AP": f"{macro_matched_ap['mean']:.6f} +/- {macro_matched_ap['se']:.6f}",
@@ -806,7 +813,7 @@ def main():
         "Val L1 Profiles": "Spanish, Hindi, Arabic, Mandarin, Korean",
         "Val Tokens": "39,576 total",
         "Val Errors": "4,213 total",
-        "Val Prev": "10.65%",
+        "Val Prev": f"{macro_prev['mean']:.4%}",
         "Epoch": "2-6 (Varies)",
         "Updates": "1,200-3,600",
         "Matched AP": f"{macro_best_matched_ap['mean']:.6f} +/- {macro_best_matched_ap['se']:.6f}",
@@ -928,17 +935,20 @@ def main():
             "split_manifest_sha256": compute_sha256(args.manifest),
             "generated_timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
             "evaluator_git_sha": os.popen("git rev-parse HEAD").read().strip(),
+            "evaluator_source_commit": "618e86d",
             "evaluation_split": "val",
             "test_split_access": "STRICTLY_PROHIBITED_AND_VERIFIED_ZERO_ACCESS",
             "total_out_of_fold_validation_utterances": 1200,
             "total_out_of_fold_validation_tokens": 39576,
             "total_out_of_fold_validation_errors": 4213,
+            "macro_validation_prevalence": macro_prev["mean"],
             "pooled_validation_prevalence": round(4213 / 39576, 6),
             "validation_speakers_count": 8,
             "validation_speakers": ["NJS", "RRBI", "TNI", "YBAA", "TXHC", "ZHAA", "HKK", "NCC"],
         },
         "primary_fixed_budget_3600_updates": {
             "macro_statistics": {
+                "prevalence": macro_prev,
                 "matched_binary_ap": macro_matched_ap,
                 "mismatched_binary_ap": macro_mismatched_ap,
                 "acoustic_reliance_gap": macro_gap,
@@ -1014,6 +1024,56 @@ def main():
     with open(json_report_path, "w", encoding="utf-8") as f:
         json.dump(full_report, f, indent=2)
     print(f"[EXPORT] Saved comprehensive JSON report to: {json_report_path}")
+
+    # 4. Export full paired prediction records for all 1,200 utterances (Task D / Step 14 Deliverable)
+    all_utterances_records = []
+    for f in [1, 2, 3, 4]:
+        all_utterances_records.extend(fixed_budget_results[f]["per_utterance"])
+
+    pred_records = {
+        "metadata": {
+            "title": "LANGFENS Four-Fold Out-of-Fold Validation Paired Prediction Records",
+            "experiment": "RQ1-TRN-03A",
+            "evaluator_git_sha": full_report["metadata"]["evaluator_git_sha"],
+            "evaluator_source_commit": "618e86d",
+            "total_utterances": len(all_utterances_records),
+            "total_tokens": len(pooled_matched_labels),
+            "total_errors": int(sum(pooled_matched_labels)),
+            "macro_prevalence": macro_prev["mean"],
+            "pooled_prevalence": round(sum(pooled_matched_labels) / len(pooled_matched_labels), 6),
+            "checkpoint_sha256": {
+                f"fold_{f}": {
+                    "fixed_budget": fixed_budget_results[f]["checkpoint_sha256"],
+                    "best": best_results[f]["checkpoint_sha256"],
+                }
+                for f in [1, 2, 3, 4]
+            },
+        },
+        "utterances": all_utterances_records,
+    }
+
+    pred_gz_path = out_dir / "FOUR_FOLD_PAIRED_PREDICTION_RECORDS.json.gz"
+    with gzip.open(pred_gz_path, "wt", encoding="utf-8") as f:
+        json.dump(pred_records, f)
+    pred_gz_sha = compute_sha256(pred_gz_path)
+    print(f"[EXPORT] Saved {len(all_utterances_records)} paired prediction records to: {pred_gz_path} (SHA-256: {pred_gz_sha})")
+
+    # 5. Mirror prediction records to authorized private Hugging Face repo
+    try:
+        from huggingface_hub import HfApi, get_token
+        hf_tok = get_token()
+        if hf_tok:
+            api = HfApi(token=hf_tok)
+            api.upload_file(
+                path_or_fileobj=str(pred_gz_path),
+                path_in_repo="evaluation/FOUR_FOLD_PAIRED_PREDICTION_RECORDS.json.gz",
+                repo_id="minkhoaa/langfens-rq1-cross-fold-checkpoints",
+                repo_type="model",
+                commit_message="docs(eval): store four-fold paired validation prediction records"
+            )
+            print("[REMOTE PERSISTENCE] Successfully mirrored prediction records to HF: evaluation/FOUR_FOLD_PAIRED_PREDICTION_RECORDS.json.gz")
+    except Exception as e:
+        print(f"[REMOTE PERSISTENCE WARNING] Could not mirror to HF: {e}")
 
     print("\n" + "=" * 80)
     print("FOUR-FOLD VALIDATION EVALUATION COMPLETED SUCCESSFULLY")

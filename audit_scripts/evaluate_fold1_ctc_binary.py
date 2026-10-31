@@ -452,7 +452,7 @@ def main():
     parser.add_argument("--fold", type=int, default=None, help="Override fold index (1..4). If omitted, read from config.")
     parser.add_argument("--checkpoint", default="checkpoints/RQ1-TRN-02A/recovered/best.pt", help="Path to checkpoint")
     parser.add_argument("--zip-path", default=None, help="Path to authorized train/val audio zip")
-    parser.add_argument("--device", default="cpu", help="Device (cpu strictly enforced/default)")
+    parser.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu", help="Device (default cuda if available, else cpu)")
     parser.add_argument("--batch-size", type=int, default=1, help="Evaluation batch size (default 1)")
     parser.add_argument("--output-dir", default="manifests/RQ1-TRN-02A/evaluation_reconciliation", help="Output directory")
     parser.add_argument("--max-eval-utterances", type=int, default=None, help="Diagnostic/smoke run size")

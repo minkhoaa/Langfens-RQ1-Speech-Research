@@ -1212,7 +1212,7 @@ def main():
     ap.add_argument("--allow-incomplete-endpoints", action="store_true", help="Allow evaluating checkpoints that did not complete 3,600 updates (exploratory only)")
     ap.add_argument("--no-strict-guardrails", action="store_true", help="Do not raise exception on CTC PER guardrail failure (still marks report invalid)")
     ap.add_argument("--output-dir", default="manifests/RQ1-TRN-02B/evaluation", help="Directory to save paired evaluation artifacts")
-    ap.add_argument("--device", default="cpu", help="Device for evaluation (cpu or cuda)")
+    ap.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu", help="Device for evaluation (cuda if available, else cpu)")
     ap.add_argument("--dry-run", action="store_true", help="Validate checkpoint presence and hashes on CPU then exit")
     args = ap.parse_args()
 

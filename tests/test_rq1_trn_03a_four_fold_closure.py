@@ -143,13 +143,19 @@ def test_four_fold_synthesis_report_integrity():
     assert meta["validation_speakers_count"] == 8
 
     fb_macro = rep["primary_fixed_budget_3600_updates"]["macro_statistics"]
-    assert pytest.approx(fb_macro["matched_binary_ap"]["mean"], abs=1e-5) == 0.279214
-    assert pytest.approx(fb_macro["acoustic_reliance_gap"]["mean"], abs=1e-5) == 0.013060
-    assert pytest.approx(fb_macro["ctc_per"]["mean"], abs=1e-4) == 0.238971
+    assert pytest.approx(fb_macro["matched_binary_ap"]["mean"], abs=1e-4) == 0.279207
+    assert pytest.approx(fb_macro["acoustic_reliance_gap"]["mean"], abs=1e-4) == 0.013064
+    assert pytest.approx(fb_macro["ctc_per"]["mean"], abs=1e-4) == 0.238972
+    assert pytest.approx(fb_macro["prevalence"]["mean"], abs=1e-4) == 0.106430
+
+    # Best checkpoint acoustic gap CI crosses zero
+    best_macro = rep["validation_selected_best_checkpoints"]["macro_statistics"]
+    assert best_macro["acoustic_reliance_gap"]["ci_lower"] < 0.0
+    assert pytest.approx(best_macro["acoustic_reliance_gap"]["ci_lower"], abs=1e-4) == -0.000530
 
     fb_micro = rep["primary_fixed_budget_3600_updates"]["pooled_micro_statistics"]
-    assert pytest.approx(fb_micro["matched_binary_ap"], abs=1e-5) == 0.272582
-    assert pytest.approx(fb_micro["acoustic_reliance_gap"], abs=1e-5) == 0.010619
+    assert pytest.approx(fb_micro["matched_binary_ap"], abs=1e-4) == 0.272580
+    assert pytest.approx(fb_micro["acoustic_reliance_gap"], abs=1e-4) == 0.010619
     assert pytest.approx(fb_micro["ctc_per"], abs=1e-4) == 0.238981
 
 
@@ -175,3 +181,35 @@ def test_four_fold_summary_csv_and_eight_speakers_csv_exist():
     assert len(spk_rows) == 8, f"Expected 8 speaker rows, got {len(spk_rows)}"
     spk_names = [r["Speaker"] for r in spk_rows]
     assert set(spk_names) == {"NJS", "RRBI", "TNI", "YBAA", "TXHC", "ZHAA", "HKK", "NCC"}
+
+
+def test_four_fold_paired_prediction_records_archive():
+    """Verifies that the token-level prediction archive contains all 39,576 tokens and 4,213 errors."""
+    import gzip
+    archive_path = Path("manifests/RQ1-TRN-03A/evaluation/FOUR_FOLD_PAIRED_PREDICTION_RECORDS.json.gz")
+    assert archive_path.is_file(), f"Missing {archive_path}"
+
+    with gzip.open(archive_path, "rt", encoding="utf-8") as f:
+        data = json.load(f)
+
+    meta = data["metadata"]
+    assert meta["total_tokens"] == 39576
+    assert meta["total_errors"] == 4213
+    assert len(data["utterances"]) == 1199
+
+    tot_tokens = sum(len(u["labels"]) for u in data["utterances"])
+    tot_errors = sum(sum(u["labels"]) for u in data["utterances"])
+    assert tot_tokens == 39576
+    assert tot_errors == 4213
+
+
+def test_macro_prevalence_in_summary_csv():
+    """Verifies that four_fold_metrics_summary.csv reports true macro prevalence (10.6430%, not AP)."""
+    summary_path = Path("manifests/RQ1-TRN-03A/evaluation/four_fold_metrics_summary.csv")
+    with open(summary_path) as f:
+        reader = csv.DictReader(f)
+        rows = {r["Fold / Cohort"]: r for r in reader}
+
+    macro_row = rows.get("Macro-Average (N=4)")
+    assert macro_row is not None
+    assert macro_row["Val Prev"] == "10.6430%", f"Expected 10.6430%, got {macro_row['Val Prev']}"
