@@ -42,6 +42,15 @@ FOLD_SPECS = {
         "smoke_slug": "minkhoaa/langfens-rq1-fold-3-baseline-r-t4x2-smoke",
         "train_slug": "minkhoaa/langfens-rq1-fold-3-baseline-r-t4x2",
     },
+    4: {
+        "dataset_slug": "minkhoaa/langfens-rq1-fold4-staging",
+        "dataset_title": "LANGFENS RQ1 Fold 4 Train/Val Staging Package",
+        "dataset_sha256": "653bdad079ee951d6b6d6a3f19964143aa5f4290a3f8c232e9b2524abdbe7f94",
+        "test_speakers": "NJS, TLV, TNI, TXHC, YKWK, ZHAA",
+        "preflight_slug": "minkhoaa/langfens-rq1-fold-4-baseline-r-t4x2-preflight",
+        "smoke_slug": "minkhoaa/langfens-rq1-fold-4-baseline-r-t4x2-smoke",
+        "train_slug": "minkhoaa/langfens-rq1-fold-4-baseline-r-t4x2",
+    },
 }
 
 
@@ -818,7 +827,7 @@ def build_fold_packages(fold_idx: int):
 
 def main():
     parser = argparse.ArgumentParser(description="Build Kaggle deployment packages for cross-fold baseline.")
-    parser.add_argument("--folds", type=int, nargs="+", default=[2, 3], help="Folds to build (e.g. 2 3)")
+    parser.add_argument("--folds", type=int, nargs="+", default=[2, 3, 4], help="Folds to build (e.g. 2 3 4)")
     args = parser.parse_args()
 
     for f in args.folds:

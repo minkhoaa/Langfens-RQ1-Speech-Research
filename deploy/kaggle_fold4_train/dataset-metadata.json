@@ -1,0 +1,11 @@
+{
+  "title": "LANGFENS RQ1 Fold 4 Train/Val Staging Package",
+  "id": "minkhoaa/langfens-rq1-fold4-staging",
+  "licenses": [
+    {
+      "name": "CC-BY-NC-4.0"
+    }
+  ],
+  "is_private": true,
+  "description": "Authorized Fold 4 Train+Val audio archive (18 speakers) for LANGFENS RQ1-TRN-03A. Contains NO active test partition audio or annotations (NJS, TLV, TNI, TXHC, YKWK, ZHAA strictly excluded). Strictly for authorized private research under CC BY-NC 4.0."
+}

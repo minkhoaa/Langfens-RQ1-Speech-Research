@@ -145,6 +145,11 @@ Design and specify a mathematically rigorous, leak-free 4-fold cross-validation 
 - **Step Checkpoint 08:** `manifests/RQ1-TRN-03A/checkpoints/08-permanent-kaggle-workflow-and-fold2-smoke-readiness.md`
 - **Step Checkpoint 09:** `manifests/RQ1-TRN-03A/checkpoints/09-official-fold2-baseline-r-training-launch-gate.md`
 - **Step Checkpoint 10:** `manifests/RQ1-TRN-03A/checkpoints/10-fold3-staging-and-kaggle-deployment.md`
+- **Step Checkpoint 11:** `manifests/RQ1-TRN-03A/checkpoints/11-official-fold3-baseline-r-training-and-fold4-staging.md`
+- **Kaggle Fold 4 Staging Package:** `deploy/kaggle_fold4_staging/` (`dataset-metadata.json`)
+- **Kaggle Fold 4 Preflight Package:** `deploy/kaggle_fold4_preflight/` (`kernel-metadata.json`, `dataset-metadata.json`, `kaggle_preflight.ipynb`)
+- **Kaggle Fold 4 Smoke Package:** `deploy/kaggle_fold4_smoke/` (`kernel-metadata.json`, `dataset-metadata.json`, `kaggle_smoke.ipynb`)
+- **Kaggle Fold 4 Training Package:** `deploy/kaggle_fold4_train/` (`kernel-metadata.json`, `dataset-metadata.json`, `kaggle_train.ipynb`)
 - **Kaggle Fold 3 Staging Package:** `deploy/kaggle_fold3_staging/` (`dataset-metadata.json`)
 - **Kaggle Fold 3 Preflight Package:** `deploy/kaggle_fold3_preflight/` (`kernel-metadata.json`, `dataset-metadata.json`, `kaggle_preflight.ipynb`)
 - **Kaggle Fold 3 Smoke Package:** `deploy/kaggle_fold3_smoke/` (`kernel-metadata.json`, `dataset-metadata.json`, `kaggle_smoke.ipynb`)
@@ -168,8 +173,8 @@ Design and specify a mathematically rigorous, leak-free 4-fold cross-validation 
 
 ## 6. Restart / Recovery Instructions
 - **Active Branch:** `review/rq1-trn-03a-cross-fold-planning`
-- **Current State:** Step 10 (Fold 3 Staging & Kaggle Deployment Preparation) successfully completed (`COMPLETED; GATE_PENDING_OPERATOR_AUTHORIZATION`). Fold 3 pinned config validated, authorized train/val archive (`e81ac9e5d95a...`) audited with zero active test leakage (18 train/val spk, 6 test spk strictly excluded), staging metadata and 3 dedicated kernel packages (`preflight/`, `smoke/`, `train/`) generated with 100% parity to Fold 2. All 289 regression tests green.
-- **Pending Operator Authorization:** Stage 1 dataset creation (`kaggle datasets create -p deploy/kaggle_fold3_staging/`), preflight push, smoke run, and official training run.
+- **Current State:** Step 11 (Fold 3 Official Baseline R Training Closure & Fold 4 Staging) successfully completed (`COMPLETED; GATE_PENDING_OPERATOR_AUTHORIZATION`). Fold 3 training executed and cryptographically verified on private Hugging Face repo `minkhoaa/langfens-rq1-cross-fold-checkpoints` (fixed budget primary locked at Epoch 6 / 3,600 updates, SHA-256 `bbee9dd39280...`, Val Binary AP 0.3075, Val CTC PER 24.80%; peak at Epoch 6; last at Epoch 10, SHA-256 `804cbfa0d032...`, Val CTC PER 22.97%; post classification `COMPLETED_3600_UPDATES`). Descriptive cross-fold comparison completed. Fold 4 pinned config validated, authorized train/val archive (`653bdad079ee...`) audited with zero active test leakage (18 train/val spk, 6 test spk strictly excluded), staging metadata and 3 dedicated kernel packages (`preflight/`, `smoke/`, `train/`) generated with 100% parity to Fold 3. All 292 regression tests green.
+- **Pending Operator Authorization:** Stage 1 dataset creation (`kaggle datasets create -p deploy/kaggle_fold4_staging/`), preflight push, smoke run, and official training run.
 
 ---
 
