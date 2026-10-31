@@ -137,7 +137,7 @@ def test_four_fold_synthesis_report_integrity():
         rep = json.load(f)
 
     meta = rep["metadata"]
-    assert meta["total_out_of_fold_validation_utterances"] == 1200
+    assert meta["total_out_of_fold_validation_utterances"] == 1199
     assert meta["total_out_of_fold_validation_tokens"] == 39576
     assert meta["total_out_of_fold_validation_errors"] == 4213
     assert meta["validation_speakers_count"] == 8

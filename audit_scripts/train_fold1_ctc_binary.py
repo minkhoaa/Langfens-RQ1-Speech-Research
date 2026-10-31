@@ -309,6 +309,18 @@ def validate_resume_checkpoint(
                     f"checkpoint={ck_cfg[p_key]} != expected={cfg[p_key]}."
                 )
 
+    # Optional loss configuration keys (e.g. for RQ1-TRN-03B Arm 2A / 2B)
+    optional_loss_keys = ["binary_loss_type", "binary_pos_weight", "focal_gamma", "focal_alpha"]
+    for l_key in optional_loss_keys:
+        if l_key in cfg or l_key in ck_cfg:
+            cfg_val = cfg.get(l_key)
+            ck_val = ck_cfg.get(l_key)
+            if cfg_val != ck_val:
+                raise ValueError(
+                    f"FAIL-CLOSED: Hyperparameter mismatch on resume for '{l_key}': "
+                    f"checkpoint={ck_val} != expected={cfg_val}."
+                )
+
     # 4. Update counters & micro-step consistency
     updates = ck["successful_updates"]
     micro = ck["micro_steps"]
@@ -522,11 +534,23 @@ def main():
         drop_last=False
     )
 
+    model_kwargs = {
+        "revision": cfg["pretrained_revision"],
+        "ctc_weight": cfg["loss_weights"]["ctc"],
+        "binary_weight": cfg["loss_weights"]["binary"],
+    }
+    if "binary_loss_type" in cfg:
+        model_kwargs["binary_loss_type"] = cfg["binary_loss_type"]
+    if "binary_pos_weight" in cfg:
+        model_kwargs["binary_pos_weight"] = cfg["binary_pos_weight"]
+    if "focal_gamma" in cfg:
+        model_kwargs["focal_gamma"] = cfg["focal_gamma"]
+    if "focal_alpha" in cfg:
+        model_kwargs["focal_alpha"] = cfg["focal_alpha"]
+
     model = LangfensWav2Vec2MDD.from_pretrained(
         cfg["pretrained_model"],
-        revision=cfg["pretrained_revision"],
-        ctc_weight=cfg["loss_weights"]["ctc"],
-        binary_weight=cfg["loss_weights"]["binary"]
+        **model_kwargs
     )
     trainable = model.configure_two_head_training()
     expected = {id(p) for m in (model.ctc_head, model.cross_attention_module, model.binary_head) for p in m.parameters()}

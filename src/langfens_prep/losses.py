@@ -25,8 +25,15 @@ class MaskedBCEWithLogitsLoss(nn.Module):
         super().__init__()
         assert reduction in ("none", "mean", "sum"), f"Invalid reduction: {reduction}"
         self.ignore_index = ignore_index
-        self.pos_weight = pos_weight
         self.reduction = reduction
+        if pos_weight is not None:
+            if not isinstance(pos_weight, torch.Tensor):
+                pos_weight = torch.tensor([pos_weight], dtype=torch.float32)
+            elif pos_weight.dim() == 0:
+                pos_weight = pos_weight.unsqueeze(0)
+            self.register_buffer("pos_weight", pos_weight)
+        else:
+            self.pos_weight = None
 
     def forward(self, logits: torch.Tensor, targets: torch.Tensor) -> torch.Tensor:
         mask = (targets != self.ignore_index)
@@ -65,6 +72,84 @@ class MaskedBCEWithLogitsLoss(nn.Module):
             pos_weight=self.pos_weight,
             reduction=self.reduction
         )
+
+class MaskedFocalBCEWithLogitsLoss(nn.Module):
+    """
+    Focal Binary Cross-Entropy with Logits loss that explicitly ignores positions where
+    target == ignore_index (default: -100).
+    
+    Formulation (Lin et al., RetinaNet):
+        FL(p_t) = -alpha_t * (1 - p_t)^gamma * log(p_t)
+    where:
+        p = sigmoid(z)
+        p_t = y * p + (1 - y) * (1 - p)
+        alpha_t = y * alpha + (1 - y) * (1 - alpha)
+        modulating_factor = (1 - p_t)^gamma
+        loss = alpha_t * modulating_factor * BCEWithLogitsLoss(z, y)
+    
+    Hyperparameters (Arm 2A):
+        gamma: Focusing parameter (default: 2.0). Downweights easy-to-classify examples.
+        alpha: Balancing parameter for positive/error class (default: 0.75).
+    """
+    def __init__(
+        self,
+        ignore_index: int = -100,
+        gamma: float = 2.0,
+        alpha: float = 0.75,
+        reduction: str = "mean"
+    ):
+        super().__init__()
+        assert reduction in ("none", "mean", "sum"), f"Invalid reduction: {reduction}"
+        if gamma < 0.0:
+            raise ValueError(f"gamma must be non-negative, got {gamma}")
+        if not (0.0 <= alpha <= 1.0):
+            raise ValueError(f"alpha must be in [0, 1], got {alpha}")
+        self.ignore_index = ignore_index
+        self.gamma = float(gamma)
+        self.alpha = float(alpha)
+        self.reduction = reduction
+
+    def forward(self, logits: torch.Tensor, targets: torch.Tensor) -> torch.Tensor:
+        mask = (targets != self.ignore_index)
+        if not mask.any():
+            if self.reduction == "none":
+                return torch.zeros_like(logits)
+            # Retain autograd graph connection to logits while producing 0.0 loss
+            return (logits * 0.0).sum()
+
+        valid_targets = targets[mask].float()
+        
+        # Verify valid labels are exclusively in {0.0, 1.0}
+        is_binary = ((valid_targets == 0.0) | (valid_targets == 1.0))
+        if not is_binary.all():
+            invalid_vals = valid_targets[~is_binary]
+            raise ValueError(
+                f"Binary MDD targets contain invalid values outside {{0, 1}}: {invalid_vals[:5].tolist()}"
+            )
+            
+        valid_logits = logits[mask]
+        
+        # Numerically stable focal loss via binary_cross_entropy_with_logits
+        bce = F.binary_cross_entropy_with_logits(
+            valid_logits,
+            valid_targets,
+            reduction="none"
+        )
+        probs = torch.sigmoid(valid_logits)
+        p_t = valid_targets * probs + (1.0 - valid_targets) * (1.0 - probs)
+        alpha_t = valid_targets * self.alpha + (1.0 - valid_targets) * (1.0 - self.alpha)
+        modulating_factor = (1.0 - p_t).clamp(min=0.0) ** self.gamma
+        focal_loss = alpha_t * modulating_factor * bce
+        
+        if self.reduction == "none":
+            loss_full = torch.zeros_like(logits)
+            loss_full[mask] = focal_loss
+            return loss_full
+        elif self.reduction == "mean":
+            return focal_loss.mean()
+        elif self.reduction == "sum":
+            return focal_loss.sum()
+
 
 class MaskedCrossEntropyLoss(nn.Module):
     """

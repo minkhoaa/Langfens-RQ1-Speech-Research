@@ -5,7 +5,7 @@ Executes complete out-of-fold validation replay across Folds 1, 2, 3, and 4
 under Protocol O (matched & mismatched acoustic controls) and Protocol Z (zero-oracle G2P).
 
 Guarantees:
-1. Strict Validation-Only: Only validation partitions (300 utts per fold, 1,200 utts total) are accessed.
+1. Strict Validation-Only: Only validation partitions (300 utts for Folds 1, 3, 4; 299 utts for Fold 2; 1,199 utts total) are accessed.
 2. Zero Test Access: Active test partitions are strictly excluded and never staged, read, or evaluated.
 3. Dual Checkpoint Accounting: Evaluates both primary fixed-budget (3,600 updates / Epoch 6)
    and validation-selected (best.pt) checkpoints.
@@ -925,6 +925,10 @@ def main():
     for f in [1, 2, 3, 4]:
         clean_best_results[f"fold_{f}"] = {k: v for k, v in best_results[f].items() if k not in ["raw_predictions", "per_utterance"]}
 
+    all_utterances_records = []
+    for f in [1, 2, 3, 4]:
+        all_utterances_records.extend(fixed_budget_results[f]["per_utterance"])
+
     full_report = {
         "metadata": {
             "title": "LANGFENS RQ1-TRN-03A Four-Fold Cross-Validation Scientific Report",
@@ -938,7 +942,7 @@ def main():
             "evaluator_source_commit": "618e86d",
             "evaluation_split": "val",
             "test_split_access": "STRICTLY_PROHIBITED_AND_VERIFIED_ZERO_ACCESS",
-            "total_out_of_fold_validation_utterances": 1200,
+            "total_out_of_fold_validation_utterances": len(all_utterances_records),
             "total_out_of_fold_validation_tokens": 39576,
             "total_out_of_fold_validation_errors": 4213,
             "macro_validation_prevalence": macro_prev["mean"],
@@ -1025,10 +1029,8 @@ def main():
         json.dump(full_report, f, indent=2)
     print(f"[EXPORT] Saved comprehensive JSON report to: {json_report_path}")
 
-    # 4. Export full paired prediction records for all 1,200 utterances (Task D / Step 14 Deliverable)
-    all_utterances_records = []
-    for f in [1, 2, 3, 4]:
-        all_utterances_records.extend(fixed_budget_results[f]["per_utterance"])
+    # 4. Export full paired prediction records for all 1,199 utterances (Task D / Step 14 Deliverable)
+    # (all_utterances_records populated above)
 
     pred_records = {
         "metadata": {

@@ -11,7 +11,7 @@
     "evaluator_source_commit": "618e86d",
     "evaluation_split": "val",
     "test_split_access": "STRICTLY_PROHIBITED_AND_VERIFIED_ZERO_ACCESS",
-    "total_out_of_fold_validation_utterances": 1200,
+    "total_out_of_fold_validation_utterances": 1199,
     "total_out_of_fold_validation_tokens": 39576,
     "total_out_of_fold_validation_errors": 4213,
     "macro_validation_prevalence": 0.10643,

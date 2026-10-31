@@ -22,6 +22,7 @@ from transformers import Wav2Vec2Model, Wav2Vec2Config
 
 from langfens_prep.losses import (
     MaskedBCEWithLogitsLoss,
+    MaskedFocalBCEWithLogitsLoss,
     MaskedCrossEntropyLoss,
     validate_ctc_contract,
     CTCContractError
@@ -162,7 +163,11 @@ class LangfensWav2Vec2MDD(nn.Module):
         max_canonical_len: int = 128,
         ctc_zero_infinity_policy: str = "raise",  # "raise" (strict runtime contract) or "warn_and_zero"
         diagnosis_mode: str = "standard",  # "standard", "audio_only", "gated_residual", "ctc_guided"
-        binary_prompt_dropout_p: float = 0.0
+        binary_prompt_dropout_p: float = 0.0,
+        binary_loss_type: str = "bce",  # "bce" or "focal"
+        binary_pos_weight: Optional[float] = None,
+        focal_gamma: float = 2.0,
+        focal_alpha: float = 0.75
     ):
         super().__init__()
         valid_diag_modes = ("standard", "audio_only", "gated_residual", "ctc_guided")
@@ -294,7 +299,23 @@ class LangfensWav2Vec2MDD(nn.Module):
         self.ctc_contract_violations = 0
         self.last_ctc_violation_details: Optional[str] = None
         self.ctc_loss_fn = nn.CTCLoss(blank=0, zero_infinity=False)
-        self.binary_loss_fn = MaskedBCEWithLogitsLoss(ignore_index=-100)
+        self.binary_loss_type = binary_loss_type
+        self.binary_pos_weight = binary_pos_weight
+        self.focal_gamma = focal_gamma
+        self.focal_alpha = focal_alpha
+
+        if binary_loss_type == "bce":
+            pos_weight_tensor = torch.tensor([binary_pos_weight], dtype=torch.float32) if binary_pos_weight is not None else None
+            self.binary_loss_fn = MaskedBCEWithLogitsLoss(ignore_index=-100, pos_weight=pos_weight_tensor)
+        elif binary_loss_type == "focal":
+            self.binary_loss_fn = MaskedFocalBCEWithLogitsLoss(
+                ignore_index=-100,
+                gamma=focal_gamma,
+                alpha=focal_alpha
+            )
+        else:
+            raise ValueError(f"Unknown binary_loss_type: '{binary_loss_type}'. Must be 'bce' or 'focal'.")
+
         self.diagnosis_loss_fn = MaskedCrossEntropyLoss(ignore_index=-100)
 
     @classmethod

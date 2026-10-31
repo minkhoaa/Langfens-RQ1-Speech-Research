@@ -4,9 +4,9 @@
 
 **Recorded at:** 2026-11-01T03:00:00+07:00
 
-**Evidence source:** Standalone CUDA evaluation replay (`audit_scripts/evaluate_cross_fold_validation.py`), `manifests/RQ1-TRN-03A/evaluation/FOUR_FOLD_VALIDATION_REPORT.json` (SHA-256 `c1909154...`), `manifests/RQ1-TRN-03A/evaluation/FOUR_FOLD_PAIRED_PREDICTION_RECORDS.json.gz` (SHA-256 `355b6e23...`), `manifests/RQ1-TRN-03A/evaluation/four_fold_metrics_summary.csv` (SHA-256 `e6e71ede...`), `manifests/RQ1-TRN-03A/evaluation/eight_speakers_validation_breakdown.csv` (SHA-256 `88c0ae85...`), private Hugging Face model repository `minkhoaa/langfens-rq1-cross-fold-checkpoints`.
+**Evidence source:** Standalone CUDA evaluation replay (`audit_scripts/evaluate_cross_fold_validation.py`), `manifests/RQ1-TRN-03A/evaluation/FOUR_FOLD_VALIDATION_REPORT.json` (SHA-256 `43f7de4e...`), `manifests/RQ1-TRN-03A/evaluation/FOUR_FOLD_PAIRED_PREDICTION_RECORDS.json.gz` (SHA-256 `355b6e23...`), `manifests/RQ1-TRN-03A/evaluation/four_fold_metrics_summary.csv` (SHA-256 `e6e71ede...`), `manifests/RQ1-TRN-03A/evaluation/eight_speakers_validation_breakdown.csv` (SHA-256 `88c0ae85...`), private Hugging Face model repository `minkhoaa/langfens-rq1-cross-fold-checkpoints`.
 
-**Evidence level:** `INDEPENDENTLY_VERIFIED` (Automated Regression Test Suite, 298/298 passed, Cryptographic Readback)
+**Evidence level:** `INDEPENDENTLY_VERIFIED` (Automated Regression Test Suite, 300/300 passed, Cryptographic Readback)
 
 **Branch:** `review/rq1-trn-03a-cross-fold-planning`
 
@@ -91,7 +91,8 @@ With the 4-fold validation baseline rigorously established, Phase **RQ1-TRN-03B*
 
 ### Experiment Arm 1: Cross-Attention Acoustic Regularizers (Widening $\Delta_{\text{gap}}$)
 - **Hypothesis:** Forcing the cross-attention MDD head to attend more heavily to the Wav2Vec2 acoustic embeddings will widen the acoustic reliance gap ($\Delta_{\text{gap}}$) and reduce prompt-memorization bias.
-- **Intervention 1A (Acoustic Feature Dropout):** Apply targeted dropout to the cross-attention key/value projections from canonical text, forcing the query to rely on audio frame representations.
+- **Architectural Mapping Clarification:** In `CanonicalAcousticCrossAttention`, queries are derived from canonical prompt text phonemes ($Q$), while keys ($K$) and values ($V$) are derived from acoustic frames from the Wav2Vec2 backbone.
+- **Intervention 1A (Acoustic Feature Key/Value Dropout):** Apply targeted dropout to the acoustic frame key/value projections, preventing cross-attention from over-relying on spurious frame artifacts, or drop out prompt queries to force acoustic reliance.
 - **Intervention 1B (Acoustic Query Gating):** Introduce a learnable gating scalar $\alpha \in [0, 1]$ conditioned on acoustic frame energy/entropy, modulating prompt cross-attention.
 - **Evaluation Criteria:** $\Delta_{\text{gap}} > 0.025$ macro across all 4 folds without degrading CTC PER.
 
@@ -102,7 +103,7 @@ With the 4-fold validation baseline rigorously established, Phase **RQ1-TRN-03B*
 - **Evaluation Criteria:** Macro AP $> 0.32$ and $\text{FNR} < 40\%$ at $\text{FPR} \le 15\%$.
 
 ### Experiment Arm 3: Multi-Task Substitution Diagnosis Head Rehabilitation
-- **Hypothesis:** Re-enabling the 40-class substitution diagnosis head with a lower auxiliary loss weight ($\lambda_{\text{diag}} = 0.2$) will provide fine-grained pedagogical feedback (e.g. "You substituted /TH/ with /S/") without causing CTC blank collapse.
+- **Hypothesis:** Re-enabling the 39-class substitution diagnosis head (evaluating over 39 standard ARPAbet phonemes, distinct from the 40-class CTC head which includes 1 blank) with a lower auxiliary loss weight ($\lambda_{\text{diag}} = 0.2$) will provide fine-grained pedagogical feedback (e.g. "You substituted /TH/ with /S/") without causing CTC blank collapse.
 - **Design:** Multi-task objective $\mathcal{L} = \mathcal{L}_{\text{ctc}} + \mathcal{L}_{\text{binary}} + \lambda_{\text{diag}} \mathcal{L}_{\text{diag}}$.
 - **Guardrail:** Enforce fail-closed training guardrails rejecting any run where validation CTC blank fraction exceeds $0.85$ or CTC PER exceeds $26.0\%$.
 
@@ -116,7 +117,7 @@ With the 4-fold validation baseline rigorously established, Phase **RQ1-TRN-03B*
 
 - **Regression Test Suite:** `PYTHONPATH=. .venv-cuda/bin/pytest tests/test_rq1_trn_03a_four_fold_closure.py`
   - Tests verify: Fold 4 cryptographic digests, post-training classification, config parity, speaker disjointness, zero test leakage, summary CSV row counts, 8-speaker census, macro prevalence computation, and CI bounds.
-  - Result: **6 passed in 4.13s**.
+  - Result: **8 passed in 3.48s**.
 - **Full Test Suite:** `PYTHONPATH=. .venv-cuda/bin/pytest tests/`
-  - Result: **298 passed, 1 skipped, 1 warning in 161.78s** (100% green).
+  - Result: **300 passed, 1 skipped, 1 warning in 158.92s** (100% green).
 - **Phase Gate Decision:** **`PASS: PHASE RQ1-TRN-03A OFFICIALLY CLOSED; READY FOR RQ1-TRN-03B`**.

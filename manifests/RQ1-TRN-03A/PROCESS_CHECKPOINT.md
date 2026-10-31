@@ -109,17 +109,28 @@ Design and specify a mathematically rigorous, leak-free 4-fold cross-validation 
    - Assigned unique, collision-free smoke slug `minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2-smoke` and matching title `LANGFENS RQ1 Fold 2 Baseline R T4x2 (Smoke)`, fully preserving preflight (`minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2-preflight`) and official training (`minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2`) kernel packages.
    - Verified all 4 operational invariants: pinned immutable base commit `cc56b82ca1a9a6ceeca85929e07db4cac8537348`, 1-epoch execution cap (`--execution-cap-epochs 1`), isolated run ID `fold2_smoke_1epoch` (`/kaggle/working/checkpoints/fold2/fold2_smoke_1epoch/` and remote prefix `fold2/fold2_smoke_1epoch/`), and private dataset `minkhoaa/langfens-rq1-fold2-staging`.
    - Added automated regression tests proving 3-way package isolation and `AGENTS.md` policy compliance (285 tests passed, 1 skipped).
+17. **Completed Step 15 RQ1-TRN-03B Experimental Design & Readiness:**
+   - Closed all 5 residual Step 14 issues: verified exact 1,199 validation utterances across 4 folds; reconciled evaluator introducing commit (`618e86d`) and runtime SHA; updated stale test counts; corrected cross-attention terminology (Query = Prompt Phonemes, Key/Value = Acoustic Frames); disambiguated vocabulary cardinality (39-class diagnosis vs 40-class CTC).
+   - Preserved all Baseline R benchmarks, checkpoints, source hashes, and strict per-fold test isolation.
+   - Scientifically prioritized loss interventions (Arm 2A Focal BCE and Arm 2B Class-Weighted BCE) over architectural changes, directly targeting the 10.64% class imbalance while preserving model parameterization bit-for-bit.
+   - Implemented `MaskedFocalBCEWithLogitsLoss` ($\gamma=2.0, \alpha=0.75$) and buffer registration for `pos_weight=8.40` in `src/langfens_prep/losses.py`, updating `LangfensWav2Vec2MDD` and trainer resume validation without modifying Baseline R defaults.
+   - Authored immutable, bit-identical configs for pilot and 4-fold cross-validation (`configs/rq1_trn_03b_*.yaml`).
+   - Defined primary 3,600-update fixed-budget endpoint, validation-best secondary endpoint, paired fold comparisons, and pedagogical operating points ($\text{FNR}_{@15\%\text{FPR}}$).
+   - Formally disclosed validation reuse and model-selection bias, certifying that validation comparisons cannot claim independent statistical confirmation (reserved for Phase RQ1-EVAL-01).
+   - Designed 2-stage execution flow (Fold 1 Pilot ~1.7 GPU hours, full 4-fold ~2.5 GPU hours; total ~4.2 GPU hours < 14% of weekly Kaggle quota) structured behind 4 explicit authorization gates (Gate A passed; Gates B, C, D pending operator approval).
+   - Implemented 10 new regression tests in `tests/test_rq1_trn_03b_experimental_design.py` (310 passed total, 100% green).
 
 ---
 
 ## 4. Results & Verification
 - **Split Manifest Invariance:** Verified `l2arctic_4fold_splits.json` SHA-256 `7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b`.
 - **Automated Split Suite:** `python3 audit_scripts/validate_splits.py` passed all 4 core checks with 0 errors.
-- **Automated Regression Suite:** All 285 tests pass (`PYTHONPATH=. .venv-cuda/bin/pytest tests/`):
-  - 298 passed, 1 skipped, 1 warning in 161.78s (100% green).
+- **Automated Regression Suite:** All 310 tests pass (`PYTHONPATH=. .venv-cuda/bin/pytest tests/`):
+  - 310 passed, 1 skipped, 1 warning in 166.52s (100% green).
 - **Deployment & Closure Test Suites:**
   - `tests/test_rq1_trn_03a_kaggle_deployment.py` passes 32/32 tests (100% green).
-  - `tests/test_rq1_trn_03a_four_fold_closure.py` passes 6/6 tests (100% green).
+  - `tests/test_rq1_trn_03a_four_fold_closure.py` passes 8/8 tests (100% green).
+  - `tests/test_rq1_trn_03b_experimental_design.py` passes 10/10 tests (100% green).
 - **Integration Test Suite (`test_rq1_trn_03a_fold_readiness_integration.py`):**
   - `test_all_fold_configs_parity`: PASS (all 4 configs verified bit-identical).
   - `test_fold_package_isolation_and_contents`: PASS (all packages verified to contain exactly 18 authorized speakers and 0 test speakers).
@@ -151,7 +162,8 @@ Design and specify a mathematically rigorous, leak-free 4-fold cross-validation 
 - **Step Checkpoint 12:** `manifests/RQ1-TRN-03A/checkpoints/12-official-fold4-baseline-r-training-closure.md`
 - **Step Checkpoint 13:** `manifests/RQ1-TRN-03A/checkpoints/13-four-fold-validation-synthesis-and-closure.md`
 - **Step Checkpoint 14:** `manifests/RQ1-TRN-03A/checkpoints/14-scientific-errata-and-model-improvement-readiness.md`
-- **Four-Fold Evaluation Synthesis Report:** `manifests/RQ1-TRN-03A/evaluation/FOUR_FOLD_VALIDATION_REPORT.json`
+- **Step Checkpoint 15:** `manifests/RQ1-TRN-03A/checkpoints/15-rq1-trn-03b-experimental-design-and-readiness.md`
+- **Four-Fold Evaluation Synthesis Report:** `manifests/RQ1-TRN-03A/evaluation/FOUR_FOLD_VALIDATION_REPORT.json` (SHA-256 `43f7de4e...`)
 - **Complete Prediction Records Archive:** `manifests/RQ1-TRN-03A/evaluation/FOUR_FOLD_PAIRED_PREDICTION_RECORDS.json.gz`
 - **Four-Fold Summary CSV:** `manifests/RQ1-TRN-03A/evaluation/four_fold_metrics_summary.csv`
 - **Eight-Speaker Validation CSV:** `manifests/RQ1-TRN-03A/evaluation/eight_speakers_validation_breakdown.csv`
@@ -177,6 +189,11 @@ Design and specify a mathematically rigorous, leak-free 4-fold cross-validation 
   - `tests/test_rq1_trn_03a_fold_readiness_integration.py`
   - `tests/test_rq1_trn_03a_kaggle_deployment.py`
   - `tests/test_rq1_trn_03a_four_fold_closure.py`
+  - `tests/test_rq1_trn_03b_experimental_design.py`
+- **RQ1-TRN-03B Pinned Configurations:**
+  - Pilot: `configs/rq1_trn_03b_pilot_arm2a_focal.yaml`, `configs/rq1_trn_03b_pilot_arm2b_weighted.yaml`
+  - Full 4-Fold Arm 2A: `configs/rq1_trn_03b_arm2a_fold{1,2,3,4}.yaml`
+  - Full 4-Fold Arm 2B: `configs/rq1_trn_03b_arm2b_fold{1,2,3,4}.yaml`
 - **Policy Corrections:** `AGENTS.md` (Permanent Kaggle workflow, per-fold test sealing rule, baseline parity contract)
 - **Updated Global Registry:** `docs/process-checkpoints/INDEX.md`
 
@@ -184,12 +201,11 @@ Design and specify a mathematically rigorous, leak-free 4-fold cross-validation 
 
 ## 6. Restart / Recovery Instructions
 - **Active Branch:** `review/rq1-trn-03a-cross-fold-planning`
-- **Current State:** Steps 12, 13, and 14 completed successfully (`COMPLETED; GATE_PASSED_FOR_PHASE_CLOSURE`).
-  - Fold 4 training executed and verified on Hugging Face (`minkhoaa/langfens-rq1-cross-fold-checkpoints`): fixed budget primary locked at Epoch 6 / 3,600 updates (`fixed_budget_checkpoint.pt`, SHA-256 `c502271f...`), peak at Epoch 3 (`best.pt`, AP 0.3154, SHA-256 `3daa8ca0...`), endpoint at Epoch 8 (`last.pt`, SHA-256 `894a1248...`), 0 skipped AMP updates, classification `COMPLETED_3600_UPDATES`.
-  - Four-fold out-of-fold validation replay completed across all 39,576 tokens / 8 validation speakers under Protocol O and Protocol Z on CUDA.
-  - Primary fixed-budget performance: Macro AP 0.279207 +/- 0.026467 (95% CI [0.194990, 0.363424]), Micro AP 0.272580, Macro Acoustic Gap +0.013064 (95% CI [+0.000344, +0.025784]), Macro CTC PER 23.90% +/- 0.31%, Protocol Z Aligned AP 0.277553 (99.64% coverage).
-  - Scientific errata audit completed (Step 14): evaluator provenance certified (commit 618e86d), best-checkpoint zero-crossing CI reconciled ([-0.000530, +0.022978]), macro prevalence corrected (10.6430%), token-level predictions archived (39,576 tokens, 4,213 errors, SHA-256 355b6e23...) and mirrored to Hugging Face.
-  - Phase RQ1-TRN-03A is officially closed. Scientific proposal established for RQ1-TRN-03B. All 300 tests passing.
+- **Current State:** Step 15 completed successfully (`COMPLETED; GATE_A_PASSED_DESIGN_READY`).
+  - All 5 Step 14 residual errata closed and verified.
+  - Baseline R benchmarks, checkpoints, hashes, and per-fold test isolation preserved intact.
+  - Phase RQ1-TRN-03B experimental design, mathematical loss contracts (`MaskedFocalBCEWithLogitsLoss`, class-weighted BCE), and pinned configurations complete.
+  - Gate A passed (local static design and unit testing). Gate B (Remote-GPU Pilot on Fold 1) requires explicit operator authorization before execution. All 310 regression tests passing.
 
 ---
 
