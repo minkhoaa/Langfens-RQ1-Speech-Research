@@ -1,8 +1,8 @@
-# LANGFENS — RQ1-TRN-03A / Cross-Fold Speaker-Independent Generalization Planning (Readiness Verified)
+# LANGFENS — RQ1-TRN-03A / Cross-Fold Speaker-Independent Generalization Planning (Phase Completed)
 
-**Status:** `READINESS_VERIFIED; GATE_PENDING_OPERATOR_AUTHORIZATION`
+**Status:** `COMPLETED; GATE_PASSED_FOR_PHASE_CLOSURE`
 
-**Recorded at:** 2026-10-29T17:45:00+07:00
+**Recorded at:** 2026-10-31T22:45:00+07:00
 
 **Evidence source:** Commits `7a3b9ecf5e9efedc480b477f531ebe9318ae3415`, `05796e25b1f745ddb7772e0d5bda2edd5d0a7f1c`, `configs/rq1_trn_02a_fold1.yaml`, `audit_scripts/train_fold1_ctc_binary.py`, `manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json`
 
@@ -116,8 +116,10 @@ Design and specify a mathematically rigorous, leak-free 4-fold cross-validation 
 - **Split Manifest Invariance:** Verified `l2arctic_4fold_splits.json` SHA-256 `7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b`.
 - **Automated Split Suite:** `python3 audit_scripts/validate_splits.py` passed all 4 core checks with 0 errors.
 - **Automated Regression Suite:** All 285 tests pass (`PYTHONPATH=. .venv-cuda/bin/pytest tests/`):
-  - 285 passed, 1 skipped, 1 warning in 172.19s (100% green).
-- **Deployment Test Suite:** `tests/test_rq1_trn_03a_kaggle_deployment.py` passes 32/32 tests (100% green).
+  - 298 passed, 1 skipped, 1 warning in 161.78s (100% green).
+- **Deployment & Closure Test Suites:**
+  - `tests/test_rq1_trn_03a_kaggle_deployment.py` passes 32/32 tests (100% green).
+  - `tests/test_rq1_trn_03a_four_fold_closure.py` passes 6/6 tests (100% green).
 - **Integration Test Suite (`test_rq1_trn_03a_fold_readiness_integration.py`):**
   - `test_all_fold_configs_parity`: PASS (all 4 configs verified bit-identical).
   - `test_fold_package_isolation_and_contents`: PASS (all packages verified to contain exactly 18 authorized speakers and 0 test speakers).
@@ -146,6 +148,12 @@ Design and specify a mathematically rigorous, leak-free 4-fold cross-validation 
 - **Step Checkpoint 09:** `manifests/RQ1-TRN-03A/checkpoints/09-official-fold2-baseline-r-training-launch-gate.md`
 - **Step Checkpoint 10:** `manifests/RQ1-TRN-03A/checkpoints/10-fold3-staging-and-kaggle-deployment.md`
 - **Step Checkpoint 11:** `manifests/RQ1-TRN-03A/checkpoints/11-official-fold3-baseline-r-training-and-fold4-staging.md`
+- **Step Checkpoint 12:** `manifests/RQ1-TRN-03A/checkpoints/12-official-fold4-baseline-r-training-closure.md`
+- **Step Checkpoint 13:** `manifests/RQ1-TRN-03A/checkpoints/13-four-fold-validation-synthesis-and-closure.md`
+- **Four-Fold Evaluation Synthesis Report:** `manifests/RQ1-TRN-03A/evaluation/FOUR_FOLD_VALIDATION_REPORT.json`
+- **Four-Fold Summary CSV:** `manifests/RQ1-TRN-03A/evaluation/four_fold_metrics_summary.csv`
+- **Eight-Speaker Validation CSV:** `manifests/RQ1-TRN-03A/evaluation/eight_speakers_validation_breakdown.csv`
+- **Cross-Fold Evaluation Harness:** `audit_scripts/evaluate_cross_fold_validation.py`
 - **Kaggle Fold 4 Staging Package:** `deploy/kaggle_fold4_staging/` (`dataset-metadata.json`)
 - **Kaggle Fold 4 Preflight Package:** `deploy/kaggle_fold4_preflight/` (`kernel-metadata.json`, `dataset-metadata.json`, `kaggle_preflight.ipynb`)
 - **Kaggle Fold 4 Smoke Package:** `deploy/kaggle_fold4_smoke/` (`kernel-metadata.json`, `dataset-metadata.json`, `kaggle_smoke.ipynb`)
@@ -166,6 +174,7 @@ Design and specify a mathematically rigorous, leak-free 4-fold cross-validation 
   - `tests/test_rq1_trn_03a_protocol_parity_and_isolation.py`
   - `tests/test_rq1_trn_03a_fold_readiness_integration.py`
   - `tests/test_rq1_trn_03a_kaggle_deployment.py`
+  - `tests/test_rq1_trn_03a_four_fold_closure.py`
 - **Policy Corrections:** `AGENTS.md` (Permanent Kaggle workflow, per-fold test sealing rule, baseline parity contract)
 - **Updated Global Registry:** `docs/process-checkpoints/INDEX.md`
 
@@ -173,15 +182,16 @@ Design and specify a mathematically rigorous, leak-free 4-fold cross-validation 
 
 ## 6. Restart / Recovery Instructions
 - **Active Branch:** `review/rq1-trn-03a-cross-fold-planning`
-- **Current State:** Step 11 (Fold 3 Official Baseline R Training Closure & Fold 4 Staging) successfully completed (`COMPLETED; GATE_PENDING_OPERATOR_AUTHORIZATION`). Fold 3 training executed and cryptographically verified on private Hugging Face repo `minkhoaa/langfens-rq1-cross-fold-checkpoints` (fixed budget primary locked at Epoch 6 / 3,600 updates, SHA-256 `bbee9dd39280...`, Val Binary AP 0.3075, Val CTC PER 24.80%; peak at Epoch 6; last at Epoch 10, SHA-256 `804cbfa0d032...`, Val CTC PER 22.97%; post classification `COMPLETED_3600_UPDATES`). Descriptive cross-fold comparison completed. Fold 4 pinned config validated, authorized train/val archive (`653bdad079ee...`) audited with zero active test leakage (18 train/val spk, 6 test spk strictly excluded), staging metadata and 3 dedicated kernel packages (`preflight/`, `smoke/`, `train/`) generated with 100% parity to Fold 3. All 292 regression tests green.
-- **Pending Operator Authorization:** Stage 1 dataset creation (`kaggle datasets create -p deploy/kaggle_fold4_staging/`), preflight push, smoke run, and official training run.
+- **Current State:** Steps 12 & 13 completed successfully (`COMPLETED; GATE_PASSED_FOR_PHASE_CLOSURE`).
+  - Fold 4 training executed and verified on Hugging Face (`minkhoaa/langfens-rq1-cross-fold-checkpoints`): fixed budget primary locked at Epoch 6 / 3,600 updates (`fixed_budget_checkpoint.pt`, SHA-256 `c502271f...`), peak at Epoch 3 (`best.pt`, AP 0.3154, SHA-256 `3daa8ca0...`), endpoint at Epoch 8 (`last.pt`, SHA-256 `894a1248...`), 0 skipped AMP updates, classification `COMPLETED_3600_UPDATES`.
+  - Four-fold out-of-fold validation replay completed across all 39,576 tokens / 8 validation speakers under Protocol O and Protocol Z.
+  - Primary fixed-budget performance: Macro AP 0.279214 +/- 0.026468 (95% CI [0.194991, 0.363436]), Micro AP 0.272582, Macro Acoustic Gap +0.013060 (95% CI [+0.000299, +0.025820]), Macro CTC PER 23.90% +/- 0.31%, Protocol Z Aligned AP 0.277563 (99.64% coverage).
+  - All 298 regression tests passing (1 skipped locally per `AGENTS.md` GPU prohibition). Phase RQ1-TRN-03A is officially closed.
 
 ---
 
 ## 7. Remaining Work & Safety Boundaries
-- **Prohibited Actions:**
-  - DO NOT run model training or backward passes on local CPU/GPU (`AGENTS.md`).
-  - DO NOT access, unseal, or stage test split files for any fold.
-  - DO NOT warm-start Folds 2, 3, or 4 from Fold 1 `best.pt`.
-  - DO NOT alter the frozen model architecture or loss contracts.
-- **Pending Approvals:** Operator authorization packet detailed in Section 10 of `CROSS_FOLD_RESEARCH_PLAN.md`.
+- **Phase Status:** Phase RQ1-TRN-03A is officially CLOSED.
+- **Safety Boundaries:**
+  - DO NOT access, unseal, or evaluate active test split files ($S_{\text{test}}^{(1..4)}$) for any fold.
+  - Execution strictly terminates after validation analysis. DO NOT proceed to RQ1-EVAL-01 without explicit operator authorization.
