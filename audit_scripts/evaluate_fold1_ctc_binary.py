@@ -325,14 +325,28 @@ def build_eval_model(
     pretrained_revision: str,
     state_dict: Dict[str, torch.Tensor],
     ctc_weight: float = 1.0,
-    binary_weight: float = 1.0
+    binary_weight: float = 1.0,
+    **kwargs
 ) -> LangfensWav2Vec2MDD:
     """Instantiates the exact Langfens model, loads production weights strictly, and sets to eval mode."""
+    binary_pos_weight = kwargs.get("binary_pos_weight")
+    if binary_pos_weight is None and "binary_loss_fn.pos_weight" in state_dict:
+        binary_pos_weight = float(state_dict["binary_loss_fn.pos_weight"].item())
+
+    model_kwargs = {
+        "revision": pretrained_revision,
+        "ctc_weight": ctc_weight,
+        "binary_weight": binary_weight,
+    }
+    if binary_pos_weight is not None:
+        model_kwargs["binary_pos_weight"] = binary_pos_weight
+    for k, v in kwargs.items():
+        if k != "binary_pos_weight":
+            model_kwargs[k] = v
+
     model = LangfensWav2Vec2MDD.from_pretrained(
         pretrained_model,
-        revision=pretrained_revision,
-        ctc_weight=ctc_weight,
-        binary_weight=binary_weight
+        **model_kwargs
     )
     missing, unexpected = model.load_state_dict(state_dict, strict=True)
     if missing or unexpected:

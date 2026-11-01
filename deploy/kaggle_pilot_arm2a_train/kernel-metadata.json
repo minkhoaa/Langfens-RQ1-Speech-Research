@@ -1,6 +1,6 @@
 {
   "id": "minkhoaa/langfens-rq1-pilot-arm2a-focal-t4x2",
-  "title": "LANGFENS RQ1 Pilot Arm 2A Focal T4x2",
+  "title": "LANGFENS RQ1 Pilot Arm2A Focal T4x2",
   "code_file": "kaggle_train.ipynb",
   "language": "python",
   "kernel_type": "notebook",

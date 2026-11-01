@@ -1,6 +1,6 @@
 {
   "id": "minkhoaa/langfens-rq1-pilot-arm2b-weighted-t4x2-smoke",
-  "title": "LANGFENS RQ1 Pilot Arm 2B Weighted T4x2 (Smoke)",
+  "title": "LANGFENS RQ1 Pilot Arm2B Weighted T4x2 Smoke",
   "code_file": "kaggle_smoke.ipynb",
   "language": "python",
   "kernel_type": "notebook",
