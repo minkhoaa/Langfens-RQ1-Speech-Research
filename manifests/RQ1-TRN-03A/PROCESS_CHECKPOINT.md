@@ -221,7 +221,8 @@ Design and specify a mathematically rigorous, leak-free 4-fold cross-validation 
   - `tests/test_rq1_trn_03b_kaggle_pilot_deployment.py`
   - `tests/test_rq1_trn_03b_arm2b_forensics.py`
   - `tests/test_rq1_trn_03b_step18_scientific_correction.py`
-- **Step 18 Evaluation Deliverables:**
+  - `tests/test_rq1_trn_03b_step19_gate_c_closure.py`
+- **Step 18/19 Evaluation Deliverables:**
   - `manifests/RQ1-TRN-03A/evaluation/PILOT_FOLD1_COMPARATIVE_REPORT.json`
   - `manifests/RQ1-TRN-03A/evaluation/PILOT_FOLD1_PAIRED_PREDICTION_RECORDS.json.gz`
   - `manifests/RQ1-TRN-03A/evaluation/pilot_fold1_endpoints_summary.csv`
@@ -245,21 +246,21 @@ Design and specify a mathematically rigorous, leak-free 4-fold cross-validation 
 
 ## 6. Restart / Recovery Instructions
 - **Active Branch:** `review/rq1-trn-03a-cross-fold-planning`
-- **Current State:** Step 18 Scientific Comparison Correction completed (`COMPLETED; SCIENTIFIC_CORRECTIONS_CERTIFIED; GATE_C_RECOMMENDATION_FORMALIZED`).
-  - Bit-for-bit reproduction of Fold 1 validation metrics for Baseline R, Arm 2A Focal, and Arm 2B Weighted.
-  - Computed pedagogical operating points at fixed FPR ceilings (10%, 15%, 20%): Baseline R outperforms both Arm 2A and Arm 2B at 3,600 updates across all three operating points.
-  - Exported complete paired per-token and per-utterance prediction archive `PILOT_FOLD1_PAIRED_PREDICTION_RECORDS.json.gz` (300 utts, 9,956 tokens, 1,157 errors) with SHA-256 provenance for all 5 checkpoints.
-  - Separated ranking quality (ROC-AUC / AP) from calibration shifts (Bayes-optimal logit shift $\approx +2.13$ in Arm 2B), retracting false claim of Arm 2B unviability.
-  - Proved Arm 2A fixed-budget acoustic gap degraded to $+0.009869 < +0.010$, failing Step 15 Criterion 2.
-  - Downgraded Arm 2A Focal from "Authoritative Winner" to "Eligible Exploratory Candidate" due to failure of registered AP elevation target ($-0.008908$ vs $> +0.020$).
-  - Refactored artifact verification tests to fail-closed assertions (no silent skips or unconditional passes).
-  - All 333 repository regression tests passing (100% green).
-  - Formal Gate C recommendation: Option A (STOP Stage 2 for compute efficiency) or Option B (Conditional Exploratory Advancement to Folds 2-4 with Fold 1 deficit disclosure).
+- **Current State:** Step 19 Gate C Scientific Closure completed (`COMPLETED; GATE_C_SCIENTIFICALLY_CLOSED; STAGE_2_HALTED_FOR_COMPUTE_EFFICIENCY`).
+  - Audited bootstrap sign frequencies vs permutation hypothesis test: P_boot(ΔAP > 0) = 5.6% reflects within-Fold-1 utterance variance; two-tailed permutation test p = 0.479 confirms difference is not statistically significant under H0: Δ = 0.
+  - Retracted unsupported claims that Fold 1 bootstrap predicts <6% probability of 4-fold cross-validation success.
+  - Demarcated Fold 1 screening failure from the 4-fold macro acceptance criteria (macro ΔAP > +0.020, gap ≥ +0.010, FNR@15% ≤ 40%), which remain formally unmeasured.
+  - Documented fixed-FPR operating points as validation-derived diagnostic thresholds, not deployment-grade calibrated thresholds.
+  - Audited evaluator provenance: introducing source commit b4b1ee8, runtime execution base 841c1f4, working-tree certified.
+  - Confirmed unrounded predictions in PILOT_FOLD1_PAIRED_PREDICTION_RECORDS.json.gz reproduce report metrics down to < 1e-6.
+  - Replaced speculative causal claims regarding focal loss, overfitting, and 2-update deficits with evidence-qualified descriptions.
+  - All 339 repository regression tests passing (100% green).
+  - Formal Gate C disposition: STOP Stage 2 for compute efficiency; preserve ~2.5 Kaggle GPU hours; delineate post-loss research options (backbone adaptation, prompt query modulation, multi-task diagnosis head).
 
 ---
 
 ## 7. Remaining Work & Safety Boundaries
-- **Phase Status:** Phase RQ1-TRN-03A is officially CLOSED. RQ1-TRN-03B Stage 1 Pilot evaluation complete. Awaiting operator decision at Gate C.
+- **Phase Status:** Phase RQ1-TRN-03A is officially CLOSED. RQ1-TRN-03B Stage 1 Pilot officially CLOSED (Gate C: STOP Stage 2).
 - **Safety Boundaries:**
   - DO NOT access, unseal, or evaluate active test split files ($S_{\text{test}}^{(1..4)}$) for any fold.
   - In RQ1-TRN-03B, all model interventions must be evaluated strictly on the pooled 4-fold validation sets (39,576 tokens).

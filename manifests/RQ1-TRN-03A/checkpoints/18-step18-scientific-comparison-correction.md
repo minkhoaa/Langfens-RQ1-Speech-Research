@@ -201,7 +201,19 @@ The repository regression suite was executed:
 
 ---
 
-## 11. Next Authorized Execution Step & Stop Statement
+## 11. Errata & Statistical Clarification Addendum (Step 19 Reconciliation)
+
+During Step 19 review, five residual statistical and provenance items in this checkpoint were audited and clarified:
+1. **Bootstrap Empirical Tail Frequency vs. Hypothesis Test $p$-value:** The metric cited in Section 4 as "$p$-value of superiority ($p=0.056$)" is an empirical bootstrap sign frequency within Fold 1 ($P_{\text{boot}}(\Delta \text{AP}^* > 0) = 5.6\%$). Under a formal two-tailed paired permutation test ($H_0: \Delta = 0$), the difference is not statistically significant ($p = 0.4790 > 0.05$).
+2. **Prohibition of Cross-Fold Extrapolation:** Fold 1 within-sample utterance variance ($N=300$ utterances across 2 speakers) cannot be extrapolated to predict 4-fold macro cross-validation probabilities across unseen language groups (Arabic, Mandarin, Korean).
+3. **Screening Failure vs. Four-Fold Macro Criteria:** Fold 1 pilot results constitute a preliminary screening failure justifying halting compute; the 4-fold macro criteria themselves remain unmeasured.
+4. **Diagnostic Operating Thresholds:** Fixed-FPR operating points ($\tau_{0.10}, \tau_{0.15}, \tau_{0.20}$) are validation-derived diagnostic thresholds evaluated on the same split, not deployment-grade calibrated thresholds.
+5. **Evaluator Provenance:** Evaluator source code was formally introduced in commit `b4b1ee8` with runtime execution base `841c1f4`.
+6. **Full-Precision Serialization:** Archived prediction scores in `PILOT_FOLD1_PAIRED_PREDICTION_RECORDS.json.gz` were updated to unrounded full-precision floats (SHA-256 `a1750eb2...`), reproducing all reported metrics within $< 1 \times 10^{-6}$.
+
+---
+
+## 12. Next Authorized Execution Step & Stop Statement
 
 In strict compliance with `AGENTS.md` ("Never start training without explicit user authorization. STOP before execution"):
 

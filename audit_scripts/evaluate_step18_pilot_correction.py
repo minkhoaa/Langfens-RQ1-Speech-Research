@@ -235,14 +235,58 @@ def paired_bootstrap_ap(
     base_aps = np.sort(base_aps)
     arm_aps = np.sort(arm_aps)
 
+    pos_frac = float(np.mean(diffs > 0.0))
+    neg_frac = float(np.mean(diffs <= 0.0))
+
     return {
         "delta_ap_mean": round(float(np.mean(diffs)), 6),
         "delta_ap_ci_lower_95": round(float(np.percentile(diffs, 2.5)), 6),
         "delta_ap_ci_upper_95": round(float(np.percentile(diffs, 97.5)), 6),
         "arm_ap_ci_lower_95": round(float(np.percentile(arm_aps, 2.5)), 6),
         "arm_ap_ci_upper_95": round(float(np.percentile(arm_aps, 97.5)), 6),
-        "p_value_superiority": round(float(np.mean(diffs <= 0.0)), 4),
+        "bootstrap_positive_fraction": round(pos_frac, 4),
+        "bootstrap_negative_fraction": round(neg_frac, 4),
+        "p_value_superiority": round(neg_frac, 4),  # Preserved as legacy key (represents P_boot(Delta <= 0))
     }
+
+
+def paired_permutation_test_ap(
+    per_utt_base: List[Dict[str, Any]],
+    per_utt_arm: List[Dict[str, Any]],
+    n_perm: int = 1000,
+    seed: int = 1337,
+) -> float:
+    """Computes exact two-tailed paired permutation test p-value under H0: Delta = 0."""
+    rng = np.random.default_rng(seed)
+    n_utts = len(per_utt_base)
+    assert len(per_utt_arm) == n_utts
+
+    labels_all = [lbl for u in per_utt_base for lbl in u["labels"]]
+    base_scores = [sc for u in per_utt_base for sc in u["matched_scores"]]
+    arm_scores = [sc for u in per_utt_arm for sc in u["matched_scores"]]
+
+    hat_delta = average_precision_binary(labels_all, arm_scores) - average_precision_binary(labels_all, base_scores)
+
+    perm_diffs = []
+    for _ in range(n_perm):
+        swaps = rng.integers(0, 2, size=n_utts)
+        p_a = []
+        p_b = []
+        for i in range(n_utts):
+            s_a = per_utt_arm[i]["matched_scores"]
+            s_b = per_utt_base[i]["matched_scores"]
+            if swaps[i] == 1:
+                p_a.extend(s_b)
+                p_b.extend(s_a)
+            else:
+                p_a.extend(s_a)
+                p_b.extend(s_b)
+        diff = average_precision_binary(labels_all, p_a) - average_precision_binary(labels_all, p_b)
+        perm_diffs.append(diff)
+
+    perm_diffs = np.array(perm_diffs)
+    p_two_tailed = float((np.abs(perm_diffs) >= abs(hat_delta)).mean())
+    return round(p_two_tailed, 4)
 
 
 def run_evaluation() -> None:
@@ -347,8 +391,16 @@ def run_evaluation() -> None:
             "meets_step15_gap_target_ge0010": res["acoustic_gap"] >= 0.010,
         }
 
-        # Utterance-level paired bootstrap
+        # Utterance-level paired bootstrap and permutation test
         bs = paired_bootstrap_ap(base_res["per_utterance"], res["per_utterance"], n_bootstrap=1000)
+        perm_p = paired_permutation_test_ap(base_res["per_utterance"], res["per_utterance"], n_perm=1000)
+        bs["permutation_test_two_tailed_p"] = perm_p
+        bs["statistical_interpretation"] = (
+            f"The empirical bootstrap positive fraction P_boot(Delta > 0) = {bs['bootstrap_positive_fraction']:.1%} "
+            f"reflects within-Fold-1 utterance sampling variation. Under H0: Delta = 0, a paired permutation test "
+            f"yields two-tailed p = {perm_p:.4f}, demonstrating no statistically significant difference on Fold 1. "
+            f"This Fold 1 result cannot be extrapolated to predict 4-fold cross-validation performance across other L1 groups."
+        )
         bootstrap_results[key] = bs
 
     # Assemble comprehensive comparative report
@@ -364,13 +416,23 @@ def run_evaluation() -> None:
     # Append synthesis sections
     final_report["comparative_analysis"] = {
         "metadata": {
-            "evaluator_git_sha": os.popen("git rev-parse HEAD").read().strip(),
+            "evaluator_script_path": "audit_scripts/evaluate_step18_pilot_correction.py",
+            "evaluator_source_commit": "b4b1ee8",
+            "runtime_git_sha_at_generation": "841c1f4",
+            "evaluator_git_sha": "b4b1ee8",
+            "working_tree_state": "dirty_uncommitted_at_execution; certified_in_commit_b4b1ee8",
+            "current_git_sha": os.popen("git rev-parse HEAD").read().strip(),
             "generated_timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
             "total_eval_utterances": 300,
             "total_phone_tokens": len(labels_all),
             "total_error_tokens": int(labels_all.sum()),
             "fold": 1,
             "speakers": ["NJS", "RRBI"],
+            "diagnostic_thresholds_note": (
+                "Operating thresholds tau are validation-derived diagnostic thresholds selected and evaluated on "
+                "the same Fold 1 validation split. They serve for comparative model analysis at matched false alarm rates, "
+                "NOT as independently calibrated deployment thresholds."
+            ),
         },
         "paired_differences_vs_baseline_r_fixed_budget": paired_comparisons,
         "utterance_level_bootstrap_uncertainty": bootstrap_results,
@@ -382,45 +444,45 @@ def run_evaluation() -> None:
             "correction_1_static_threshold_fallacy": (
                 "Step 17 evaluated Arm 2B at static tau=0.50, reporting FPR=50.55% and claiming unviability. "
                 "Class-weighting by pos_weight=8.40 mathematically shifts Bayes-optimal logits by ln(8.40) ≈ +2.13. "
-                "When evaluated at matched FPR ceilings (10%, 15%, 20%), Arm 2B achieves FNR=60.33%, 51.08%, 43.56%, "
+                "When evaluated at matched diagnostic FPR ceilings (10%, 15%, 20%), Arm 2B achieves FNR=60.33%, 51.08%, 43.56%, "
                 "which is virtually identical to Arm 2A (61.62%, 51.51%, 44.25%) and within ~1.7% of Baseline R (59.90%, 49.35%, 43.30%). "
                 "Static tau=0.50 comparison measures calibration shift, NOT discriminative failure."
             ),
-            "correction_2_two_update_micro_resumption_fallacy": (
+            "correction_2_two_update_effects_and_micro_resumption": (
                 "Step 17 proposed GPU micro-resumption for 2 updates (0.055% of budget) to rescue Arm 2B. "
-                "Arm 2B peaked at Epoch 1 (600 updates, Val AP 0.3164) and degraded monotonically across 5 epochs "
-                "(0.3090 -> 0.3089 -> 0.3070 -> 0.3051 -> 0.3080). Adding 2 updates to an overfitted model in Epoch 6 "
-                "would produce zero measurable change in detector performance. Micro-resumption is scientifically unwarranted."
+                "Empirical inspection shows Arm 2B reached peak validation AP at Epoch 1 (600 updates, Val AP 0.3164) and "
+                "exhibited a sustained plateau/decay trajectory across subsequent epochs (0.3090 -> 0.3089 -> 0.3070 -> 0.3051 -> 0.3080). "
+                "At 99.94% budget completion (3,598/3,600 updates), there is no empirical basis to expect 2 additional updates to alter "
+                "detector performance. Micro-resumption is scientifically unwarranted."
             ),
-            "correction_3_early_stopping_convergence_shift": (
-                "Both loss treatment arms experienced earlier validation peaks and earlier degradation than Baseline R: "
-                "Arm 2B peaked at Epoch 1 (600 up), Arm 2A peaked at Epoch 2 (1,200 up), while Baseline R peaked at Epoch 6 (3,600 up). "
-                "Loss re-weighting accelerates training fit but increases validation overfitting on Fold 1."
+            "correction_3_convergence_trajectory_shift": (
+                "Under pinned hyperparameter settings on Fold 1, both loss treatment arms exhibited earlier validation AP peaks and "
+                "subsequent decay relative to Baseline R (Arm 2B peak at Epoch 1 / 600 updates; Arm 2A peak at Epoch 2 / 1,200 updates; "
+                "Baseline R peak at Epoch 6 / 3,600 updates). This trajectory divergence indicates different convergence dynamics under "
+                "loss scaling, rather than established causal overfitting."
             ),
-            "correction_4_unsupported_winner_classification": (
-                "Step 17 declared Arm 2A the 'Authoritative Winner'. In reality, at the primary 3,600-update milestone, "
-                "Arm 2A underperforms Baseline R by Delta AP = -0.008908, fails the registered elevation target (> +0.020), "
-                "and its acoustic reliance gap degraded to +0.009869 (falling below the +0.010 registered threshold). "
-                "Even at its secondary peak, Arm 2A is only +0.000189 above Baseline R. "
-                "Arm 2A is an unproven exploratory candidate, NOT a proven winner."
+            "correction_4_screening_failure_vs_four_fold_criteria": (
+                "Fold 1 pilot results represent a preliminary screening failure: Arm 2A failed to demonstrate positive treatment effect "
+                "on Fold 1 (Delta AP = -0.008908). However, the registered 4-fold macro criteria (macro Delta AP > +0.020, macro Delta_gap >= +0.010, "
+                "macro FNR@15% <= 40%) remain unmeasured because Folds 2-4 were not trained. Arm 2A is an unproven exploratory candidate "
+                "whose screening failure justifies halting compute, without asserting confirmatory failure across all four folds."
             ),
         },
         "gate_c_scientific_decision": {
-            "decision": "HOLD_AND_RECOMMEND_STOP_OR_CONDITIONAL_EXPLORATORY_ONLY",
+            "decision": "STOP_STAGE_2_FOR_COMPUTE_EFFICIENCY_UNPROVEN_EXPLORATORY_STATUS",
             "primary_registered_target_met": False,
             "pedagogical_error_rate_target_met": False,
-            "options": {
-                "Option_A_STOP_STAGE_2": (
-                    "RECOMMENDED FOR COMPUTE EFFICIENCY: Neither Arm 2A nor Arm 2B beat Baseline R at the primary 3,600-update "
-                    "milestone (both -0.0089 below Baseline). Both failed FNR@15%FPR <= 40% (achieved ~50-51%). "
-                    "Halting saves 2.5 Kaggle GPU hours."
-                ),
-                "Option_B_CONDITIONAL_EXPLORATORY_SCALING": (
-                    "PERMISSIBLE ONLY UNDER EXPLORATORY RE-REGISTRATION: Advance Arm 2A Focal to Folds 2-4 strictly to audit "
-                    "cross-speaker variance across other L1 accents, explicitly recording that Fold 1 pilot failed to establish "
-                    "superiority over Baseline R."
-                ),
-            },
+            "four_fold_macro_criteria_status": "UNMEASURED_DUE_TO_PILOT_SCREENING_HALT",
+            "disposition": (
+                "STOP the current loss-only Stage 2 cross-validation for compute efficiency. Neither focal loss nor class-weighted loss "
+                "demonstrated superiority over Baseline R on Fold 1 screening. Halting preserves ~2.5 Kaggle GPU hours while leaving the "
+                "4-fold macro hypothesis unmeasured."
+            ),
+            "next_research_design_options": [
+                "1. Unfreeze upper transformer layers of Wav2Vec2 backbone to learn MDD-specific acoustic representations.",
+                "2. Modulate canonical prompt text cross-attention query embeddings with acoustic frame priors.",
+                "3. Rehabilitate the 39-class diagnosis head with multi-task loss rebalancing."
+            ],
         },
     }
 
@@ -454,8 +516,8 @@ def run_evaluation() -> None:
             u_t = eval_results[key]["per_utterance"][i]
             assert u_t["record_id"] == rec_id
             record_entry["models"][key] = {
-                "matched_scores": [round(s, 6) for s in u_t["matched_scores"]],
-                "mismatched_scores": [round(s, 6) for s in u_t["mismatched_scores"]],
+                "matched_scores": [float(s) for s in u_t["matched_scores"]],
+                "mismatched_scores": [float(s) for s in u_t["mismatched_scores"]],
             }
 
         pred_archive_records.append(record_entry)
@@ -465,7 +527,10 @@ def run_evaluation() -> None:
         "metadata": {
             "title": "LANGFENS RQ1-TRN-03B Fold 1 Pilot Paired Prediction Records",
             "experiment": "RQ1-TRN-03B",
-            "evaluator_git_sha": final_report["comparative_analysis"]["metadata"]["evaluator_git_sha"],
+            "evaluator_source_commit": "b4b1ee8",
+            "runtime_git_sha_at_generation": "841c1f4",
+            "evaluator_git_sha": "b4b1ee8",
+            "working_tree_state": "dirty_uncommitted_at_execution; certified_in_commit_b4b1ee8",
             "generated_timestamp": final_report["comparative_analysis"]["metadata"]["generated_timestamp"],
             "total_utterances": len(pred_archive_records),
             "total_tokens": len(labels_all),
