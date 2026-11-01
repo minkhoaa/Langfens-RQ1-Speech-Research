@@ -79,7 +79,7 @@ def test_kaggle_entrypoint_rejects_cli_token_for_pilot():
             sys.executable,
             "deploy/kaggle/kaggle_entrypoint.py",
             "--mode", mode,
-            "--commit-sha", "051a87071279a1f2662fa9c6c449339281e05063",
+            "--commit-sha", "56bf79535e4f697b2eea05594d5d81153e04dbff",
             "--remote-mirror-token", "hf_forbidden_cli_token_12345",
         ]
         proc = subprocess.run(cmd, capture_output=True, text=True)
@@ -323,7 +323,7 @@ def test_validate_resume_checkpoint_rejects_wrong_arm_checkpoints():
         "metadata": {
             "fold": 1,
             "split_sha256": EXPECTED_MANIFEST_SHA,
-            "git_sha": "051a87071279a1f2662fa9c6c449339281e05063",
+            "git_sha": "56bf79535e4f697b2eea05594d5d81153e04dbff",
             "config": cfg_ck_arm2b,
         }
     }
@@ -416,8 +416,52 @@ def test_all_six_pilot_packages_exist_and_conform_to_standards():
 
         # Verified Kaggle Secrets acquisition
         assert "UserSecretsClient().get_secret(\"HF_TOKEN\")" in all_code
-        # Verified Pinned commit SHA present
-        assert "PINNED_COMMIT_SHA = " in all_code
+        # Verified Pinned commit SHA present and matches reviewed training commit
+        assert 'PINNED_COMMIT_SHA = "56bf79535e4f697b2eea05594d5d81153e04dbff"' in all_code
+
+
+def test_notebook_commit_pinning_integrity_and_stale_commit_detection():
+    """
+    Rigorously verifies that all 6 pilot notebooks pin the reviewed commit that introduced
+    pilot execution modes (56bf795), and proves detection of stale commits (e.g. 051a870).
+    """
+    expected_packages = [
+        ("deploy/kaggle_pilot_arm2a_preflight", "kaggle_preflight.ipynb"),
+        ("deploy/kaggle_pilot_arm2a_smoke", "kaggle_smoke.ipynb"),
+        ("deploy/kaggle_pilot_arm2a_train", "kaggle_train.ipynb"),
+        ("deploy/kaggle_pilot_arm2b_preflight", "kaggle_preflight.ipynb"),
+        ("deploy/kaggle_pilot_arm2b_smoke", "kaggle_smoke.ipynb"),
+        ("deploy/kaggle_pilot_arm2b_train", "kaggle_train.ipynb"),
+    ]
+
+    target_commit = "56bf79535e4f697b2eea05594d5d81153e04dbff"
+    stale_commit = "051a870c2388e852b628fae9814056b55bce5051"
+
+    # 1. Verify target commit exists in git
+    rev = subprocess.check_output(["git", "rev-parse", target_commit], text=True).strip()
+    assert rev == target_commit
+
+    # 2. Verify target commit contains pilot modes in deploy/kaggle/kaggle_entrypoint.py
+    entry_code = subprocess.check_output(["git", "show", f"{target_commit}:deploy/kaggle/kaggle_entrypoint.py"], text=True)
+    assert "train_pilot_arm2a" in entry_code
+    assert "train_pilot_arm2b" in entry_code
+    assert "verify_pilot_arm2a" in entry_code
+    assert "verify_pilot_arm2b" in entry_code
+
+    # 3. Negative control: Prove stale commit lacks pilot modes
+    stale_entry_code = subprocess.check_output(["git", "show", f"{stale_commit}:deploy/kaggle/kaggle_entrypoint.py"], text=True)
+    assert "train_pilot_arm2a" not in stale_entry_code
+    assert "train_pilot_arm2b" not in stale_entry_code
+
+    # 4. Check every notebook pins the target commit and NOT the stale commit
+    for pkg_dir_str, nb_filename in expected_packages:
+        nb_path = Path(pkg_dir_str) / nb_filename
+        with open(nb_path) as f:
+            nb = json.load(f)
+
+        all_text = "".join("".join(c["source"]) for c in nb["cells"])
+        assert target_commit in all_text, f"{nb_path} missing target commit {target_commit}"
+        assert stale_commit not in all_text, f"{nb_path} contains stale commit {stale_commit}"
 
 
 # ==============================================================================

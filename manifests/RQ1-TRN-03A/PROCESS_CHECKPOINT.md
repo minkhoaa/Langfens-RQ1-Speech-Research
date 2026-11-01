@@ -128,19 +128,24 @@ Design and specify a mathematically rigorous, leak-free 4-fold cross-validation 
    - Audited $pos\_weight = 8.40$ derivation: clarified that $8.40$ is derived from out-of-fold validation macro prevalence ($10.643\%$), representing an intentional 1.47× overweighting of error tokens relative to training empirical frequency ($14.91\%, w=5.71$) to aggressively elevate Recall.
    - Added 10 regression tests in `tests/test_rq1_trn_03b_kaggle_pilot_deployment.py` (320 passed total, 100% green).
    - Certified Gate B readiness; halted execution pending operator review and launch authorization.
+19. **Completed Step 16 Hotfix (Pilot Commit Pinning):**
+   - Remedied commit mismatch across all 6 pilot notebooks (`kaggle_preflight.ipynb`, `kaggle_smoke.ipynb`, `kaggle_train.ipynb` for Arm 2A and Arm 2B): updated stale commit `051a870` to reviewed training commit `56bf79535e4f697b2eea05594d5d81153e04dbff` where pilot modes were introduced.
+   - Proved with git historical inspection that `051a870c` lacked pilot modes while `56bf7953` fully implements them.
+   - Added automated regression test `test_notebook_commit_pinning_integrity_and_stale_commit_detection` to fail closed if any notebook references an unverified or stale commit.
+   - All 321 tests passing (100% green). Gate B launch readiness confirmed under commit `56bf79535e4f697b2eea05594d5d81153e04dbff`.
 
 ---
 
 ## 4. Results & Verification
 - **Split Manifest Invariance:** Verified `l2arctic_4fold_splits.json` SHA-256 `7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b`.
 - **Automated Split Suite:** `python3 audit_scripts/validate_splits.py` passed all 4 core checks with 0 errors.
-- **Automated Regression Suite:** All 320 tests pass (`PYTHONPATH=. .venv-cuda/bin/pytest tests/`):
-  - 320 passed, 1 skipped, 1 warning in 209.47s (100% green).
+- **Automated Regression Suite:** All 321 tests pass (`PYTHONPATH=. .venv-cuda/bin/pytest tests/`):
+  - 321 passed, 1 skipped, 1 warning in 168.72s (100% green).
 - **Deployment & Closure Test Suites:**
   - `tests/test_rq1_trn_03a_kaggle_deployment.py` passes 39/39 tests (100% green).
   - `tests/test_rq1_trn_03a_four_fold_closure.py` passes 8/8 tests (100% green).
   - `tests/test_rq1_trn_03b_experimental_design.py` passes 10/10 tests (100% green).
-  - `tests/test_rq1_trn_03b_kaggle_pilot_deployment.py` passes 10/10 tests (100% green).
+  - `tests/test_rq1_trn_03b_kaggle_pilot_deployment.py` passes 11/11 tests (100% green).
 - **Integration Test Suite (`test_rq1_trn_03a_fold_readiness_integration.py`):**
   - `test_all_fold_configs_parity`: PASS (all 4 configs verified bit-identical).
   - `test_fold_package_isolation_and_contents`: PASS (all packages verified to contain exactly 18 authorized speakers and 0 test speakers).
@@ -174,6 +179,7 @@ Design and specify a mathematically rigorous, leak-free 4-fold cross-validation 
 - **Step Checkpoint 14:** `manifests/RQ1-TRN-03A/checkpoints/14-scientific-errata-and-model-improvement-readiness.md`
 - **Step Checkpoint 15:** `manifests/RQ1-TRN-03A/checkpoints/15-rq1-trn-03b-experimental-design-and-readiness.md`
 - **Step Checkpoint 16:** `manifests/RQ1-TRN-03A/checkpoints/16-kaggle-pilot-deployment-readiness.md`
+- **Step Checkpoint 16B:** `manifests/RQ1-TRN-03A/checkpoints/16b-pilot-commit-pinning-hotfix.md`
 - **Four-Fold Evaluation Synthesis Report:** `manifests/RQ1-TRN-03A/evaluation/FOUR_FOLD_VALIDATION_REPORT.json` (SHA-256 `43f7de4e...`)
 - **Complete Prediction Records Archive:** `manifests/RQ1-TRN-03A/evaluation/FOUR_FOLD_PAIRED_PREDICTION_RECORDS.json.gz`
 - **Four-Fold Summary CSV:** `manifests/RQ1-TRN-03A/evaluation/four_fold_metrics_summary.csv`
@@ -220,13 +226,14 @@ Design and specify a mathematically rigorous, leak-free 4-fold cross-validation 
 
 ## 6. Restart / Recovery Instructions
 - **Active Branch:** `review/rq1-trn-03a-cross-fold-planning`
-- **Current State:** Step 16 completed successfully (`COMPLETED; GATE_B_DEPLOYMENT_READY`).
+- **Current State:** Step 16 Hotfix completed successfully (`COMPLETED; GATE_B_HOTFIX_VERIFIED`).
   - Generalized Kaggle execution harness to support Fold 1 pilot modes with zero regression to Baseline R Folds 2–4.
   - Authored all 6 dedicated Kaggle pilot packages (preflight, smoke, train for both Arm 2A Focal and Arm 2B Weighted) targeting `minkhoaa/langfens-rq1-fold1-staging` on Tesla T4x2.
+  - Remediated commit pinning mismatch: all 6 notebooks strictly pin reviewed training commit `56bf79535e4f697b2eea05594d5d81153e04dbff`.
   - Verified Fold 1 archive SHA-256 (`b750eb3b...`), 18-speaker census, and zero active test leakage.
   - Audited pos_weight=8.40 derivation (1.47x over-weighting for Recall elevation vs 5.71 training empirical ratio).
   - Validated resume safety, wrong-arm checkpoint rejection, missing secrets fail-closed, and non-T4 GPU rejection.
-  - Gate B readiness certified. Execution halted pending operator authorization. All 320 regression tests passing.
+  - Gate B readiness certified under commit `56bf79535e4f697b2eea05594d5d81153e04dbff`. Execution halted pending operator authorization. All 321 regression tests passing.
 
 ---
 

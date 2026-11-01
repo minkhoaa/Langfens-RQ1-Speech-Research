@@ -68,7 +68,7 @@ Six independent, private deployment packages have been authored under `deploy/`:
 
 ### 3.1 Kernel & Notebook Hygiene
 - **Hardware Profile:** Target `machine_shape: NvidiaTeslaT4`, `enable_gpu: true`, `enable_internet: true`, `is_private: true`.
-- **Pinned Git Commit:** All notebooks pin verified training base commit `051a87071279a1f2662fa9c6c449339281e05063` (closing Step 15).
+- **Pinned Git Commit:** All notebooks pin verified training base commit `56bf79535e4f697b2eea05594d5d81153e04dbff` (which introduced pilot execution modes in Step 16).
 - **Zero Token Leakage:** Authentication token `HF_TOKEN` acquired exclusively via Kaggle Secrets (`UserSecretsClient().get_secret("HF_TOKEN")`). Zero tokens stored on disk, zero tokens passed in CLI arguments.
 - **Fail-Closed Preflight Gate:** Smoke and Train notebooks execute Phase 4 preflight checks first; any staging, network, or manifest mismatch halts execution before training starts.
 
