@@ -220,6 +220,13 @@ Design and specify a mathematically rigorous, leak-free 4-fold cross-validation 
   - `tests/test_rq1_trn_03b_experimental_design.py`
   - `tests/test_rq1_trn_03b_kaggle_pilot_deployment.py`
   - `tests/test_rq1_trn_03b_arm2b_forensics.py`
+  - `tests/test_rq1_trn_03b_step18_scientific_correction.py`
+- **Step 18 Evaluation Deliverables:**
+  - `manifests/RQ1-TRN-03A/evaluation/PILOT_FOLD1_COMPARATIVE_REPORT.json`
+  - `manifests/RQ1-TRN-03A/evaluation/PILOT_FOLD1_PAIRED_PREDICTION_RECORDS.json.gz`
+  - `manifests/RQ1-TRN-03A/evaluation/pilot_fold1_endpoints_summary.csv`
+  - `manifests/RQ1-TRN-03A/evaluation/pilot_fold1_operating_points_comparison.csv`
+  - `audit_scripts/evaluate_step18_pilot_correction.py`
 - **Kaggle Pilot Deployment Packages:**
   - `deploy/kaggle_pilot_arm2a_preflight/` (`kernel-metadata.json`, `dataset-metadata.json`, `kaggle_preflight.ipynb`)
   - `deploy/kaggle_pilot_arm2a_smoke/` (`kernel-metadata.json`, `dataset-metadata.json`, `kaggle_smoke.ipynb`)
@@ -238,19 +245,23 @@ Design and specify a mathematically rigorous, leak-free 4-fold cross-validation 
 
 ## 6. Restart / Recovery Instructions
 - **Active Branch:** `review/rq1-trn-03a-cross-fold-planning`
-- **Current State:** Step 17 Forensics and Pilot Comparative Evaluation completed (`COMPLETED; FORENSIC_AUDIT_VERIFIED`).
-  - Verified Arm 2A fixed-budget primary PASS at Epoch 6 / 3,600 updates (0 skips, Val AP 0.3081, peak at Ep 2 AP 0.3172).
-  - Verified Arm 2B 2 AMP skips resulting in 3,598 updates at Epoch 6; early stopping triggered at patience 5 (peak at Ep 1 AP 0.3164).
-  - Proved failure mechanism for missing fixed-budget checkpoint (3598 != 3600); retained last.pt as exploratory near-budget artifact.
-  - Audited cryptographic SHA-256 digests for all 9 remote artifacts on Hugging Face.
-  - Executed standalone CUDA replay under Protocol O and Protocol Z comparing Baseline R, Arm 2A Focal, and Arm 2B Weighted.
-  - Authoritative recommendation: Arm 2A Focal is the superior, contract-compliant candidate for Stage 2 four-fold scaling. All 326 tests passing.
+- **Current State:** Step 18 Scientific Comparison Correction completed (`COMPLETED; SCIENTIFIC_CORRECTIONS_CERTIFIED; GATE_C_RECOMMENDATION_FORMALIZED`).
+  - Bit-for-bit reproduction of Fold 1 validation metrics for Baseline R, Arm 2A Focal, and Arm 2B Weighted.
+  - Computed pedagogical operating points at fixed FPR ceilings (10%, 15%, 20%): Baseline R outperforms both Arm 2A and Arm 2B at 3,600 updates across all three operating points.
+  - Exported complete paired per-token and per-utterance prediction archive `PILOT_FOLD1_PAIRED_PREDICTION_RECORDS.json.gz` (300 utts, 9,956 tokens, 1,157 errors) with SHA-256 provenance for all 5 checkpoints.
+  - Separated ranking quality (ROC-AUC / AP) from calibration shifts (Bayes-optimal logit shift $\approx +2.13$ in Arm 2B), retracting false claim of Arm 2B unviability.
+  - Proved Arm 2A fixed-budget acoustic gap degraded to $+0.009869 < +0.010$, failing Step 15 Criterion 2.
+  - Downgraded Arm 2A Focal from "Authoritative Winner" to "Eligible Exploratory Candidate" due to failure of registered AP elevation target ($-0.008908$ vs $> +0.020$).
+  - Refactored artifact verification tests to fail-closed assertions (no silent skips or unconditional passes).
+  - All 333 repository regression tests passing (100% green).
+  - Formal Gate C recommendation: Option A (STOP Stage 2 for compute efficiency) or Option B (Conditional Exploratory Advancement to Folds 2-4 with Fold 1 deficit disclosure).
 
 ---
 
 ## 7. Remaining Work & Safety Boundaries
-- **Phase Status:** Phase RQ1-TRN-03A is officially CLOSED. Ready for Phase RQ1-TRN-03B upon operator authorization.
+- **Phase Status:** Phase RQ1-TRN-03A is officially CLOSED. RQ1-TRN-03B Stage 1 Pilot evaluation complete. Awaiting operator decision at Gate C.
 - **Safety Boundaries:**
   - DO NOT access, unseal, or evaluate active test split files ($S_{\text{test}}^{(1..4)}$) for any fold.
   - In RQ1-TRN-03B, all model interventions must be evaluated strictly on the pooled 4-fold validation sets (39,576 tokens).
-  - Execution strictly terminates before RQ1-TRN-03B or RQ1-EVAL-01 without separate explicit operator authorization.
+  - DO NOT launch Stage 2 remote training (Folds 2, 3, 4) without explicit operator authorization at Gate C/D.
+  - Execution strictly terminates before Gate D authorization.

@@ -80,8 +80,7 @@ def test_arm2b_missing_fixed_budget_checkpoint_mechanism():
     """Proves why fixed_budget_checkpoint.pt is missing in Arm 2B (3,598 != 3,600)."""
     cache_dir = Path("checkpoints/pilot_evaluation_cache")
     last_pt = cache_dir / "last_Arm2B_Weighted_3598up.pt"
-    if not last_pt.is_file():
-        pytest.skip(f"Missing {last_pt}")
+    assert last_pt.is_file(), f"FAIL-CLOSED: Required artifact {last_pt} does not exist!"
 
     ck_last = torch.load(last_pt, map_location="cpu", weights_only=False)
     assert ck_last["epoch"] == 5  # 0-indexed Epoch 6
@@ -94,8 +93,7 @@ def test_arm2a_completed_3600_updates_primary_endpoint():
     """Proves Arm 2A achieved exactly 3,600 updates at Epoch 6 with 0 AMP skips."""
     cache_dir = Path("checkpoints/pilot_evaluation_cache")
     fb_pt = cache_dir / "fixed_budget_checkpoint_Arm2A_Focal_3600up.pt"
-    if not fb_pt.is_file():
-        pytest.skip(f"Missing {fb_pt}")
+    assert fb_pt.is_file(), f"FAIL-CLOSED: Required artifact {fb_pt} does not exist!"
 
     ck_fb = torch.load(fb_pt, map_location="cpu", weights_only=False)
     assert ck_fb["epoch"] == 5  # 0-indexed Epoch 6
@@ -107,7 +105,7 @@ def test_arm2a_completed_3600_updates_primary_endpoint():
 
 
 def test_cryptographic_readback_for_all_existing_artifacts():
-    """Verifies that all local cached artifacts match their authoritative cryptographic digests."""
+    """Verifies that all local cached artifacts exist and match their authoritative cryptographic digests."""
     cache_dir = Path("checkpoints/pilot_evaluation_cache")
     file_map = {
         "arm2a_fixed_budget": cache_dir / "fixed_budget_checkpoint_Arm2A_Focal_3600up.pt",
@@ -117,10 +115,10 @@ def test_cryptographic_readback_for_all_existing_artifacts():
     }
 
     for key, path in file_map.items():
-        if path.is_file():
-            actual_sha = compute_sha256(path)
-            expected_sha = EXPECTED_SHA256_LEDGER[key]
-            assert actual_sha == expected_sha, f"SHA mismatch for {key}: {actual_sha} != {expected_sha}"
+        assert path.is_file(), f"FAIL-CLOSED: Required artifact {key} at {path} does not exist!"
+        actual_sha = compute_sha256(path)
+        expected_sha = EXPECTED_SHA256_LEDGER[key]
+        assert actual_sha == expected_sha, f"SHA mismatch for {key}: {actual_sha} != {expected_sha}"
 
 
 def test_pilot_fold1_comparative_metrics_integrity():
