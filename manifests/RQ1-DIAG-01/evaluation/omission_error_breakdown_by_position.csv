@@ -1,0 +1,5 @@
+word_position,total_tokens,correct_tokens,substitution_tokens,deletion_tokens,omission_rate,substitution_rate,fraction_of_all_omissions,del_recall_at_020,del_fnr_at_020,sub_recall_at_020,sub_fnr_at_020
+word_initial,10831,9814,951,66,0.006094,0.087804,0.104928,0.1667,0.8333,0.6162,0.3838
+word_medial,17436,15833,1392,211,0.012101,0.079835,0.335453,0.3507,0.6493,0.2953,0.7047
+word_final,10831,9252,1229,350,0.032315,0.113471,0.556439,0.4543,0.5457,0.6526,0.3474
+single_phone_word,478,464,12,2,0.004184,0.025105,0.00318,0.0,1.0,0.3333,0.6667

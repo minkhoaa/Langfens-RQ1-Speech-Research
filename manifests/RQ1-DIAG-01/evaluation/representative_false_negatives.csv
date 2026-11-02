@@ -1,0 +1,49 @@
+fold,speaker,l1,utterance_id,token_idx,canonical_phone,realized_phone,raw_label,error_type,word,word_position,duration_sec,xmin,xmax,adjacent_context,matched_score,mismatched_score,delta_score
+3,TXHC,Mandarin,arctic_b0075,21,M,N,"M,N,s",substitution,them,word_final,0.16,2.17,2.33,V-C-V,0.006007,0.009134,-0.003127
+3,TXHC,Mandarin,arctic_a0024,17,M,N,"M,N,s",substitution,from,word_final,0.04,1.64,1.68,V-C-C,0.006116,0.009085,-0.002969
+3,TXHC,Mandarin,arctic_a0027,35,M,sil,"M,sil,d",deletion,enthusiasm,word_final,0.07,3.9,3.97,V-C-V,0.006836,0.020908,-0.014072
+3,ZHAA,Arabic,arctic_a0047,15,M,N,"M,N,s",substitution,gleamed,word_medial,0.04,1.42,1.46,V-C-C,0.007411,0.005175,0.002236
+3,TXHC,Mandarin,arctic_a0103,20,M,N,"M, N, s",substitution,from,word_final,0.04,1.71,1.75,V-C-C,0.007421,0.0083,-0.000878
+3,TXHC,Mandarin,arctic_a0006,23,M,N,"M,N,s",substitution,them,word_final,0.12,3.05,3.17,V-C-C,0.007757,0.005656,0.002101
+3,ZHAA,Arabic,arctic_a0022,33,M,B,"M,B,s",substitution,met,word_initial,0.11,3.51,3.62,V-C-V,0.00865,0.009182,-0.000532
+4,NCC,Mandarin,arctic_a0024,17,M,N,"M,N,s",substitution,from,word_final,0.08,1.79,1.87,V-C-C,0.00884,0.014628,-0.005789
+4,NCC,Mandarin,arctic_b0366,30,M,NG,"M,NG,s",substitution,from,word_final,0.07,2.86,2.93,V-C-C,0.008947,0.015682,-0.006735
+3,ZHAA,Arabic,arctic_a0088,35,M,N,"M, N, s",substitution,resumed,word_medial,0.05,3.66,3.71,V-C-C,0.009931,0.014092,-0.004161
+3,TXHC,Mandarin,arctic_a0136,6,M,N,"M, N, s",substitution,him,word_final,0.14,0.56,0.7,V-C-V,0.010551,0.006116,0.004436
+3,TXHC,Mandarin,arctic_a0047,11,M,N,"M,N,s",substitution,him,word_final,0.21,1.05,1.26,V-C-C,0.01197,0.008167,0.003803
+1,NJS,Spanish,arctic_a0032,9,M,N,"M, N, s",substitution,some,word_final,0.04,1.19,1.23,V-C-C,0.012897,0.0123,0.000597
+4,NCC,Mandarin,arctic_a0136,6,M,NG,"M,NG,s",substitution,him,word_final,0.04,0.52,0.56,V-C-V,0.012983,0.033285,-0.020302
+1,NJS,Spanish,arctic_b0279,26,M,N,"M,N,s",substitution,from,word_final,0.07,2.54,2.61,V-C-C,0.013405,0.016064,-0.002659
+1,NJS,Spanish,arctic_a0108,40,M,N,"M,N,s",substitution,himself,word_medial,0.07,3.55,3.62,V-C-C,0.013489,0.013402,8.8e-05
+1,NJS,Spanish,arctic_a0139,37,M,P,"M,P,s",substitution,groomed,word_medial,0.03,3.3,3.33,V-C-C,0.013643,0.017351,-0.003708
+1,NJS,Spanish,arctic_a0556,26,M,N,"M,N,s",substitution,from,word_final,0.06,2.52,2.58,V-C-C,0.014063,0.015082,-0.001019
+1,NJS,Spanish,arctic_a0006,23,M,N,"M, N, s",substitution,them,word_final,0.09,2.95,3.04,V-C-C,0.015102,0.01375,0.001352
+1,NJS,Spanish,arctic_a0095,30,M,N,"M,N,s",substitution,come,word_final,0.05,3.18,3.23,V-C-C,0.015367,0.009791,0.005576
+1,NJS,Spanish,arctic_a0048,16,IY,IH,"IY0, IH, s",substitution,handkerchief,word_medial,0.06,1.23,1.29,C-V-C,0.015715,0.019202,-0.003487
+1,NJS,Spanish,arctic_a0103,20,M,N,"M,N,s",substitution,from,word_final,0.05,1.31,1.36,V-C-C,0.015814,0.013506,0.002309
+1,NJS,Spanish,arctic_a0185,17,M,N,"M, N, s",substitution,come,word_final,0.13,1.1,1.23,V-C-C,0.016701,0.011669,0.005032
+4,HKK,Korean,arctic_b0304,31,F,sil,"F, sil, d",deletion,enough,word_final,0.09,3.35,3.44,V-C-C,0.017134,0.028833,-0.011699
+4,NCC,Mandarin,arctic_a0123,11,M,NG,"M,NG,s",substitution,from,word_final,0.19,1.25,1.44,V-C-C,0.017743,0.021397,-0.003654
+1,NJS,Spanish,arctic_a0300,35,IY,sil,"IY0, sil, d",deletion,period,word_medial,0.008,2.63,2.638,C-V-V,0.021767,0.026277,-0.00451
+4,NCC,Mandarin,arctic_a0052,10,IY,sil,"IY0,sil,d",deletion,curious,word_medial,0.03,0.97,1.0,C-V-V,0.022984,0.024017,-0.001033
+3,ZHAA,Arabic,arctic_a0120,29,Y,sil,"Y, sil, d",deletion,debutante,word_medial,0.0315,3.4273,3.4588,C-C-V,0.023621,0.058795,-0.035174
+3,ZHAA,Arabic,arctic_a0117,6,W,sil,"W, sil, d",deletion,with,word_initial,0.0435,0.9859,1.0294,C-C-V,0.02439,0.029796,-0.005406
+3,ZHAA,Arabic,arctic_a0101,4,W,sil,"W, sil, d",deletion,would,word_initial,0.03,0.56,0.59,V-C-V,0.02649,0.027652,-0.001162
+1,NJS,Spanish,arctic_a0064,11,F,sil,"F, sil, d",deletion,fifth,word_medial,0.0236,0.88,0.9036,V-C-C,0.029973,0.036642,-0.00667
+2,YBAA,Arabic,arctic_a0022,23,K,sil,"K, sil, d",deletion,public,word_final,0.0491,1.9609,2.01,V-C-C,0.030202,0.046694,-0.016492
+4,HKK,Korean,arctic_a0067,14,UW,sil,"UW1,sil,d",deletion,excuse,word_medial,0.06,1.29,1.35,C-V-C,0.031876,0.02463,0.007245
+1,NJS,Spanish,arctic_a0024,23,HH,sil,"HH, sil, d",deletion,which,word_initial,0.0542,1.8,1.8542,C-C-C,0.032396,0.032166,0.000229
+4,NCC,Mandarin,arctic_a0101,4,W,sil,"W,sil,d",deletion,would,word_initial,0.03,0.55,0.58,V-C-V,0.032543,0.040699,-0.008156
+3,TXHC,Mandarin,arctic_b0026,27,N,sil,"N,sil,d",deletion,men,word_final,0.08,2.69,2.77,V-C-SIL,0.032997,0.044433,-0.011436
+1,NJS,Spanish,arctic_a0071,0,HH,sil,"HH, sil, d",deletion,what,word_initial,0.0158,0.04,0.0558,SIL-C-C,0.033062,0.042364,-0.009302
+3,ZHAA,Arabic,arctic_a0117,16,N,sil,"N, sil, d",deletion,genuine,word_final,0.03,1.65,1.68,V-C-C,0.033787,0.027652,0.006135
+4,NCC,Mandarin,arctic_a0245,33,N,sil,"N,sil,d",deletion,sixteen,word_final,0.03,2.97,3.0,V-C-C,0.034731,0.068973,-0.034242
+3,TXHC,Mandarin,arctic_a0094,18,HH,sil,"HH, sil, d",deletion,when,word_initial,0.0219,1.68,1.7019,C-C-C,0.035202,0.038492,-0.003291
+2,TNI,Spanish,arctic_a0255,14,UW,sil,"UW0,sil,d",deletion,malnutrition,word_medial,0.04,1.58,1.62,C-V-C,0.036322,0.034014,0.002308
+2,YBAA,Arabic,arctic_a0117,12,Y,sil,"Y,sil,d",deletion,genuine,word_medial,0.05,1.71,1.76,C-C-V,0.036634,0.064227,-0.027593
+4,NCC,Mandarin,arctic_a0026,16,W,sil,"W,sil,d",deletion,would,word_initial,0.13,1.9,2.03,C-C-V,0.037096,0.050236,-0.01314
+4,NCC,Mandarin,arctic_b0465,23,W,sil,"W,sil,d",deletion,would,word_initial,0.03,2.62,2.65,C-C-V,0.037241,0.035044,0.002197
+4,NCC,Mandarin,arctic_a0047,30,W,sil,"W,sil,d",deletion,wolf,word_initial,0.05,3.25,3.3,V-C-V,0.038231,0.024471,0.01376
+3,ZHAA,Arabic,arctic_a0111,38,N,sil,"N, sil, d",deletion,children,word_final,0.079,3.7574,3.8365,V-C-SIL,0.038328,0.037277,0.001051
+3,ZHAA,Arabic,arctic_b0494,28,UW,sil,"UW1,sil,d",deletion,jerusalem,word_medial,0.06,2.76,2.82,V-V-C,0.039162,0.044622,-0.00546
+2,TNI,Spanish,arctic_b0017,29,HH,sil,"HH,sil,d",deletion,had,word_initial,0.03,2.37,2.4,V-C-V,0.039857,0.048782,-0.008925
