@@ -33,7 +33,9 @@ def main():
             "train_fold", "train_fold1", "train_fold2", "train_fold3", "train_fold4",
             "verify_fold", "verify_fold1", "verify_fold2", "verify_fold3", "verify_fold4",
             "train_pilot_arm2a", "train_pilot_arm2b",
-            "verify_pilot_arm2a", "verify_pilot_arm2b"
+            "verify_pilot_arm2a", "verify_pilot_arm2b",
+            "train_e1_fold1", "train_e1_fold2", "train_e1_fold3", "train_e1_fold4",
+            "verify_e1_fold1", "verify_e1_fold2", "verify_e1_fold3", "verify_e1_fold4"
         ],
         default="train_c0"
     )
@@ -56,6 +58,8 @@ def main():
         args.mode.startswith("verify_fold") or
         args.mode.startswith("train_pilot") or
         args.mode.startswith("verify_pilot") or
+        args.mode.startswith("train_e1") or
+        args.mode.startswith("verify_e1") or
         (args.fold in (1, 2, 3, 4))
     )
     if is_fold_or_pilot and args.remote_mirror_token:
@@ -168,6 +172,35 @@ def main():
             cmd.extend(["--kaggle-input-dir", str(kaggle_input)])
         subprocess.run(cmd, env=env, check=True)
         print(f"[VERIFY] Preflight staging check passed for Arm {arm_name}.")
+
+    elif args.mode.startswith("train_e1_fold") or args.mode.startswith("verify_e1_fold"):
+        f_idx = int(args.mode[-1])
+        is_verify = args.mode.startswith("verify_")
+        cfg_name = f"rq_model_01_e1_fold{f_idx}.yaml"
+        run_id = args.run_id or f"e1_fold{f_idx}_alignment_aware"
+        cfg_path = Path(args.config) if args.config else (repo_dir / "configs" / cfg_name)
+
+        action = "Preflight check-only staging" if is_verify else "Training execution"
+        print(f"[{'VERIFY' if is_verify else 'LAUNCH'}] {action} for E1 Alignment-Aware MDD on Fold {f_idx}...")
+        cmd = [
+            sys.executable,
+            str(repo_dir / "audit_scripts" / "kaggle_fold_train_exec.py"),
+            "--fold", str(f_idx),
+            "--config", str(cfg_path),
+            "--commit-sha", args.commit_sha,
+            "--working-dir", "/kaggle/working",
+            "--remote-mirror-backend", args.remote_mirror_backend,
+            "--remote-mirror-target", remote_target,
+            "--run-id", run_id,
+        ]
+        if is_verify:
+            cmd.append("--check-only")
+        if kaggle_input:
+            cmd.extend(["--kaggle-input-dir", str(kaggle_input)])
+        if args.execution_cap_epochs is not None and not is_verify:
+            cmd.extend(["--execution-cap-epochs", str(args.execution_cap_epochs)])
+        subprocess.run(cmd, env=env, check=True)
+        print(f"[{'VERIFY' if is_verify else 'TRAIN'}] E1 Fold {f_idx} completed.")
 
     elif args.mode in ("train_fold", "train_fold1", "train_fold2", "train_fold3", "train_fold4"):
         if args.mode == "train_fold1":

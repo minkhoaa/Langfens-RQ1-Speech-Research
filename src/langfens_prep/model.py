@@ -45,6 +45,7 @@ class LangfensMDDOutput:
     aligned_acoustic: Optional[torch.Tensor] = None
     phone_embeds: Optional[torch.Tensor] = None
     intervention_mask: Optional[torch.Tensor] = None
+    skip_weights: Optional[torch.Tensor] = None
 
 
 class CanonicalAcousticCrossAttention(nn.Module):
@@ -64,12 +65,19 @@ class CanonicalAcousticCrossAttention(nn.Module):
         num_heads: int = 4,
         max_canonical_len: int = 128,
         dropout: float = 0.1,
-        audio_only_queries: bool = False
+        audio_only_queries: bool = False,
+        enable_skip_token: bool = False,
+        monotonic_bias: bool = False,
+        monotonic_bandwidth: float = 3.0
     ):
         super().__init__()
         self.hidden_dim = hidden_dim
         self.max_canonical_len = max_canonical_len
         self.audio_only_queries = audio_only_queries
+        self.enable_skip_token = enable_skip_token
+        self.monotonic_bias = monotonic_bias
+        self.monotonic_bandwidth = float(monotonic_bandwidth)
+
         self.canonical_phone_embedding = nn.Embedding(
             num_embeddings=num_canonical_phones,
             embedding_dim=phone_embed_dim,
@@ -86,12 +94,18 @@ class CanonicalAcousticCrossAttention(nn.Module):
         self.layer_norm = nn.LayerNorm(hidden_dim)
         self.dropout = nn.Dropout(dropout)
 
+        if self.enable_skip_token:
+            self.skip_token = nn.Parameter(torch.empty(1, 1, hidden_dim))
+            nn.init.normal_(self.skip_token, std=0.02)
+        else:
+            self.register_parameter("skip_token", None)
+
     def forward(
         self,
         frame_features: torch.Tensor,
         canonical_phone_indices: torch.Tensor,
         acoustic_padding_mask: Optional[torch.Tensor] = None
-    ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, ...]:
         """
         Args:
             frame_features: (batch_size, max_frames, hidden_dim)
@@ -100,10 +114,12 @@ class CanonicalAcousticCrossAttention(nn.Module):
         Returns:
             aligned_acoustic: (batch_size, num_phones, hidden_dim)
             phone_embeds: (batch_size, num_phones, phone_embed_dim)
-            attn_weights: (batch_size, num_phones, max_frames)
+            attn_weights: (batch_size, num_phones, max_frames or 1+max_frames)
+            skip_weights: (batch_size, num_phones, 1) if enable_skip_token else omitted
         """
         batch_size, num_phones = canonical_phone_indices.shape
         device = canonical_phone_indices.device
+        max_frames = frame_features.shape[1]
 
         # 1. Phone embeddings
         phone_embeds = self.canonical_phone_embedding(canonical_phone_indices)
@@ -116,15 +132,59 @@ class CanonicalAcousticCrossAttention(nn.Module):
         else:
             canonical_queries = self.phone_projection(phone_embeds) + pos_embeds
 
-        # 3. Cross-attention
+        # 3. Extend Keys/Values with Skip Token if enabled
+        if self.enable_skip_token:
+            skip = self.skip_token.expand(batch_size, 1, -1)
+            extended_keys = torch.cat([skip, frame_features], dim=1)
+            extended_values = extended_keys
+            if acoustic_padding_mask is not None:
+                skip_mask = torch.zeros(batch_size, 1, dtype=torch.bool, device=device)
+                extended_padding_mask = torch.cat([skip_mask, acoustic_padding_mask], dim=1)
+            else:
+                extended_padding_mask = None
+        else:
+            extended_keys = frame_features
+            extended_values = frame_features
+            extended_padding_mask = acoustic_padding_mask
+
+        # 4. Monotonic Temporal Alignment Bias
+        if self.monotonic_bias:
+            p = (torch.arange(num_phones, device=device, dtype=torch.float32) + 0.5) / max(num_phones, 1)
+            r = (torch.arange(max_frames, device=device, dtype=torch.float32) + 0.5) / max(max_frames, 1)
+            dist_sq = (p.unsqueeze(1) - r.unsqueeze(0)) ** 2
+            bias = - self.monotonic_bandwidth * dist_sq
+            if self.enable_skip_token:
+                skip_bias = torch.zeros(num_phones, 1, device=device, dtype=torch.float32)
+                attn_mask_2d = torch.cat([skip_bias, bias], dim=1)  # (num_phones, 1 + max_frames)
+            else:
+                attn_mask_2d = bias
+
+            if extended_padding_mask is not None:
+                attn_mask_3d = attn_mask_2d.unsqueeze(0).expand(batch_size, -1, -1).clone()
+                attn_mask_3d = attn_mask_3d.masked_fill(extended_padding_mask.unsqueeze(1), float("-inf"))
+                attn_mask = attn_mask_3d.repeat_interleave(self.cross_attention.num_heads, dim=0)
+                mha_key_padding_mask = None
+            else:
+                attn_mask = attn_mask_2d
+                mha_key_padding_mask = None
+        else:
+            attn_mask = None
+            mha_key_padding_mask = extended_padding_mask
+
+        # 5. Cross-attention
         attn_out, attn_weights = self.cross_attention(
             query=canonical_queries,
-            key=frame_features,
-            value=frame_features,
-            key_padding_mask=acoustic_padding_mask
+            key=extended_keys,
+            value=extended_values,
+            key_padding_mask=mha_key_padding_mask,
+            attn_mask=attn_mask
         )
 
         aligned_acoustic = self.layer_norm(self.dropout(attn_out))
+        if self.enable_skip_token:
+            skip_weights = attn_weights[:, :, 0:1]
+            return aligned_acoustic, phone_embeds, attn_weights, skip_weights
+
         return aligned_acoustic, phone_embeds, attn_weights
 
 
@@ -167,7 +227,10 @@ class LangfensWav2Vec2MDD(nn.Module):
         binary_loss_type: str = "bce",  # "bce" or "focal"
         binary_pos_weight: Optional[float] = None,
         focal_gamma: float = 2.0,
-        focal_alpha: float = 0.75
+        focal_alpha: float = 0.75,
+        enable_skip_token: bool = False,
+        monotonic_bias: bool = False,
+        monotonic_bandwidth: float = 3.0
     ):
         super().__init__()
         valid_diag_modes = ("standard", "audio_only", "gated_residual", "ctc_guided")
@@ -185,6 +248,9 @@ class LangfensWav2Vec2MDD(nn.Module):
         self.max_canonical_len = max_canonical_len
         self.gradient_checkpointing = False
         self._frozen_backbone_eval = False
+        self.enable_skip_token = enable_skip_token
+        self.monotonic_bias = monotonic_bias
+        self.monotonic_bandwidth = float(monotonic_bandwidth)
 
         # 1. Instantiate Wav2Vec2 Backbone
         if pretrained_model_name_or_path is not None:
@@ -252,7 +318,10 @@ class LangfensWav2Vec2MDD(nn.Module):
             num_heads=cross_attention_heads,
             max_canonical_len=max_canonical_len,
             dropout=dropout,
-            audio_only_queries=(diagnosis_mode == "audio_only")
+            audio_only_queries=(diagnosis_mode == "audio_only"),
+            enable_skip_token=enable_skip_token,
+            monotonic_bias=monotonic_bias,
+            monotonic_bandwidth=monotonic_bandwidth
         )
 
         # Embedding for oracle baseline fallback
@@ -262,9 +331,10 @@ class LangfensWav2Vec2MDD(nn.Module):
         # Head 1: Realized CTC Phone Recognition Head (Linear -> 40 classes)
         self.ctc_head = nn.Linear(self.hidden_dim, num_ctc_classes)
 
-        # Head 2: Canonical Binary Detection Head (Acoustic Representation + Phone Embedding -> 1 logit)
+        # Head 2: Canonical Binary Detection Head (Acoustic Representation + Phone Embedding [+ skip weight] -> 1 logit)
+        binary_in_dim = self.hidden_dim + phone_embed_dim + (1 if enable_skip_token else 0)
         self.binary_head = nn.Sequential(
-            nn.Linear(self.hidden_dim + phone_embed_dim, 256),
+            nn.Linear(binary_in_dim, 256),
             nn.GELU(),
             nn.Dropout(dropout),
             nn.Linear(256, 1)
@@ -483,6 +553,7 @@ class LangfensWav2Vec2MDD(nn.Module):
         aligned_acoustic = None
         phone_embeds = None
         intervention_mask = None
+        skip_weights = None
 
         if canonical_phone_indices is not None:
             if self.alignment_mode == "oracle" and phone_intervals is not None:
@@ -505,11 +576,16 @@ class LangfensWav2Vec2MDD(nn.Module):
                 frame_indices = torch.arange(max_frames, device=device).unsqueeze(0)
                 acoustic_padding_mask = frame_indices >= frame_output_lengths.unsqueeze(1)
 
-                aligned_acoustic, phone_embeds, alignment_weights = self.cross_attention_module(
+                cross_out = self.cross_attention_module(
                     frame_features=hidden_states,
                     canonical_phone_indices=canonical_phone_indices,
                     acoustic_padding_mask=acoustic_padding_mask
                 )
+                if len(cross_out) == 4:
+                    aligned_acoustic, phone_embeds, alignment_weights, skip_weights = cross_out
+                else:
+                    aligned_acoustic, phone_embeds, alignment_weights = cross_out
+                    skip_weights = None
 
             # Controlled Binary-only prompt embedding dropout (RQ1-TRN-02B):
             # Mask only the direct canonical phone embedding entering the Binary MLP.
@@ -561,8 +637,11 @@ class LangfensWav2Vec2MDD(nn.Module):
             else:
                 binary_phone_embeds = phone_embeds
 
-            # Binary Head: Concat phone-level acoustic representation with canonical phone embedding
-            binary_input = torch.cat([aligned_acoustic, binary_phone_embeds], dim=-1)
+            # Binary Head: Concat phone-level acoustic representation with canonical phone embedding (and skip weight if enabled)
+            if self.enable_skip_token and skip_weights is not None:
+                binary_input = torch.cat([aligned_acoustic, binary_phone_embeds, skip_weights], dim=-1)
+            else:
+                binary_input = torch.cat([aligned_acoustic, binary_phone_embeds], dim=-1)
             binary_logits = self.binary_head(binary_input).squeeze(-1)  # (B, num_phones)
 
             # Diagnosis Head:
@@ -708,7 +787,8 @@ class LangfensWav2Vec2MDD(nn.Module):
             alignment_weights=alignment_weights,
             aligned_acoustic=aligned_acoustic,
             phone_embeds=phone_embeds,
-            intervention_mask=intervention_mask
+            intervention_mask=intervention_mask,
+            skip_weights=skip_weights
         )
 
     @torch.no_grad()

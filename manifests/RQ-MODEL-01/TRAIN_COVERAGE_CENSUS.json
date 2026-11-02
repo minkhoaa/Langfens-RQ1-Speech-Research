@@ -1,0 +1,2602 @@
+{
+  "fold_1": {
+    "train": {
+      "phone_stats": {
+        "F": {
+          "correct": 1677,
+          "total": 1733,
+          "substitution": 40,
+          "deletion": 16
+        },
+        "AO": {
+          "correct": 1178,
+          "total": 1283,
+          "substitution": 104,
+          "deletion": 1
+        },
+        "R": {
+          "deletion": 368,
+          "total": 3414,
+          "correct": 2613,
+          "substitution": 433
+        },
+        "DH": {
+          "substitution": 1355,
+          "total": 2440,
+          "correct": 1051,
+          "deletion": 34
+        },
+        "AH": {
+          "correct": 6507,
+          "total": 7287,
+          "substitution": 667,
+          "deletion": 113
+        },
+        "T": {
+          "correct": 3977,
+          "total": 4750,
+          "substitution": 363,
+          "deletion": 410
+        },
+        "W": {
+          "correct": 2057,
+          "total": 2161,
+          "substitution": 71,
+          "deletion": 33
+        },
+        "EH": {
+          "correct": 1894,
+          "total": 2129,
+          "substitution": 229,
+          "deletion": 6
+        },
+        "N": {
+          "correct": 4641,
+          "total": 4948,
+          "substitution": 190,
+          "deletion": 117
+        },
+        "IY": {
+          "correct": 3212,
+          "total": 3327,
+          "substitution": 102,
+          "deletion": 13
+        },
+        "IH": {
+          "deletion": 50,
+          "total": 5011,
+          "correct": 4271,
+          "substitution": 690
+        },
+        "TH": {
+          "deletion": 20,
+          "total": 583,
+          "correct": 325,
+          "substitution": 238
+        },
+        "AY": {
+          "correct": 1389,
+          "total": 1468,
+          "substitution": 78,
+          "deletion": 1
+        },
+        "M": {
+          "correct": 2325,
+          "total": 2352,
+          "substitution": 24,
+          "deletion": 3
+        },
+        "AE": {
+          "correct": 1921,
+          "total": 2167,
+          "substitution": 242,
+          "deletion": 4
+        },
+        "V": {
+          "correct": 1236,
+          "total": 1661,
+          "substitution": 365,
+          "deletion": 60
+        },
+        "NG": {
+          "correct": 812,
+          "total": 874,
+          "deletion": 10,
+          "substitution": 52
+        },
+        "UW": {
+          "correct": 1314,
+          "total": 1383,
+          "substitution": 64,
+          "deletion": 5
+        },
+        "SH": {
+          "correct": 827,
+          "total": 888,
+          "substitution": 59,
+          "deletion": 2
+        },
+        "UH": {
+          "correct": 416,
+          "total": 486,
+          "substitution": 68,
+          "deletion": 2
+        },
+        "K": {
+          "correct": 1904,
+          "total": 2059,
+          "deletion": 57,
+          "substitution": 98
+        },
+        "HH": {
+          "correct": 2144,
+          "total": 2256,
+          "substitution": 65,
+          "deletion": 47
+        },
+        "Z": {
+          "substitution": 1150,
+          "total": 2611,
+          "correct": 1276,
+          "deletion": 185
+        },
+        "L": {
+          "correct": 2652,
+          "total": 3193,
+          "deletion": 217,
+          "substitution": 324
+        },
+        "ER": {
+          "correct": 1558,
+          "total": 2084,
+          "substitution": 508,
+          "deletion": 18
+        },
+        "G": {
+          "correct": 695,
+          "total": 769,
+          "deletion": 23,
+          "substitution": 51
+        },
+        "AA": {
+          "substitution": 162,
+          "total": 983,
+          "correct": 820,
+          "deletion": 1
+        },
+        "D": {
+          "deletion": 488,
+          "total": 3744,
+          "correct": 2934,
+          "substitution": 322
+        },
+        "B": {
+          "correct": 1269,
+          "total": 1337,
+          "substitution": 64,
+          "deletion": 4
+        },
+        "S": {
+          "correct": 2966,
+          "total": 3146,
+          "deletion": 83,
+          "substitution": 97
+        },
+        "OW": {
+          "correct": 971,
+          "total": 1261,
+          "substitution": 290
+        },
+        "P": {
+          "correct": 1299,
+          "total": 1573,
+          "deletion": 30,
+          "substitution": 244
+        },
+        "Y": {
+          "correct": 631,
+          "total": 668,
+          "deletion": 19,
+          "substitution": 18
+        },
+        "EY": {
+          "substitution": 213,
+          "total": 1544,
+          "correct": 1324,
+          "deletion": 7
+        },
+        "JH": {
+          "substitution": 192,
+          "total": 490,
+          "correct": 287,
+          "deletion": 11
+        },
+        "AW": {
+          "correct": 511,
+          "total": 577,
+          "substitution": 66
+        },
+        "CH": {
+          "correct": 525,
+          "total": 565,
+          "substitution": 34,
+          "deletion": 6
+        },
+        "OY": {
+          "correct": 129,
+          "total": 134,
+          "substitution": 5
+        },
+        "ZH": {
+          "correct": 47,
+          "total": 87,
+          "substitution": 40
+        }
+      },
+      "l1_stats": {
+        "Chinese": {
+          "correct": 12725,
+          "total": 14838,
+          "deletion": 389,
+          "substitution": 1724
+        },
+        "Spanish": {
+          "correct": 8526,
+          "total": 10030,
+          "substitution": 1385,
+          "deletion": 119
+        },
+        "Korean": {
+          "correct": 13246,
+          "total": 14766,
+          "substitution": 1230,
+          "deletion": 290
+        },
+        "Vietnamese": {
+          "correct": 11261,
+          "total": 15105,
+          "deletion": 1320,
+          "substitution": 2524
+        },
+        "Arabic": {
+          "correct": 13334,
+          "total": 14829,
+          "substitution": 1306,
+          "deletion": 189
+        },
+        "Hindi": {
+          "correct": 8493,
+          "total": 9858,
+          "substitution": 1208,
+          "deletion": 157
+        }
+      },
+      "spk_stats": {
+        "BWC": {
+          "correct": 4045,
+          "total": 4947,
+          "deletion": 206,
+          "substitution": 696
+        },
+        "ERMS": {
+          "correct": 4102,
+          "total": 5013,
+          "substitution": 855,
+          "deletion": 56
+        },
+        "HKK": {
+          "correct": 4498,
+          "total": 4919,
+          "substitution": 318,
+          "deletion": 103
+        },
+        "HQTV": {
+          "correct": 3752,
+          "total": 5038,
+          "deletion": 477,
+          "substitution": 809
+        },
+        "MBMPS": {
+          "correct": 4424,
+          "total": 5017,
+          "substitution": 530,
+          "deletion": 63
+        },
+        "NCC": {
+          "correct": 4356,
+          "total": 4947,
+          "substitution": 536,
+          "deletion": 55
+        },
+        "SKA": {
+          "correct": 4328,
+          "total": 4958,
+          "substitution": 571,
+          "deletion": 59
+        },
+        "SVBI": {
+          "correct": 4113,
+          "total": 4919,
+          "substitution": 717,
+          "deletion": 89
+        },
+        "THV": {
+          "correct": 3698,
+          "total": 5030,
+          "deletion": 406,
+          "substitution": 926
+        },
+        "TLV": {
+          "correct": 3811,
+          "total": 5037,
+          "substitution": 789,
+          "deletion": 437
+        },
+        "TNI": {
+          "correct": 4380,
+          "total": 4939,
+          "deletion": 68,
+          "substitution": 491
+        },
+        "TXHC": {
+          "correct": 4324,
+          "total": 4944,
+          "substitution": 492,
+          "deletion": 128
+        },
+        "YBAA": {
+          "correct": 4572,
+          "total": 4934,
+          "deletion": 31,
+          "substitution": 331
+        },
+        "YDCK": {
+          "correct": 4421,
+          "total": 4929,
+          "substitution": 450,
+          "deletion": 58
+        },
+        "YKWK": {
+          "correct": 4327,
+          "total": 4918,
+          "substitution": 462,
+          "deletion": 129
+        },
+        "ZHAA": {
+          "correct": 4434,
+          "total": 4937,
+          "substitution": 404,
+          "deletion": 99
+        }
+      },
+      "pos_stats": {
+        "word_final": 1532,
+        "word_medial": 771,
+        "word_initial": 149,
+        "single_phone_word": 12
+      },
+      "dur_bins": {
+        "01_lte20ms": 75,
+        "02_20_40ms": 1093,
+        "03_40_80ms": 994,
+        "04_gt80ms": 302
+      },
+      "ambiguities": {
+        "has_err_tag": 144,
+        "has_asterisk": 1009,
+        "is_typo_correction": 5
+      }
+    },
+    "val": {
+      "phone_stats": {
+        "F": {
+          "correct": 211,
+          "total": 213,
+          "deletion": 1,
+          "substitution": 1
+        },
+        "AO": {
+          "correct": 142,
+          "total": 144,
+          "substitution": 2
+        },
+        "R": {
+          "correct": 363,
+          "total": 421,
+          "deletion": 26,
+          "substitution": 32
+        },
+        "DH": {
+          "correct": 162,
+          "total": 300,
+          "substitution": 137,
+          "deletion": 1
+        },
+        "AH": {
+          "correct": 797,
+          "total": 874,
+          "substitution": 71,
+          "deletion": 6
+        },
+        "T": {
+          "correct": 556,
+          "total": 597,
+          "deletion": 29,
+          "substitution": 12
+        },
+        "W": {
+          "correct": 235,
+          "total": 266,
+          "substitution": 31
+        },
+        "EH": {
+          "correct": 241,
+          "total": 256,
+          "substitution": 12,
+          "deletion": 3
+        },
+        "N": {
+          "correct": 600,
+          "total": 612,
+          "substitution": 12
+        },
+        "IY": {
+          "correct": 395,
+          "total": 409,
+          "substitution": 13,
+          "deletion": 1
+        },
+        "TH": {
+          "correct": 49,
+          "total": 86,
+          "substitution": 36,
+          "deletion": 1
+        },
+        "AY": {
+          "correct": 185,
+          "total": 191,
+          "substitution": 6
+        },
+        "M": {
+          "correct": 287,
+          "total": 296,
+          "substitution": 9
+        },
+        "AE": {
+          "correct": 263,
+          "total": 286,
+          "substitution": 23
+        },
+        "V": {
+          "correct": 165,
+          "total": 202,
+          "substitution": 33,
+          "deletion": 4
+        },
+        "IH": {
+          "correct": 582,
+          "total": 655,
+          "substitution": 73
+        },
+        "NG": {
+          "substitution": 20,
+          "total": 120,
+          "correct": 99,
+          "deletion": 1
+        },
+        "UW": {
+          "correct": 170,
+          "total": 177,
+          "substitution": 7
+        },
+        "SH": {
+          "correct": 112,
+          "total": 114,
+          "substitution": 2
+        },
+        "UH": {
+          "correct": 55,
+          "total": 59,
+          "substitution": 4
+        },
+        "K": {
+          "correct": 257,
+          "total": 268,
+          "deletion": 4,
+          "substitution": 7
+        },
+        "HH": {
+          "correct": 286,
+          "total": 297,
+          "deletion": 3,
+          "substitution": 8
+        },
+        "D": {
+          "correct": 402,
+          "total": 468,
+          "deletion": 52,
+          "substitution": 14
+        },
+        "Z": {
+          "correct": 173,
+          "total": 335,
+          "substitution": 159,
+          "deletion": 3
+        },
+        "L": {
+          "correct": 393,
+          "total": 397,
+          "substitution": 2,
+          "deletion": 2
+        },
+        "ER": {
+          "correct": 216,
+          "total": 277,
+          "substitution": 60,
+          "deletion": 1
+        },
+        "G": {
+          "correct": 93,
+          "total": 97,
+          "deletion": 1,
+          "substitution": 3
+        },
+        "AA": {
+          "correct": 91,
+          "total": 121,
+          "substitution": 30
+        },
+        "B": {
+          "correct": 165,
+          "total": 174,
+          "substitution": 8,
+          "deletion": 1
+        },
+        "S": {
+          "correct": 386,
+          "total": 394,
+          "substitution": 8
+        },
+        "OW": {
+          "substitution": 69,
+          "total": 157,
+          "correct": 88
+        },
+        "P": {
+          "correct": 171,
+          "total": 185,
+          "deletion": 3,
+          "substitution": 11
+        },
+        "Y": {
+          "correct": 84,
+          "total": 86,
+          "deletion": 2
+        },
+        "EY": {
+          "substitution": 68,
+          "total": 209,
+          "correct": 141
+        },
+        "JH": {
+          "correct": 37,
+          "total": 55,
+          "substitution": 18
+        },
+        "AW": {
+          "correct": 53,
+          "total": 61,
+          "substitution": 8
+        },
+        "CH": {
+          "correct": 67,
+          "total": 67
+        },
+        "OY": {
+          "correct": 18,
+          "total": 19,
+          "substitution": 1
+        },
+        "ZH": {
+          "correct": 9,
+          "total": 11,
+          "substitution": 2
+        }
+      },
+      "l1_stats": {
+        "Spanish": {
+          "correct": 4370,
+          "total": 5011,
+          "substitution": 561,
+          "deletion": 80
+        },
+        "Hindi": {
+          "correct": 4429,
+          "total": 4945,
+          "deletion": 65,
+          "substitution": 451
+        }
+      },
+      "spk_stats": {
+        "NJS": {
+          "correct": 4370,
+          "total": 5011,
+          "substitution": 561,
+          "deletion": 80
+        },
+        "RRBI": {
+          "correct": 4429,
+          "total": 4945,
+          "deletion": 65,
+          "substitution": 451
+        }
+      },
+      "pos_stats": {
+        "word_final": 96,
+        "word_medial": 46,
+        "word_initial": 3
+      },
+      "dur_bins": {
+        "01_lte20ms": 14,
+        "02_20_40ms": 66,
+        "03_40_80ms": 52,
+        "04_gt80ms": 13
+      },
+      "ambiguities": {
+        "has_err_tag": 14,
+        "has_asterisk": 7
+      }
+    }
+  },
+  "fold_2": {
+    "train": {
+      "phone_stats": {
+        "F": {
+          "correct": 1684,
+          "total": 1732,
+          "substitution": 35,
+          "deletion": 13
+        },
+        "AO": {
+          "correct": 1166,
+          "total": 1244,
+          "substitution": 78
+        },
+        "R": {
+          "correct": 2682,
+          "total": 3371,
+          "substitution": 330,
+          "deletion": 359
+        },
+        "DH": {
+          "correct": 1015,
+          "total": 2430,
+          "substitution": 1382,
+          "deletion": 33
+        },
+        "AH": {
+          "correct": 6544,
+          "total": 7295,
+          "substitution": 652,
+          "deletion": 99
+        },
+        "T": {
+          "correct": 4129,
+          "total": 4759,
+          "substitution": 261,
+          "deletion": 369
+        },
+        "W": {
+          "correct": 2075,
+          "total": 2156,
+          "deletion": 31,
+          "substitution": 50
+        },
+        "EH": {
+          "correct": 1889,
+          "total": 2127,
+          "substitution": 232,
+          "deletion": 6
+        },
+        "N": {
+          "correct": 4548,
+          "total": 4962,
+          "deletion": 121,
+          "substitution": 293
+        },
+        "IY": {
+          "correct": 3160,
+          "total": 3289,
+          "substitution": 111,
+          "deletion": 18
+        },
+        "IH": {
+          "correct": 4245,
+          "total": 5038,
+          "substitution": 751,
+          "deletion": 42
+        },
+        "TH": {
+          "correct": 314,
+          "total": 594,
+          "substitution": 262,
+          "deletion": 18
+        },
+        "AY": {
+          "correct": 1417,
+          "total": 1477,
+          "substitution": 58,
+          "deletion": 2
+        },
+        "M": {
+          "correct": 2325,
+          "total": 2365,
+          "substitution": 35,
+          "deletion": 5
+        },
+        "AE": {
+          "correct": 1873,
+          "total": 2187,
+          "substitution": 313,
+          "deletion": 1
+        },
+        "V": {
+          "correct": 1245,
+          "total": 1675,
+          "substitution": 367,
+          "deletion": 63
+        },
+        "NG": {
+          "correct": 791,
+          "total": 868,
+          "substitution": 64,
+          "deletion": 13
+        },
+        "UW": {
+          "correct": 1335,
+          "total": 1394,
+          "substitution": 58,
+          "deletion": 1
+        },
+        "SH": {
+          "correct": 840,
+          "total": 891,
+          "substitution": 51
+        },
+        "UH": {
+          "correct": 417,
+          "total": 482,
+          "substitution": 63,
+          "deletion": 2
+        },
+        "K": {
+          "correct": 1927,
+          "total": 2055,
+          "substitution": 70,
+          "deletion": 58
+        },
+        "HH": {
+          "correct": 2124,
+          "total": 2263,
+          "deletion": 52,
+          "substitution": 87
+        },
+        "D": {
+          "substitution": 356,
+          "total": 3751,
+          "correct": 2922,
+          "deletion": 473
+        },
+        "Z": {
+          "substitution": 1273,
+          "total": 2621,
+          "correct": 1205,
+          "deletion": 143
+        },
+        "L": {
+          "correct": 2663,
+          "total": 3191,
+          "substitution": 306,
+          "deletion": 222
+        },
+        "ER": {
+          "substitution": 614,
+          "total": 2128,
+          "correct": 1497,
+          "deletion": 17
+        },
+        "G": {
+          "correct": 694,
+          "total": 773,
+          "deletion": 20,
+          "substitution": 59
+        },
+        "AA": {
+          "correct": 791,
+          "total": 970,
+          "substitution": 177,
+          "deletion": 2
+        },
+        "B": {
+          "correct": 1242,
+          "total": 1335,
+          "substitution": 86,
+          "deletion": 7
+        },
+        "S": {
+          "correct": 2981,
+          "total": 3162,
+          "substitution": 108,
+          "deletion": 73
+        },
+        "OW": {
+          "correct": 980,
+          "total": 1264,
+          "substitution": 283,
+          "deletion": 1
+        },
+        "P": {
+          "correct": 1353,
+          "total": 1570,
+          "substitution": 189,
+          "deletion": 28
+        },
+        "Y": {
+          "correct": 626,
+          "total": 662,
+          "deletion": 13,
+          "substitution": 23
+        },
+        "EY": {
+          "correct": 1337,
+          "total": 1549,
+          "substitution": 207,
+          "deletion": 5
+        },
+        "JH": {
+          "correct": 275,
+          "total": 480,
+          "substitution": 198,
+          "deletion": 7
+        },
+        "AW": {
+          "correct": 506,
+          "total": 582,
+          "substitution": 76
+        },
+        "CH": {
+          "correct": 529,
+          "total": 568,
+          "substitution": 32,
+          "deletion": 7
+        },
+        "OY": {
+          "correct": 126,
+          "total": 133,
+          "substitution": 7
+        },
+        "ZH": {
+          "correct": 49,
+          "total": 87,
+          "substitution": 38
+        }
+      },
+      "l1_stats": {
+        "Arabic": {
+          "correct": 8936,
+          "total": 9872,
+          "substitution": 806,
+          "deletion": 130
+        },
+        "Hindi": {
+          "correct": 8482,
+          "total": 9879,
+          "substitution": 1212,
+          "deletion": 185
+        },
+        "Spanish": {
+          "correct": 12411,
+          "total": 15033,
+          "deletion": 330,
+          "substitution": 2292
+        },
+        "Korean": {
+          "correct": 13334,
+          "total": 14767,
+          "substitution": 1242,
+          "deletion": 191
+        },
+        "Chinese": {
+          "correct": 12695,
+          "total": 14831,
+          "substitution": 1737,
+          "deletion": 399
+        },
+        "Vietnamese": {
+          "correct": 11663,
+          "total": 15098,
+          "deletion": 1089,
+          "substitution": 2346
+        }
+      },
+      "spk_stats": {
+        "ABA": {
+          "correct": 4502,
+          "total": 4935,
+          "substitution": 402,
+          "deletion": 31
+        },
+        "ASI": {
+          "correct": 4053,
+          "total": 4934,
+          "substitution": 761,
+          "deletion": 120
+        },
+        "EBVS": {
+          "correct": 3939,
+          "total": 5009,
+          "deletion": 194,
+          "substitution": 876
+        },
+        "ERMS": {
+          "correct": 4102,
+          "total": 5013,
+          "substitution": 855,
+          "deletion": 56
+        },
+        "HJK": {
+          "correct": 4586,
+          "total": 4920,
+          "substitution": 330,
+          "deletion": 4
+        },
+        "LXC": {
+          "correct": 4015,
+          "total": 4940,
+          "substitution": 709,
+          "deletion": 216
+        },
+        "NCC": {
+          "correct": 4356,
+          "total": 4947,
+          "substitution": 536,
+          "deletion": 55
+        },
+        "NJS": {
+          "correct": 4370,
+          "total": 5011,
+          "substitution": 561,
+          "deletion": 80
+        },
+        "PNV": {
+          "correct": 4154,
+          "total": 5031,
+          "deletion": 246,
+          "substitution": 631
+        },
+        "RRBI": {
+          "correct": 4429,
+          "total": 4945,
+          "deletion": 65,
+          "substitution": 451
+        },
+        "THV": {
+          "correct": 3698,
+          "total": 5030,
+          "deletion": 406,
+          "substitution": 926
+        },
+        "TLV": {
+          "correct": 3811,
+          "total": 5037,
+          "substitution": 789,
+          "deletion": 437
+        },
+        "TXHC": {
+          "correct": 4324,
+          "total": 4944,
+          "substitution": 492,
+          "deletion": 128
+        },
+        "YDCK": {
+          "correct": 4421,
+          "total": 4929,
+          "substitution": 450,
+          "deletion": 58
+        },
+        "YKWK": {
+          "correct": 4327,
+          "total": 4918,
+          "substitution": 462,
+          "deletion": 129
+        },
+        "ZHAA": {
+          "correct": 4434,
+          "total": 4937,
+          "substitution": 404,
+          "deletion": 99
+        }
+      },
+      "pos_stats": {
+        "word_medial": 761,
+        "word_final": 1409,
+        "word_initial": 146,
+        "single_phone_word": 8
+      },
+      "dur_bins": {
+        "01_lte20ms": 87,
+        "02_20_40ms": 989,
+        "03_40_80ms": 943,
+        "04_gt80ms": 305
+      },
+      "ambiguities": {
+        "has_asterisk": 845,
+        "has_err_tag": 154,
+        "is_typo_correction": 5
+      }
+    },
+    "val": {
+      "phone_stats": {
+        "F": {
+          "correct": 211,
+          "total": 212,
+          "substitution": 1
+        },
+        "AO": {
+          "correct": 155,
+          "total": 158,
+          "substitution": 3
+        },
+        "R": {
+          "correct": 302,
+          "total": 457,
+          "deletion": 37,
+          "substitution": 118
+        },
+        "DH": {
+          "correct": 218,
+          "total": 308,
+          "substitution": 90
+        },
+        "AH": {
+          "correct": 805,
+          "total": 859,
+          "substitution": 48,
+          "deletion": 6
+        },
+        "T": {
+          "correct": 524,
+          "total": 588,
+          "substitution": 52,
+          "deletion": 12
+        },
+        "W": {
+          "correct": 233,
+          "total": 268,
+          "substitution": 35
+        },
+        "EH": {
+          "correct": 236,
+          "total": 256,
+          "substitution": 20
+        },
+        "N": {
+          "correct": 591,
+          "total": 596,
+          "deletion": 2,
+          "substitution": 3
+        },
+        "IY": {
+          "correct": 422,
+          "total": 425,
+          "substitution": 3
+        },
+        "TH": {
+          "deletion": 1,
+          "total": 75,
+          "substitution": 33,
+          "correct": 41
+        },
+        "AY": {
+          "correct": 180,
+          "total": 184,
+          "substitution": 4
+        },
+        "M": {
+          "correct": 286,
+          "total": 286
+        },
+        "AE": {
+          "substitution": 17,
+          "total": 271,
+          "correct": 253,
+          "deletion": 1
+        },
+        "V": {
+          "correct": 176,
+          "total": 189,
+          "deletion": 2,
+          "substitution": 11
+        },
+        "IH": {
+          "correct": 619,
+          "total": 637,
+          "substitution": 15,
+          "deletion": 3
+        },
+        "NG": {
+          "correct": 125,
+          "total": 126,
+          "substitution": 1
+        },
+        "UW": {
+          "correct": 181,
+          "total": 187,
+          "substitution": 5,
+          "deletion": 1
+        },
+        "SH": {
+          "correct": 110,
+          "total": 112,
+          "substitution": 2
+        },
+        "UH": {
+          "correct": 58,
+          "total": 62,
+          "substitution": 4
+        },
+        "K": {
+          "correct": 228,
+          "total": 271,
+          "substitution": 42,
+          "deletion": 1
+        },
+        "HH": {
+          "correct": 280,
+          "total": 283,
+          "deletion": 3
+        },
+        "D": {
+          "correct": 417,
+          "total": 452,
+          "deletion": 19,
+          "substitution": 16
+        },
+        "Z": {
+          "correct": 265,
+          "total": 324,
+          "substitution": 58,
+          "deletion": 1
+        },
+        "L": {
+          "correct": 380,
+          "total": 396,
+          "substitution": 15,
+          "deletion": 1
+        },
+        "ER": {
+          "substitution": 77,
+          "total": 252,
+          "correct": 172,
+          "deletion": 3
+        },
+        "G": {
+          "correct": 92,
+          "total": 94,
+          "deletion": 1,
+          "substitution": 1
+        },
+        "AA": {
+          "substitution": 20,
+          "total": 140,
+          "correct": 120
+        },
+        "B": {
+          "correct": 169,
+          "total": 176,
+          "substitution": 7
+        },
+        "S": {
+          "correct": 375,
+          "total": 380,
+          "substitution": 5
+        },
+        "OW": {
+          "correct": 134,
+          "total": 160,
+          "substitution": 26
+        },
+        "P": {
+          "correct": 131,
+          "total": 189,
+          "substitution": 58
+        },
+        "Y": {
+          "correct": 87,
+          "total": 89,
+          "deletion": 2
+        },
+        "EY": {
+          "correct": 175,
+          "total": 196,
+          "substitution": 20,
+          "deletion": 1
+        },
+        "JH": {
+          "correct": 60,
+          "total": 65,
+          "deletion": 2,
+          "substitution": 3
+        },
+        "AW": {
+          "correct": 51,
+          "total": 56,
+          "substitution": 5
+        },
+        "CH": {
+          "correct": 60,
+          "total": 63,
+          "substitution": 3
+        },
+        "OY": {
+          "correct": 20,
+          "total": 20
+        },
+        "ZH": {
+          "correct": 10,
+          "total": 11,
+          "substitution": 1
+        }
+      },
+      "l1_stats": {
+        "Hindi": {
+          "correct": 4380,
+          "total": 4939,
+          "deletion": 68,
+          "substitution": 491
+        },
+        "Arabic": {
+          "correct": 4572,
+          "total": 4934,
+          "deletion": 31,
+          "substitution": 331
+        }
+      },
+      "spk_stats": {
+        "TNI": {
+          "correct": 4380,
+          "total": 4939,
+          "deletion": 68,
+          "substitution": 491
+        },
+        "YBAA": {
+          "correct": 4572,
+          "total": 4934,
+          "deletion": 31,
+          "substitution": 331
+        }
+      },
+      "pos_stats": {
+        "word_final": 48,
+        "word_medial": 45,
+        "word_initial": 6
+      },
+      "dur_bins": {
+        "01_lte20ms": 3,
+        "02_20_40ms": 35,
+        "03_40_80ms": 46,
+        "04_gt80ms": 15
+      },
+      "ambiguities": {
+        "has_err_tag": 73,
+        "has_asterisk": 109
+      }
+    }
+  },
+  "fold_3": {
+    "train": {
+      "phone_stats": {
+        "F": {
+          "correct": 1677,
+          "total": 1723,
+          "substitution": 32,
+          "deletion": 14
+        },
+        "AO": {
+          "correct": 1169,
+          "total": 1260,
+          "substitution": 90,
+          "deletion": 1
+        },
+        "R": {
+          "correct": 2486,
+          "total": 3393,
+          "substitution": 503,
+          "deletion": 404
+        },
+        "DH": {
+          "correct": 1123,
+          "total": 2442,
+          "substitution": 1282,
+          "deletion": 37
+        },
+        "AH": {
+          "correct": 6534,
+          "total": 7262,
+          "substitution": 615,
+          "deletion": 113
+        },
+        "T": {
+          "correct": 3914,
+          "total": 4760,
+          "substitution": 418,
+          "deletion": 428
+        },
+        "W": {
+          "correct": 2052,
+          "total": 2154,
+          "deletion": 23,
+          "substitution": 79
+        },
+        "EH": {
+          "correct": 1903,
+          "total": 2112,
+          "substitution": 197,
+          "deletion": 12
+        },
+        "N": {
+          "correct": 4613,
+          "total": 4943,
+          "deletion": 123,
+          "substitution": 207
+        },
+        "IY": {
+          "correct": 3165,
+          "total": 3286,
+          "substitution": 104,
+          "deletion": 17
+        },
+        "IH": {
+          "correct": 4411,
+          "total": 5062,
+          "substitution": 606,
+          "deletion": 45
+        },
+        "TH": {
+          "correct": 346,
+          "total": 597,
+          "substitution": 240,
+          "deletion": 11
+        },
+        "AY": {
+          "correct": 1397,
+          "total": 1470,
+          "substitution": 70,
+          "deletion": 3
+        },
+        "M": {
+          "correct": 2328,
+          "total": 2355,
+          "substitution": 21,
+          "deletion": 6
+        },
+        "AE": {
+          "correct": 1893,
+          "total": 2164,
+          "substitution": 266,
+          "deletion": 5
+        },
+        "V": {
+          "correct": 1253,
+          "total": 1671,
+          "substitution": 357,
+          "deletion": 61
+        },
+        "NG": {
+          "correct": 806,
+          "total": 881,
+          "substitution": 62,
+          "deletion": 13
+        },
+        "UW": {
+          "correct": 1331,
+          "total": 1404,
+          "substitution": 69,
+          "deletion": 4
+        },
+        "SH": {
+          "correct": 836,
+          "total": 887,
+          "substitution": 49,
+          "deletion": 2
+        },
+        "UH": {
+          "correct": 427,
+          "total": 485,
+          "substitution": 58
+        },
+        "K": {
+          "correct": 1896,
+          "total": 2065,
+          "substitution": 97,
+          "deletion": 72
+        },
+        "HH": {
+          "correct": 2101,
+          "total": 2265,
+          "deletion": 65,
+          "substitution": 99
+        },
+        "D": {
+          "substitution": 345,
+          "total": 3750,
+          "correct": 2889,
+          "deletion": 516
+        },
+        "Z": {
+          "substitution": 1207,
+          "total": 2628,
+          "correct": 1280,
+          "deletion": 141
+        },
+        "L": {
+          "correct": 2682,
+          "total": 3189,
+          "substitution": 307,
+          "deletion": 200
+        },
+        "ER": {
+          "substitution": 646,
+          "total": 2101,
+          "correct": 1441,
+          "deletion": 14
+        },
+        "G": {
+          "correct": 690,
+          "total": 778,
+          "deletion": 27,
+          "substitution": 61
+        },
+        "AA": {
+          "correct": 802,
+          "total": 975,
+          "substitution": 172,
+          "deletion": 1
+        },
+        "B": {
+          "correct": 1256,
+          "total": 1343,
+          "substitution": 81,
+          "deletion": 6
+        },
+        "S": {
+          "correct": 2980,
+          "total": 3159,
+          "substitution": 107,
+          "deletion": 72
+        },
+        "OW": {
+          "correct": 936,
+          "total": 1264,
+          "substitution": 327,
+          "deletion": 1
+        },
+        "P": {
+          "correct": 1286,
+          "total": 1566,
+          "substitution": 242,
+          "deletion": 38
+        },
+        "Y": {
+          "correct": 634,
+          "total": 670,
+          "deletion": 21,
+          "substitution": 15
+        },
+        "EY": {
+          "correct": 1322,
+          "total": 1568,
+          "substitution": 238,
+          "deletion": 8
+        },
+        "JH": {
+          "correct": 254,
+          "total": 482,
+          "substitution": 218,
+          "deletion": 10
+        },
+        "AW": {
+          "correct": 486,
+          "total": 573,
+          "substitution": 87
+        },
+        "CH": {
+          "correct": 519,
+          "total": 561,
+          "substitution": 34,
+          "deletion": 8
+        },
+        "OY": {
+          "correct": 130,
+          "total": 136,
+          "substitution": 6
+        },
+        "ZH": {
+          "correct": 49,
+          "total": 88,
+          "substitution": 39
+        }
+      },
+      "l1_stats": {
+        "Arabic": {
+          "correct": 8830,
+          "total": 9893,
+          "substitution": 973,
+          "deletion": 90
+        },
+        "Hindi": {
+          "correct": 12546,
+          "total": 14792,
+          "substitution": 1969,
+          "deletion": 277
+        },
+        "Chinese": {
+          "correct": 8060,
+          "total": 9887,
+          "deletion": 422,
+          "substitution": 1405
+        },
+        "Spanish": {
+          "correct": 12733,
+          "total": 15037,
+          "deletion": 337,
+          "substitution": 1967
+        },
+        "Korean": {
+          "correct": 13411,
+          "total": 14757,
+          "substitution": 1110,
+          "deletion": 236
+        },
+        "Vietnamese": {
+          "correct": 11717,
+          "total": 15106,
+          "deletion": 1160,
+          "substitution": 2229
+        }
+      },
+      "spk_stats": {
+        "ABA": {
+          "correct": 4502,
+          "total": 4935,
+          "substitution": 402,
+          "deletion": 31
+        },
+        "ASI": {
+          "correct": 4053,
+          "total": 4934,
+          "substitution": 761,
+          "deletion": 120
+        },
+        "BWC": {
+          "correct": 4045,
+          "total": 4947,
+          "deletion": 206,
+          "substitution": 696
+        },
+        "EBVS": {
+          "correct": 3939,
+          "total": 5009,
+          "deletion": 194,
+          "substitution": 876
+        },
+        "HJK": {
+          "correct": 4586,
+          "total": 4920,
+          "substitution": 330,
+          "deletion": 4
+        },
+        "HKK": {
+          "correct": 4498,
+          "total": 4919,
+          "substitution": 318,
+          "deletion": 103
+        },
+        "HQTV": {
+          "correct": 3752,
+          "total": 5038,
+          "deletion": 477,
+          "substitution": 809
+        },
+        "LXC": {
+          "correct": 4015,
+          "total": 4940,
+          "substitution": 709,
+          "deletion": 216
+        },
+        "MBMPS": {
+          "correct": 4424,
+          "total": 5017,
+          "substitution": 530,
+          "deletion": 63
+        },
+        "NJS": {
+          "correct": 4370,
+          "total": 5011,
+          "substitution": 561,
+          "deletion": 80
+        },
+        "PNV": {
+          "correct": 4154,
+          "total": 5031,
+          "deletion": 246,
+          "substitution": 631
+        },
+        "SKA": {
+          "correct": 4328,
+          "total": 4958,
+          "substitution": 571,
+          "deletion": 59
+        },
+        "SVBI": {
+          "correct": 4113,
+          "total": 4919,
+          "substitution": 717,
+          "deletion": 89
+        },
+        "TLV": {
+          "correct": 3811,
+          "total": 5037,
+          "substitution": 789,
+          "deletion": 437
+        },
+        "TNI": {
+          "correct": 4380,
+          "total": 4939,
+          "deletion": 68,
+          "substitution": 491
+        },
+        "YKWK": {
+          "correct": 4327,
+          "total": 4918,
+          "substitution": 462,
+          "deletion": 129
+        }
+      },
+      "pos_stats": {
+        "word_medial": 807,
+        "word_final": 1545,
+        "word_initial": 159,
+        "single_phone_word": 11
+      },
+      "dur_bins": {
+        "01_lte20ms": 87,
+        "02_20_40ms": 1098,
+        "03_40_80ms": 1032,
+        "04_gt80ms": 305
+      },
+      "ambiguities": {
+        "has_asterisk": 1018,
+        "has_err_tag": 233,
+        "is_typo_correction": 4
+      }
+    },
+    "val": {
+      "phone_stats": {
+        "F": {
+          "correct": 217,
+          "total": 220,
+          "substitution": 3
+        },
+        "ER": {
+          "correct": 238,
+          "total": 265,
+          "substitution": 25,
+          "deletion": 2
+        },
+        "DH": {
+          "correct": 176,
+          "total": 298,
+          "substitution": 114,
+          "deletion": 8
+        },
+        "AH": {
+          "correct": 873,
+          "total": 924,
+          "substitution": 38,
+          "deletion": 13
+        },
+        "T": {
+          "correct": 529,
+          "total": 589,
+          "substitution": 21,
+          "deletion": 39
+        },
+        "W": {
+          "correct": 268,
+          "total": 274,
+          "substitution": 4,
+          "deletion": 2
+        },
+        "EH": {
+          "correct": 218,
+          "total": 264,
+          "substitution": 46
+        },
+        "N": {
+          "correct": 572,
+          "total": 614,
+          "substitution": 29,
+          "deletion": 13
+        },
+        "IY": {
+          "correct": 413,
+          "total": 424,
+          "substitution": 9,
+          "deletion": 2
+        },
+        "IH": {
+          "correct": 554,
+          "total": 619,
+          "substitution": 59,
+          "deletion": 6
+        },
+        "TH": {
+          "correct": 43,
+          "total": 75,
+          "substitution": 28,
+          "deletion": 4
+        },
+        "AY": {
+          "correct": 183,
+          "total": 192,
+          "substitution": 9
+        },
+        "M": {
+          "correct": 283,
+          "total": 293,
+          "substitution": 9,
+          "deletion": 1
+        },
+        "AE": {
+          "correct": 265,
+          "total": 282,
+          "substitution": 17
+        },
+        "V": {
+          "substitution": 40,
+          "total": 193,
+          "correct": 148,
+          "deletion": 5
+        },
+        "NG": {
+          "correct": 110,
+          "total": 113,
+          "substitution": 2,
+          "deletion": 1
+        },
+        "UW": {
+          "correct": 163,
+          "total": 172,
+          "substitution": 8,
+          "deletion": 1
+        },
+        "SH": {
+          "correct": 115,
+          "total": 116,
+          "substitution": 1
+        },
+        "UH": {
+          "substitution": 10,
+          "total": 62,
+          "correct": 50,
+          "deletion": 2
+        },
+        "K": {
+          "correct": 258,
+          "total": 263,
+          "substitution": 5
+        },
+        "HH": {
+          "correct": 270,
+          "total": 285,
+          "deletion": 12,
+          "substitution": 3
+        },
+        "D": {
+          "correct": 373,
+          "total": 466,
+          "deletion": 46,
+          "substitution": 47
+        },
+        "Z": {
+          "substitution": 157,
+          "total": 313,
+          "correct": 153,
+          "deletion": 3
+        },
+        "L": {
+          "substitution": 26,
+          "total": 401,
+          "deletion": 27,
+          "correct": 348
+        },
+        "G": {
+          "correct": 82,
+          "total": 90,
+          "substitution": 6,
+          "deletion": 2
+        },
+        "AA": {
+          "correct": 107,
+          "total": 115,
+          "substitution": 8
+        },
+        "B": {
+          "correct": 153,
+          "total": 169,
+          "substitution": 15,
+          "deletion": 1
+        },
+        "S": {
+          "correct": 380,
+          "total": 388,
+          "deletion": 2,
+          "substitution": 6
+        },
+        "OW": {
+          "correct": 116,
+          "total": 156,
+          "substitution": 40
+        },
+        "P": {
+          "correct": 170,
+          "total": 193,
+          "substitution": 21,
+          "deletion": 2
+        },
+        "Y": {
+          "correct": 75,
+          "total": 80,
+          "deletion": 3,
+          "substitution": 2
+        },
+        "AO": {
+          "correct": 132,
+          "total": 147,
+          "substitution": 15
+        },
+        "R": {
+          "correct": 363,
+          "total": 411,
+          "deletion": 29,
+          "substitution": 19
+        },
+        "EY": {
+          "correct": 165,
+          "total": 185,
+          "substitution": 20
+        },
+        "JH": {
+          "correct": 40,
+          "total": 63,
+          "substitution": 23
+        },
+        "AW": {
+          "substitution": 7,
+          "total": 69,
+          "correct": 62
+        },
+        "CH": {
+          "correct": 68,
+          "total": 70,
+          "substitution": 1,
+          "deletion": 1
+        },
+        "OY": {
+          "correct": 17,
+          "total": 17
+        },
+        "ZH": {
+          "correct": 8,
+          "total": 11,
+          "substitution": 3
+        }
+      },
+      "l1_stats": {
+        "Chinese": {
+          "correct": 4324,
+          "total": 4944,
+          "substitution": 492,
+          "deletion": 128
+        },
+        "Arabic": {
+          "correct": 4434,
+          "total": 4937,
+          "substitution": 404,
+          "deletion": 99
+        }
+      },
+      "spk_stats": {
+        "TXHC": {
+          "correct": 4324,
+          "total": 4944,
+          "substitution": 492,
+          "deletion": 128
+        },
+        "ZHAA": {
+          "correct": 4434,
+          "total": 4937,
+          "substitution": 404,
+          "deletion": 99
+        }
+      },
+      "pos_stats": {
+        "word_medial": 78,
+        "word_final": 120,
+        "word_initial": 28,
+        "single_phone_word": 1
+      },
+      "dur_bins": {
+        "01_lte20ms": 19,
+        "02_20_40ms": 83,
+        "03_40_80ms": 95,
+        "04_gt80ms": 30
+      },
+      "ambiguities": {
+        "has_asterisk": 56,
+        "has_err_tag": 13,
+        "is_typo_correction": 2
+      }
+    }
+  },
+  "fold_4": {
+    "train": {
+      "phone_stats": {
+        "F": {
+          "correct": 1688,
+          "total": 1731,
+          "substitution": 31,
+          "deletion": 12
+        },
+        "AO": {
+          "correct": 1196,
+          "total": 1277,
+          "substitution": 80,
+          "deletion": 1
+        },
+        "R": {
+          "correct": 2454,
+          "total": 3409,
+          "substitution": 596,
+          "deletion": 359
+        },
+        "DH": {
+          "correct": 1158,
+          "total": 2426,
+          "substitution": 1242,
+          "deletion": 26
+        },
+        "AH": {
+          "correct": 6479,
+          "total": 7309,
+          "substitution": 734,
+          "deletion": 96
+        },
+        "T": {
+          "correct": 4037,
+          "total": 4764,
+          "substitution": 348,
+          "deletion": 379
+        },
+        "W": {
+          "correct": 2058,
+          "total": 2153,
+          "deletion": 21,
+          "substitution": 74
+        },
+        "EH": {
+          "correct": 1892,
+          "total": 2129,
+          "substitution": 228,
+          "deletion": 9
+        },
+        "N": {
+          "correct": 4556,
+          "total": 4924,
+          "deletion": 137,
+          "substitution": 231
+        },
+        "IY": {
+          "correct": 3172,
+          "total": 3284,
+          "substitution": 95,
+          "deletion": 17
+        },
+        "IH": {
+          "correct": 4264,
+          "total": 5035,
+          "substitution": 725,
+          "deletion": 46
+        },
+        "TH": {
+          "correct": 337,
+          "total": 602,
+          "substitution": 247,
+          "deletion": 18
+        },
+        "AY": {
+          "correct": 1404,
+          "total": 1481,
+          "substitution": 74,
+          "deletion": 3
+        },
+        "M": {
+          "correct": 2330,
+          "total": 2349,
+          "substitution": 13,
+          "deletion": 6
+        },
+        "AE": {
+          "correct": 1786,
+          "total": 2140,
+          "substitution": 351,
+          "deletion": 3
+        },
+        "V": {
+          "correct": 1190,
+          "total": 1653,
+          "substitution": 406,
+          "deletion": 57
+        },
+        "NG": {
+          "correct": 822,
+          "total": 893,
+          "substitution": 56,
+          "deletion": 15
+        },
+        "UW": {
+          "correct": 1337,
+          "total": 1404,
+          "substitution": 65,
+          "deletion": 2
+        },
+        "SH": {
+          "correct": 847,
+          "total": 889,
+          "substitution": 40,
+          "deletion": 2
+        },
+        "UH": {
+          "correct": 415,
+          "total": 487,
+          "substitution": 72
+        },
+        "K": {
+          "correct": 1934,
+          "total": 2080,
+          "substitution": 80,
+          "deletion": 66
+        },
+        "HH": {
+          "correct": 2120,
+          "total": 2272,
+          "deletion": 43,
+          "substitution": 109
+        },
+        "D": {
+          "substitution": 329,
+          "total": 3736,
+          "correct": 2910,
+          "deletion": 497
+        },
+        "Z": {
+          "substitution": 1210,
+          "total": 2623,
+          "correct": 1284,
+          "deletion": 129
+        },
+        "L": {
+          "correct": 2717,
+          "total": 3204,
+          "substitution": 279,
+          "deletion": 208
+        },
+        "ER": {
+          "substitution": 725,
+          "total": 2107,
+          "correct": 1372,
+          "deletion": 10
+        },
+        "G": {
+          "correct": 697,
+          "total": 769,
+          "deletion": 24,
+          "substitution": 48
+        },
+        "AA": {
+          "correct": 765,
+          "total": 971,
+          "substitution": 204,
+          "deletion": 2
+        },
+        "B": {
+          "correct": 1268,
+          "total": 1351,
+          "substitution": 76,
+          "deletion": 7
+        },
+        "S": {
+          "correct": 2989,
+          "total": 3155,
+          "substitution": 105,
+          "deletion": 61
+        },
+        "OW": {
+          "correct": 990,
+          "total": 1267,
+          "substitution": 276,
+          "deletion": 1
+        },
+        "P": {
+          "correct": 1297,
+          "total": 1563,
+          "substitution": 243,
+          "deletion": 23
+        },
+        "Y": {
+          "correct": 626,
+          "total": 670,
+          "deletion": 18,
+          "substitution": 26
+        },
+        "EY": {
+          "correct": 1279,
+          "total": 1551,
+          "substitution": 266,
+          "deletion": 6
+        },
+        "JH": {
+          "correct": 271,
+          "total": 493,
+          "substitution": 210,
+          "deletion": 12
+        },
+        "AW": {
+          "correct": 489,
+          "total": 563,
+          "substitution": 74
+        },
+        "CH": {
+          "correct": 522,
+          "total": 560,
+          "substitution": 33,
+          "deletion": 5
+        },
+        "OY": {
+          "correct": 133,
+          "total": 138,
+          "substitution": 5
+        },
+        "ZH": {
+          "correct": 48,
+          "total": 87,
+          "substitution": 39
+        }
+      },
+      "l1_stats": {
+        "Arabic": {
+          "correct": 13402,
+          "total": 14827,
+          "substitution": 1304,
+          "deletion": 121
+        },
+        "Hindi": {
+          "correct": 12595,
+          "total": 14798,
+          "substitution": 1929,
+          "deletion": 274
+        },
+        "Chinese": {
+          "correct": 8060,
+          "total": 9887,
+          "deletion": 422,
+          "substitution": 1405
+        },
+        "Spanish": {
+          "correct": 12465,
+          "total": 15039,
+          "deletion": 313,
+          "substitution": 2261
+        },
+        "Korean": {
+          "correct": 9007,
+          "total": 9849,
+          "substitution": 780,
+          "deletion": 62
+        },
+        "Vietnamese": {
+          "correct": 11604,
+          "total": 15099,
+          "deletion": 1129,
+          "substitution": 2366
+        }
+      },
+      "spk_stats": {
+        "ABA": {
+          "correct": 4502,
+          "total": 4935,
+          "substitution": 402,
+          "deletion": 31
+        },
+        "ASI": {
+          "correct": 4053,
+          "total": 4934,
+          "substitution": 761,
+          "deletion": 120
+        },
+        "BWC": {
+          "correct": 4045,
+          "total": 4947,
+          "deletion": 206,
+          "substitution": 696
+        },
+        "EBVS": {
+          "correct": 3939,
+          "total": 5009,
+          "deletion": 194,
+          "substitution": 876
+        },
+        "ERMS": {
+          "correct": 4102,
+          "total": 5013,
+          "substitution": 855,
+          "deletion": 56
+        },
+        "HJK": {
+          "correct": 4586,
+          "total": 4920,
+          "substitution": 330,
+          "deletion": 4
+        },
+        "HQTV": {
+          "correct": 3752,
+          "total": 5038,
+          "deletion": 477,
+          "substitution": 809
+        },
+        "LXC": {
+          "correct": 4015,
+          "total": 4940,
+          "substitution": 709,
+          "deletion": 216
+        },
+        "MBMPS": {
+          "correct": 4424,
+          "total": 5017,
+          "substitution": 530,
+          "deletion": 63
+        },
+        "PNV": {
+          "correct": 4154,
+          "total": 5031,
+          "deletion": 246,
+          "substitution": 631
+        },
+        "RRBI": {
+          "correct": 4429,
+          "total": 4945,
+          "deletion": 65,
+          "substitution": 451
+        },
+        "SKA": {
+          "correct": 4328,
+          "total": 4958,
+          "substitution": 571,
+          "deletion": 59
+        },
+        "SVBI": {
+          "correct": 4113,
+          "total": 4919,
+          "substitution": 717,
+          "deletion": 89
+        },
+        "THV": {
+          "correct": 3698,
+          "total": 5030,
+          "deletion": 406,
+          "substitution": 926
+        },
+        "YBAA": {
+          "correct": 4572,
+          "total": 4934,
+          "deletion": 31,
+          "substitution": 331
+        },
+        "YDCK": {
+          "correct": 4421,
+          "total": 4929,
+          "substitution": 450,
+          "deletion": 58
+        }
+      },
+      "pos_stats": {
+        "word_medial": 774,
+        "word_final": 1422,
+        "word_initial": 122,
+        "single_phone_word": 3
+      },
+      "dur_bins": {
+        "01_lte20ms": 68,
+        "02_20_40ms": 1025,
+        "03_40_80ms": 966,
+        "04_gt80ms": 262
+      },
+      "ambiguities": {
+        "has_asterisk": 1365,
+        "has_err_tag": 134,
+        "is_typo_correction": 5
+      }
+    },
+    "val": {
+      "phone_stats": {
+        "F": {
+          "correct": 210,
+          "total": 215,
+          "substitution": 4,
+          "deletion": 1
+        },
+        "AO": {
+          "correct": 133,
+          "total": 148,
+          "substitution": 15
+        },
+        "R": {
+          "correct": 383,
+          "total": 415,
+          "substitution": 12,
+          "deletion": 20
+        },
+        "DH": {
+          "correct": 131,
+          "total": 309,
+          "substitution": 176,
+          "deletion": 2
+        },
+        "AH": {
+          "correct": 864,
+          "total": 914,
+          "substitution": 46,
+          "deletion": 4
+        },
+        "T": {
+          "correct": 547,
+          "total": 583,
+          "deletion": 29,
+          "substitution": 7
+        },
+        "W": {
+          "correct": 262,
+          "total": 270,
+          "substitution": 1,
+          "deletion": 7
+        },
+        "EH": {
+          "correct": 238,
+          "total": 258,
+          "substitution": 20
+        },
+        "N": {
+          "correct": 564,
+          "total": 631,
+          "substitution": 64,
+          "deletion": 3
+        },
+        "IY": {
+          "correct": 398,
+          "total": 415,
+          "substitution": 16,
+          "deletion": 1
+        },
+        "IH": {
+          "correct": 539,
+          "total": 626,
+          "substitution": 81,
+          "deletion": 6
+        },
+        "TH": {
+          "correct": 36,
+          "total": 70,
+          "substitution": 32,
+          "deletion": 2
+        },
+        "AY": {
+          "correct": 166,
+          "total": 176,
+          "substitution": 10
+        },
+        "M": {
+          "correct": 294,
+          "total": 300,
+          "substitution": 6
+        },
+        "AE": {
+          "correct": 269,
+          "total": 280,
+          "substitution": 10,
+          "deletion": 1
+        },
+        "V": {
+          "correct": 203,
+          "total": 211,
+          "substitution": 8
+        },
+        "NG": {
+          "correct": 98,
+          "total": 103,
+          "deletion": 1,
+          "substitution": 4
+        },
+        "UW": {
+          "correct": 166,
+          "total": 170,
+          "deletion": 1,
+          "substitution": 3
+        },
+        "SH": {
+          "correct": 114,
+          "total": 114
+        },
+        "UH": {
+          "correct": 61,
+          "total": 61
+        },
+        "K": {
+          "correct": 242,
+          "total": 248,
+          "deletion": 6
+        },
+        "HH": {
+          "correct": 260,
+          "total": 279,
+          "deletion": 18,
+          "substitution": 1
+        },
+        "D": {
+          "correct": 425,
+          "total": 472,
+          "substitution": 20,
+          "deletion": 27
+        },
+        "Z": {
+          "correct": 193,
+          "total": 326,
+          "substitution": 129,
+          "deletion": 4
+        },
+        "L": {
+          "substitution": 82,
+          "total": 384,
+          "correct": 285,
+          "deletion": 17
+        },
+        "ER": {
+          "correct": 262,
+          "total": 269,
+          "substitution": 6,
+          "deletion": 1
+        },
+        "G": {
+          "correct": 95,
+          "total": 98,
+          "substitution": 2,
+          "deletion": 1
+        },
+        "AA": {
+          "correct": 113,
+          "total": 123,
+          "substitution": 10
+        },
+        "B": {
+          "correct": 154,
+          "total": 160,
+          "substitution": 5,
+          "deletion": 1
+        },
+        "S": {
+          "correct": 380,
+          "total": 382,
+          "substitution": 2
+        },
+        "OW": {
+          "correct": 117,
+          "total": 153,
+          "substitution": 36
+        },
+        "P": {
+          "correct": 182,
+          "total": 196,
+          "substitution": 9,
+          "deletion": 5
+        },
+        "Y": {
+          "correct": 84,
+          "total": 84
+        },
+        "EY": {
+          "correct": 173,
+          "total": 188,
+          "substitution": 15
+        },
+        "JH": {
+          "correct": 45,
+          "total": 53,
+          "substitution": 8
+        },
+        "AW": {
+          "correct": 77,
+          "total": 84,
+          "substitution": 7
+        },
+        "CH": {
+          "correct": 71,
+          "total": 72,
+          "substitution": 1
+        },
+        "OY": {
+          "correct": 15,
+          "total": 15
+        },
+        "ZH": {
+          "substitution": 6,
+          "total": 11,
+          "correct": 5
+        }
+      },
+      "l1_stats": {
+        "Korean": {
+          "correct": 4498,
+          "total": 4919,
+          "substitution": 318,
+          "deletion": 103
+        },
+        "Chinese": {
+          "correct": 4356,
+          "total": 4947,
+          "substitution": 536,
+          "deletion": 55
+        }
+      },
+      "spk_stats": {
+        "HKK": {
+          "correct": 4498,
+          "total": 4919,
+          "substitution": 318,
+          "deletion": 103
+        },
+        "NCC": {
+          "correct": 4356,
+          "total": 4947,
+          "substitution": 536,
+          "deletion": 55
+        }
+      },
+      "pos_stats": {
+        "word_final": 86,
+        "word_medial": 42,
+        "word_initial": 29,
+        "single_phone_word": 1
+      },
+      "dur_bins": {
+        "01_lte20ms": 10,
+        "02_20_40ms": 63,
+        "03_40_80ms": 60,
+        "04_gt80ms": 25
+      },
+      "ambiguities": {
+        "has_asterisk": 7,
+        "has_err_tag": 9
+      }
+    }
+  }
+}

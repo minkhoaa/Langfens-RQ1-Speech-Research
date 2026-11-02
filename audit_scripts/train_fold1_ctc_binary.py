@@ -547,6 +547,12 @@ def main():
         model_kwargs["focal_gamma"] = cfg["focal_gamma"]
     if "focal_alpha" in cfg:
         model_kwargs["focal_alpha"] = cfg["focal_alpha"]
+    if "enable_skip_token" in cfg:
+        model_kwargs["enable_skip_token"] = bool(cfg["enable_skip_token"])
+    if "monotonic_bias" in cfg:
+        model_kwargs["monotonic_bias"] = bool(cfg["monotonic_bias"])
+    if "monotonic_bandwidth" in cfg:
+        model_kwargs["monotonic_bandwidth"] = float(cfg["monotonic_bandwidth"])
 
     model = LangfensWav2Vec2MDD.from_pretrained(
         cfg["pretrained_model"],
