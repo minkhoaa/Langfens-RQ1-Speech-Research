@@ -10,6 +10,10 @@
 
 ---
 
+## RQ1-BENCH-01 — parallel inference benchmark infrastructure
+
+Status: **IN_PROGRESS; REMOTE_EXECUTION_GATED**. Shared contract frozen from base `467c8233c3f19381c66f10d5fa64d1f44a1c6066` before three isolated worktree lanes. [Process checkpoint](../../manifests/RQ1-BENCH-01/PROCESS_CHECKPOINT.md), [contract](../../manifests/RQ1-BENCH-01/CONTRACT.md). No cross-platform parity established; DIAG-02B scientific disposition unchanged.
+
 ## 1. Master Research Phase Registry
 
 | Phase ID | Phase Objective | Verified Status | Last Completed Step | Last Verified Commit | Primary Checkpoint | Next Valid Continuation | Remaining Blocker |

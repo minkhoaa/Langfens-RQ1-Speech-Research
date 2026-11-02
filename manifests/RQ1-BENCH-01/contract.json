@@ -1,0 +1,567 @@
+{
+  "schema_version": 1,
+  "benchmark_id": "RQ1-BENCH-01",
+  "source_base_commit": "467c8233c3f19381c66f10d5fa64d1f44a1c6066",
+  "seed": 1337,
+  "threads": 1,
+  "batch_size": 1,
+  "warmup_utterances_per_fold": 1,
+  "repeats": 1,
+  "profiles": [
+    "LOCAL_FP32",
+    "KAGGLE_FP32",
+    "KAGGLE_FP16"
+  ],
+  "subset_description": "DIAG-02B first 10 omission-containing validation utterances per speaker; omission-enriched, not representative",
+  "split": {
+    "path": "manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json",
+    "sha256": "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b"
+  },
+  "resources": {
+    "cmudict": {
+      "path": "resources/CMUDict/cmudict.dict",
+      "sha256": "81917843c7f44ce2b094ac63873c2c7a4cf802040792c455ba3ca406891c3d22"
+    },
+    "prompts": {
+      "path": "resources/L2-ARCTIC/prompts.json",
+      "sha256": "87843d363bc7e2bbe849842efe16974cb6634dfe0539efb42d666aed7e17f11e"
+    }
+  },
+  "folds": [
+    {
+      "fold": 1,
+      "checkpoint": {
+        "path": "checkpoints/RQ1-TRN-02A/recovered/best.pt",
+        "sha256": "a2445c8d17910bf3c03101f50fc419675e8d1bc012af43af10267a28dbba948b"
+      },
+      "package": {
+        "path": "datasets/L2-ARCTIC/authorized_RQ1-TRN-02A_fold1_train_val_only.zip",
+        "sha256": "b750eb3bf3971afccd9ab9058a64fa6b3f5781399b9ef0f1294d29bf580784a9"
+      }
+    },
+    {
+      "fold": 2,
+      "checkpoint": {
+        "path": "checkpoints/fold2/baseline_r_fold2/fixed_budget_checkpoint.pt",
+        "sha256": "ab4c589445feac42636296cd36d7cf2ae7eba7360445f0084454c87fa2fef508"
+      },
+      "package": {
+        "path": "datasets/L2-ARCTIC/authorized_RQ1-TRN_fold2_train_val_only.zip",
+        "sha256": "112cc9e0cc5e37e5fa034df504eca019dd6ad438c96cb642335ecf10a802f0d9"
+      }
+    },
+    {
+      "fold": 3,
+      "checkpoint": {
+        "path": "checkpoints/fold3/baseline_r_fold3/fixed_budget_checkpoint.pt",
+        "sha256": "bbee9dd392806fc81c88e41018edc7adb270d71b5047930f5ce78a69c538a441"
+      },
+      "package": {
+        "path": "datasets/L2-ARCTIC/authorized_RQ1-TRN_fold3_train_val_only.zip",
+        "sha256": "e81ac9e5d95a68d7f02c7b2ea8e5f1e9fd89b047926ffeeb4d096b0a3a5378a2"
+      }
+    },
+    {
+      "fold": 4,
+      "checkpoint": {
+        "path": "checkpoints/fold4/baseline_r_fold4/fixed_budget_checkpoint.pt",
+        "sha256": "c502271feba097781a6b0bdfe413085271d3a03647353f272dccd29bbb1499f6"
+      },
+      "package": {
+        "path": "datasets/L2-ARCTIC/authorized_RQ1-TRN_fold4_train_val_only.zip",
+        "sha256": "653bdad079ee951d6b6d6a3f19964143aa5f4290a3f8c232e9b2524abdbe7f94"
+      }
+    }
+  ],
+  "utterances": [
+    {
+      "fold": 1,
+      "speaker": "NJS",
+      "utterance_id": "arctic_a0006",
+      "prediction_id": "1/NJS/arctic_a0006"
+    },
+    {
+      "fold": 1,
+      "speaker": "NJS",
+      "utterance_id": "arctic_a0007",
+      "prediction_id": "1/NJS/arctic_a0007"
+    },
+    {
+      "fold": 1,
+      "speaker": "NJS",
+      "utterance_id": "arctic_a0008",
+      "prediction_id": "1/NJS/arctic_a0008"
+    },
+    {
+      "fold": 1,
+      "speaker": "NJS",
+      "utterance_id": "arctic_a0013",
+      "prediction_id": "1/NJS/arctic_a0013"
+    },
+    {
+      "fold": 1,
+      "speaker": "NJS",
+      "utterance_id": "arctic_a0019",
+      "prediction_id": "1/NJS/arctic_a0019"
+    },
+    {
+      "fold": 1,
+      "speaker": "NJS",
+      "utterance_id": "arctic_a0020",
+      "prediction_id": "1/NJS/arctic_a0020"
+    },
+    {
+      "fold": 1,
+      "speaker": "NJS",
+      "utterance_id": "arctic_a0021",
+      "prediction_id": "1/NJS/arctic_a0021"
+    },
+    {
+      "fold": 1,
+      "speaker": "NJS",
+      "utterance_id": "arctic_a0022",
+      "prediction_id": "1/NJS/arctic_a0022"
+    },
+    {
+      "fold": 1,
+      "speaker": "NJS",
+      "utterance_id": "arctic_a0023",
+      "prediction_id": "1/NJS/arctic_a0023"
+    },
+    {
+      "fold": 1,
+      "speaker": "NJS",
+      "utterance_id": "arctic_a0024",
+      "prediction_id": "1/NJS/arctic_a0024"
+    },
+    {
+      "fold": 1,
+      "speaker": "RRBI",
+      "utterance_id": "arctic_a0003",
+      "prediction_id": "1/RRBI/arctic_a0003"
+    },
+    {
+      "fold": 1,
+      "speaker": "RRBI",
+      "utterance_id": "arctic_a0007",
+      "prediction_id": "1/RRBI/arctic_a0007"
+    },
+    {
+      "fold": 1,
+      "speaker": "RRBI",
+      "utterance_id": "arctic_a0019",
+      "prediction_id": "1/RRBI/arctic_a0019"
+    },
+    {
+      "fold": 1,
+      "speaker": "RRBI",
+      "utterance_id": "arctic_a0020",
+      "prediction_id": "1/RRBI/arctic_a0020"
+    },
+    {
+      "fold": 1,
+      "speaker": "RRBI",
+      "utterance_id": "arctic_a0029",
+      "prediction_id": "1/RRBI/arctic_a0029"
+    },
+    {
+      "fold": 1,
+      "speaker": "RRBI",
+      "utterance_id": "arctic_a0031",
+      "prediction_id": "1/RRBI/arctic_a0031"
+    },
+    {
+      "fold": 1,
+      "speaker": "RRBI",
+      "utterance_id": "arctic_a0036",
+      "prediction_id": "1/RRBI/arctic_a0036"
+    },
+    {
+      "fold": 1,
+      "speaker": "RRBI",
+      "utterance_id": "arctic_a0045",
+      "prediction_id": "1/RRBI/arctic_a0045"
+    },
+    {
+      "fold": 1,
+      "speaker": "RRBI",
+      "utterance_id": "arctic_a0046",
+      "prediction_id": "1/RRBI/arctic_a0046"
+    },
+    {
+      "fold": 1,
+      "speaker": "RRBI",
+      "utterance_id": "arctic_a0047",
+      "prediction_id": "1/RRBI/arctic_a0047"
+    },
+    {
+      "fold": 2,
+      "speaker": "TNI",
+      "utterance_id": "arctic_a0003",
+      "prediction_id": "2/TNI/arctic_a0003"
+    },
+    {
+      "fold": 2,
+      "speaker": "TNI",
+      "utterance_id": "arctic_a0005",
+      "prediction_id": "2/TNI/arctic_a0005"
+    },
+    {
+      "fold": 2,
+      "speaker": "TNI",
+      "utterance_id": "arctic_a0021",
+      "prediction_id": "2/TNI/arctic_a0021"
+    },
+    {
+      "fold": 2,
+      "speaker": "TNI",
+      "utterance_id": "arctic_a0022",
+      "prediction_id": "2/TNI/arctic_a0022"
+    },
+    {
+      "fold": 2,
+      "speaker": "TNI",
+      "utterance_id": "arctic_a0023",
+      "prediction_id": "2/TNI/arctic_a0023"
+    },
+    {
+      "fold": 2,
+      "speaker": "TNI",
+      "utterance_id": "arctic_a0025",
+      "prediction_id": "2/TNI/arctic_a0025"
+    },
+    {
+      "fold": 2,
+      "speaker": "TNI",
+      "utterance_id": "arctic_a0027",
+      "prediction_id": "2/TNI/arctic_a0027"
+    },
+    {
+      "fold": 2,
+      "speaker": "TNI",
+      "utterance_id": "arctic_a0028",
+      "prediction_id": "2/TNI/arctic_a0028"
+    },
+    {
+      "fold": 2,
+      "speaker": "TNI",
+      "utterance_id": "arctic_a0029",
+      "prediction_id": "2/TNI/arctic_a0029"
+    },
+    {
+      "fold": 2,
+      "speaker": "TNI",
+      "utterance_id": "arctic_a0031",
+      "prediction_id": "2/TNI/arctic_a0031"
+    },
+    {
+      "fold": 2,
+      "speaker": "YBAA",
+      "utterance_id": "arctic_a0003",
+      "prediction_id": "2/YBAA/arctic_a0003"
+    },
+    {
+      "fold": 2,
+      "speaker": "YBAA",
+      "utterance_id": "arctic_a0013",
+      "prediction_id": "2/YBAA/arctic_a0013"
+    },
+    {
+      "fold": 2,
+      "speaker": "YBAA",
+      "utterance_id": "arctic_a0020",
+      "prediction_id": "2/YBAA/arctic_a0020"
+    },
+    {
+      "fold": 2,
+      "speaker": "YBAA",
+      "utterance_id": "arctic_a0021",
+      "prediction_id": "2/YBAA/arctic_a0021"
+    },
+    {
+      "fold": 2,
+      "speaker": "YBAA",
+      "utterance_id": "arctic_a0022",
+      "prediction_id": "2/YBAA/arctic_a0022"
+    },
+    {
+      "fold": 2,
+      "speaker": "YBAA",
+      "utterance_id": "arctic_a0041",
+      "prediction_id": "2/YBAA/arctic_a0041"
+    },
+    {
+      "fold": 2,
+      "speaker": "YBAA",
+      "utterance_id": "arctic_a0053",
+      "prediction_id": "2/YBAA/arctic_a0053"
+    },
+    {
+      "fold": 2,
+      "speaker": "YBAA",
+      "utterance_id": "arctic_a0067",
+      "prediction_id": "2/YBAA/arctic_a0067"
+    },
+    {
+      "fold": 2,
+      "speaker": "YBAA",
+      "utterance_id": "arctic_a0078",
+      "prediction_id": "2/YBAA/arctic_a0078"
+    },
+    {
+      "fold": 2,
+      "speaker": "YBAA",
+      "utterance_id": "arctic_a0100",
+      "prediction_id": "2/YBAA/arctic_a0100"
+    },
+    {
+      "fold": 3,
+      "speaker": "TXHC",
+      "utterance_id": "arctic_a0006",
+      "prediction_id": "3/TXHC/arctic_a0006"
+    },
+    {
+      "fold": 3,
+      "speaker": "TXHC",
+      "utterance_id": "arctic_a0013",
+      "prediction_id": "3/TXHC/arctic_a0013"
+    },
+    {
+      "fold": 3,
+      "speaker": "TXHC",
+      "utterance_id": "arctic_a0020",
+      "prediction_id": "3/TXHC/arctic_a0020"
+    },
+    {
+      "fold": 3,
+      "speaker": "TXHC",
+      "utterance_id": "arctic_a0021",
+      "prediction_id": "3/TXHC/arctic_a0021"
+    },
+    {
+      "fold": 3,
+      "speaker": "TXHC",
+      "utterance_id": "arctic_a0022",
+      "prediction_id": "3/TXHC/arctic_a0022"
+    },
+    {
+      "fold": 3,
+      "speaker": "TXHC",
+      "utterance_id": "arctic_a0023",
+      "prediction_id": "3/TXHC/arctic_a0023"
+    },
+    {
+      "fold": 3,
+      "speaker": "TXHC",
+      "utterance_id": "arctic_a0027",
+      "prediction_id": "3/TXHC/arctic_a0027"
+    },
+    {
+      "fold": 3,
+      "speaker": "TXHC",
+      "utterance_id": "arctic_a0029",
+      "prediction_id": "3/TXHC/arctic_a0029"
+    },
+    {
+      "fold": 3,
+      "speaker": "TXHC",
+      "utterance_id": "arctic_a0032",
+      "prediction_id": "3/TXHC/arctic_a0032"
+    },
+    {
+      "fold": 3,
+      "speaker": "TXHC",
+      "utterance_id": "arctic_a0037",
+      "prediction_id": "3/TXHC/arctic_a0037"
+    },
+    {
+      "fold": 3,
+      "speaker": "ZHAA",
+      "utterance_id": "arctic_a0008",
+      "prediction_id": "3/ZHAA/arctic_a0008"
+    },
+    {
+      "fold": 3,
+      "speaker": "ZHAA",
+      "utterance_id": "arctic_a0019",
+      "prediction_id": "3/ZHAA/arctic_a0019"
+    },
+    {
+      "fold": 3,
+      "speaker": "ZHAA",
+      "utterance_id": "arctic_a0021",
+      "prediction_id": "3/ZHAA/arctic_a0021"
+    },
+    {
+      "fold": 3,
+      "speaker": "ZHAA",
+      "utterance_id": "arctic_a0023",
+      "prediction_id": "3/ZHAA/arctic_a0023"
+    },
+    {
+      "fold": 3,
+      "speaker": "ZHAA",
+      "utterance_id": "arctic_a0024",
+      "prediction_id": "3/ZHAA/arctic_a0024"
+    },
+    {
+      "fold": 3,
+      "speaker": "ZHAA",
+      "utterance_id": "arctic_a0073",
+      "prediction_id": "3/ZHAA/arctic_a0073"
+    },
+    {
+      "fold": 3,
+      "speaker": "ZHAA",
+      "utterance_id": "arctic_a0078",
+      "prediction_id": "3/ZHAA/arctic_a0078"
+    },
+    {
+      "fold": 3,
+      "speaker": "ZHAA",
+      "utterance_id": "arctic_a0081",
+      "prediction_id": "3/ZHAA/arctic_a0081"
+    },
+    {
+      "fold": 3,
+      "speaker": "ZHAA",
+      "utterance_id": "arctic_a0086",
+      "prediction_id": "3/ZHAA/arctic_a0086"
+    },
+    {
+      "fold": 3,
+      "speaker": "ZHAA",
+      "utterance_id": "arctic_a0088",
+      "prediction_id": "3/ZHAA/arctic_a0088"
+    },
+    {
+      "fold": 4,
+      "speaker": "HKK",
+      "utterance_id": "arctic_a0013",
+      "prediction_id": "4/HKK/arctic_a0013"
+    },
+    {
+      "fold": 4,
+      "speaker": "HKK",
+      "utterance_id": "arctic_a0067",
+      "prediction_id": "4/HKK/arctic_a0067"
+    },
+    {
+      "fold": 4,
+      "speaker": "HKK",
+      "utterance_id": "arctic_a0092",
+      "prediction_id": "4/HKK/arctic_a0092"
+    },
+    {
+      "fold": 4,
+      "speaker": "HKK",
+      "utterance_id": "arctic_a0100",
+      "prediction_id": "4/HKK/arctic_a0100"
+    },
+    {
+      "fold": 4,
+      "speaker": "HKK",
+      "utterance_id": "arctic_a0101",
+      "prediction_id": "4/HKK/arctic_a0101"
+    },
+    {
+      "fold": 4,
+      "speaker": "HKK",
+      "utterance_id": "arctic_a0105",
+      "prediction_id": "4/HKK/arctic_a0105"
+    },
+    {
+      "fold": 4,
+      "speaker": "HKK",
+      "utterance_id": "arctic_a0106",
+      "prediction_id": "4/HKK/arctic_a0106"
+    },
+    {
+      "fold": 4,
+      "speaker": "HKK",
+      "utterance_id": "arctic_a0107",
+      "prediction_id": "4/HKK/arctic_a0107"
+    },
+    {
+      "fold": 4,
+      "speaker": "HKK",
+      "utterance_id": "arctic_a0108",
+      "prediction_id": "4/HKK/arctic_a0108"
+    },
+    {
+      "fold": 4,
+      "speaker": "HKK",
+      "utterance_id": "arctic_a0111",
+      "prediction_id": "4/HKK/arctic_a0111"
+    },
+    {
+      "fold": 4,
+      "speaker": "NCC",
+      "utterance_id": "arctic_a0007",
+      "prediction_id": "4/NCC/arctic_a0007"
+    },
+    {
+      "fold": 4,
+      "speaker": "NCC",
+      "utterance_id": "arctic_a0020",
+      "prediction_id": "4/NCC/arctic_a0020"
+    },
+    {
+      "fold": 4,
+      "speaker": "NCC",
+      "utterance_id": "arctic_a0024",
+      "prediction_id": "4/NCC/arctic_a0024"
+    },
+    {
+      "fold": 4,
+      "speaker": "NCC",
+      "utterance_id": "arctic_a0026",
+      "prediction_id": "4/NCC/arctic_a0026"
+    },
+    {
+      "fold": 4,
+      "speaker": "NCC",
+      "utterance_id": "arctic_a0031",
+      "prediction_id": "4/NCC/arctic_a0031"
+    },
+    {
+      "fold": 4,
+      "speaker": "NCC",
+      "utterance_id": "arctic_a0045",
+      "prediction_id": "4/NCC/arctic_a0045"
+    },
+    {
+      "fold": 4,
+      "speaker": "NCC",
+      "utterance_id": "arctic_a0047",
+      "prediction_id": "4/NCC/arctic_a0047"
+    },
+    {
+      "fold": 4,
+      "speaker": "NCC",
+      "utterance_id": "arctic_a0051",
+      "prediction_id": "4/NCC/arctic_a0051"
+    },
+    {
+      "fold": 4,
+      "speaker": "NCC",
+      "utterance_id": "arctic_a0052",
+      "prediction_id": "4/NCC/arctic_a0052"
+    },
+    {
+      "fold": 4,
+      "speaker": "NCC",
+      "utterance_id": "arctic_a0053",
+      "prediction_id": "4/NCC/arctic_a0053"
+    }
+  ],
+  "thresholds": [
+    0.2,
+    0.5
+  ],
+  "outputs": [
+    "metrics.json",
+    "predictions.json.gz",
+    "environment.json"
+  ]
+}

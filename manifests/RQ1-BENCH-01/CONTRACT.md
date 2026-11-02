@@ -1,0 +1,36 @@
+# RQ1-BENCH-01 shared implementation contract (v1, frozen before delegation)
+
+Base HEAD: `467c8233c3f19381c66f10d5fa64d1f44a1c6066`. `contract.json` pins all four Baseline R 3,600-update checkpoints, authorized train/validation archives, split, CMUdict, prompts and 80 exact IDs. Reuse DIAG-02B's omission-enriched first ten utterances per validation speaker (eight speakers); no representative-population claim. Existing DIAG-02B archive tolerance/failures are NOT changed or waived. Do not modify existing scientific protocols/model/evaluators/checkpoints.
+
+## Ownership
+
+- A: `src/langfens_bench/{__init__,__main__,runtime}.py`, `tests/test_bench_local.py`, `docs/benchmarks/LOCAL_FP32.md`, `configs/bench_local*`. Own the ONE common evaluator for all profiles, not a local fork.
+- B: `deploy/bench_kaggle_fp32/`, `src/langfens_bench/kaggle.py`, `tests/test_bench_kaggle_fp32.py`, `docs/benchmarks/KAGGLE_FP32.md`. Shared packaging/staging utilities callable by C; no evaluator duplication.
+- C: `deploy/bench_kaggle_fp16/`, `tests/test_bench_kaggle_fp16.py`, `docs/benchmarks/KAGGLE_FP16.md`. Core precision requirements reviewed/tested through A's common runtime; suggest core corrections to coordinator, do not edit A/B files.
+- Coordinator: frozen manifest, comparison, integration, reports, process checkpoint/index, publication. Each child writes a lane checkpoint only in its owned documentation. No child push/remote commands or further subagents.
+
+## Unified interface
+
+`PYTHONPATH=.:src python -m langfens_bench {preflight,evaluate} --profile {LOCAL_FP32,KAGGLE_FP32,KAGGLE_FP16} --contract manifests/RQ1-BENCH-01/contract.json --artifact-root PATH --outdir NEW_PATH [--authorize-remote-inference]`
+
+`artifact-root` contains checkpoint/package paths from contract; code/resources/split resolved relative to repository, not cwd. New output path required, no overwrite. Remote evaluate refuses absent explicit authorization flag AND verified Kaggle/T4 hardware; preflight is read-only but does not launch anything. Kaggle wrappers invoke this CLI with profile fixed; default is preflight, NEVER automatic evaluation. Coordinator adds `compare --reference DIR --candidate DIR --thresholds PATH --outdir NEW_PATH`.
+
+Runtime public entrypoint `main(argv=None)`; tests may invoke it. Common runtime implements both CUDA profiles with `cuda:0` only, float32 stored model weights, TF32 disabled; FP16 uses ONLY CUDA autocast(dtype=torch.float16) during forward. No .half() on stored weights. Cast logits/attention to FP32 BEFORE sigmoid, softmax or reduction; metrics accumulate NumPy float64. `model.eval()`, all parameters frozen, `torch.inference_mode()`, seed 1337, batch size 1, deterministic algorithms, one CPU thread, MKL_CBWR=COMPATIBLE and CUBLAS_WORKSPACE_CONFIG=:4096:8 before torch import. No backward, optimizer, train, fallback or network downloads. Pretrained model loaded offline from pinned revision; refuse missing cache. Environment snapshot records installed versions rather than trusting stale repository lockfile.
+
+## Evaluator semantics
+
+Use existing audio loader (mono 16kHz project normalization), strict checkpoint loading/config, original model.forward; no TextGrid times as inference inputs. Run Protocol O (gold canonical phone identities only, NOT timestamps) for archive-compatible diagnostic benchmark AND Protocol Z (pinned CMUDictG2P from written prompts), clearly separated. Gold labels/times only offline scoring. Reuse existing greedy CTC decode, Levenshtein, tied-score AP and deterministic Protocol Z `align_canonical_sequences(..., tie_break='diag_del_ins')` semantics after checking supported tie-break spelling in existing code. No training-only priors or mismatched controls required.
+
+For every ordered utterance save flat record: `prediction_id,fold,speaker,utterance_id,checkpoint_sha256,labels,error_types,canonical_phones,binary_logits,binary_scores,ctc_ids,ctc_reference_ids,attention_metrics,protocol_z`. Protocol Z contains phones/scores and offline aligned pairs/unaligned counts. Attention metrics: mean in-window mass, normalized entropy, absolute peak offset seconds; original averaged attention from forward, uniform K/T baseline; no forced/unprojected intervention. Use active lengths only. Metrics: AP, ROC-AUC, greedy CTC PER, omission recall/FNR at fixed .20/.50, Protocol Z aligned AP/AUC/coverage, attention aggregates. Undefined values are JSON null, not NaN.
+
+Outputs: `metrics.json`, deterministic gzip `predictions.json.gz` (object with `metadata` and ordered `utterances`), `environment.json`. Each includes or links `contract_sha256`, profile, evaluator source/semantic hashes, all checkpoint hashes, ordered prediction IDs, seed/precision/preprocessing provenance and completion status. Record artifact SHA-256 in environment for comparison integrity. Never put generated real predictions, labels, weights or data in Git.
+
+Time synchronized model forward(s), excluding load/staging/offline scoring; one untimed warmup per fold. Save per-utterance latency seconds; aggregate p50/p95, throughput utt/s, peak process RSS bytes and peak CUDA allocated/reserved bytes. No comparative speed claim before executed evidence. Preflight verifies ALL hashes, IDs against own fold validation whitelist and active-test speaker exclusion BEFORE reading any WAV/TextGrid; archive inventories reject active-test members, stage only per-fold authorized inputs, never a cross-fold audio union. Preflight dependency/hardware/offline-cache checks fail closed with explicit blockers.
+
+## Comparison / pre-registered thresholds
+
+Coordinator owns explicit versioned thresholds frozen before measured runs: FP32 probability atol 0.0002, logit atol 0.002; FP16 probability atol 0.005, logit atol 0.05. AP/AUC/PER/omission recall/FNR absolute deltas: FP32 0.001, FP16 0.01; attention mass/entropy delta FP32 0.001, FP16 0.01; peak offset seconds FP32 0.02, FP16 0.04. No implicit relaxation; configurable file SHA reported. Pointwise and aggregate gates both required; missing IDs/fields, nonfinite values, incompatible semantics/hashes or incomplete runs fail closed. Latency/memory are reported, not scientific parity gates. Historical archive comparison separate from cross-platform comparison; no cross-platform PASS until genuine environments execute.
+
+## Execution boundaries
+
+Local static/unit/regression and bounded CPU inference only. No full suite if it invokes training/backward. No TEST reads, training or backward. No Kaggle push, quota call, launch or remote execution in this setup. Private CC BY-NC 4.0 packages, no attached public datasets, new explicit deployment authorization required. Remote dependency/hardware/private-staging prerequisites may remain BLOCKED; never fabricate setup or parity PASS. Existing unrelated untracked `manifests/RQ1-DIAG-02B/DELIVERY.md` is preserved and not part of this work.
