@@ -1,0 +1,16 @@
+{
+  "id": "minkhoaa/langfens-rq1-bench-fp16-private",
+  "title": "LANGFENS RQ1 Benchmark FP16 Private",
+  "code_file": "bench_kaggle_fp16.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "machine_shape": "NvidiaTeslaT4",
+  "dataset_sources": [],
+  "competition_sources": [],
+  "kernel_sources": [],
+  "model_sources": []
+}
