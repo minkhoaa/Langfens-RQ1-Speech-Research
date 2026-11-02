@@ -1,0 +1,87 @@
+{
+  "status": "LOCAL_FP32_VERIFIED; REMOTE_NOT_EXECUTED; OVERALL_PARTIAL",
+  "source_commit": "1ca31c268ba1a8aa4cd6d59ee5887f4cb81c234a",
+  "contract_sha256": "18700f2bf1f29d65f153ba7c34e2b4d9d69eafe33cce86c1756212cc1ddd4ffd",
+  "evaluator_semantics_sha256": "71bc8beb88a6bd2c091f22e738bf3bcef4e30f90bdb7ca6f39e90c870d0db69b",
+  "output_directory": "/tmp/rq1-bench-integrated-local-fp32-1ca31c2",
+  "artifacts": {
+    "metrics.json": "8cd1093fb51a1f23d0414425bff64b0d1ca1bc21e75d9e472c6b93e657160048",
+    "predictions.json.gz": "d2fe6eb68560372e3f31f12e2106170b29b0fb287987197f37b1f0f6106807f1",
+    "environment.json": "f8deb3d8c88856a88c2cbb10395148e2e298e232738b2b8395ee29095b2659b6"
+  },
+  "counts": {
+    "ctc_edits": 675,
+    "ctc_reference_tokens": 2866,
+    "error_tokens": 385,
+    "omission_tokens": 107,
+    "protocol_z_aligned_tokens": 2935,
+    "protocol_z_unaligned_g2p": 14,
+    "protocol_z_unaligned_gold": 16,
+    "tokens": 2951,
+    "utterances": 80
+  },
+  "quality": {
+    "ap": 0.2921056810265737,
+    "attention_entropy": 0.2605000606818009,
+    "attention_mass": 0.03397006275639636,
+    "attention_peak_offset_seconds": 1.392278480324028,
+    "omission_fnr_0.2": 0.6635514018691588,
+    "omission_fnr_0.5": 0.9813084112149533,
+    "omission_recall_0.2": 0.3364485981308411,
+    "omission_recall_0.5": 0.018691588785046728,
+    "per": 0.235519888346127,
+    "protocol_z": {
+      "ap": 0.2862954392718205,
+      "coverage": 0.994578109115554,
+      "roc_auc": 0.6947429299795354
+    },
+    "roc_auc": 0.7016605763682927
+  },
+  "performance": {
+    "latency_p50_seconds": 2.085226906000571,
+    "latency_p95_seconds": 3.0877451675506555,
+    "peak_ram_bytes": 2101837824,
+    "peak_vram_allocated_bytes": null,
+    "peak_vram_reserved_bytes": null,
+    "throughput_utterances_per_second": 0.47232577494345035
+  },
+  "baseline_parity": {
+    "diag02b_cpu_max_logit_abs": 0.0,
+    "diag02b_cpu_max_probability_abs": 5.960464477539063e-08,
+    "historical_cuda_archive_max_probability_abs": 0.0013049542903900146,
+    "historical_archive_failed_utterances": 9,
+    "historical_tolerance_unchanged": 0.0002
+  },
+  "source_package": {
+    "path": "/tmp/rq1-bench-source-1ca31c2-a.zip",
+    "sha256": "3bb18f11ace5cb3e54ff9c90e6d358df881cd165226cbfdbf7830c18f2228dc6",
+    "bytes": 1104824,
+    "repeated_build_byte_identical": true,
+    "file_count": 32,
+    "no_datasets_weights_credentials_or_history": true,
+    "all_executed_source_hashes_match_package": true
+  },
+  "remote_inventory_drafts": {
+    "1": {
+      "path": "/tmp/rq1-bench-input-inventory-fold1-1ca31c2.json",
+      "sha256": "2761130dbda043ef71e31fe6e5ba200ab55816b2564ddfe0589412443e58d8f1"
+    },
+    "2": {
+      "path": "/tmp/rq1-bench-input-inventory-fold2-1ca31c2.json",
+      "sha256": "93f6a9f0c9c916300467d894f18a4bb227d152741ea3dda4ffd5d81feb495d60"
+    },
+    "3": {
+      "path": "/tmp/rq1-bench-input-inventory-fold3-1ca31c2.json",
+      "sha256": "e5dc3165969243dda91d6416032fd55a38e2718ed8849441313df997c9bfa8bf"
+    },
+    "4": {
+      "path": "/tmp/rq1-bench-input-inventory-fold4-1ca31c2.json",
+      "sha256": "9d59ee0dd034228b92441aecda8a8362d2d99d3ae262a873e7a40b735fc0e9be"
+    }
+  },
+  "durability": "Local /tmp artifacts ephemeral; no approved persistent remote storage or execution provisioned.",
+  "training_backward_optimizer_updates": 0,
+  "final_tests": {"passed": 198, "duration_seconds": 28.91, "scope": "Selected inference-safe benchmark, CPU evaluator, G2P/alignment, normalizer and DIAG regressions; full suite intentionally excluded"},
+  "exported_source_cpu_preflight": {"status": "PREFLIGHT_READY", "outdir": "/tmp/rq1-bench-packaged-source-preflight-1ca31c2", "source_commit": null, "note": "Export contains no .git; source hashes, not a guessed commit, identify its executed bytes"},
+  "publication": {"status": "BLOCKED_NOT_ATTEMPTED", "origin_is_private": false, "reason": "Pushing this branch also publishes inherited unpushed DIAG-02B token-level records; approved private destination or reviewed source-only publication plan required"}
+}
