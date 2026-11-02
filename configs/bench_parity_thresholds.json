@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "registration": "RQ1-BENCH-01 initial values frozen before benchmark execution; not historical DIAG-02B tolerance replacement",
+  "LOCAL_FP32_vs_KAGGLE_FP32": {
+    "probability_atol": 0.0002,
+    "logit_atol": 0.002,
+    "quality_atol": 0.001,
+    "attention_atol": 0.001,
+    "attention_peak_offset_seconds_atol": 0.02
+  },
+  "KAGGLE_FP32_vs_KAGGLE_FP16": {
+    "probability_atol": 0.005,
+    "logit_atol": 0.05,
+    "quality_atol": 0.01,
+    "attention_atol": 0.01,
+    "attention_peak_offset_seconds_atol": 0.04
+  }
+}

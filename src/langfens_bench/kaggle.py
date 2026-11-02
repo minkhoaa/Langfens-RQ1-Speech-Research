@@ -110,6 +110,7 @@ def build_source_package(repo_root: Path, destination: Path) -> str:
         "audit_scripts/evaluate_fold1_ctc_binary.py",
         "audit_scripts/diagnose_omissions_and_false_negatives.py",
         "configs/bench_parity_thresholds.json",
+        "configs/bench_dependency_contract.json",
         "manifests/RQ1-BENCH-01/contract.json",
         "manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json",
         "resources/CMUDict/cmudict.dict",
@@ -146,10 +147,14 @@ def main(profile: str, argv=None) -> int:
     parser.add_argument("--fold", type=int, choices=(1, 2, 3, 4), required=True,
                         help="Active fold; mount only this fold's private artifacts")
     parser.add_argument("--contract", type=Path, default=Path(__file__).resolve().parents[2] / "manifests/RQ1-BENCH-01/contract.json")
-    parser.add_argument("--artifact-root", type=Path, default=Path("/kaggle/input/langfens-bench-artifacts"))
-    parser.add_argument("--outdir", type=Path, default=Path(f"/kaggle/working/bench-{profile.lower()}"))
+    parser.add_argument("--artifact-root", type=Path)
+    parser.add_argument("--outdir", type=Path)
     parser.add_argument("--authorize-remote-inference", action="store_true")
+    parser.add_argument("--input-inventory", type=Path)
+    parser.add_argument("--input-inventory-sha256")
     args = parser.parse_args(argv)
+    args.artifact_root = args.artifact_root or Path(f"/kaggle/input/langfens-rq1-bench-fold{args.fold}-artifacts")
+    args.outdir = args.outdir or Path(f"/kaggle/working/rq1-bench-{profile.lower()}-fold{args.fold}-{args.command}")
     if args.command == "evaluate" and not args.authorize_remote_inference:
         parser.error("evaluate requires explicit --authorize-remote-inference")
     try:
@@ -164,6 +169,9 @@ def main(profile: str, argv=None) -> int:
         parser.error(f"BLOCKED: {exc}")
     forwarded = [args.command, "--profile", profile, "--fold", str(args.fold), "--contract", str(contract),
                  "--artifact-root", str(artifacts), "--outdir", str(output)]
+    if args.input_inventory is not None:
+        forwarded.extend(["--input-inventory", str(args.input_inventory),
+                          "--input-inventory-sha256", args.input_inventory_sha256 or ""])
     if args.authorize_remote_inference:
         forwarded.append("--authorize-remote-inference")
     # Import late so environment controls apply before torch; runtime repeats all

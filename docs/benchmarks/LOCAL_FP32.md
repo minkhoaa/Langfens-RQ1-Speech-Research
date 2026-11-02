@@ -1,5 +1,7 @@
 # RQ1-BENCH-01 — LOCAL_FP32 lane / process checkpoint
 
+**Coordinator integration:** use [INTEGRATION.md](INTEGRATION.md) for the canonical current CLI, source/dependency fingerprints, approved mounted-input inventory and merge/compare semantics. Evidence below remains historical at its recorded source SHA.
+
 State: **IMPLEMENTED; LOCAL_EXECUTION_COMPLETE; CROSS_PLATFORM_PARITY_UNMEASURED**.
 Execution base: `955de17020f9f21ad9c28e1b5242d4e39f3b9b93`, branch `work/rq1-bench-local`.
 Read frozen `manifests/RQ1-BENCH-01/CONTRACT.md`, `contract.json`, `AGENTS.md`, global process index and DIAG-02B checkpoint before implementation. Global index/report integration belongs to the coordinator; no shared scientific files were changed.

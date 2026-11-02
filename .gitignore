@@ -57,6 +57,10 @@ artifacts/
 # ------------------------------------------------------------------------------
 wandb/
 runs/
+# RQ1-BENCH-01 real prediction bundles are private, never source artifacts.
+benchmark_outputs/
+bench_outputs/
+**/predictions.json.gz
 .tensorboard/
 *.log
 

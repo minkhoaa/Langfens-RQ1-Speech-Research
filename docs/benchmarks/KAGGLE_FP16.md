@@ -1,5 +1,7 @@
 # RQ1-BENCH-01 — private Kaggle T4 FP16 lane
 
+**Coordinator integration:** [INTEGRATION.md](INTEGRATION.md) supersedes the directory-only launcher interface below. Both current kernels use the same SHA-pinned source/bootstrap/inventory interface, changing only PROFILE. The earlier tests and source descriptions remain historical lane evidence.
+
 ## State and boundary
 
 **LOCAL_WRAPPER_TESTED; CORE_INTEGRATION_PENDING; REMOTE_EXECUTION_BLOCKED.**

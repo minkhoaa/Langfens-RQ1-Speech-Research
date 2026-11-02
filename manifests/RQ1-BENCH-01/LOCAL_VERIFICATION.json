@@ -1,0 +1,28 @@
+{
+  "status": "VERIFIED_HISTORICAL_LANE_CPU_REPLAY; FINAL_INTEGRATED_SOURCE_REPLAY_PENDING",
+  "execution_source_commit": "ee6dd3918612a3bb77abbeddd12516c5b4954ed3",
+  "execution_output": "/tmp/rq1-bench-local-evaluate-schema2-8191d56d",
+  "scope": "80 omission-enriched validation utterances, 2951 canonical tokens, eight speakers",
+  "contract_sha256": "18700f2bf1f29d65f153ba7c34e2b4d9d69eafe33cce86c1756212cc1ddd4ffd",
+  "metrics_sha256": "95fd0bbf1e5cfe7488c3aae31030937aa61e24dba8d92681af6e747f08b12edc",
+  "predictions_sha256": "3f1dd5532161d30cb795c01bfc0c38f7a8a1b1876a8c1ef9fb664e4ec72fe4fe",
+  "independent_checks": {
+    "all_output_metadata_equal": true,
+    "ordered_prediction_ids_match_contract": true,
+    "output_hashes_match_environment": true,
+    "all_executed_source_hashes_match_commit_objects": true,
+    "canonical_diag02b_cpu_max_logit_absolute_difference": 0.0,
+    "canonical_diag02b_cpu_max_probability_absolute_difference": 5.960464477539063e-08,
+    "historical_cuda_archive_max_probability_absolute_difference": 0.0013049542903900146,
+    "historical_cuda_archive_failed_utterances": 9,
+    "historical_archive_tolerance_unchanged": 0.0002
+  },
+  "remote_execution": "NOT_RUN; separate authorization required",
+  "training_backward_optimizer_updates": 0,
+  "limitations": [
+    "Scalar/vector FP32 sigmoid differences remain distinct from exact logit reproducibility.",
+    "Historical archive parity remains FAILED; no training GO or cross-platform parity follows.",
+    "Artifacts reside in ephemeral local /tmp, not approved durable storage.",
+    "Final integration changes source provenance; do not compare this historical bundle to differently hashed remote code."
+  ]
+}

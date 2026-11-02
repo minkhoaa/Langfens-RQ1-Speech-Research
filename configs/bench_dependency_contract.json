@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "status": "MEASURED_LOCAL_CPU; CUDA_WHEEL_AVAILABILITY_UNVERIFIED",
+  "python": "3.14.8",
+  "versions": {
+    "torch": "2.14.1",
+    "torchaudio": "2.11.0",
+    "transformers": "5.20.2",
+    "numpy": "2.5.4",
+    "scipy": "1.18.1",
+    "soundfile": "0.14.0",
+    "psutil": "7.2.2",
+    "PyYAML": "6.0.3",
+    "huggingface-hub": "2.3.0",
+    "safetensors": "0.8.0"
+  },
+  "build_policy": "Strip PEP440 local +cpu/+cu build suffix for version identity; CPU profile must be CPU FP32, Kaggle requires CUDA T4. Import and real hardware preflight still mandatory.",
+  "installation": "No automatic installation. Do not apply the stale root requirements-lock.txt. A reviewed matching private offline CUDA wheelhouse is a blocked prerequisite, not an available artifact. An alternate pinned stack requires an explicit revised contract, fresh local reference and separately registered output paths."
+}

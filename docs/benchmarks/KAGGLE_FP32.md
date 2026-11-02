@@ -1,5 +1,7 @@
 # KAGGLE_FP32 — private, offline inference boundary
 
+**Coordinator integration:** [INTEGRATION.md](INTEGRATION.md) is the canonical current interface. It resolves source/cache mount approval, pins measured dependencies, uses opaque archive transport and matches both kernels. Earlier descriptions below are preserved lane history at their recorded commits.
+
 ## Status and ownership
 
 **Locally tested infrastructure; remote execution BLOCKED / NOT RUN.** This lane

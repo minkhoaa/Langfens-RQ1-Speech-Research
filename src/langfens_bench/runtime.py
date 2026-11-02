@@ -38,15 +38,15 @@ SEMANTICS = {
     "latency": "synchronized O+Z forwards only; one untimed O+Z warmup per fold",
     "seed": 1337, "threads": 1, "batch_size": 1,
 }
-SOURCE_FILES = (
-    "src/langfens_bench/__init__.py", "src/langfens_bench/__main__.py",
-    "src/langfens_bench/runtime.py", "src/langfens_prep/model.py",
-    "src/langfens_prep/audio_loader.py", "src/langfens_prep/textgrid_parser.py",
-    "src/langfens_prep/phoneme_normalizer.py", "src/langfens_prep/g2p.py",
-    "src/langfens_prep/alignment.py", "src/langfens_prep/dataset.py",
+SOURCE_FILES = tuple(sorted({
+    str(p.relative_to(REPOSITORY))
+    for package in ("langfens_bench", "langfens_prep")
+    for p in (REPOSITORY / "src" / package).glob("*.py")
+} | {
+    "configs/bench_dependency_contract.json",
     "audit_scripts/evaluate_fold1_ctc_binary.py",
     "audit_scripts/diagnose_omissions_and_false_negatives.py",
-)
+}))
 
 
 class BenchmarkBlocked(RuntimeError):
@@ -83,8 +83,19 @@ def repository_path(relative: str, root: Path = REPOSITORY) -> Path:
     return path
 
 
-def verify_hash(root: Path, entry: dict) -> Path:
+def artifact_path(root: Path, entry: dict) -> Path:
     path = repository_path(entry["path"], root)
+    # Kaggle auto-extracts ZIP uploads. A .zip.bin transport preserves the exact
+    # registered bytes; the contract's logical path and SHA remain unchanged.
+    if not path.is_file() and path.suffix == ".zip":
+        transport = repository_path(entry["path"] + ".bin", root)
+        if transport.is_file():
+            return transport
+    return path
+
+
+def verify_hash(root: Path, entry: dict) -> Path:
+    path = artifact_path(root, entry)
     if sha256(path) != entry["sha256"]:
         raise BenchmarkBlocked(f"SHA-256 mismatch: {path}")
     return path
@@ -241,7 +252,8 @@ def provenance(contract_path: Path, contract: dict, profile: str, selected_fold:
     }
 
 
-def audit_remote_inputs(contract: dict, artifact_root: Path, selected_fold: int) -> dict:
+def audit_remote_inputs(contract: dict, artifact_root: Path, selected_fold: int,
+                        inventory_path=None, inventory_sha256=None) -> dict:
     """Prove mount isolation by inventory only; unknown mounted files fail closed.
 
     Only the two hash-pinned selected-fold artifacts may be mounted as inputs.
@@ -249,10 +261,14 @@ def audit_remote_inputs(contract: dict, artifact_root: Path, selected_fold: int)
     absent a separate approved inventory, extra inputs cannot be certified safe.
     """
     input_root = KAGGLE_INPUT.resolve()
+    if inventory_path is not None:
+        from .staging import audit_approved_inputs
+        return audit_approved_inputs(contract, artifact_root, selected_fold,
+                                     inventory_path, inventory_sha256, input_root)
     if not artifact_root.resolve().is_relative_to(input_root):
         raise BenchmarkBlocked("Remote artifact root must be under /kaggle/input")
     selected = scoped_contract(contract, selected_fold)["folds"][0]
-    expected = {repository_path(selected[k]["path"], artifact_root) for k in ("checkpoint", "package")}
+    expected = {artifact_path(artifact_root, selected[k]) for k in ("checkpoint", "package")}
     for fold in contract["folds"]:
         if fold["fold"] != selected_fold:
             for kind in ("checkpoint", "package"):
@@ -280,13 +296,15 @@ def audit_remote_inputs(contract: dict, artifact_root: Path, selected_fold: int)
     return {"status": "VERIFIED", "selected_fold": selected_fold, "files": len(seen), "payload_reads": 0}
 
 
-def preflight(contract: dict, artifact_root: Path, profile: str, selected_fold: int | None = None) -> tuple[dict, dict]:
+def preflight(contract: dict, artifact_root: Path, profile: str, selected_fold: int | None = None,
+              input_inventory=None, input_inventory_sha256=None) -> tuple[dict, dict]:
     checks, blockers, paths = {}, [], {}
     if profile != "LOCAL_FP32" and selected_fold is None:
         return {"status": "BLOCKED", "blockers": ["Remote profiles require --fold; cross-fold staging is refused"], "checks": checks}, paths
     if profile != "LOCAL_FP32":
         try:
-            checks["mounted_input_isolation"] = audit_remote_inputs(contract, artifact_root, selected_fold)
+            checks["mounted_input_isolation"] = audit_remote_inputs(
+                contract, artifact_root, selected_fold, input_inventory, input_inventory_sha256)
         except (BenchmarkBlocked, OSError, ValueError, KeyError) as exc:
             return {"status": "BLOCKED", "blockers": [str(exc)], "checks": checks}, paths
     try:
@@ -317,6 +335,10 @@ def preflight(contract: dict, artifact_root: Path, profile: str, selected_fold: 
     except (BenchmarkBlocked, OSError, ValueError, KeyError, zipfile.BadZipFile) as exc:
         blockers.append(f"artifacts: {type(exc).__name__}: {exc}")
     try:
+        from .dependencies import validate_dependency_contract
+        checks["dependency_contract"] = validate_dependency_contract()
+        if checks["dependency_contract"]["status"] != "VERIFIED":
+            raise BenchmarkBlocked("; ".join(checks["dependency_contract"]["blockers"]))
         # Import actual runtime dependencies, not just their stale lockfile entries.
         import numpy
         import torch
@@ -574,10 +596,12 @@ def main(argv=None) -> int:
     parser.add_argument("--outdir", required=True, type=Path)
     parser.add_argument("--fold", type=int, choices=(1, 2, 3, 4), help="Evaluate one fold only; required for remote profiles")
     parser.add_argument("--authorize-remote-inference", action="store_true")
+    parser.add_argument("--input-inventory", type=Path)
+    parser.add_argument("--input-inventory-sha256")
     args = parser.parse_args(argv)
     if args.profile != "LOCAL_FP32" and not args.outdir.resolve().is_relative_to(KAGGLE_WORKING.resolve()):
         parser.error("Remote output must be under /kaggle/working")
-    if args.outdir.exists():
+    if args.outdir.exists() or args.outdir.is_symlink():
         parser.error("New output path required; refusing overwrite")
     contract_path = args.contract if args.contract.is_absolute() else REPOSITORY / args.contract
     contract = json.loads(contract_path.read_text())
@@ -589,7 +613,12 @@ def main(argv=None) -> int:
             raise BenchmarkBlocked("Remote evaluation requires --authorize-remote-inference")
         if args.profile != "LOCAL_FP32" and args.fold is None:
             raise BenchmarkBlocked("Remote profiles require --fold; cross-fold staging is refused")
-        result, paths = preflight(contract, args.artifact_root.resolve(), args.profile, args.fold)
+        inventory_options = ({"input_inventory": args.input_inventory,
+                              "input_inventory_sha256": args.input_inventory_sha256}
+                             if args.input_inventory is not None else {})
+        metadata["input_inventory_sha256"] = args.input_inventory_sha256
+        result, paths = preflight(contract, args.artifact_root.resolve(), args.profile, args.fold,
+                                  **inventory_options)
         environment["preflight"] = result
         if result["status"] != "READY":
             raise BenchmarkBlocked("; ".join(result["blockers"]))

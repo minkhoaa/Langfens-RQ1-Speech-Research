@@ -25,7 +25,7 @@ def _inside(path: Path, root: Path) -> Path:
 
 def bootstrap(argv=None) -> int:
     parser = argparse.ArgumentParser(description=f"{PROFILE}: offline source bootstrap; default preflight")
-    parser.add_argument("--source-archive", type=Path, default=Path("/kaggle/input/langfens-bench-source/langfens-bench-source.zip"))
+    parser.add_argument("--source-archive", type=Path, default=Path("/kaggle/input/langfens-bench-source/langfens-bench-source.bin"))
     parser.add_argument("--source-sha256", required=True, help="SHA-256 from separately reviewed local package build")
     parser.add_argument("--fold", type=int, choices=(1, 2, 3, 4), required=True,
                         help="Active fold; attach only this fold's private artifact input")
@@ -70,6 +70,7 @@ def bootstrap(argv=None) -> int:
                                              "audit_scripts/evaluate_fold1_ctc_binary.py",
                                              "audit_scripts/diagnose_omissions_and_false_negatives.py",
                                              "configs/bench_parity_thresholds.json",
+                                             "configs/bench_dependency_contract.json",
                                              "manifests/RQ1-BENCH-01/contract.json",
                                              "manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json",
                                              "resources/CMUDict/cmudict.dict",
@@ -82,7 +83,8 @@ def bootstrap(argv=None) -> int:
                         "src/langfens_bench/kaggle.py", "manifests/RQ1-BENCH-01/contract.json",
                         "audit_scripts/evaluate_fold1_ctc_binary.py",
                         "audit_scripts/diagnose_omissions_and_false_negatives.py",
-                        "configs/bench_parity_thresholds.json", "LICENSE", "resources/CMUDict/LICENSE",
+                        "configs/bench_parity_thresholds.json", "configs/bench_dependency_contract.json",
+                        "LICENSE", "resources/CMUDict/LICENSE",
                         "manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json",
                         "resources/CMUDict/cmudict.dict", "resources/L2-ARCTIC/prompts.json"}
             if not required.issubset(names) or total > MAX_SOURCE_BYTES:
