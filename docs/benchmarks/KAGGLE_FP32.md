@@ -31,9 +31,15 @@ No numerical parity, deployment readiness, speed or memory advantage is claimed.
 - `build_source_package(repo_root, destination) -> sha256`: exclusive-creation,
   deterministic source-only ZIP. Requires integrated common runtime; excludes
   datasets, checkpoints, Hugging Face cache, `.env` and arbitrary repository
-  artifacts. Includes Python source, YAML configs and the four required
-  contract/split/CMUdict/prompt resources, preserving project and CMUdict license
-  notices. Max uncompressed size: 64 MiB.
+  artifacts. Includes only direct `src/langfens_prep/*.py` and
+  `src/langfens_bench/*.py`, the two runtime imports
+  `audit_scripts/evaluate_fold1_ctc_binary.py` and
+  `audit_scripts/diagnose_omissions_and_false_negatives.py`,
+  `configs/bench_parity_thresholds.json`, contract/split/CMUdict/prompt resources,
+  and project/CMUdict license notices. No training audit scripts, YAML training
+  configs, unrelated source packages or nested source subdirectories. Max
+  uncompressed size: 64 MiB. Coordinator's packaging CLI is only an adapter to
+  this shared API, not a second packaging implementation.
 - `validate_mount_paths(artifact_root, outdir)` requires existing artifacts
   strictly below `/kaggle/input`, new output strictly below `/kaggle/working`,
   and rejects symlink escapes/overwrites. Preflight creates no runtime output.
@@ -74,7 +80,9 @@ The source bootstrap requires both Kaggle mounts, the cache directory, a new
 source extraction root and a separately supplied source SHA-256. It checks that
 SHA before opening the ZIP, validates **all** source members before extraction,
 and refuses traversal, symlinks, duplicate names, encrypted entries, data/weight
-members and oversized source packages. It never extracts the fold data ZIPs.
+members, training scripts/configs and oversized source packages. It accepts the
+same narrow source allowlist as the builder and requires the parity thresholds,
+licenses, evaluator helpers and pinned resources. It never extracts fold data ZIPs.
 
 Only the common runtime may inventory/stage the **requested fold's** authorized
 archive. Never attach/stage all four train/val archives in one Kaggle runtime:
@@ -227,3 +235,28 @@ PYTHONPATH=/tmp/langfens-bench-kaggle-fp32:/tmp/langfens-bench-kaggle-fp32/src \
 - **Restart:** integrate this follow-up with A's fold-scoped runtime and C's
   bootstrap; C must require/forward the same `--fold`. Reviewer gate and all
   remote authorization/cache/hardware/private-staging blockers remain pending.
+
+### Follow-up checkpoint — narrowed shared source packaging
+
+- **Approved direction:** coordinator reuses `build_source_package(root, dest)
+  -> sha256` through a thin CLI adapter. No second packaging implementation.
+- **Allowlist correction:** only direct Python files in `src/langfens_prep/` and
+  `src/langfens_bench/`; exactly the two evaluator audit imports documented above;
+  required `configs/bench_parity_thresholds.json`; existing contract, split,
+  CMUdict, prompts and license notices. The bootstrap now enforces the same
+  allowlist and mandatory inputs before extraction. This supersedes the initial
+  packaging of all audit scripts/YAML configs. `--fold` remains mandatory and
+  forwarded; one private fold input per isolated runtime remains mandatory.
+- **Verification:** explicit-worktree-PYTHONPATH test command above reports
+  **53 passed in 0.12s**. Added exact-inventory assertions, four bootstrap rejection
+  cases for disallowed scripts/configs/source, and two missing-threshold tests.
+  Python compilation and `git diff --check` passed. Prior test results remain
+  historical evidence for their respective commits.
+- **Actual state:** no real source package built in this isolated lane because
+  integrated runtime and coordinator parity-threshold file are not present here.
+  No remote calls, data staging, model loading, GPU, backward or optimizer work.
+- **Safe restart:** integrate A/coordinator files, reuse this shared build helper
+  in coordinator's adapter, and sync C's bootstrap allowlist with the updated B
+  bootstrap (PROFILE differs). Then review/test integrated source package bytes;
+  preserve license notices and measure a fresh source SHA. Deployment and GPU
+  execution remain blocked without separate authorization and verified inputs.

@@ -161,6 +161,10 @@ def minimal_source(repo):
         "src/langfens_bench/__init__.py": "",
         "src/langfens_bench/runtime.py": "def main(argv=None): return 0\n",
         "src/langfens_bench/kaggle.py": "",
+        "src/langfens_prep/model.py": "# original model source\n",
+        "audit_scripts/evaluate_fold1_ctc_binary.py": "# approved evaluator helper\n",
+        "audit_scripts/diagnose_omissions_and_false_negatives.py": "# approved diagnostic helper\n",
+        "configs/bench_parity_thresholds.json": "{}",
         "manifests/RQ1-BENCH-01/contract.json": "{}",
         "manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json": "{}",
         "resources/CMUDict/cmudict.dict": "WORD W ER D\n",
@@ -168,6 +172,11 @@ def minimal_source(repo):
         "datasets/sealed-test.wav": "NEVER PACKAGE",
         "checkpoints/weights.pt": "NEVER PACKAGE",
         ".env": "NEVER PACKAGE",
+        "audit_scripts/train_fold1_ctc_binary.py": "NEVER PACKAGE",
+        "audit_scripts/diagnose_temporal_alignment_validation.py": "NEVER PACKAGE",
+        "configs/rq1_trn_02a_fold1.yaml": "NEVER PACKAGE",
+        "src/unrelated/helper.py": "NEVER PACKAGE",
+        "src/langfens_bench/nested/helper.py": "NEVER PACKAGE",
     }
     for name, text in files.items():
         path = repo / name
@@ -183,10 +192,28 @@ def test_source_package_deterministic_source_only_and_no_overwrite(tmp_path):
     assert digest == kaggle.build_source_package(repo, second)
     with zipfile.ZipFile(first) as archive:
         assert "src/langfens_bench/runtime.py" in archive.namelist()
-        assert {"LICENSE", "resources/CMUDict/LICENSE"}.issubset(archive.namelist())
-        assert not any(name.startswith(("datasets/", "checkpoints/", ".env")) for name in archive.namelist())
+        assert set(archive.namelist()) == {
+            "LICENSE", "resources/CMUDict/LICENSE",
+            "src/langfens_bench/__init__.py", "src/langfens_bench/runtime.py",
+            "src/langfens_bench/kaggle.py", "src/langfens_prep/model.py",
+            "audit_scripts/evaluate_fold1_ctc_binary.py",
+            "audit_scripts/diagnose_omissions_and_false_negatives.py",
+            "configs/bench_parity_thresholds.json",
+            "manifests/RQ1-BENCH-01/contract.json",
+            "manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json",
+            "resources/CMUDict/cmudict.dict", "resources/L2-ARCTIC/prompts.json",
+        }
     with pytest.raises(FileExistsError):
         kaggle.build_source_package(repo, first)
+
+
+def test_source_package_requires_comparison_thresholds(tmp_path):
+    repo = tmp_path / "repo"
+    minimal_source(repo)
+    (repo / "configs/bench_parity_thresholds.json").unlink()
+    with pytest.raises(ValueError, match="configs/bench_parity_thresholds.json"):
+        kaggle.build_source_package(repo, tmp_path / "bad.zip")
+    assert not (tmp_path / "bad.zip").exists()
 
 
 def test_source_package_missing_runtime_and_symlinks_refused(tmp_path):
@@ -227,6 +254,20 @@ def test_bootstrap_calls_fixed_profile_and_leaves_default_preflight(bootstrap_se
     assert (output / "src/langfens_bench/runtime.py").is_file()
 
 
+def test_bootstrap_requires_comparison_thresholds_before_extraction(bootstrap_setup):
+    bootstrap, args, source, output, calls = bootstrap_setup
+    with zipfile.ZipFile(source) as archive:
+        members = [(info, archive.read(info)) for info in archive.infolist()
+                   if info.filename != "configs/bench_parity_thresholds.json"]
+    with zipfile.ZipFile(source, "w") as archive:
+        for info, content in members:
+            archive.writestr(info, content)
+    args[args.index("--source-sha256") + 1] = hashlib.sha256(source.read_bytes()).hexdigest()
+    with pytest.raises(SystemExit):
+        bootstrap(args)
+    assert not output.exists() and calls == []
+
+
 def test_bootstrap_hash_mismatch_before_extraction(bootstrap_setup):
     bootstrap, args, source, output, calls = bootstrap_setup
     source.write_bytes(b"corrupt")
@@ -235,7 +276,10 @@ def test_bootstrap_hash_mismatch_before_extraction(bootstrap_setup):
     assert not output.exists() and calls == []
 
 
-@pytest.mark.parametrize("member", ["../escape.py", "/absolute.py", "src/link.py", "datasets/TEST.wav", "src/duplicate.py"])
+@pytest.mark.parametrize("member", ["../escape.py", "/absolute.py", "src/link.py", "datasets/TEST.wav",
+                                    "src/langfens_bench/duplicate.py", "audit_scripts/train_fold1_ctc_binary.py",
+                                    "configs/rq1_trn_02a_fold1.yaml", "src/unrelated/helper.py",
+                                    "src/langfens_bench/nested/helper.py"])
 def test_bootstrap_rejects_unsafe_inventory_before_any_extraction(bootstrap_setup, member):
     bootstrap, args, source, output, calls = bootstrap_setup
     with zipfile.ZipFile(source, "a") as archive:
@@ -243,7 +287,7 @@ def test_bootstrap_rejects_unsafe_inventory_before_any_extraction(bootstrap_setu
         if member == "src/link.py":
             info.external_attr = 0o120777 << 16
         archive.writestr(info, b"unsafe")
-        if member == "src/duplicate.py":
+        if member == "src/langfens_bench/duplicate.py":
             with pytest.warns(UserWarning, match="Duplicate name"):
                 archive.writestr(info, b"unsafe")
     args[args.index("--source-sha256") + 1] = hashlib.sha256(source.read_bytes()).hexdigest()

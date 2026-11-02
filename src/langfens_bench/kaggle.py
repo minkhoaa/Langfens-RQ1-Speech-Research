@@ -107,14 +107,17 @@ def build_source_package(repo_root: Path, destination: Path) -> str:
         "src/langfens_bench/__init__.py",
         "src/langfens_bench/runtime.py",
         "src/langfens_bench/kaggle.py",
+        "audit_scripts/evaluate_fold1_ctc_binary.py",
+        "audit_scripts/diagnose_omissions_and_false_negatives.py",
+        "configs/bench_parity_thresholds.json",
         "manifests/RQ1-BENCH-01/contract.json",
         "manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json",
         "resources/CMUDict/cmudict.dict",
         "resources/L2-ARCTIC/prompts.json",
     ]
     paths = {Path(name) for name in required}
-    for directory, pattern in (("src", "*.py"), ("audit_scripts", "*.py"), ("configs", "*.yaml")):
-        paths.update(path.relative_to(root) for path in (root / directory).rglob(pattern))
+    for directory in ("src/langfens_prep", "src/langfens_bench"):
+        paths.update(path.relative_to(root) for path in (root / directory).glob("*.py"))
     total = 0
     for relative in sorted(paths):
         path = root / relative

@@ -63,9 +63,13 @@ def bootstrap(argv=None) -> int:
                         "\\" in info.filename or path.as_posix() != info.filename or
                         info.filename in names or stat.S_ISLNK(info.external_attr >> 16)):
                     raise ValueError(f"Unsafe/duplicate source member: {info.filename}")
-                allowed = ((path.parts[0] in ("src", "audit_scripts") and path.suffix == ".py") or
-                           (path.parts[0] == "configs" and path.suffix == ".yaml") or
+                allowed = ((len(path.parts) == 3 and
+                            path.parts[:2] in (("src", "langfens_prep"), ("src", "langfens_bench")) and
+                            path.suffix == ".py") or
                            info.filename in {"LICENSE", "resources/CMUDict/LICENSE",
+                                             "audit_scripts/evaluate_fold1_ctc_binary.py",
+                                             "audit_scripts/diagnose_omissions_and_false_negatives.py",
+                                             "configs/bench_parity_thresholds.json",
                                              "manifests/RQ1-BENCH-01/contract.json",
                                              "manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json",
                                              "resources/CMUDict/cmudict.dict",
@@ -75,7 +79,12 @@ def bootstrap(argv=None) -> int:
                 names.add(info.filename)
                 total += info.file_size
             required = {"src/langfens_bench/__init__.py", "src/langfens_bench/runtime.py",
-                        "src/langfens_bench/kaggle.py", "manifests/RQ1-BENCH-01/contract.json"}
+                        "src/langfens_bench/kaggle.py", "manifests/RQ1-BENCH-01/contract.json",
+                        "audit_scripts/evaluate_fold1_ctc_binary.py",
+                        "audit_scripts/diagnose_omissions_and_false_negatives.py",
+                        "configs/bench_parity_thresholds.json", "LICENSE", "resources/CMUDict/LICENSE",
+                        "manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json",
+                        "resources/CMUDict/cmudict.dict", "resources/L2-ARCTIC/prompts.json"}
             if not required.issubset(names) or total > MAX_SOURCE_BYTES:
                 raise ValueError("Incomplete or oversized source-only package")
             destination.mkdir(parents=True, exist_ok=False)
