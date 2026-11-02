@@ -1,0 +1,356 @@
+{
+  "metadata": {
+    "title": "LANGFENS RQ1-DIAG-02: Temporal Alignment Root-Cause Validation Report",
+    "experiment": "RQ1-DIAG-02",
+    "timestamp": "2026-11-02T14:17:16+0700",
+    "evaluator_script": "audit_scripts/diagnose_temporal_alignment_validation.py",
+    "predictions_source": "manifests/RQ1-TRN-03A/evaluation/FOUR_FOLD_PAIRED_PREDICTION_RECORDS.json.gz",
+    "total_tokens_audited": 39576,
+    "sampled_utterances": 80,
+    "sampled_tokens": 2951,
+    "device": "cpu",
+    "random_seed": 1337
+  },
+  "step01_metrics_reproduction": {
+    "status": "EXACT_REPRODUCTION_VERIFIED",
+    "total_tokens": 39576,
+    "correct_tokens": 35363,
+    "substitution_tokens": 3584,
+    "deletion_tokens": 629,
+    "overall_matched_ap": 0.27258,
+    "substitution_matched_ap": 0.26427,
+    "deletion_matched_ap": 0.030506,
+    "substitution_acoustic_gap": 0.010715,
+    "deletion_acoustic_gap": 0.001677
+  },
+  "textgrid_timestamp_and_span_audit": {
+    "total_tokens_audited": 39576,
+    "total_omissions_audited": 629,
+    "zero_duration_count": 0,
+    "sub_frame_lt20ms_count": 46,
+    "sub_frame_lt20ms_fraction": 0.073132,
+    "sub_frame_lt40ms_count": 284,
+    "sub_frame_lt40ms_fraction": 0.45151,
+    "gold_duration_stats": {
+      "min_sec": 0.0046,
+      "p25_sec": 0.03,
+      "median_sec": 0.04,
+      "mean_sec": 0.0486,
+      "p75_sec": 0.06,
+      "max_sec": 0.31
+    },
+    "expected_transition_span_stats": {
+      "min_sec": 0.0046,
+      "p25_sec": 0.03,
+      "median_sec": 0.05,
+      "mean_sec": 0.0687,
+      "p75_sec": 0.08,
+      "max_sec": 0.68
+    },
+    "transition_span_congruence": {
+      "exact_match_count": 500,
+      "exact_match_fraction": 0.794913,
+      "mean_absolute_difference_sec": 0.02
+    }
+  },
+  "attention_enrichment_and_baselines": {
+    "correct": {
+      "token_count": 2566,
+      "observed_mass_mean": 0.034255,
+      "uniform_baseline_mass_mean": 0.027712,
+      "enrichment_over_uniform_mean": 1.2839,
+      "enrichment_over_uniform_median": 0.0,
+      "random_window_baseline_mass_mean": 0.02859,
+      "enrichment_over_random_mean": 4850064031259008.0,
+      "normalized_entropy_mean": 0.2602,
+      "temporal_offset_mean_sec": 1.3904
+    },
+    "substitution": {
+      "token_count": 278,
+      "observed_mass_mean": 0.032758,
+      "uniform_baseline_mass_mean": 0.029016,
+      "enrichment_over_uniform_mean": 1.113,
+      "enrichment_over_uniform_median": 0.0,
+      "random_window_baseline_mass_mean": 0.030389,
+      "enrichment_over_random_mean": 1.1775,
+      "normalized_entropy_mean": 0.2633,
+      "temporal_offset_mean_sec": 1.4266
+    },
+    "deletion": {
+      "token_count": 107,
+      "observed_mass_mean": 0.03025,
+      "uniform_baseline_mass_mean": 0.017208,
+      "enrichment_over_uniform_mean": 1.3966,
+      "enrichment_over_uniform_median": 0.0,
+      "random_window_baseline_mass_mean": 0.017846,
+      "enrichment_over_random_mean": 1.937,
+      "normalized_entropy_mean": 0.2605,
+      "temporal_offset_mean_sec": 1.3491
+    },
+    "all": {
+      "token_count": 2951,
+      "observed_mass_mean": 0.033969,
+      "uniform_baseline_mass_mean": 0.027454,
+      "enrichment_over_uniform_mean": 1.2719,
+      "enrichment_over_uniform_median": 0.0,
+      "random_window_baseline_mass_mean": 0.02837,
+      "enrichment_over_random_mean": 4217304067845006.5,
+      "normalized_entropy_mean": 0.2605,
+      "temporal_offset_mean_sec": 1.3923
+    }
+  },
+  "individual_head_inspection": {
+    "head_0": {
+      "head_index": 0,
+      "evaluated_tokens": 2951,
+      "max_weight_mean": 0.991748,
+      "max_weight_min": 0.439207,
+      "max_weight_max": 1.0,
+      "in_window_mass_mean": 0.032597,
+      "temporal_offset_mean_sec": 1.2953,
+      "normalized_entropy_mean": 0.0037,
+      "mean_unique_peaks_per_utterance": 6.1
+    },
+    "head_1": {
+      "head_index": 1,
+      "evaluated_tokens": 2951,
+      "max_weight_mean": 0.992976,
+      "max_weight_min": 0.507839,
+      "max_weight_max": 1.0,
+      "in_window_mass_mean": 0.03759,
+      "temporal_offset_mean_sec": 1.3402,
+      "normalized_entropy_mean": 0.0032,
+      "mean_unique_peaks_per_utterance": 6.92
+    },
+    "head_2": {
+      "head_index": 2,
+      "evaluated_tokens": 2951,
+      "max_weight_mean": 0.992755,
+      "max_weight_min": 0.338597,
+      "max_weight_max": 1.0,
+      "in_window_mass_mean": 0.032352,
+      "temporal_offset_mean_sec": 1.3485,
+      "normalized_entropy_mean": 0.0033,
+      "mean_unique_peaks_per_utterance": 6.42
+    },
+    "head_3": {
+      "head_index": 3,
+      "evaluated_tokens": 2951,
+      "max_weight_mean": 0.991623,
+      "max_weight_min": 0.502022,
+      "max_weight_max": 1.0,
+      "in_window_mass_mean": 0.033336,
+      "temporal_offset_mean_sec": 1.3698,
+      "normalized_entropy_mean": 0.0039,
+      "mean_unique_peaks_per_utterance": 7.66
+    }
+  },
+  "counterfactual_masking_experiments": {
+    "correct": {
+      "token_count": 2566,
+      "original_score_mean": 0.1208,
+      "local_masked_score_mean": 0.1211,
+      "mean_absolute_score_delta_on_masking": 0.001067,
+      "median_absolute_score_delta_on_masking": 0.0,
+      "forced_local_attention_score_mean": 0.381,
+      "mean_score_delta_on_forced_attention": 0.2602
+    },
+    "substitution": {
+      "token_count": 278,
+      "original_score_mean": 0.2482,
+      "local_masked_score_mean": 0.2485,
+      "mean_absolute_score_delta_on_masking": 0.001309,
+      "median_absolute_score_delta_on_masking": 0.0,
+      "forced_local_attention_score_mean": 0.4488,
+      "mean_score_delta_on_forced_attention": 0.2006
+    },
+    "deletion": {
+      "token_count": 107,
+      "original_score_mean": 0.1724,
+      "local_masked_score_mean": 0.1736,
+      "mean_absolute_score_delta_on_masking": 0.001714,
+      "median_absolute_score_delta_on_masking": 0.0,
+      "forced_local_attention_score_mean": 0.4489,
+      "mean_score_delta_on_forced_attention": 0.2765
+    },
+    "all": {
+      "token_count": 2951,
+      "original_score_mean": 0.1347,
+      "local_masked_score_mean": 0.135,
+      "mean_absolute_score_delta_on_masking": 0.001113,
+      "median_absolute_score_delta_on_masking": 0.0,
+      "forced_local_attention_score_mean": 0.3898,
+      "mean_score_delta_on_forced_attention": 0.2552
+    }
+  },
+  "ctc_omission_boundary_audit": {
+    "evaluated_omissions_count": 107,
+    "total_omission_frames_audited": 328,
+    "blank_argmax_frames_total": 283,
+    "blank_argmax_frame_fraction": 0.862805,
+    "canonical_argmax_frames_total": 27,
+    "canonical_argmax_frame_fraction": 0.082317,
+    "other_argmax_frames_total": 18,
+    "other_argmax_frame_fraction": 0.054878,
+    "mean_blank_posterior_probability": 0.8447,
+    "mean_canonical_posterior_probability": 0.0779,
+    "omissions_with_majority_blank_argmax": 104,
+    "omissions_with_majority_blank_fraction": 0.972
+  },
+  "speaker_aware_paired_uncertainty": {
+    "per_speaker": {
+      "HKK": {
+        "speaker": "HKK",
+        "fold": 4,
+        "l1": "Korean",
+        "total_tokens": 345,
+        "deletion_count": 16,
+        "correct_enrichment_ratio": 1.3669,
+        "substitution_enrichment_ratio": 1.4266,
+        "deletion_enrichment_ratio": 0.7188,
+        "deletion_local_mask_delta": 0.001674,
+        "ctc_omission_blank_prob": 0.9138
+      },
+      "NCC": {
+        "speaker": "NCC",
+        "fold": 4,
+        "l1": "Mandarin",
+        "total_tokens": 353,
+        "deletion_count": 11,
+        "correct_enrichment_ratio": 0.9378,
+        "substitution_enrichment_ratio": 1.4289,
+        "deletion_enrichment_ratio": 0.0,
+        "deletion_local_mask_delta": 0.0,
+        "ctc_omission_blank_prob": 0.8365
+      },
+      "NJS": {
+        "speaker": "NJS",
+        "fold": 1,
+        "l1": "Spanish",
+        "total_tokens": 416,
+        "deletion_count": 13,
+        "correct_enrichment_ratio": 1.053,
+        "substitution_enrichment_ratio": 1.1659,
+        "deletion_enrichment_ratio": 1.824,
+        "deletion_local_mask_delta": 0.000608,
+        "ctc_omission_blank_prob": 0.8652
+      },
+      "RRBI": {
+        "speaker": "RRBI",
+        "fold": 1,
+        "l1": "Hindi",
+        "total_tokens": 331,
+        "deletion_count": 12,
+        "correct_enrichment_ratio": 0.8474,
+        "substitution_enrichment_ratio": 1.6343,
+        "deletion_enrichment_ratio": 1.2153,
+        "deletion_local_mask_delta": 0.003133,
+        "ctc_omission_blank_prob": 0.8712
+      },
+      "TNI": {
+        "speaker": "TNI",
+        "fold": 2,
+        "l1": "Spanish",
+        "total_tokens": 370,
+        "deletion_count": 14,
+        "correct_enrichment_ratio": 1.2319,
+        "substitution_enrichment_ratio": 1.8942,
+        "deletion_enrichment_ratio": 2.6977,
+        "deletion_local_mask_delta": 0.000597,
+        "ctc_omission_blank_prob": 0.7744
+      },
+      "TXHC": {
+        "speaker": "TXHC",
+        "fold": 3,
+        "l1": "Mandarin",
+        "total_tokens": 422,
+        "deletion_count": 16,
+        "correct_enrichment_ratio": 1.6399,
+        "substitution_enrichment_ratio": 0.2626,
+        "deletion_enrichment_ratio": 0.5491,
+        "deletion_local_mask_delta": 0.001709,
+        "ctc_omission_blank_prob": 0.8435
+      },
+      "YBAA": {
+        "speaker": "YBAA",
+        "fold": 2,
+        "l1": "Arabic",
+        "total_tokens": 335,
+        "deletion_count": 13,
+        "correct_enrichment_ratio": 1.757,
+        "substitution_enrichment_ratio": 0.928,
+        "deletion_enrichment_ratio": 2.5192,
+        "deletion_local_mask_delta": 0.002859,
+        "ctc_omission_blank_prob": 0.9089
+      },
+      "ZHAA": {
+        "speaker": "ZHAA",
+        "fold": 3,
+        "l1": "Arabic",
+        "total_tokens": 379,
+        "deletion_count": 12,
+        "correct_enrichment_ratio": 1.4021,
+        "substitution_enrichment_ratio": 0.448,
+        "deletion_enrichment_ratio": 1.6948,
+        "deletion_local_mask_delta": 0.003182,
+        "ctc_omission_blank_prob": 0.7252
+      }
+    },
+    "macro_8speaker_statistics": {
+      "speaker_count": 8,
+      "degrees_of_freedom": 7,
+      "critical_t_95": 2.3646,
+      "small_sample_disclosure": "Statistics aggregated across G=8 disjoint validation speakers spanning 4 folds. Under G=8, macro Student's t intervals reflect small-cluster sample size and must be interpreted alongside disaggregated speaker tabular distributions.",
+      "correct_enrichment_macro": {
+        "mean": 1.2795,
+        "std": 0.32461,
+        "se": 0.114767,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": 1.008119,
+        "ci_upper": 1.550881
+      },
+      "substitution_enrichment_macro": {
+        "mean": 1.148563,
+        "std": 0.569771,
+        "se": 0.201445,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": 0.672222,
+        "ci_upper": 1.624903
+      },
+      "deletion_enrichment_macro": {
+        "mean": 1.402363,
+        "std": 0.955095,
+        "se": 0.337677,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": 0.603883,
+        "ci_upper": 2.200842
+      },
+      "deletion_mask_delta_macro": {
+        "mean": 0.00172,
+        "std": 0.001247,
+        "se": 0.000441,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": 0.000678,
+        "ci_upper": 0.002763
+      },
+      "ctc_omission_blank_macro": {
+        "mean": 0.842337,
+        "std": 0.064659,
+        "se": 0.02286,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": 0.788281,
+        "ci_upper": 0.896394
+      }
+    }
+  },
+  "scientific_go_no_go_recommendation": {
+    "alignment_focused_experimentation_recommendation": "GO_FOR_JOINT_TRAINING_ALIGNMENT_REGULARIZATION",
+    "inference_only_window_restriction_recommendation": "NO_GO_FOR_INFERENCE_ONLY_WINDOW_CLIPPING",
+    "causal_mechanism_disposition": "Empirical evidence proves that cross-attention temporal localization has completely collapsed (enrichment ratio 0.00x on omissions; local masking score delta < 0.001; heads cycle over 5-10 global frames). The CTC head possesses the required acoustic omission evidence (P(BLANK)=82.8% on omission frames), but this evidence is disconnected from the binary head. However, counterfactual forced attention proves the downstream binary MLP cannot interpret local representations without retraining. Therefore, alignment regularization must be trained jointly with the classification heads."
+  }
+}

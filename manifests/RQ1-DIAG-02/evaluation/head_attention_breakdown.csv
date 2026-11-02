@@ -1,0 +1,5 @@
+head_index,evaluated_tokens,max_weight_mean,max_weight_min,max_weight_max,in_window_mass_mean,temporal_offset_mean_sec,normalized_entropy_mean,mean_unique_peaks_per_utterance
+0,2951,0.991748,0.439207,1.0,0.032597,1.2953,0.0037,6.1
+1,2951,0.992976,0.507839,1.0,0.03759,1.3402,0.0032,6.92
+2,2951,0.992755,0.338597,1.0,0.032352,1.3485,0.0033,6.42
+3,2951,0.991623,0.502022,1.0,0.033336,1.3698,0.0039,7.66

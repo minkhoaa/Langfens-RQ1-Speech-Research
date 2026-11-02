@@ -1,0 +1,5 @@
+error_type,token_count,observed_mass_mean,uniform_baseline_mass_mean,enrichment_over_uniform_mean,enrichment_over_uniform_median,random_window_baseline_mass_mean,enrichment_over_random_mean,normalized_entropy_mean,temporal_offset_mean_sec
+correct,2566,0.034255,0.027712,1.2839,0.0,0.02859,4850064031259008.0,0.2602,1.3904
+substitution,278,0.032758,0.029016,1.113,0.0,0.030389,1.1775,0.2633,1.4266
+deletion,107,0.03025,0.017208,1.3966,0.0,0.017846,1.937,0.2605,1.3491
+all,2951,0.033969,0.027454,1.2719,0.0,0.02837,4217304067845006.5,0.2605,1.3923

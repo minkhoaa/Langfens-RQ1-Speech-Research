@@ -24,7 +24,8 @@
 | **RQ1-ARTIFACT-01** | Baseline R model archival on Google Drive, native safetensors export, and private Hugging Face release. | `COMPLETED` | Step 02: Safetensors Export & Hugging Face Release | `a200b73` | [PROCESS_CHECKPOINT.md](../../manifests/RQ1-ARTIFACT-01/PROCESS_CHECKPOINT.md) | Ready for downstream acoustic ablations | Public release & HF dataset metadata upload pending |
 | **RQ1-TRN-02B** | Controlled acoustic conditioning ablation (C0 vs C1), preflight R2 safety closure, and Colab launch gate. | `COMPLETED` | Step 16: Final three-model scientific assessment and research gate closure | `7a3b9ec` | [PROCESS_CHECKPOINT.md](../../manifests/RQ1-TRN-02B/PROCESS_CHECKPOINT.md) | Proceed to RQ1-TRN-03A (Cross-Fold Speaker-Independent Generalization Planning) | None |
 | **RQ1-TRN-03A** | Cross-fold speaker-independent generalization planning for Folds 2, 3, and 4; test-isolation policy; independent Baseline R training contract; macro/micro metrics. | `COMPLETED` | Step 14: Scientific Errata & Model Improvement Readiness | `ae5b0e3` | [PROCESS_CHECKPOINT.md](../../manifests/RQ1-TRN-03A/PROCESS_CHECKPOINT.md) | Phase RQ1-TRN-03A officially closed. Validation baseline established. Ready for RQ1-TRN-03B. | None (RQ1-EVAL-01 requires separate operator authorization) |
-| **RQ1-DIAG-01** | Phoneme omission and false-negative root cause diagnostic audit across 4-fold validation sets. | `COMPLETED` | Step 01: Phoneme Omission & False-Negative Root Cause | `feat/rq1-diag-01-omission-fn-root-cause` | [PROCESS_CHECKPOINT.md](../../manifests/RQ1-DIAG-01/PROCESS_CHECKPOINT.md) | Ready for downstream controlled experiment design | None |
+| **RQ1-DIAG-01** | Phoneme omission and false-negative root cause diagnostic audit across 4-fold validation sets. | `COMPLETED` | Step 01: Phoneme Omission & False-Negative Root Cause | `b0ef963` | [PROCESS_CHECKPOINT.md](../../manifests/RQ1-DIAG-01/PROCESS_CHECKPOINT.md) | Proceed to RQ1-DIAG-02 | None |
+| **RQ1-DIAG-02** | Temporal acoustic alignment root-cause validation, counterfactual masking, and CTC omission boundary audit. | `COMPLETED` | Step 01: Temporal Alignment Root-Cause Validation | `feat/rq1-diag-02-temporal-alignment-validation` | [PROCESS_CHECKPOINT.md](../../manifests/RQ1-DIAG-02/PROCESS_CHECKPOINT.md) | Ready for joint alignment training proposal | None |
 
 ---
 
@@ -199,6 +200,20 @@
 - **Step Checkpoints:**
   1. [checkpoints/01-phoneme-omission-and-false-negative-root-cause.md](../../manifests/RQ1-DIAG-01/checkpoints/01-phoneme-omission-and-false-negative-root-cause.md) — Comprehensive offline diagnostic audit report, cross-attention profiling, disaggregated breakdowns, and 3 proposed minimal controlled experiments with quantitative acceptance gates.
 
+### RQ1-DIAG-02 — Temporal Alignment Root-Cause Validation
+- **Overview Checkpoint:** [manifests/RQ1-DIAG-02/PROCESS_CHECKPOINT.md](../../manifests/RQ1-DIAG-02/PROCESS_CHECKPOINT.md)
+- **Status:** `COMPLETED` | **Evidence Level:** `INDEPENDENTLY_VERIFIED`
+- **Source Branch:** `feat/rq1-diag-02-temporal-alignment-validation`
+- **Key Empirical Diagnostic Findings:**
+  - Transition Span Congruence: 79.49% of omissions have Praat intervals exactly congruent with the gap between neighboring realized phones (median 0.050s).
+  - Head Saturation Forensics: Individual heads 0-3 saturate as near-one-hot delta functions ($w>0.991$) cycling over 6-7 global anchor frames.
+  - Counterfactual Masking Insensitivity: Zeroing out local acoustic frames causes $< 0.002$ score change, proving local acoustic insensitivity.
+  - Forced Attention OOD Breakdown: Constraining attention to local window causes +0.26 score drift across all tokens due to downstream MLP OOD breakdown.
+  - CTC Omission Boundary Evidence: CTC head emits `<BLANK>` with 86.28% argmax and 84.47% posterior on omission frames (97.2% majority blank), proving Wav2Vec2 frames contain omission evidence that is bypassed by cross-attention.
+  - Recommendation: GO for joint-training alignment regularization experimentation; NO-GO for inference-only heuristic window clipping.
+- **Step Checkpoints:**
+  1. [checkpoints/01-temporal-alignment-root-cause-validation.md](../../manifests/RQ1-DIAG-02/checkpoints/01-temporal-alignment-root-cause-validation.md) — Complete temporal alignment validation report, individual head inspection, counterfactuals, CTC boundary audit, and GO/NO-GO recommendation.
+
 ---
 
 ## 3. Cross-Platform Storage & Artifact Index
@@ -242,6 +257,13 @@
 | `omission_error_breakdown_by_position.csv` | Word-Position Breakdown Table | `manifests/RQ1-DIAG-01/evaluation/omission_error_breakdown_by_position.csv` | `435d10a2bbccfa33117498c16dca1375b630e66ea1ca14bbd2105da24660eeea` | Verified |
 | `omission_error_breakdown_by_duration.csv` | Duration Binning Breakdown Table | `manifests/RQ1-DIAG-01/evaluation/omission_error_breakdown_by_duration.csv` | `82cf219d3b20dfa773d1fdb4974955eb0877a5ef0928a6f4435b80b06ce270aa` | Verified |
 | `representative_false_negatives.csv` | High-Confidence False Negatives Forensics Table | `manifests/RQ1-DIAG-01/evaluation/representative_false_negatives.csv` | `3781297e64dafc823021f1539e083c0f4f911a3ff0d5e1ee74fae782e4e16d4c` | Verified |
+| `TEMPORAL_ALIGNMENT_VALIDATION_REPORT.json` | Master Temporal Alignment Validation Report | `manifests/RQ1-DIAG-02/evaluation/TEMPORAL_ALIGNMENT_VALIDATION_REPORT.json` | `9895b8a572b3528fb5bf895b242d6f8739368f24893d930434efc8c163ae61c1` | Verified |
+| `attention_enrichment_by_token_type.csv` | Attention Enrichment vs Baselines Table | `manifests/RQ1-DIAG-02/evaluation/attention_enrichment_by_token_type.csv` | `0f2d4ee71112674e2d26fdfc972178229d6ea4e414f6b1e604f3bf3c9a0994f3` | Verified |
+| `head_attention_breakdown.csv` | Individual Attention Head Inspection Table | `manifests/RQ1-DIAG-02/evaluation/head_attention_breakdown.csv` | `5c13f619b67e2338cf818987d605c30fc497911feadab7c10b78d2b2708bce17` | Verified |
+| `omission_counterfactual_masking_results.csv` | Counterfactual Masking & Forced Attention Table | `manifests/RQ1-DIAG-02/evaluation/omission_counterfactual_masking_results.csv` | `d7237e1b52a7eb4fcb7396696d744315264878a01f705e4c6cfa959a96e57975` | Verified |
+| `ctc_omission_boundary_audit.csv` | CTC Omission Boundary Audit Table | `manifests/RQ1-DIAG-02/evaluation/ctc_omission_boundary_audit.csv` | `f592d99d3ba3783a48e7e1c8a1fe45ea3d6a427bb451e0696a928ba49463c19b` | Verified |
+| `speaker_paired_uncertainty_summary.csv` | 8-Speaker Paired Uncertainty Summary Table | `manifests/RQ1-DIAG-02/evaluation/speaker_paired_uncertainty_summary.csv` | `5b93d3969446d4ef63e32b4bfa2a25a40b3cb3d58ef12c3f8e6538cb123eec7e` | Verified |
+| `diagnose_temporal_alignment_validation.py` | Complete Reproducible Temporal Diagnostic Script | `audit_scripts/diagnose_temporal_alignment_validation.py` | `dff863b15ad824a14210d655f5ddcfd97d9c1ddbe490356ae1639c4f74d618d3` | Verified |
 | `diagnose_omissions_and_false_negatives.py` | Complete Reproducible Diagnostic Script | `audit_scripts/diagnose_omissions_and_false_negatives.py` | `0b42f6d2222f7a4ca68c4a5c531d054e17be88d3f3f5082ce7c6888c3be3df05` | Verified |
 | `pilot_fold1_endpoints_summary.csv` | Summary Table Across 5 Pilot Endpoints | `manifests/RQ1-TRN-03A/evaluation/pilot_fold1_endpoints_summary.csv` | `7b8ff0c53df39fc15dd4418d0160a36e1e3b7a33f9becc6396f174aadd6e6bf6` | Verified |
 | `pilot_fold1_operating_points_comparison.csv` | Fixed-FPR Operating Points Comparison Table | `manifests/RQ1-TRN-03A/evaluation/pilot_fold1_operating_points_comparison.csv` | `a4cdd1eef7c9216e1067be75f1eb5e93c2dd871bc873722bca5724be648db02b` | Verified |

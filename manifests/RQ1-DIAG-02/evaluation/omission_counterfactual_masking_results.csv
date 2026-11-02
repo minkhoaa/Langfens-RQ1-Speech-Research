@@ -1,0 +1,5 @@
+error_type,token_count,original_score_mean,local_masked_score_mean,mean_absolute_score_delta_on_masking,median_absolute_score_delta_on_masking,forced_local_attention_score_mean,mean_score_delta_on_forced_attention
+correct,2566,0.1208,0.1211,0.001067,0.0,0.381,0.2602
+substitution,278,0.2482,0.2485,0.001309,0.0,0.4488,0.2006
+deletion,107,0.1724,0.1736,0.001714,0.0,0.4489,0.2765
+all,2951,0.1347,0.135,0.001113,0.0,0.3898,0.2552

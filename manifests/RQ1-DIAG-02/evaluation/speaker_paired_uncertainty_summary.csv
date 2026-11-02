@@ -1,0 +1,9 @@
+speaker,fold,l1,total_tokens,deletion_count,correct_enrichment_ratio,substitution_enrichment_ratio,deletion_enrichment_ratio,deletion_local_mask_delta,ctc_omission_blank_prob
+HKK,4,Korean,345,16,1.3669,1.4266,0.7188,0.001674,0.9138
+NCC,4,Mandarin,353,11,0.9378,1.4289,0.0,0.0,0.8365
+NJS,1,Spanish,416,13,1.053,1.1659,1.824,0.000608,0.8652
+RRBI,1,Hindi,331,12,0.8474,1.6343,1.2153,0.003133,0.8712
+TNI,2,Spanish,370,14,1.2319,1.8942,2.6977,0.000597,0.7744
+TXHC,3,Mandarin,422,16,1.6399,0.2626,0.5491,0.001709,0.8435
+YBAA,2,Arabic,335,13,1.757,0.928,2.5192,0.002859,0.9089
+ZHAA,3,Arabic,379,12,1.4021,0.448,1.6948,0.003182,0.7252
