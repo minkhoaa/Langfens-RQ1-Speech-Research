@@ -49,3 +49,11 @@ Executed under strict CPU-first rules with zero GPU training, zero optimizer ste
 
 ## 3. Next Authorized Action
 Await operator review of Phase RQ1-DIAG-01 diagnostic findings and authorization of next research gate before proceeding to implementation or training.
+
+---
+
+## Appended interpretation/duration correction — DIAG-02B (2026-11-02)
+
+The historical census/AP observations are reproduced, but causal labels are hypotheses, not established architectural causes. The 293 (<40-ms) and 545 (<80-ms) counts use raw binary subtraction; annotation-decimal counts are 284 and 542. The 1.59% omission prevalence is validation, not a measured training prevalence. Attention interval baselines require K/T, not a single-frame 1/T comparison. Word-final/accent/coarticulatory descriptions are not causal acoustic diagnoses.
+
+See [DIAG-02B report](../RQ1-DIAG-02B/SCIENTIFIC_REPORT.md) for matched controls, valid interventions, uncertainty and the **PARTIAL / NO-GO training-causal-gate** disposition. Original numerical files/protocols remain unchanged.

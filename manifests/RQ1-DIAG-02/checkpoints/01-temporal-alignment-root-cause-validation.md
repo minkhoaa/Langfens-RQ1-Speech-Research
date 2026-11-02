@@ -253,3 +253,13 @@ In strict compliance with `AGENTS.md` ("Never start training without explicit us
 - **Next Required Action:** Await operator review of diagnostic validation findings before authoring any training proposal or modifying model code.
 
 **STOP.**
+
+---
+
+## Appended scientific erratum — DIAG-02B (2026-11-02)
+
+All preceding claims/tables remain historical records. **The causal validation, CTC omission-readiness and training-GO conclusions are withdrawn as established findings.** The forced-attention implementation was not an original-MHA intervention: it averaged heads and pooled raw features without learned value/output projections. Feature erasure was not waveform masking. High P(blank) without correct-phone controls did not demonstrate omission detection.
+
+The [DIAG-02B report](../../RQ1-DIAG-02B/SCIENTIFIC_REPORT.md) and [machine-readable corrections](../../RQ1-DIAG-02B/reconciliation-final/CORRECTIONS.json) supersede numerical/interpretive inconsistencies, including 293 raw vs 284 rounded short intervals; historical macro .001720 rather than .001845; ~1.3966× rather than 0.00× omission enrichment; stale random baselines/head offsets and seven of eight claimed artifact hashes. Independent new endpoint checks preserve the 500/629 exact-span observation, without inferring acoustic absence.
+
+Current research status is **PARTIAL / NO-GO for causal training authorization**, not PASS. See the [DIAG-02B checkpoint](../../RQ1-DIAG-02B/PROCESS_CHECKPOINT.md). No training launched.

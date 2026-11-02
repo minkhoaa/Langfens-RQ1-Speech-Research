@@ -48,3 +48,11 @@ Executed strictly under CPU-first, inference-only constraints with zero training
 
 ## 3. Next Authorized Action
 Await operator review of Phase RQ1-DIAG-02 diagnostic validation and authorization of next research gate before proceeding to implementation or training.
+
+---
+
+## Appended correction — RQ1-DIAG-02B (2026-11-02)
+
+The original text above is preserved as historical reporting. Its **CAUSAL_DIAGNOSIS_VALIDATED / GO_FOR_JOINT_ALIGNMENT_TRAINING** conclusions are **superseded**, not current authorization. The historical forced-attention path bypassed original MHA value/output projections; high CTC blank alone did not test omission discrimination. Stale numerical values and seven artifact hash claims are enumerated in the correction ledger.
+
+See [DIAG-02B scientific report](../RQ1-DIAG-02B/SCIENTIFIC_REPORT.md) and [process checkpoint](../RQ1-DIAG-02B/PROCESS_CHECKPOINT.md). Current disposition: **PARTIAL (archived-score parity failures); NO-GO for causal training authorization**. New bounded CPU inference uses projection-correct attention, matched CTC controls and separate waveform/feature interventions. No training executed.
