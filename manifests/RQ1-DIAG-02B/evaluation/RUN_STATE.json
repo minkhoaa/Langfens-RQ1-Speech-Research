@@ -1,0 +1,12 @@
+{
+  "status": "RUNNING",
+  "args": {
+    "outdir": "manifests/RQ1-DIAG-02B/evaluation",
+    "samples_per_speaker": 10,
+    "waveform_pairs_per_speaker": 2,
+    "threads": 4,
+    "bootstrap": 500,
+    "seed": 1337
+  },
+  "restart": "Use a NEW output directory; never overwrite evidence."
+}

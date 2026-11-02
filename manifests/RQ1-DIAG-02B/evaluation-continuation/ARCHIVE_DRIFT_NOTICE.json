@@ -1,0 +1,9 @@
+{
+  "status": "ARCHIVE_PARITY_FAILED",
+  "fold": 4,
+  "speaker": "HKK",
+  "utterance_id": "arctic_a0105",
+  "max_difference": 0.0021009743213653564,
+  "unchanged_tolerance": 0.0002,
+  "continuation_explicit": true
+}

@@ -1,0 +1,44 @@
+{
+  "historical_macro_from_csv": {
+    "mean": 0.00172,
+    "std": 0.001247,
+    "se": 0.000441,
+    "df": 7,
+    "t_crit": 2.3646,
+    "ci_lower": 0.000678,
+    "ci_upper": 0.002763
+  },
+  "span_agreement": {
+    "duration_within_1e4": 500,
+    "both_endpoints_within_1e4": 500,
+    "both_endpoints_exact_float": 500
+  },
+  "matched_descriptives": {
+    "omission": {
+      "duration_sec": 0.05158232526415693,
+      "blank_mean": 0.8243709328499708,
+      "canonical_mean": 0.0916574667670361,
+      "canonical_peak": 0.28588123137641025,
+      "blank_emission_fraction": 0.8388528138528139
+    },
+    "control": {
+      "duration_sec": 0.05440715702448683,
+      "blank_mean": 0.7321561672019236,
+      "canonical_mean": 0.17967720902426093,
+      "canonical_peak": 0.4689965934970974,
+      "blank_emission_fraction": 0.7369769119769121
+    }
+  },
+  "source_sha256": "6e4f87d5621de4da5b92f5e171508985f7a3dcf9e8d6e0a6039b1121768c1168",
+  "primary_report_sha256": "38aa543a46d5c2da856e0d73f1887a12285576a205c66fc41c0faa194f8647b6",
+  "fresh_process_forward": {
+    "status": "NUMERICAL_DRIFT",
+    "utterances": 80,
+    "exact_utterances": 12,
+    "max_probability_difference": 5.960464477539063e-08,
+    "max_logit_difference": 0.0,
+    "interpretation": "Probability records used scalar sigmoid; fresh check uses vector sigmoid. Report logit parity separately.",
+    "threads": 1,
+    "mkl_cbwr": "COMPATIBLE"
+  }
+}

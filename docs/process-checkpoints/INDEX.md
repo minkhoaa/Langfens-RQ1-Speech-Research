@@ -6,6 +6,8 @@
 **Registry Maintenance Lead:** Senior ML Research Engineer & Reproducibility Auditor  
 **Policy Authority:** `AGENTS.md` (Mandatory Process Checkpoint Policy)
 
+**2026-11-02 DIAG-02B correction:** DIAG-02's causal-validation/CTC-readiness conclusions and training GO are superseded by [DIAG-02B](../../manifests/RQ1-DIAG-02B/PROCESS_CHECKPOINT.md). Current disposition: **PARTIAL (archive parity failures), NO-GO for causal training authorization**. Historical entries below are retained as historical records, not current authorization. CPU diagnostics only; no training.
+
 ---
 
 ## 1. Master Research Phase Registry
@@ -25,7 +27,8 @@
 | **RQ1-TRN-02B** | Controlled acoustic conditioning ablation (C0 vs C1), preflight R2 safety closure, and Colab launch gate. | `COMPLETED` | Step 16: Final three-model scientific assessment and research gate closure | `7a3b9ec` | [PROCESS_CHECKPOINT.md](../../manifests/RQ1-TRN-02B/PROCESS_CHECKPOINT.md) | Proceed to RQ1-TRN-03A (Cross-Fold Speaker-Independent Generalization Planning) | None |
 | **RQ1-TRN-03A** | Cross-fold speaker-independent generalization planning for Folds 2, 3, and 4; test-isolation policy; independent Baseline R training contract; macro/micro metrics. | `COMPLETED` | Step 14: Scientific Errata & Model Improvement Readiness | `ae5b0e3` | [PROCESS_CHECKPOINT.md](../../manifests/RQ1-TRN-03A/PROCESS_CHECKPOINT.md) | Phase RQ1-TRN-03A officially closed. Validation baseline established. Ready for RQ1-TRN-03B. | None (RQ1-EVAL-01 requires separate operator authorization) |
 | **RQ1-DIAG-01** | Phoneme omission and false-negative root cause diagnostic audit across 4-fold validation sets. | `COMPLETED` | Step 01: Phoneme Omission & False-Negative Root Cause | `b0ef963` | [PROCESS_CHECKPOINT.md](../../manifests/RQ1-DIAG-01/PROCESS_CHECKPOINT.md) | Proceed to RQ1-DIAG-02 | None |
-| **RQ1-DIAG-02** | Temporal acoustic alignment root-cause validation, counterfactual masking, and CTC omission boundary audit. | `COMPLETED` | Step 01: Temporal Alignment Root-Cause Validation | `feat/rq1-diag-02-temporal-alignment-validation` | [PROCESS_CHECKPOINT.md](../../manifests/RQ1-DIAG-02/PROCESS_CHECKPOINT.md) | Ready for joint alignment training proposal | None |
+| **RQ1-DIAG-02** | Temporal acoustic alignment root-cause validation, counterfactual masking, and CTC omission boundary audit. | `HISTORICAL; CAUSAL_CLAIMS_SUPERSEDED_BY_DIAG-02B` | Step 01: Temporal Alignment Root-Cause Validation | `dd2dee9` | [PROCESS_CHECKPOINT.md](../../manifests/RQ1-DIAG-02/PROCESS_CHECKPOINT.md) | Read DIAG-02B corrections; no training GO | Invalid forced-MHA counterfactual and unsupported CTC conclusions |
+| **RQ1-DIAG-02B** | Counterfactual validity, matched CTC discrimination, separated waveform/feature probes and numerical reconciliation. | `PARTIAL; NO_GO_TRAINING_CAUSAL_GATE` | Bounded CPU scientific report and regression evidence | `dd2dee9` execution base; dedicated `feat/rq1-diag-02b-counterfactual-validity` branch | [PROCESS_CHECKPOINT.md](../../manifests/RQ1-DIAG-02B/PROCESS_CHECKPOINT.md) | STOP; review report and resolve archive parity before further authorization | Archived scores exceed unchanged tolerance on 9/80 utterances; only G=8 validation speakers |
 
 ---
 
@@ -201,6 +204,7 @@
   1. [checkpoints/01-phoneme-omission-and-false-negative-root-cause.md](../../manifests/RQ1-DIAG-01/checkpoints/01-phoneme-omission-and-false-negative-root-cause.md) — Comprehensive offline diagnostic audit report, cross-attention profiling, disaggregated breakdowns, and 3 proposed minimal controlled experiments with quantitative acceptance gates.
 
 ### RQ1-DIAG-02 — Temporal Alignment Root-Cause Validation
+- **Historical-status correction:** The claims below describe the original report, not current verification. DIAG-02B invalidates its forced-attention causal proof, withdraws CTC omission-readiness and training-GO assertions, and reconciles stale numbers/hash claims. See the following section.
 - **Overview Checkpoint:** [manifests/RQ1-DIAG-02/PROCESS_CHECKPOINT.md](../../manifests/RQ1-DIAG-02/PROCESS_CHECKPOINT.md)
 - **Status:** `COMPLETED` | **Evidence Level:** `INDEPENDENTLY_VERIFIED`
 - **Source Branch:** `feat/rq1-diag-02-temporal-alignment-validation`
@@ -213,6 +217,18 @@
   - Recommendation: GO for joint-training alignment regularization experimentation; NO-GO for inference-only heuristic window clipping.
 - **Step Checkpoints:**
   1. [checkpoints/01-temporal-alignment-root-cause-validation.md](../../manifests/RQ1-DIAG-02/checkpoints/01-temporal-alignment-root-cause-validation.md) — Complete temporal alignment validation report, individual head inspection, counterfactuals, CTC boundary audit, and GO/NO-GO recommendation.
+
+---
+
+### RQ1-DIAG-02B — Counterfactual Validity & CTC Discrimination
+- **Overview Checkpoint:** [manifests/RQ1-DIAG-02B/PROCESS_CHECKPOINT.md](../../manifests/RQ1-DIAG-02B/PROCESS_CHECKPOINT.md)
+- **Scientific report:** [SCIENTIFIC_REPORT.md](../../manifests/RQ1-DIAG-02B/SCIENTIFIC_REPORT.md)
+- **Status:** `PARTIAL_ARCHIVE_PARITY_FAILED; NO_GO_TRAINING_CAUSAL_GATE`.
+- **Source:** execution base `dd2dee9`; review branch `feat/rq1-diag-02b-counterfactual-validity`; actual executed source SHA pinned in report/checkpoint.
+- **Verified evidence:** four original checkpoint/config hashes; exact head/open-mask forward parity and fresh-process logits on 80 validation utterances; 66 matched omission/control pairs (58 at tighter caliper); original MHA projections/head semantics; separate waveform (32 tokens) and feature probes; numerical correction/hash ledgers; 31 executed DIAG regressions passed. No training, backward or optimizer updates; TEST members not read.
+- **Non-PASS boundary:** 9/80 archive comparisons fail unchanged 0.000200 tolerance (max 0.001304954); no full 1,199-utterance forward replay. G=8 uncertainty and selected/case-control denominators prevent population/deployment extrapolation.
+- **Key correction:** CTC blank AUC ~0.653 is modest matched discrimination, not >84% omission confidence. Historical forced attention bypassed learned value/output projections. 293 vs 284 short omissions are float-boundary conventions; macro masking is .001720, not .001845; omission enrichment ~1.3966×, not 0.00×.
+- **Next authorized continuation:** STOP after scientific report. Resolve parity/provenance and obtain separate authorization before any training/design implementation. [Delivery tracking](../../manifests/RQ1-DIAG-02B/DELIVERY.md).
 
 ---
 

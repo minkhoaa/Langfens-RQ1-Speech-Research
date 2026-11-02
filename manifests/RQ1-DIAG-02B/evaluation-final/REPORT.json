@@ -1,0 +1,4648 @@
+{
+  "status": "PARTIAL_ARCHIVE_PARITY_FAILED",
+  "decision": "NO_GO_ALIGNMENT_TRAINING_CAUSAL_GATE",
+  "metadata": {
+    "base": "dd2dee9a2063284d2a0f9fbf1c18315f3a7cd774",
+    "runtime_head": "dd2dee9a2063284d2a0f9fbf1c18315f3a7cd774",
+    "script_sha256": "7d43173ef4bbade93aec017f10d27615d33eadc5f2946332475940e6ea6e1424",
+    "args": {
+      "outdir": "manifests/RQ1-DIAG-02B/evaluation-final",
+      "samples_per_speaker": 10,
+      "waveform_pairs_per_speaker": 2,
+      "threads": 1,
+      "bootstrap": 500,
+      "seed": 1337,
+      "continue_on_archive_drift": true
+    },
+    "python": "3.14.8",
+    "torch": "2.14.1+cpu",
+    "numpy": "2.5.4",
+    "device": "cpu",
+    "deterministic_algorithms": true,
+    "cpu_threads": 1,
+    "mkl_cbwr": "COMPATIBLE",
+    "authorized_package_sha256": {
+      "1": "b750eb3bf3971afccd9ab9058a64fa6b3f5781399b9ef0f1294d29bf580784a9",
+      "2": "112cc9e0cc5e37e5fa034df504eca019dd6ad438c96cb642335ecf10a802f0d9",
+      "3": "e81ac9e5d95a68d7f02c7b2ea8e5f1e9fd89b047926ffeeb4d096b0a3a5378a2",
+      "4": "653bdad079ee951d6b6d6a3f19964143aa5f4290a3f8c232e9b2524abdbe7f94"
+    },
+    "seed": 1337,
+    "elapsed_seconds": 486.09913873672485,
+    "prediction_sha256": "355b6e23bcb172d20b99ba3f9f4e07dc15453846ac312eca847471ad476e5892",
+    "split_sha256": "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b"
+  },
+  "scope": {
+    "validation_utterances": 1199,
+    "census": {
+      "correct": 35363,
+      "substitution": 3584,
+      "deletion": 629
+    },
+    "sampled_utterances": 80,
+    "sampled_tokens": 2951,
+    "speaker_utterances": {
+      "NJS": 10,
+      "RRBI": 10,
+      "TNI": 10,
+      "YBAA": 10,
+      "TXHC": 10,
+      "ZHAA": 10,
+      "HKK": 10,
+      "NCC": 10
+    },
+    "waveform_tokens": 32,
+    "ctc_matching": {
+      "caliper_sec": 0.02,
+      "exact": [
+        "speaker",
+        "phone",
+        "word_position"
+      ],
+      "without_replacement": true,
+      "pairs": 66,
+      "unmatched_omissions": [
+        "1/NJS/arctic_a0007/2",
+        "1/NJS/arctic_a0008/2",
+        "1/NJS/arctic_a0019/21",
+        "1/NJS/arctic_a0019/5",
+        "1/NJS/arctic_a0020/14",
+        "1/NJS/arctic_a0020/7",
+        "1/NJS/arctic_a0023/44",
+        "1/NJS/arctic_a0024/23",
+        "1/RRBI/arctic_a0003/2",
+        "1/RRBI/arctic_a0019/35",
+        "1/RRBI/arctic_a0031/2",
+        "1/RRBI/arctic_a0031/23",
+        "1/RRBI/arctic_a0036/9",
+        "1/RRBI/arctic_a0046/14",
+        "2/TNI/arctic_a0003/12",
+        "2/TNI/arctic_a0028/10",
+        "2/TNI/arctic_a0028/3",
+        "2/YBAA/arctic_a0003/2",
+        "2/YBAA/arctic_a0013/36",
+        "2/YBAA/arctic_a0022/23",
+        "2/YBAA/arctic_a0053/20",
+        "2/YBAA/arctic_a0100/13",
+        "2/YBAA/arctic_a0100/5",
+        "3/TXHC/arctic_a0021/4",
+        "3/TXHC/arctic_a0023/55",
+        "3/TXHC/arctic_a0027/35",
+        "3/ZHAA/arctic_a0024/27",
+        "3/ZHAA/arctic_a0078/7",
+        "3/ZHAA/arctic_a0086/11",
+        "3/ZHAA/arctic_a0088/30",
+        "4/HKK/arctic_a0101/9",
+        "4/HKK/arctic_a0105/25",
+        "4/HKK/arctic_a0106/13",
+        "4/HKK/arctic_a0106/14",
+        "4/HKK/arctic_a0108/25",
+        "4/HKK/arctic_a0108/38",
+        "4/HKK/arctic_a0111/12",
+        "4/HKK/arctic_a0111/23",
+        "4/HKK/arctic_a0111/6",
+        "4/NCC/arctic_a0024/42",
+        "4/NCC/arctic_a0026/16"
+      ]
+    }
+  },
+  "checkpoint_provenance": [
+    {
+      "fold": 1,
+      "checkpoint": "checkpoints/RQ1-TRN-02A/recovered/best.pt",
+      "sha256": "a2445c8d17910bf3c03101f50fc419675e8d1bc012af43af10267a28dbba948b",
+      "successful_updates": 3600,
+      "epoch": 5,
+      "skipped_updates": 0,
+      "config": {
+        "experiment": "RQ1-TRN-02A",
+        "seed": 1337,
+        "fold": 1,
+        "policy": "strict",
+        "manifest": "manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json",
+        "manifest_sha256": "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b",
+        "pretrained_model": "facebook/wav2vec2-base-960h",
+        "pretrained_revision": "22aad52d435eb6dbaf354bdad9b0da84ce7d6156",
+        "loss_weights": {
+          "ctc": 1.0,
+          "binary": 1.0
+        },
+        "backbone_frozen": true,
+        "batch_size": 2,
+        "gradient_accumulation_steps": 2,
+        "num_workers": 0,
+        "pin_memory": true,
+        "length_bucketing": false,
+        "optimizer": "AdamW",
+        "learning_rate": 0.001,
+        "weight_decay": 0.01,
+        "scheduler": "cosine",
+        "warmup_updates": 100,
+        "max_epochs": 25,
+        "early_stopping_patience": 5,
+        "gradient_clip_norm": 1.0,
+        "amp": "fp16",
+        "grad_scaler_initial_scale": 4096,
+        "output_dir": "checkpoints/RQ1-TRN-02A",
+        "drive_output_dir": "/content/drive/MyDrive/KLTN-Dataset/manifests/RQ1-TRN-02A/checkpoints",
+        "zip_path": "datasets/L2-ARCTIC/authorized_RQ1-TRN-02A_fold1_train_val_only.zip"
+      },
+      "backbone_config": {
+        "transformers_version": "5.20.2",
+        "architectures": [
+          "Wav2Vec2ForCTC"
+        ],
+        "output_hidden_states": false,
+        "return_dict": true,
+        "dtype": "float32",
+        "chunk_size_feed_forward": 0,
+        "is_encoder_decoder": false,
+        "id2label": {
+          "0": "LABEL_0",
+          "1": "LABEL_1"
+        },
+        "label2id": {
+          "LABEL_0": 0,
+          "LABEL_1": 1
+        },
+        "problem_type": null,
+        "vocab_size": 32,
+        "hidden_size": 768,
+        "num_hidden_layers": 12,
+        "num_attention_heads": 12,
+        "intermediate_size": 3072,
+        "hidden_act": "gelu",
+        "hidden_dropout": 0.1,
+        "activation_dropout": 0.1,
+        "attention_dropout": 0.1,
+        "feat_proj_dropout": 0.1,
+        "feat_quantizer_dropout": 0.0,
+        "final_dropout": 0.1,
+        "layerdrop": 0.1,
+        "initializer_range": 0.02,
+        "layer_norm_eps": 1e-05,
+        "feat_extract_norm": "group",
+        "feat_extract_activation": "gelu",
+        "conv_dim": [
+          512,
+          512,
+          512,
+          512,
+          512,
+          512,
+          512
+        ],
+        "conv_stride": [
+          5,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "conv_kernel": [
+          10,
+          3,
+          3,
+          3,
+          3,
+          2,
+          2
+        ],
+        "conv_bias": false,
+        "num_conv_pos_embeddings": 128,
+        "num_conv_pos_embedding_groups": 16,
+        "do_stable_layer_norm": false,
+        "apply_spec_augment": false,
+        "mask_time_prob": 0.05,
+        "mask_time_length": 10,
+        "mask_time_min_masks": 2,
+        "mask_feature_prob": 0.0,
+        "mask_feature_length": 10,
+        "mask_feature_min_masks": 0,
+        "num_codevectors_per_group": 320,
+        "num_codevector_groups": 2,
+        "contrastive_logits_temperature": 0.1,
+        "num_negatives": 100,
+        "codevector_dim": 256,
+        "proj_codevector_dim": 256,
+        "diversity_loss_weight": 0.1,
+        "ctc_loss_reduction": "sum",
+        "ctc_zero_infinity": false,
+        "use_weighted_layer_sum": false,
+        "classifier_proj_size": 256,
+        "tdnn_dim": [
+          512,
+          512,
+          512,
+          512,
+          1500
+        ],
+        "tdnn_kernel": [
+          5,
+          3,
+          3,
+          1,
+          1
+        ],
+        "tdnn_dilation": [
+          1,
+          2,
+          3,
+          1,
+          1
+        ],
+        "xvector_output_dim": 512,
+        "pad_token_id": 0,
+        "bos_token_id": 1,
+        "eos_token_id": 2,
+        "add_adapter": false,
+        "adapter_kernel_size": 3,
+        "adapter_stride": 2,
+        "num_adapter_layers": 3,
+        "output_hidden_size": 768,
+        "adapter_attn_dim": null,
+        "num_feat_extract_layers": 7,
+        "_name_or_path": "facebook/wav2vec2-base-960h",
+        "feat_extract_dropout": 0.0,
+        "gradient_checkpointing": false,
+        "hidden_dropout_prob": 0.1,
+        "model_type": "wav2vec2",
+        "output_attentions": false
+      },
+      "strict_state_dict": true,
+      "cross_attention_heads": 4
+    },
+    {
+      "fold": 2,
+      "checkpoint": "checkpoints/fold2/baseline_r_fold2/fixed_budget_checkpoint.pt",
+      "sha256": "ab4c589445feac42636296cd36d7cf2ae7eba7360445f0084454c87fa2fef508",
+      "successful_updates": 3600,
+      "epoch": 5,
+      "skipped_updates": 0,
+      "config": {
+        "experiment": "RQ1-TRN-03A",
+        "seed": 1337,
+        "fold": 2,
+        "policy": "strict",
+        "manifest": "manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json",
+        "manifest_sha256": "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b",
+        "pretrained_model": "facebook/wav2vec2-base-960h",
+        "pretrained_revision": "22aad52d435eb6dbaf354bdad9b0da84ce7d6156",
+        "loss_weights": {
+          "ctc": 1.0,
+          "binary": 1.0
+        },
+        "backbone_frozen": true,
+        "batch_size": 2,
+        "gradient_accumulation_steps": 2,
+        "num_workers": 0,
+        "pin_memory": true,
+        "length_bucketing": false,
+        "optimizer": "AdamW",
+        "learning_rate": 0.001,
+        "weight_decay": 0.01,
+        "scheduler": "cosine",
+        "warmup_updates": 100,
+        "max_epochs": 25,
+        "scheduler_horizon_epochs": 25,
+        "execution_cap_epochs": 10,
+        "early_stopping_patience": 5,
+        "gradient_clip_norm": 1.0,
+        "amp": "fp16",
+        "grad_scaler_initial_scale": 4096,
+        "output_dir": "checkpoints/RQ1-TRN-03A/fold2",
+        "drive_output_dir": null,
+        "zip_path": "datasets/L2-ARCTIC/authorized_RQ1-TRN_fold2_train_val_only.zip"
+      },
+      "backbone_config": {
+        "transformers_version": "5.20.2",
+        "architectures": [
+          "Wav2Vec2ForCTC"
+        ],
+        "output_hidden_states": false,
+        "return_dict": true,
+        "dtype": "float32",
+        "chunk_size_feed_forward": 0,
+        "is_encoder_decoder": false,
+        "id2label": {
+          "0": "LABEL_0",
+          "1": "LABEL_1"
+        },
+        "label2id": {
+          "LABEL_0": 0,
+          "LABEL_1": 1
+        },
+        "problem_type": null,
+        "vocab_size": 32,
+        "hidden_size": 768,
+        "num_hidden_layers": 12,
+        "num_attention_heads": 12,
+        "intermediate_size": 3072,
+        "hidden_act": "gelu",
+        "hidden_dropout": 0.1,
+        "activation_dropout": 0.1,
+        "attention_dropout": 0.1,
+        "feat_proj_dropout": 0.1,
+        "feat_quantizer_dropout": 0.0,
+        "final_dropout": 0.1,
+        "layerdrop": 0.1,
+        "initializer_range": 0.02,
+        "layer_norm_eps": 1e-05,
+        "feat_extract_norm": "group",
+        "feat_extract_activation": "gelu",
+        "conv_dim": [
+          512,
+          512,
+          512,
+          512,
+          512,
+          512,
+          512
+        ],
+        "conv_stride": [
+          5,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "conv_kernel": [
+          10,
+          3,
+          3,
+          3,
+          3,
+          2,
+          2
+        ],
+        "conv_bias": false,
+        "num_conv_pos_embeddings": 128,
+        "num_conv_pos_embedding_groups": 16,
+        "do_stable_layer_norm": false,
+        "apply_spec_augment": false,
+        "mask_time_prob": 0.05,
+        "mask_time_length": 10,
+        "mask_time_min_masks": 2,
+        "mask_feature_prob": 0.0,
+        "mask_feature_length": 10,
+        "mask_feature_min_masks": 0,
+        "num_codevectors_per_group": 320,
+        "num_codevector_groups": 2,
+        "contrastive_logits_temperature": 0.1,
+        "num_negatives": 100,
+        "codevector_dim": 256,
+        "proj_codevector_dim": 256,
+        "diversity_loss_weight": 0.1,
+        "ctc_loss_reduction": "sum",
+        "ctc_zero_infinity": false,
+        "use_weighted_layer_sum": false,
+        "classifier_proj_size": 256,
+        "tdnn_dim": [
+          512,
+          512,
+          512,
+          512,
+          1500
+        ],
+        "tdnn_kernel": [
+          5,
+          3,
+          3,
+          1,
+          1
+        ],
+        "tdnn_dilation": [
+          1,
+          2,
+          3,
+          1,
+          1
+        ],
+        "xvector_output_dim": 512,
+        "pad_token_id": 0,
+        "bos_token_id": 1,
+        "eos_token_id": 2,
+        "add_adapter": false,
+        "adapter_kernel_size": 3,
+        "adapter_stride": 2,
+        "num_adapter_layers": 3,
+        "output_hidden_size": 768,
+        "adapter_attn_dim": null,
+        "num_feat_extract_layers": 7,
+        "_name_or_path": "facebook/wav2vec2-base-960h",
+        "feat_extract_dropout": 0.0,
+        "gradient_checkpointing": false,
+        "hidden_dropout_prob": 0.1,
+        "model_type": "wav2vec2",
+        "output_attentions": false
+      },
+      "strict_state_dict": true,
+      "cross_attention_heads": 4
+    },
+    {
+      "fold": 3,
+      "checkpoint": "checkpoints/fold3/baseline_r_fold3/fixed_budget_checkpoint.pt",
+      "sha256": "bbee9dd392806fc81c88e41018edc7adb270d71b5047930f5ce78a69c538a441",
+      "successful_updates": 3600,
+      "epoch": 5,
+      "skipped_updates": 0,
+      "config": {
+        "experiment": "RQ1-TRN-03A",
+        "seed": 1337,
+        "fold": 3,
+        "policy": "strict",
+        "manifest": "manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json",
+        "manifest_sha256": "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b",
+        "pretrained_model": "facebook/wav2vec2-base-960h",
+        "pretrained_revision": "22aad52d435eb6dbaf354bdad9b0da84ce7d6156",
+        "loss_weights": {
+          "ctc": 1.0,
+          "binary": 1.0
+        },
+        "backbone_frozen": true,
+        "batch_size": 2,
+        "gradient_accumulation_steps": 2,
+        "num_workers": 0,
+        "pin_memory": true,
+        "length_bucketing": false,
+        "optimizer": "AdamW",
+        "learning_rate": 0.001,
+        "weight_decay": 0.01,
+        "scheduler": "cosine",
+        "warmup_updates": 100,
+        "max_epochs": 25,
+        "scheduler_horizon_epochs": 25,
+        "execution_cap_epochs": 10,
+        "early_stopping_patience": 5,
+        "gradient_clip_norm": 1.0,
+        "amp": "fp16",
+        "grad_scaler_initial_scale": 4096,
+        "output_dir": "checkpoints/RQ1-TRN-03A/fold3",
+        "drive_output_dir": null,
+        "zip_path": "datasets/L2-ARCTIC/authorized_RQ1-TRN_fold3_train_val_only.zip"
+      },
+      "backbone_config": {
+        "transformers_version": "5.20.2",
+        "architectures": [
+          "Wav2Vec2ForCTC"
+        ],
+        "output_hidden_states": false,
+        "return_dict": true,
+        "dtype": "float32",
+        "chunk_size_feed_forward": 0,
+        "is_encoder_decoder": false,
+        "id2label": {
+          "0": "LABEL_0",
+          "1": "LABEL_1"
+        },
+        "label2id": {
+          "LABEL_0": 0,
+          "LABEL_1": 1
+        },
+        "problem_type": null,
+        "vocab_size": 32,
+        "hidden_size": 768,
+        "num_hidden_layers": 12,
+        "num_attention_heads": 12,
+        "intermediate_size": 3072,
+        "hidden_act": "gelu",
+        "hidden_dropout": 0.1,
+        "activation_dropout": 0.1,
+        "attention_dropout": 0.1,
+        "feat_proj_dropout": 0.1,
+        "feat_quantizer_dropout": 0.0,
+        "final_dropout": 0.1,
+        "layerdrop": 0.1,
+        "initializer_range": 0.02,
+        "layer_norm_eps": 1e-05,
+        "feat_extract_norm": "group",
+        "feat_extract_activation": "gelu",
+        "conv_dim": [
+          512,
+          512,
+          512,
+          512,
+          512,
+          512,
+          512
+        ],
+        "conv_stride": [
+          5,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "conv_kernel": [
+          10,
+          3,
+          3,
+          3,
+          3,
+          2,
+          2
+        ],
+        "conv_bias": false,
+        "num_conv_pos_embeddings": 128,
+        "num_conv_pos_embedding_groups": 16,
+        "do_stable_layer_norm": false,
+        "apply_spec_augment": false,
+        "mask_time_prob": 0.05,
+        "mask_time_length": 10,
+        "mask_time_min_masks": 2,
+        "mask_feature_prob": 0.0,
+        "mask_feature_length": 10,
+        "mask_feature_min_masks": 0,
+        "num_codevectors_per_group": 320,
+        "num_codevector_groups": 2,
+        "contrastive_logits_temperature": 0.1,
+        "num_negatives": 100,
+        "codevector_dim": 256,
+        "proj_codevector_dim": 256,
+        "diversity_loss_weight": 0.1,
+        "ctc_loss_reduction": "sum",
+        "ctc_zero_infinity": false,
+        "use_weighted_layer_sum": false,
+        "classifier_proj_size": 256,
+        "tdnn_dim": [
+          512,
+          512,
+          512,
+          512,
+          1500
+        ],
+        "tdnn_kernel": [
+          5,
+          3,
+          3,
+          1,
+          1
+        ],
+        "tdnn_dilation": [
+          1,
+          2,
+          3,
+          1,
+          1
+        ],
+        "xvector_output_dim": 512,
+        "pad_token_id": 0,
+        "bos_token_id": 1,
+        "eos_token_id": 2,
+        "add_adapter": false,
+        "adapter_kernel_size": 3,
+        "adapter_stride": 2,
+        "num_adapter_layers": 3,
+        "output_hidden_size": 768,
+        "adapter_attn_dim": null,
+        "num_feat_extract_layers": 7,
+        "_name_or_path": "facebook/wav2vec2-base-960h",
+        "feat_extract_dropout": 0.0,
+        "gradient_checkpointing": false,
+        "hidden_dropout_prob": 0.1,
+        "model_type": "wav2vec2",
+        "output_attentions": false
+      },
+      "strict_state_dict": true,
+      "cross_attention_heads": 4
+    },
+    {
+      "fold": 4,
+      "checkpoint": "checkpoints/fold4/baseline_r_fold4/fixed_budget_checkpoint.pt",
+      "sha256": "c502271feba097781a6b0bdfe413085271d3a03647353f272dccd29bbb1499f6",
+      "successful_updates": 3600,
+      "epoch": 5,
+      "skipped_updates": 0,
+      "config": {
+        "experiment": "RQ1-TRN-03A",
+        "seed": 1337,
+        "fold": 4,
+        "policy": "strict",
+        "manifest": "manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json",
+        "manifest_sha256": "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b",
+        "pretrained_model": "facebook/wav2vec2-base-960h",
+        "pretrained_revision": "22aad52d435eb6dbaf354bdad9b0da84ce7d6156",
+        "loss_weights": {
+          "ctc": 1.0,
+          "binary": 1.0
+        },
+        "backbone_frozen": true,
+        "batch_size": 2,
+        "gradient_accumulation_steps": 2,
+        "num_workers": 0,
+        "pin_memory": true,
+        "length_bucketing": false,
+        "optimizer": "AdamW",
+        "learning_rate": 0.001,
+        "weight_decay": 0.01,
+        "scheduler": "cosine",
+        "warmup_updates": 100,
+        "max_epochs": 25,
+        "scheduler_horizon_epochs": 25,
+        "execution_cap_epochs": 10,
+        "early_stopping_patience": 5,
+        "gradient_clip_norm": 1.0,
+        "amp": "fp16",
+        "grad_scaler_initial_scale": 4096,
+        "output_dir": "checkpoints/RQ1-TRN-03A/fold4",
+        "drive_output_dir": null,
+        "zip_path": "datasets/L2-ARCTIC/authorized_RQ1-TRN_fold4_train_val_only.zip"
+      },
+      "backbone_config": {
+        "transformers_version": "5.20.2",
+        "architectures": [
+          "Wav2Vec2ForCTC"
+        ],
+        "output_hidden_states": false,
+        "return_dict": true,
+        "dtype": "float32",
+        "chunk_size_feed_forward": 0,
+        "is_encoder_decoder": false,
+        "id2label": {
+          "0": "LABEL_0",
+          "1": "LABEL_1"
+        },
+        "label2id": {
+          "LABEL_0": 0,
+          "LABEL_1": 1
+        },
+        "problem_type": null,
+        "vocab_size": 32,
+        "hidden_size": 768,
+        "num_hidden_layers": 12,
+        "num_attention_heads": 12,
+        "intermediate_size": 3072,
+        "hidden_act": "gelu",
+        "hidden_dropout": 0.1,
+        "activation_dropout": 0.1,
+        "attention_dropout": 0.1,
+        "feat_proj_dropout": 0.1,
+        "feat_quantizer_dropout": 0.0,
+        "final_dropout": 0.1,
+        "layerdrop": 0.1,
+        "initializer_range": 0.02,
+        "layer_norm_eps": 1e-05,
+        "feat_extract_norm": "group",
+        "feat_extract_activation": "gelu",
+        "conv_dim": [
+          512,
+          512,
+          512,
+          512,
+          512,
+          512,
+          512
+        ],
+        "conv_stride": [
+          5,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "conv_kernel": [
+          10,
+          3,
+          3,
+          3,
+          3,
+          2,
+          2
+        ],
+        "conv_bias": false,
+        "num_conv_pos_embeddings": 128,
+        "num_conv_pos_embedding_groups": 16,
+        "do_stable_layer_norm": false,
+        "apply_spec_augment": false,
+        "mask_time_prob": 0.05,
+        "mask_time_length": 10,
+        "mask_time_min_masks": 2,
+        "mask_feature_prob": 0.0,
+        "mask_feature_length": 10,
+        "mask_feature_min_masks": 0,
+        "num_codevectors_per_group": 320,
+        "num_codevector_groups": 2,
+        "contrastive_logits_temperature": 0.1,
+        "num_negatives": 100,
+        "codevector_dim": 256,
+        "proj_codevector_dim": 256,
+        "diversity_loss_weight": 0.1,
+        "ctc_loss_reduction": "sum",
+        "ctc_zero_infinity": false,
+        "use_weighted_layer_sum": false,
+        "classifier_proj_size": 256,
+        "tdnn_dim": [
+          512,
+          512,
+          512,
+          512,
+          1500
+        ],
+        "tdnn_kernel": [
+          5,
+          3,
+          3,
+          1,
+          1
+        ],
+        "tdnn_dilation": [
+          1,
+          2,
+          3,
+          1,
+          1
+        ],
+        "xvector_output_dim": 512,
+        "pad_token_id": 0,
+        "bos_token_id": 1,
+        "eos_token_id": 2,
+        "add_adapter": false,
+        "adapter_kernel_size": 3,
+        "adapter_stride": 2,
+        "num_adapter_layers": 3,
+        "output_hidden_size": 768,
+        "adapter_attn_dim": null,
+        "num_feat_extract_layers": 7,
+        "_name_or_path": "facebook/wav2vec2-base-960h",
+        "feat_extract_dropout": 0.0,
+        "gradient_checkpointing": false,
+        "hidden_dropout_prob": 0.1,
+        "model_type": "wav2vec2",
+        "output_attentions": false
+      },
+      "strict_state_dict": true,
+      "cross_attention_heads": 4
+    }
+  ],
+  "archive_metrics_reproduction": {
+    "all": {
+      "n": 39576,
+      "positives": 4213,
+      "prevalence": 0.10645340610470992,
+      "ap": 0.2725795530756695,
+      "roc_auc": 0.7290222066927728,
+      "acoustic_gap": 0.01061909201863892
+    },
+    "substitution": {
+      "n": 38947,
+      "positives": 3584,
+      "prevalence": 0.09202249210465505,
+      "ap": 0.2642696113375907,
+      "roc_auc": 0.7348505328094639,
+      "acoustic_gap": 0.010715128187459566
+    },
+    "deletion": {
+      "n": 35992,
+      "positives": 629,
+      "prevalence": 0.017476105801289176,
+      "ap": 0.03050620317222477,
+      "roc_auc": 0.6958127936526761,
+      "acoustic_gap": 0.0016766049465270598
+    }
+  },
+  "duration_reconciliation": {
+    "raw_float_lt040": 293,
+    "rounded_4decimal_lt040": 284,
+    "decimal_tick_lt040": 284,
+    "raw_float_lt080": 545,
+    "rounded_4decimal_lt080": 542,
+    "interpretation": "Raw subtraction at decimal boundaries is floating-point-sensitive; retain both conventions."
+  },
+  "legacy_replay_summary": {
+    "correct": {
+      "n": 2566,
+      "mask_abs_delta": 0.001066973054707515,
+      "invalid_forced_delta": 0.26017290148346894,
+      "mean_token_uniform_enrichment": 1.2839794448964204,
+      "speaker_macro_mask": {
+        "mean": 0.001058,
+        "std": 0.0004,
+        "se": 0.000142,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": 0.000724,
+        "ci_upper": 0.001393
+      }
+    },
+    "substitution": {
+      "n": 278,
+      "mask_abs_delta": 0.0013085699174553156,
+      "invalid_forced_delta": 0.20061916092799292,
+      "mean_token_uniform_enrichment": 1.1129557165256703,
+      "speaker_macro_mask": {
+        "mean": 0.001402,
+        "std": 0.000695,
+        "se": 0.000246,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": 0.000821,
+        "ci_upper": 0.001983
+      }
+    },
+    "deletion": {
+      "n": 107,
+      "mask_abs_delta": 0.0017137236405755873,
+      "invalid_forced_delta": 0.27649514387561897,
+      "mean_token_uniform_enrichment": 1.3966207471732983,
+      "speaker_macro_mask": {
+        "mean": 0.001721,
+        "std": 0.001247,
+        "se": 0.000441,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": 0.000678,
+        "ci_upper": 0.002763
+      }
+    },
+    "all": {
+      "n": 2951,
+      "mask_abs_delta": 0.0011131832344878512,
+      "invalid_forced_delta": 0.2551544467432242,
+      "mean_token_uniform_enrichment": 1.271952343187358,
+      "speaker_macro_mask": {
+        "mean": 0.001108,
+        "std": 0.000334,
+        "se": 0.000118,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": 0.000828,
+        "ci_upper": 0.001387
+      }
+    }
+  },
+  "parity": {
+    "utterances": 80,
+    "repeat_exact": true,
+    "max_archive_probability_difference": 0.0013049542903900146,
+    "max_forward_logit_difference": 0.0,
+    "max_open_mask_logit_difference": 0.0,
+    "archive_tolerance": 0.0002,
+    "archive_failures": [
+      {
+        "fold": 1,
+        "speaker": "RRBI",
+        "utterance_id": "arctic_a0046",
+        "active_frames": 175,
+        "active_tokens": 31,
+        "head_vs_forward_logit_max": 0.0,
+        "open_mask_logit_max": 0.0,
+        "archive_probability_max": 0.00025579333305358887,
+        "archive_parity_pass": false,
+        "repeat_exact": true
+      },
+      {
+        "fold": 2,
+        "speaker": "YBAA",
+        "utterance_id": "arctic_a0013",
+        "active_frames": 267,
+        "active_tokens": 49,
+        "head_vs_forward_logit_max": 0.0,
+        "open_mask_logit_max": 0.0,
+        "archive_probability_max": 0.00026078522205352783,
+        "archive_parity_pass": false,
+        "repeat_exact": true
+      },
+      {
+        "fold": 3,
+        "speaker": "TXHC",
+        "utterance_id": "arctic_a0006",
+        "active_frames": 191,
+        "active_tokens": 29,
+        "head_vs_forward_logit_max": 0.0,
+        "open_mask_logit_max": 0.0,
+        "archive_probability_max": 0.00027567148208618164,
+        "archive_parity_pass": false,
+        "repeat_exact": true
+      },
+      {
+        "fold": 3,
+        "speaker": "TXHC",
+        "utterance_id": "arctic_a0022",
+        "active_frames": 287,
+        "active_tokens": 52,
+        "head_vs_forward_logit_max": 0.0,
+        "open_mask_logit_max": 0.0,
+        "archive_probability_max": 0.0002154707908630371,
+        "archive_parity_pass": false,
+        "repeat_exact": true
+      },
+      {
+        "fold": 3,
+        "speaker": "TXHC",
+        "utterance_id": "arctic_a0023",
+        "active_frames": 369,
+        "active_tokens": 71,
+        "head_vs_forward_logit_max": 0.0,
+        "open_mask_logit_max": 0.0,
+        "archive_probability_max": 0.00039849430322647095,
+        "archive_parity_pass": false,
+        "repeat_exact": true
+      },
+      {
+        "fold": 3,
+        "speaker": "TXHC",
+        "utterance_id": "arctic_a0037",
+        "active_frames": 123,
+        "active_tokens": 26,
+        "head_vs_forward_logit_max": 0.0,
+        "open_mask_logit_max": 0.0,
+        "archive_probability_max": 0.00026258453726768494,
+        "archive_parity_pass": false,
+        "repeat_exact": true
+      },
+      {
+        "fold": 3,
+        "speaker": "ZHAA",
+        "utterance_id": "arctic_a0086",
+        "active_frames": 147,
+        "active_tokens": 27,
+        "head_vs_forward_logit_max": 0.0,
+        "open_mask_logit_max": 0.0,
+        "archive_probability_max": 0.00023034214973449707,
+        "archive_parity_pass": false,
+        "repeat_exact": true
+      },
+      {
+        "fold": 4,
+        "speaker": "HKK",
+        "utterance_id": "arctic_a0013",
+        "active_frames": 273,
+        "active_tokens": 49,
+        "head_vs_forward_logit_max": 0.0,
+        "open_mask_logit_max": 0.0,
+        "archive_probability_max": 0.0003743171691894531,
+        "archive_parity_pass": false,
+        "repeat_exact": true
+      },
+      {
+        "fold": 4,
+        "speaker": "HKK",
+        "utterance_id": "arctic_a0105",
+        "active_frames": 225,
+        "active_tokens": 42,
+        "head_vs_forward_logit_max": 0.0,
+        "open_mask_logit_max": 0.0,
+        "archive_probability_max": 0.0013049542903900146,
+        "archive_parity_pass": false,
+        "repeat_exact": true
+      }
+    ],
+    "logit_atol_rtol": 2e-05,
+    "sample_archive_metrics": {
+      "n": 2951,
+      "positives": 385,
+      "prevalence": 0.13046424940698068,
+      "ap": 0.2921731089964753,
+      "roc_auc": 0.7016727232237755
+    },
+    "sample_cpu_metrics": {
+      "n": 2951,
+      "positives": 385,
+      "prevalence": 0.13046424940698068,
+      "ap": 0.29211181662326047,
+      "roc_auc": 0.7016615886062496
+    },
+    "full_1199_forward_replay": "NOT_EXECUTED; bounded sample only"
+  },
+  "ctc_matched_discrimination": {
+    "blank_mean": {
+      "n": 132,
+      "positives": 66,
+      "prevalence": 0.5,
+      "ap": 0.64394071380793,
+      "roc_auc": 0.6526629935720845,
+      "diagnostic_fpr15": {
+        "threshold": 0.9941434264183044,
+        "tpr": 0.24242424242424243,
+        "fnr": 0.7575757575757576,
+        "fpr": 0.13636363636363635
+      },
+      "ap_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          0.5896303593706216,
+          0.7615383453230716
+        ]
+      },
+      "auc_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          0.5861148609891924,
+          0.7464336316928327
+        ]
+      },
+      "tpr_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          0.1643835616438356,
+          0.35399403640929056
+        ]
+      },
+      "per_speaker": {
+        "HKK": {
+          "n": 14,
+          "positives": 7,
+          "prevalence": 0.5,
+          "ap": 0.6073652537938252,
+          "roc_auc": 0.6122448979591837
+        },
+        "NCC": {
+          "n": 18,
+          "positives": 9,
+          "prevalence": 0.5,
+          "ap": 0.7583774250440917,
+          "roc_auc": 0.7283950617283951
+        },
+        "NJS": {
+          "n": 10,
+          "positives": 5,
+          "prevalence": 0.5,
+          "ap": 0.8392857142857143,
+          "roc_auc": 0.76
+        },
+        "RRBI": {
+          "n": 12,
+          "positives": 6,
+          "prevalence": 0.5,
+          "ap": 0.915079365079365,
+          "roc_auc": 0.9166666666666666
+        },
+        "TNI": {
+          "n": 22,
+          "positives": 11,
+          "prevalence": 0.5,
+          "ap": 0.6166271859453678,
+          "roc_auc": 0.6115702479338843
+        },
+        "TXHC": {
+          "n": 26,
+          "positives": 13,
+          "prevalence": 0.5,
+          "ap": 0.6582135116345642,
+          "roc_auc": 0.6331360946745562
+        },
+        "YBAA": {
+          "n": 14,
+          "positives": 7,
+          "prevalence": 0.5,
+          "ap": 0.635003885003885,
+          "roc_auc": 0.5306122448979592
+        },
+        "ZHAA": {
+          "n": 16,
+          "positives": 8,
+          "prevalence": 0.5,
+          "ap": 0.5750270562770563,
+          "roc_auc": 0.5
+        }
+      }
+    },
+    "missing_canonical_mean": {
+      "n": 132,
+      "positives": 66,
+      "prevalence": 0.5,
+      "ap": 0.5860570561751066,
+      "roc_auc": 0.6345270890725436,
+      "diagnostic_fpr15": {
+        "threshold": 0.9997633695602417,
+        "tpr": 0.24242424242424243,
+        "fnr": 0.7575757575757576,
+        "fpr": 0.13636363636363635
+      },
+      "ap_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          0.5285474432698944,
+          0.6924282094430584
+        ]
+      },
+      "auc_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          0.5304673781719634,
+          0.7323076923076923
+        ]
+      },
+      "tpr_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          0.1572289156626506,
+          0.3611921097770153
+        ]
+      },
+      "per_speaker": {
+        "HKK": {
+          "n": 14,
+          "positives": 7,
+          "prevalence": 0.5,
+          "ap": 0.47519147519147514,
+          "roc_auc": 0.40816326530612246
+        },
+        "NCC": {
+          "n": 18,
+          "positives": 9,
+          "prevalence": 0.5,
+          "ap": 0.7000592000592001,
+          "roc_auc": 0.7777777777777778
+        },
+        "NJS": {
+          "n": 10,
+          "positives": 5,
+          "prevalence": 0.5,
+          "ap": 0.8392857142857143,
+          "roc_auc": 0.76
+        },
+        "RRBI": {
+          "n": 12,
+          "positives": 6,
+          "prevalence": 0.5,
+          "ap": 0.7884920634920635,
+          "roc_auc": 0.7777777777777778
+        },
+        "TNI": {
+          "n": 22,
+          "positives": 11,
+          "prevalence": 0.5,
+          "ap": 0.6424500937658832,
+          "roc_auc": 0.6694214876033058
+        },
+        "TXHC": {
+          "n": 26,
+          "positives": 13,
+          "prevalence": 0.5,
+          "ap": 0.5900089618507306,
+          "roc_auc": 0.5798816568047337
+        },
+        "YBAA": {
+          "n": 14,
+          "positives": 7,
+          "prevalence": 0.5,
+          "ap": 0.6182230467944754,
+          "roc_auc": 0.42857142857142855
+        },
+        "ZHAA": {
+          "n": 16,
+          "positives": 8,
+          "prevalence": 0.5,
+          "ap": 0.6298611111111111,
+          "roc_auc": 0.578125
+        }
+      }
+    },
+    "missing_canonical_peak": {
+      "n": 132,
+      "positives": 66,
+      "prevalence": 0.5,
+      "ap": 0.5869823319717531,
+      "roc_auc": 0.6365932047750229,
+      "diagnostic_fpr15": {
+        "threshold": 0.9994282126426697,
+        "tpr": 0.22727272727272727,
+        "fnr": 0.7727272727272727,
+        "fpr": 0.13636363636363635
+      },
+      "ap_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          0.5327413156969405,
+          0.6888746662189411
+        ]
+      },
+      "auc_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          0.5456924804513335,
+          0.7237087119611157
+        ]
+      },
+      "tpr_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          0.1490277777777778,
+          0.3306034482758619
+        ]
+      },
+      "per_speaker": {
+        "HKK": {
+          "n": 14,
+          "positives": 7,
+          "prevalence": 0.5,
+          "ap": 0.483982683982684,
+          "roc_auc": 0.40816326530612246
+        },
+        "NCC": {
+          "n": 18,
+          "positives": 9,
+          "prevalence": 0.5,
+          "ap": 0.6830687830687832,
+          "roc_auc": 0.7407407407407407
+        },
+        "NJS": {
+          "n": 10,
+          "positives": 5,
+          "prevalence": 0.5,
+          "ap": 0.8253968253968254,
+          "roc_auc": 0.72
+        },
+        "RRBI": {
+          "n": 12,
+          "positives": 6,
+          "prevalence": 0.5,
+          "ap": 0.7884920634920635,
+          "roc_auc": 0.7777777777777778
+        },
+        "TNI": {
+          "n": 22,
+          "positives": 11,
+          "prevalence": 0.5,
+          "ap": 0.6621663689845507,
+          "roc_auc": 0.7024793388429752
+        },
+        "TXHC": {
+          "n": 26,
+          "positives": 13,
+          "prevalence": 0.5,
+          "ap": 0.5658546518840637,
+          "roc_auc": 0.6035502958579881
+        },
+        "YBAA": {
+          "n": 14,
+          "positives": 7,
+          "prevalence": 0.5,
+          "ap": 0.6302110587824874,
+          "roc_auc": 0.46938775510204084
+        },
+        "ZHAA": {
+          "n": 16,
+          "positives": 8,
+          "prevalence": 0.5,
+          "ap": 0.6263548951048952,
+          "roc_auc": 0.578125
+        }
+      }
+    },
+    "blank_canonical_margin": {
+      "n": 132,
+      "positives": 66,
+      "prevalence": 0.5,
+      "ap": 0.634029115761525,
+      "roc_auc": 0.6480716253443526,
+      "diagnostic_fpr15": {
+        "threshold": 0.99406498670578,
+        "tpr": 0.24242424242424243,
+        "fnr": 0.7575757575757576,
+        "fpr": 0.13636363636363635
+      },
+      "ap_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          0.5752340642052166,
+          0.7575117986554265
+        ]
+      },
+      "auc_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          0.5635669764364409,
+          0.7483563474228245
+        ]
+      },
+      "tpr_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          0.1643835616438356,
+          0.35399403640929056
+        ]
+      },
+      "per_speaker": {
+        "HKK": {
+          "n": 14,
+          "positives": 7,
+          "prevalence": 0.5,
+          "ap": 0.5687288901574616,
+          "roc_auc": 0.5102040816326531
+        },
+        "NCC": {
+          "n": 18,
+          "positives": 9,
+          "prevalence": 0.5,
+          "ap": 0.7678182384064737,
+          "roc_auc": 0.7407407407407407
+        },
+        "NJS": {
+          "n": 10,
+          "positives": 5,
+          "prevalence": 0.5,
+          "ap": 0.8392857142857143,
+          "roc_auc": 0.76
+        },
+        "RRBI": {
+          "n": 12,
+          "positives": 6,
+          "prevalence": 0.5,
+          "ap": 0.915079365079365,
+          "roc_auc": 0.9166666666666666
+        },
+        "TNI": {
+          "n": 22,
+          "positives": 11,
+          "prevalence": 0.5,
+          "ap": 0.6526217403011662,
+          "roc_auc": 0.6859504132231405
+        },
+        "TXHC": {
+          "n": 26,
+          "positives": 13,
+          "prevalence": 0.5,
+          "ap": 0.6490886760953651,
+          "roc_auc": 0.6272189349112426
+        },
+        "YBAA": {
+          "n": 14,
+          "positives": 7,
+          "prevalence": 0.5,
+          "ap": 0.6220168720168721,
+          "roc_auc": 0.4897959183673469
+        },
+        "ZHAA": {
+          "n": 16,
+          "positives": 8,
+          "prevalence": 0.5,
+          "ap": 0.5787202380952381,
+          "roc_auc": 0.5
+        }
+      }
+    },
+    "other_canonical_margin": {
+      "n": 132,
+      "positives": 66,
+      "prevalence": 0.5,
+      "ap": 0.6317290169604876,
+      "roc_auc": 0.6535812672176309,
+      "diagnostic_fpr15": {
+        "threshold": 0.9949687719345093,
+        "tpr": 0.22727272727272727,
+        "fnr": 0.7727272727272727,
+        "fpr": 0.13636363636363635
+      },
+      "ap_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          0.5651105710834357,
+          0.7603437987326619
+        ]
+      },
+      "auc_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          0.5531126832476813,
+          0.7625723290633455
+        ]
+      },
+      "tpr_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          0.15328525641025642,
+          0.33085937499999984
+        ]
+      },
+      "per_speaker": {
+        "HKK": {
+          "n": 14,
+          "positives": 7,
+          "prevalence": 0.5,
+          "ap": 0.5687288901574616,
+          "roc_auc": 0.5102040816326531
+        },
+        "NCC": {
+          "n": 18,
+          "positives": 9,
+          "prevalence": 0.5,
+          "ap": 0.7926517926517926,
+          "roc_auc": 0.8024691358024691
+        },
+        "NJS": {
+          "n": 10,
+          "positives": 5,
+          "prevalence": 0.5,
+          "ap": 0.8392857142857143,
+          "roc_auc": 0.76
+        },
+        "RRBI": {
+          "n": 12,
+          "positives": 6,
+          "prevalence": 0.5,
+          "ap": 0.915079365079365,
+          "roc_auc": 0.9166666666666666
+        },
+        "TNI": {
+          "n": 22,
+          "positives": 11,
+          "prevalence": 0.5,
+          "ap": 0.6743768857405221,
+          "roc_auc": 0.71900826446281
+        },
+        "TXHC": {
+          "n": 26,
+          "positives": 13,
+          "prevalence": 0.5,
+          "ap": 0.61137243306238,
+          "roc_auc": 0.5976331360946746
+        },
+        "YBAA": {
+          "n": 14,
+          "positives": 7,
+          "prevalence": 0.5,
+          "ap": 0.6165223665223665,
+          "roc_auc": 0.46938775510204084
+        },
+        "ZHAA": {
+          "n": 16,
+          "positives": 8,
+          "prevalence": 0.5,
+          "ap": 0.6028235653235653,
+          "roc_auc": 0.53125
+        }
+      }
+    },
+    "missing_emission_fraction": {
+      "n": 132,
+      "positives": 66,
+      "prevalence": 0.5,
+      "ap": 0.5823645704734439,
+      "roc_auc": 0.6337235996326905,
+      "diagnostic_fpr15": {
+        "threshold": 1.0000000000000002,
+        "tpr": 0.0,
+        "fnr": 1.0,
+        "fpr": 0.0
+      },
+      "ap_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          0.5080890089438334,
+          0.6827247938194203
+        ]
+      },
+      "auc_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          0.5148168957422349,
+          0.7549288256284636
+        ]
+      },
+      "tpr_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "per_speaker": {
+        "HKK": {
+          "n": 14,
+          "positives": 7,
+          "prevalence": 0.5,
+          "ap": 0.44835164835164837,
+          "roc_auc": 0.3877551020408163
+        },
+        "NCC": {
+          "n": 18,
+          "positives": 9,
+          "prevalence": 0.5,
+          "ap": 0.7021756021756022,
+          "roc_auc": 0.7839506172839507
+        },
+        "NJS": {
+          "n": 10,
+          "positives": 5,
+          "prevalence": 0.5,
+          "ap": 0.8583333333333334,
+          "roc_auc": 0.86
+        },
+        "RRBI": {
+          "n": 12,
+          "positives": 6,
+          "prevalence": 0.5,
+          "ap": 0.75,
+          "roc_auc": 0.8333333333333334
+        },
+        "TNI": {
+          "n": 22,
+          "positives": 11,
+          "prevalence": 0.5,
+          "ap": 0.678987678987679,
+          "roc_auc": 0.7479338842975206
+        },
+        "TXHC": {
+          "n": 26,
+          "positives": 13,
+          "prevalence": 0.5,
+          "ap": 0.5441099962839093,
+          "roc_auc": 0.5680473372781065
+        },
+        "YBAA": {
+          "n": 14,
+          "positives": 7,
+          "prevalence": 0.5,
+          "ap": 0.45726495726495725,
+          "roc_auc": 0.3877551020408163
+        },
+        "ZHAA": {
+          "n": 16,
+          "positives": 8,
+          "prevalence": 0.5,
+          "ap": 0.5117521367521367,
+          "roc_auc": 0.53125
+        }
+      }
+    },
+    "base_prob": {
+      "n": 132,
+      "positives": 66,
+      "prevalence": 0.5,
+      "ap": 0.483500809890711,
+      "roc_auc": 0.4824380165289256,
+      "diagnostic_fpr15": {
+        "threshold": 0.2386612594127655,
+        "tpr": 0.10606060606060606,
+        "fnr": 0.8939393939393939,
+        "fpr": 0.13636363636363635
+      },
+      "ap_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          0.4511020093603936,
+          0.5434024258671895
+        ]
+      },
+      "auc_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          0.44352237083607277,
+          0.511280505952381
+        ]
+      },
+      "tpr_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          0.026482456140350878,
+          0.2280389730900092
+        ]
+      },
+      "per_speaker": {
+        "HKK": {
+          "n": 14,
+          "positives": 7,
+          "prevalence": 0.5,
+          "ap": 0.48344671201814055,
+          "roc_auc": 0.40816326530612246
+        },
+        "NCC": {
+          "n": 18,
+          "positives": 9,
+          "prevalence": 0.5,
+          "ap": 0.5627665544332211,
+          "roc_auc": 0.4567901234567901
+        },
+        "NJS": {
+          "n": 10,
+          "positives": 5,
+          "prevalence": 0.5,
+          "ap": 0.5053968253968254,
+          "roc_auc": 0.44
+        },
+        "RRBI": {
+          "n": 12,
+          "positives": 6,
+          "prevalence": 0.5,
+          "ap": 0.5813492063492063,
+          "roc_auc": 0.5416666666666666
+        },
+        "TNI": {
+          "n": 22,
+          "positives": 11,
+          "prevalence": 0.5,
+          "ap": 0.45386995185756795,
+          "roc_auc": 0.41735537190082644
+        },
+        "TXHC": {
+          "n": 26,
+          "positives": 13,
+          "prevalence": 0.5,
+          "ap": 0.45867399972751144,
+          "roc_auc": 0.44970414201183434
+        },
+        "YBAA": {
+          "n": 14,
+          "positives": 7,
+          "prevalence": 0.5,
+          "ap": 0.5570818070818071,
+          "roc_auc": 0.4897959183673469
+        },
+        "ZHAA": {
+          "n": 16,
+          "positives": 8,
+          "prevalence": 0.5,
+          "ap": 0.6368589743589743,
+          "roc_auc": 0.5078125
+        }
+      }
+    },
+    "negative_duration": {
+      "n": 132,
+      "positives": 66,
+      "prevalence": 0.5,
+      "ap": 0.562136932868829,
+      "roc_auc": 0.550734618916437,
+      "diagnostic_fpr15": {
+        "threshold": -0.026905844360538778,
+        "tpr": 0.07575757575757576,
+        "fnr": 0.9242424242424242,
+        "fpr": 0.045454545454545456
+      },
+      "ap_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          0.5143288493261121,
+          0.636657208840961
+        ]
+      },
+      "auc_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          0.5068799052197037,
+          0.588436385255648
+        ]
+      },
+      "tpr_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          0.015498798076923078,
+          0.15
+        ]
+      },
+      "per_speaker": {
+        "HKK": {
+          "n": 14,
+          "positives": 7,
+          "prevalence": 0.5,
+          "ap": 0.6793960008245722,
+          "roc_auc": 0.5918367346938775
+        },
+        "NCC": {
+          "n": 18,
+          "positives": 9,
+          "prevalence": 0.5,
+          "ap": 0.5149270482603816,
+          "roc_auc": 0.5123456790123457
+        },
+        "NJS": {
+          "n": 10,
+          "positives": 5,
+          "prevalence": 0.5,
+          "ap": 0.6,
+          "roc_auc": 0.5
+        },
+        "RRBI": {
+          "n": 12,
+          "positives": 6,
+          "prevalence": 0.5,
+          "ap": 0.6930916305916306,
+          "roc_auc": 0.6388888888888888
+        },
+        "TNI": {
+          "n": 22,
+          "positives": 11,
+          "prevalence": 0.5,
+          "ap": 0.48361768950004247,
+          "roc_auc": 0.45041322314049587
+        },
+        "TXHC": {
+          "n": 26,
+          "positives": 13,
+          "prevalence": 0.5,
+          "ap": 0.6255616852782845,
+          "roc_auc": 0.591715976331361
+        },
+        "YBAA": {
+          "n": 14,
+          "positives": 7,
+          "prevalence": 0.5,
+          "ap": 0.6916975881261596,
+          "roc_auc": 0.6122448979591837
+        },
+        "ZHAA": {
+          "n": 16,
+          "positives": 8,
+          "prevalence": 0.5,
+          "ap": 0.6116799866799867,
+          "roc_auc": 0.5625
+        }
+      }
+    }
+  },
+  "ctc_matching_10ms_sensitivity": {
+    "pairs": 58,
+    "metrics": {
+      "blank_mean": {
+        "n": 116,
+        "positives": 58,
+        "prevalence": 0.5,
+        "ap": 0.6326561092569267,
+        "roc_auc": 0.6412009512485137,
+        "diagnostic_fpr15": {
+          "threshold": 0.9941434264183044,
+          "tpr": 0.2413793103448276,
+          "fnr": 0.7586206896551724,
+          "fpr": 0.13793103448275862
+        },
+        "ap_cluster_bootstrap": {
+          "clusters": 8,
+          "resamples": 500,
+          "valid_resamples": 500,
+          "ci95": [
+            0.5685308387643042,
+            0.7632326984661676
+          ]
+        },
+        "auc_cluster_bootstrap": {
+          "clusters": 8,
+          "resamples": 500,
+          "valid_resamples": 500,
+          "ci95": [
+            0.5638684652571477,
+            0.7553558333333332
+          ]
+        },
+        "tpr_cluster_bootstrap": {
+          "clusters": 8,
+          "resamples": 500,
+          "valid_resamples": 500,
+          "ci95": [
+            0.15151515151515152,
+            0.3847558027079303
+          ]
+        },
+        "per_speaker": {
+          "HKK": {
+            "n": 12,
+            "positives": 6,
+            "prevalence": 0.5,
+            "ap": 0.5906084656084656,
+            "roc_auc": 0.5555555555555556
+          },
+          "NCC": {
+            "n": 18,
+            "positives": 9,
+            "prevalence": 0.5,
+            "ap": 0.7583774250440917,
+            "roc_auc": 0.7283950617283951
+          },
+          "NJS": {
+            "n": 10,
+            "positives": 5,
+            "prevalence": 0.5,
+            "ap": 0.8392857142857143,
+            "roc_auc": 0.76
+          },
+          "RRBI": {
+            "n": 10,
+            "positives": 5,
+            "prevalence": 0.5,
+            "ap": 0.9266666666666666,
+            "roc_auc": 0.92
+          },
+          "TNI": {
+            "n": 22,
+            "positives": 11,
+            "prevalence": 0.5,
+            "ap": 0.6166271859453678,
+            "roc_auc": 0.6115702479338843
+          },
+          "TXHC": {
+            "n": 18,
+            "positives": 9,
+            "prevalence": 0.5,
+            "ap": 0.5640470096352449,
+            "roc_auc": 0.5432098765432098
+          },
+          "YBAA": {
+            "n": 10,
+            "positives": 5,
+            "prevalence": 0.5,
+            "ap": 0.7392857142857143,
+            "roc_auc": 0.64
+          },
+          "ZHAA": {
+            "n": 16,
+            "positives": 8,
+            "prevalence": 0.5,
+            "ap": 0.5750270562770563,
+            "roc_auc": 0.5
+          }
+        }
+      },
+      "missing_canonical_mean": {
+        "n": 116,
+        "positives": 58,
+        "prevalence": 0.5,
+        "ap": 0.5887469572888437,
+        "roc_auc": 0.6412009512485137,
+        "diagnostic_fpr15": {
+          "threshold": 0.9997633695602417,
+          "tpr": 0.2413793103448276,
+          "fnr": 0.7586206896551724,
+          "fpr": 0.13793103448275862
+        },
+        "ap_cluster_bootstrap": {
+          "clusters": 8,
+          "resamples": 500,
+          "valid_resamples": 500,
+          "ci95": [
+            0.50905912485915,
+            0.7208205113353324
+          ]
+        },
+        "auc_cluster_bootstrap": {
+          "clusters": 8,
+          "resamples": 500,
+          "valid_resamples": 500,
+          "ci95": [
+            0.515017387317353,
+            0.7533758662564168
+          ]
+        },
+        "tpr_cluster_bootstrap": {
+          "clusters": 8,
+          "resamples": 500,
+          "valid_resamples": 500,
+          "ci95": [
+            0.13172010607521698,
+            0.3877551020408163
+          ]
+        },
+        "per_speaker": {
+          "HKK": {
+            "n": 12,
+            "positives": 6,
+            "prevalence": 0.5,
+            "ap": 0.43131313131313137,
+            "roc_auc": 0.2777777777777778
+          },
+          "NCC": {
+            "n": 18,
+            "positives": 9,
+            "prevalence": 0.5,
+            "ap": 0.7000592000592001,
+            "roc_auc": 0.7777777777777778
+          },
+          "NJS": {
+            "n": 10,
+            "positives": 5,
+            "prevalence": 0.5,
+            "ap": 0.8392857142857143,
+            "roc_auc": 0.76
+          },
+          "RRBI": {
+            "n": 10,
+            "positives": 5,
+            "prevalence": 0.5,
+            "ap": 0.8766666666666667,
+            "roc_auc": 0.88
+          },
+          "TNI": {
+            "n": 22,
+            "positives": 11,
+            "prevalence": 0.5,
+            "ap": 0.6424500937658832,
+            "roc_auc": 0.6694214876033058
+          },
+          "TXHC": {
+            "n": 18,
+            "positives": 9,
+            "prevalence": 0.5,
+            "ap": 0.5541907166907166,
+            "roc_auc": 0.5802469135802469
+          },
+          "YBAA": {
+            "n": 10,
+            "positives": 5,
+            "prevalence": 0.5,
+            "ap": 0.5911111111111111,
+            "roc_auc": 0.44
+          },
+          "ZHAA": {
+            "n": 16,
+            "positives": 8,
+            "prevalence": 0.5,
+            "ap": 0.6298611111111111,
+            "roc_auc": 0.578125
+          }
+        }
+      },
+      "missing_canonical_peak": {
+        "n": 116,
+        "positives": 58,
+        "prevalence": 0.5,
+        "ap": 0.587575159466128,
+        "roc_auc": 0.6397146254458977,
+        "diagnostic_fpr15": {
+          "threshold": 0.9994282126426697,
+          "tpr": 0.22413793103448276,
+          "fnr": 0.7758620689655172,
+          "fpr": 0.13793103448275862
+        },
+        "ap_cluster_bootstrap": {
+          "clusters": 8,
+          "resamples": 500,
+          "valid_resamples": 500,
+          "ci95": [
+            0.5122895265701963,
+            0.711044661660622
+          ]
+        },
+        "auc_cluster_bootstrap": {
+          "clusters": 8,
+          "resamples": 500,
+          "valid_resamples": 500,
+          "ci95": [
+            0.518612625810128,
+            0.741616181276432
+          ]
+        },
+        "tpr_cluster_bootstrap": {
+          "clusters": 8,
+          "resamples": 500,
+          "valid_resamples": 500,
+          "ci95": [
+            0.12691532258064517,
+            0.3469387755102041
+          ]
+        },
+        "per_speaker": {
+          "HKK": {
+            "n": 12,
+            "positives": 6,
+            "prevalence": 0.5,
+            "ap": 0.447979797979798,
+            "roc_auc": 0.3055555555555556
+          },
+          "NCC": {
+            "n": 18,
+            "positives": 9,
+            "prevalence": 0.5,
+            "ap": 0.6830687830687832,
+            "roc_auc": 0.7407407407407407
+          },
+          "NJS": {
+            "n": 10,
+            "positives": 5,
+            "prevalence": 0.5,
+            "ap": 0.8253968253968254,
+            "roc_auc": 0.72
+          },
+          "RRBI": {
+            "n": 10,
+            "positives": 5,
+            "prevalence": 0.5,
+            "ap": 0.8766666666666667,
+            "roc_auc": 0.88
+          },
+          "TNI": {
+            "n": 22,
+            "positives": 11,
+            "prevalence": 0.5,
+            "ap": 0.6621663689845507,
+            "roc_auc": 0.7024793388429752
+          },
+          "TXHC": {
+            "n": 18,
+            "positives": 9,
+            "prevalence": 0.5,
+            "ap": 0.5493524993524994,
+            "roc_auc": 0.5802469135802469
+          },
+          "YBAA": {
+            "n": 10,
+            "positives": 5,
+            "prevalence": 0.5,
+            "ap": 0.6053968253968254,
+            "roc_auc": 0.48
+          },
+          "ZHAA": {
+            "n": 16,
+            "positives": 8,
+            "prevalence": 0.5,
+            "ap": 0.6263548951048952,
+            "roc_auc": 0.578125
+          }
+        }
+      },
+      "blank_canonical_margin": {
+        "n": 116,
+        "positives": 58,
+        "prevalence": 0.5,
+        "ap": 0.6257294353945079,
+        "roc_auc": 0.6423900118906064,
+        "diagnostic_fpr15": {
+          "threshold": 0.99406498670578,
+          "tpr": 0.2413793103448276,
+          "fnr": 0.7586206896551724,
+          "fpr": 0.13793103448275862
+        },
+        "ap_cluster_bootstrap": {
+          "clusters": 8,
+          "resamples": 500,
+          "valid_resamples": 500,
+          "ci95": [
+            0.5547191723843367,
+            0.7671696897826147
+          ]
+        },
+        "auc_cluster_bootstrap": {
+          "clusters": 8,
+          "resamples": 500,
+          "valid_resamples": 500,
+          "ci95": [
+            0.536017469242599,
+            0.760890229390827
+          ]
+        },
+        "tpr_cluster_bootstrap": {
+          "clusters": 8,
+          "resamples": 500,
+          "valid_resamples": 500,
+          "ci95": [
+            0.15151515151515152,
+            0.3847558027079303
+          ]
+        },
+        "per_speaker": {
+          "HKK": {
+            "n": 12,
+            "positives": 6,
+            "prevalence": 0.5,
+            "ap": 0.5452020202020202,
+            "roc_auc": 0.4166666666666667
+          },
+          "NCC": {
+            "n": 18,
+            "positives": 9,
+            "prevalence": 0.5,
+            "ap": 0.7678182384064737,
+            "roc_auc": 0.7407407407407407
+          },
+          "NJS": {
+            "n": 10,
+            "positives": 5,
+            "prevalence": 0.5,
+            "ap": 0.8392857142857143,
+            "roc_auc": 0.76
+          },
+          "RRBI": {
+            "n": 10,
+            "positives": 5,
+            "prevalence": 0.5,
+            "ap": 0.9266666666666666,
+            "roc_auc": 0.92
+          },
+          "TNI": {
+            "n": 22,
+            "positives": 11,
+            "prevalence": 0.5,
+            "ap": 0.6526217403011662,
+            "roc_auc": 0.6859504132231405
+          },
+          "TXHC": {
+            "n": 18,
+            "positives": 9,
+            "prevalence": 0.5,
+            "ap": 0.5806216931216932,
+            "roc_auc": 0.5802469135802469
+          },
+          "YBAA": {
+            "n": 10,
+            "positives": 5,
+            "prevalence": 0.5,
+            "ap": 0.7111111111111111,
+            "roc_auc": 0.56
+          },
+          "ZHAA": {
+            "n": 16,
+            "positives": 8,
+            "prevalence": 0.5,
+            "ap": 0.5787202380952381,
+            "roc_auc": 0.5
+          }
+        }
+      },
+      "other_canonical_margin": {
+        "n": 116,
+        "positives": 58,
+        "prevalence": 0.5,
+        "ap": 0.6252015095937755,
+        "roc_auc": 0.6519024970273484,
+        "diagnostic_fpr15": {
+          "threshold": 0.9949687719345093,
+          "tpr": 0.22413793103448276,
+          "fnr": 0.7758620689655172,
+          "fpr": 0.13793103448275862
+        },
+        "ap_cluster_bootstrap": {
+          "clusters": 8,
+          "resamples": 500,
+          "valid_resamples": 500,
+          "ci95": [
+            0.5481308780981838,
+            0.7707824250730375
+          ]
+        },
+        "auc_cluster_bootstrap": {
+          "clusters": 8,
+          "resamples": 500,
+          "valid_resamples": 500,
+          "ci95": [
+            0.5292263203690036,
+            0.7740188007600999
+          ]
+        },
+        "tpr_cluster_bootstrap": {
+          "clusters": 8,
+          "resamples": 500,
+          "valid_resamples": 500,
+          "ci95": [
+            0.13636363636363635,
+            0.3578504043126684
+          ]
+        },
+        "per_speaker": {
+          "HKK": {
+            "n": 12,
+            "positives": 6,
+            "prevalence": 0.5,
+            "ap": 0.5452020202020202,
+            "roc_auc": 0.4166666666666667
+          },
+          "NCC": {
+            "n": 18,
+            "positives": 9,
+            "prevalence": 0.5,
+            "ap": 0.7926517926517926,
+            "roc_auc": 0.8024691358024691
+          },
+          "NJS": {
+            "n": 10,
+            "positives": 5,
+            "prevalence": 0.5,
+            "ap": 0.8392857142857143,
+            "roc_auc": 0.76
+          },
+          "RRBI": {
+            "n": 10,
+            "positives": 5,
+            "prevalence": 0.5,
+            "ap": 0.9266666666666666,
+            "roc_auc": 0.92
+          },
+          "TNI": {
+            "n": 22,
+            "positives": 11,
+            "prevalence": 0.5,
+            "ap": 0.6743768857405221,
+            "roc_auc": 0.71900826446281
+          },
+          "TXHC": {
+            "n": 18,
+            "positives": 9,
+            "prevalence": 0.5,
+            "ap": 0.5371913580246914,
+            "roc_auc": 0.5432098765432098
+          },
+          "YBAA": {
+            "n": 10,
+            "positives": 5,
+            "prevalence": 0.5,
+            "ap": 0.7111111111111111,
+            "roc_auc": 0.56
+          },
+          "ZHAA": {
+            "n": 16,
+            "positives": 8,
+            "prevalence": 0.5,
+            "ap": 0.6028235653235653,
+            "roc_auc": 0.53125
+          }
+        }
+      },
+      "missing_emission_fraction": {
+        "n": 116,
+        "positives": 58,
+        "prevalence": 0.5,
+        "ap": 0.5942630067062699,
+        "roc_auc": 0.6499702734839476,
+        "diagnostic_fpr15": {
+          "threshold": 1.0000000000000002,
+          "tpr": 0.0,
+          "fnr": 1.0,
+          "fpr": 0.0
+        },
+        "ap_cluster_bootstrap": {
+          "clusters": 8,
+          "resamples": 500,
+          "valid_resamples": 500,
+          "ci95": [
+            0.5065703146378638,
+            0.6982036913410199
+          ]
+        },
+        "auc_cluster_bootstrap": {
+          "clusters": 8,
+          "resamples": 500,
+          "valid_resamples": 500,
+          "ci95": [
+            0.5166419109502708,
+            0.7708573625528643
+          ]
+        },
+        "tpr_cluster_bootstrap": {
+          "clusters": 8,
+          "resamples": 500,
+          "valid_resamples": 500,
+          "ci95": [
+            0.0,
+            0.0
+          ]
+        },
+        "per_speaker": {
+          "HKK": {
+            "n": 12,
+            "positives": 6,
+            "prevalence": 0.5,
+            "ap": 0.4015151515151515,
+            "roc_auc": 0.25
+          },
+          "NCC": {
+            "n": 18,
+            "positives": 9,
+            "prevalence": 0.5,
+            "ap": 0.7021756021756022,
+            "roc_auc": 0.7839506172839507
+          },
+          "NJS": {
+            "n": 10,
+            "positives": 5,
+            "prevalence": 0.5,
+            "ap": 0.8583333333333334,
+            "roc_auc": 0.86
+          },
+          "RRBI": {
+            "n": 10,
+            "positives": 5,
+            "prevalence": 0.5,
+            "ap": 0.8333333333333334,
+            "roc_auc": 0.9
+          },
+          "TNI": {
+            "n": 22,
+            "positives": 11,
+            "prevalence": 0.5,
+            "ap": 0.678987678987679,
+            "roc_auc": 0.7479338842975206
+          },
+          "TXHC": {
+            "n": 18,
+            "positives": 9,
+            "prevalence": 0.5,
+            "ap": 0.5484654234654234,
+            "roc_auc": 0.5740740740740741
+          },
+          "YBAA": {
+            "n": 10,
+            "positives": 5,
+            "prevalence": 0.5,
+            "ap": 0.5,
+            "roc_auc": 0.46
+          },
+          "ZHAA": {
+            "n": 16,
+            "positives": 8,
+            "prevalence": 0.5,
+            "ap": 0.5117521367521367,
+            "roc_auc": 0.53125
+          }
+        }
+      },
+      "base_prob": {
+        "n": 116,
+        "positives": 58,
+        "prevalence": 0.5,
+        "ap": 0.48825024976352693,
+        "roc_auc": 0.48587990487514865,
+        "diagnostic_fpr15": {
+          "threshold": 0.23191264271736145,
+          "tpr": 0.10344827586206896,
+          "fnr": 0.896551724137931,
+          "fpr": 0.13793103448275862
+        },
+        "ap_cluster_bootstrap": {
+          "clusters": 8,
+          "resamples": 500,
+          "valid_resamples": 500,
+          "ci95": [
+            0.4476651049393092,
+            0.5453179700967837
+          ]
+        },
+        "auc_cluster_bootstrap": {
+          "clusters": 8,
+          "resamples": 500,
+          "valid_resamples": 500,
+          "ci95": [
+            0.4306198912932838,
+            0.5195373519778282
+          ]
+        },
+        "tpr_cluster_bootstrap": {
+          "clusters": 8,
+          "resamples": 500,
+          "valid_resamples": 500,
+          "ci95": [
+            0.029187979539641945,
+            0.2222222222222222
+          ]
+        },
+        "per_speaker": {
+          "HKK": {
+            "n": 12,
+            "positives": 6,
+            "prevalence": 0.5,
+            "ap": 0.43902116402116403,
+            "roc_auc": 0.3333333333333333
+          },
+          "NCC": {
+            "n": 18,
+            "positives": 9,
+            "prevalence": 0.5,
+            "ap": 0.5627665544332211,
+            "roc_auc": 0.4567901234567901
+          },
+          "NJS": {
+            "n": 10,
+            "positives": 5,
+            "prevalence": 0.5,
+            "ap": 0.5053968253968254,
+            "roc_auc": 0.44
+          },
+          "RRBI": {
+            "n": 10,
+            "positives": 5,
+            "prevalence": 0.5,
+            "ap": 0.5976190476190476,
+            "roc_auc": 0.58
+          },
+          "TNI": {
+            "n": 22,
+            "positives": 11,
+            "prevalence": 0.5,
+            "ap": 0.45386995185756795,
+            "roc_auc": 0.41735537190082644
+          },
+          "TXHC": {
+            "n": 18,
+            "positives": 9,
+            "prevalence": 0.5,
+            "ap": 0.4853667392883079,
+            "roc_auc": 0.48148148148148145
+          },
+          "YBAA": {
+            "n": 10,
+            "positives": 5,
+            "prevalence": 0.5,
+            "ap": 0.5444444444444444,
+            "roc_auc": 0.48
+          },
+          "ZHAA": {
+            "n": 16,
+            "positives": 8,
+            "prevalence": 0.5,
+            "ap": 0.6368589743589743,
+            "roc_auc": 0.5078125
+          }
+        }
+      },
+      "negative_duration": {
+        "n": 116,
+        "positives": 58,
+        "prevalence": 0.5,
+        "ap": 0.5106961495156338,
+        "roc_auc": 0.514268727705113,
+        "diagnostic_fpr15": {
+          "threshold": -0.026905844360538778,
+          "tpr": 0.034482758620689655,
+          "fnr": 0.9655172413793104,
+          "fpr": 0.05172413793103448
+        },
+        "ap_cluster_bootstrap": {
+          "clusters": 8,
+          "resamples": 500,
+          "valid_resamples": 500,
+          "ci95": [
+            0.4866075049361738,
+            0.5675045931414556
+          ]
+        },
+        "auc_cluster_bootstrap": {
+          "clusters": 8,
+          "resamples": 500,
+          "valid_resamples": 500,
+          "ci95": [
+            0.4840702963892351,
+            0.5440311418685121
+          ]
+        },
+        "tpr_cluster_bootstrap": {
+          "clusters": 8,
+          "resamples": 500,
+          "valid_resamples": 500,
+          "ci95": [
+            0.0,
+            0.08196721311475409
+          ]
+        },
+        "per_speaker": {
+          "HKK": {
+            "n": 12,
+            "positives": 6,
+            "prevalence": 0.5,
+            "ap": 0.5211640211640212,
+            "roc_auc": 0.5
+          },
+          "NCC": {
+            "n": 18,
+            "positives": 9,
+            "prevalence": 0.5,
+            "ap": 0.5149270482603816,
+            "roc_auc": 0.5123456790123457
+          },
+          "NJS": {
+            "n": 10,
+            "positives": 5,
+            "prevalence": 0.5,
+            "ap": 0.6,
+            "roc_auc": 0.5
+          },
+          "RRBI": {
+            "n": 10,
+            "positives": 5,
+            "prevalence": 0.5,
+            "ap": 0.5587301587301587,
+            "roc_auc": 0.52
+          },
+          "TNI": {
+            "n": 22,
+            "positives": 11,
+            "prevalence": 0.5,
+            "ap": 0.48361768950004247,
+            "roc_auc": 0.45041322314049587
+          },
+          "TXHC": {
+            "n": 18,
+            "positives": 9,
+            "prevalence": 0.5,
+            "ap": 0.5618217657433343,
+            "roc_auc": 0.5617283950617284
+          },
+          "YBAA": {
+            "n": 10,
+            "positives": 5,
+            "prevalence": 0.5,
+            "ap": 0.6142857142857143,
+            "roc_auc": 0.52
+          },
+          "ZHAA": {
+            "n": 16,
+            "positives": 8,
+            "prevalence": 0.5,
+            "ap": 0.6116799866799867,
+            "roc_auc": 0.5625
+          }
+        }
+      }
+    }
+  },
+  "waveform_common_token_feature_metrics": {
+    "feature_local/all_errors": {
+      "baseline": {
+        "n": 32,
+        "positives": 16,
+        "prevalence": 0.5,
+        "ap": 0.5502133607274327,
+        "roc_auc": 0.48828125
+      },
+      "intervened": {
+        "n": 32,
+        "positives": 16,
+        "prevalence": 0.5,
+        "ap": 0.5682422068812789,
+        "roc_auc": 0.5
+      },
+      "paired_delta_ap": 0.018028846153846256,
+      "delta_ap_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          -0.008112980769230786,
+          0.07583861451048947
+        ]
+      },
+      "mean_logit_delta": 0.005411442369222641,
+      "mean_prob_delta": 0.0011021383106708527,
+      "mean_abs_prob_delta": 0.001650557853281498,
+      "omission_recall_delta_at020": 0.0,
+      "recall_delta_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "speaker_macro_probability_delta": {
+        "mean": 0.001102,
+        "std": 0.003482,
+        "se": 0.001231,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": -0.001809,
+        "ci_upper": 0.004014
+      },
+      "speaker_macro_abs_probability_delta": {
+        "mean": 0.001651,
+        "std": 0.003225,
+        "se": 0.00114,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": -0.001046,
+        "ci_upper": 0.004347
+      },
+      "omission_operating_points": {
+        "0.2": {
+          "base": {
+            "threshold": 0.2,
+            "tpr": 0.4375,
+            "fnr": 0.5625,
+            "fpr": 0.375
+          },
+          "intervened": {
+            "threshold": 0.2,
+            "tpr": 0.4375,
+            "fnr": 0.5625,
+            "fpr": 0.375
+          }
+        },
+        "0.5": {
+          "base": {
+            "threshold": 0.5,
+            "tpr": 0.0,
+            "fnr": 1.0,
+            "fpr": 0.0
+          },
+          "intervened": {
+            "threshold": 0.5,
+            "tpr": 0.0,
+            "fnr": 1.0,
+            "fpr": 0.0
+          }
+        }
+      }
+    },
+    "feature_local/omission_vs_correct": {
+      "baseline": {
+        "n": 32,
+        "positives": 16,
+        "prevalence": 0.5,
+        "ap": 0.5502133607274327,
+        "roc_auc": 0.48828125
+      },
+      "intervened": {
+        "n": 32,
+        "positives": 16,
+        "prevalence": 0.5,
+        "ap": 0.5682422068812789,
+        "roc_auc": 0.5
+      },
+      "paired_delta_ap": 0.018028846153846256,
+      "delta_ap_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          -0.008112980769230786,
+          0.07583861451048947
+        ]
+      },
+      "mean_logit_delta": 0.005411442369222641,
+      "mean_prob_delta": 0.0011021383106708527,
+      "mean_abs_prob_delta": 0.001650557853281498,
+      "omission_recall_delta_at020": 0.0,
+      "recall_delta_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "speaker_macro_probability_delta": {
+        "mean": 0.001102,
+        "std": 0.003482,
+        "se": 0.001231,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": -0.001809,
+        "ci_upper": 0.004014
+      },
+      "speaker_macro_abs_probability_delta": {
+        "mean": 0.001651,
+        "std": 0.003225,
+        "se": 0.00114,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": -0.001046,
+        "ci_upper": 0.004347
+      },
+      "omission_operating_points": {
+        "0.2": {
+          "base": {
+            "threshold": 0.2,
+            "tpr": 0.4375,
+            "fnr": 0.5625,
+            "fpr": 0.375
+          },
+          "intervened": {
+            "threshold": 0.2,
+            "tpr": 0.4375,
+            "fnr": 0.5625,
+            "fpr": 0.375
+          }
+        },
+        "0.5": {
+          "base": {
+            "threshold": 0.5,
+            "tpr": 0.0,
+            "fnr": 1.0,
+            "fpr": 0.0
+          },
+          "intervened": {
+            "threshold": 0.5,
+            "tpr": 0.0,
+            "fnr": 1.0,
+            "fpr": 0.0
+          }
+        }
+      }
+    },
+    "feature_random/all_errors": {
+      "baseline": {
+        "n": 32,
+        "positives": 16,
+        "prevalence": 0.5,
+        "ap": 0.5502133607274327,
+        "roc_auc": 0.48828125
+      },
+      "intervened": {
+        "n": 32,
+        "positives": 16,
+        "prevalence": 0.5,
+        "ap": 0.5502133607274327,
+        "roc_auc": 0.48828125
+      },
+      "paired_delta_ap": 0.0,
+      "delta_ap_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "mean_logit_delta": 0.00754910334944725,
+      "mean_prob_delta": 0.0016124023823067546,
+      "mean_abs_prob_delta": 0.001978824962861836,
+      "omission_recall_delta_at020": 0.0,
+      "recall_delta_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "speaker_macro_probability_delta": {
+        "mean": 0.001612,
+        "std": 0.004505,
+        "se": 0.001593,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": -0.002154,
+        "ci_upper": 0.005379
+      },
+      "speaker_macro_abs_probability_delta": {
+        "mean": 0.001979,
+        "std": 0.004335,
+        "se": 0.001533,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": -0.001646,
+        "ci_upper": 0.005603
+      },
+      "omission_operating_points": {
+        "0.2": {
+          "base": {
+            "threshold": 0.2,
+            "tpr": 0.4375,
+            "fnr": 0.5625,
+            "fpr": 0.375
+          },
+          "intervened": {
+            "threshold": 0.2,
+            "tpr": 0.4375,
+            "fnr": 0.5625,
+            "fpr": 0.375
+          }
+        },
+        "0.5": {
+          "base": {
+            "threshold": 0.5,
+            "tpr": 0.0,
+            "fnr": 1.0,
+            "fpr": 0.0
+          },
+          "intervened": {
+            "threshold": 0.5,
+            "tpr": 0.0,
+            "fnr": 1.0,
+            "fpr": 0.0
+          }
+        }
+      }
+    },
+    "feature_random/omission_vs_correct": {
+      "baseline": {
+        "n": 32,
+        "positives": 16,
+        "prevalence": 0.5,
+        "ap": 0.5502133607274327,
+        "roc_auc": 0.48828125
+      },
+      "intervened": {
+        "n": 32,
+        "positives": 16,
+        "prevalence": 0.5,
+        "ap": 0.5502133607274327,
+        "roc_auc": 0.48828125
+      },
+      "paired_delta_ap": 0.0,
+      "delta_ap_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "mean_logit_delta": 0.00754910334944725,
+      "mean_prob_delta": 0.0016124023823067546,
+      "mean_abs_prob_delta": 0.001978824962861836,
+      "omission_recall_delta_at020": 0.0,
+      "recall_delta_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "speaker_macro_probability_delta": {
+        "mean": 0.001612,
+        "std": 0.004505,
+        "se": 0.001593,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": -0.002154,
+        "ci_upper": 0.005379
+      },
+      "speaker_macro_abs_probability_delta": {
+        "mean": 0.001979,
+        "std": 0.004335,
+        "se": 0.001533,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": -0.001646,
+        "ci_upper": 0.005603
+      },
+      "omission_operating_points": {
+        "0.2": {
+          "base": {
+            "threshold": 0.2,
+            "tpr": 0.4375,
+            "fnr": 0.5625,
+            "fpr": 0.375
+          },
+          "intervened": {
+            "threshold": 0.2,
+            "tpr": 0.4375,
+            "fnr": 0.5625,
+            "fpr": 0.375
+          }
+        },
+        "0.5": {
+          "base": {
+            "threshold": 0.5,
+            "tpr": 0.0,
+            "fnr": 1.0,
+            "fpr": 0.0
+          },
+          "intervened": {
+            "threshold": 0.5,
+            "tpr": 0.0,
+            "fnr": 1.0,
+            "fpr": 0.0
+          }
+        }
+      }
+    }
+  },
+  "attention_by_head_and_type": {
+    "correct/head0": {
+      "n": 2566,
+      "mass_mean": 0.03039770618481845,
+      "uniform_mean": 0.027712310315595793,
+      "random_mean": 0.02927620603410557,
+      "mean_token_uniform_enrichment": 1.0759696200135511,
+      "ratio_of_sums_uniform": 1.0969026341954384,
+      "ratio_of_sums_random": 1.038307564491327,
+      "mass_minus_random_mean": 0.0011215001507128754,
+      "entropy_mean": 0.003761472656213174,
+      "offset_mean_sec": 1.2901464231175745,
+      "max_weight_mean": 0.9913635717665694,
+      "speaker_macro_mass_difference": {
+        "mean": 0.001042,
+        "std": 0.007102,
+        "se": 0.002511,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": -0.004895,
+        "ci_upper": 0.00698
+      }
+    },
+    "correct/head1": {
+      "n": 2566,
+      "mass_mean": 0.03778691976721864,
+      "uniform_mean": 0.027712310315595793,
+      "random_mean": 0.02857740897118574,
+      "mean_token_uniform_enrichment": 1.5316866836078726,
+      "ratio_of_sums_uniform": 1.363542748218762,
+      "ratio_of_sums_random": 1.322265423199099,
+      "mass_minus_random_mean": 0.009209510796032898,
+      "entropy_mean": 0.003206133384889152,
+      "offset_mean_sec": 1.3466591234845544,
+      "max_weight_mean": 0.9927798609945426,
+      "speaker_macro_mass_difference": {
+        "mean": 0.009214,
+        "std": 0.015046,
+        "se": 0.00532,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": -0.003365,
+        "ci_upper": 0.021793
+      }
+    },
+    "correct/head2": {
+      "n": 2566,
+      "mass_mean": 0.03408976732159081,
+      "uniform_mean": 0.027712310315595793,
+      "random_mean": 0.02863543714729616,
+      "mean_token_uniform_enrichment": 1.249511200859782,
+      "ratio_of_sums_uniform": 1.230130831149287,
+      "ratio_of_sums_random": 1.1904748352972032,
+      "mass_minus_random_mean": 0.005454330174294645,
+      "entropy_mean": 0.0035784329207567676,
+      "offset_mean_sec": 1.3530277882489044,
+      "max_weight_mean": 0.9919696883214979,
+      "speaker_macro_mass_difference": {
+        "mean": 0.005988,
+        "std": 0.019187,
+        "se": 0.006784,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": -0.010053,
+        "ci_upper": 0.022029
+      }
+    },
+    "correct/head3": {
+      "n": 2566,
+      "mass_mean": 0.03475132835797062,
+      "uniform_mean": 0.027712310315595793,
+      "random_mean": 0.028397520118945623,
+      "mean_token_uniform_enrichment": 1.2787502785948959,
+      "ratio_of_sums_uniform": 1.254003291757795,
+      "ratio_of_sums_random": 1.2237451795935521,
+      "mass_minus_random_mean": 0.0063538082390249976,
+      "entropy_mean": 0.003716153490280684,
+      "offset_mean_sec": 1.360390070818038,
+      "max_weight_mean": 0.9922245975267302,
+      "speaker_macro_mass_difference": {
+        "mean": 0.00602,
+        "std": 0.011838,
+        "se": 0.004185,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": -0.003877,
+        "ci_upper": 0.015917
+      }
+    },
+    "substitution/head0": {
+      "n": 278,
+      "mass_mean": 0.0475416860975002,
+      "uniform_mean": 0.029015971590914656,
+      "random_mean": 0.030461227174808956,
+      "mean_token_uniform_enrichment": 1.7882979158656231,
+      "ratio_of_sums_uniform": 1.6384661098988058,
+      "ratio_of_sums_random": 1.560727866433975,
+      "mass_minus_random_mean": 0.017080458922691246,
+      "entropy_mean": 0.003786268695904821,
+      "offset_mean_sec": 1.3534829411769493,
+      "max_weight_mean": 0.9923013442283054,
+      "speaker_macro_mass_difference": {
+        "mean": 0.013291,
+        "std": 0.037075,
+        "se": 0.013108,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": -0.017704,
+        "ci_upper": 0.044287
+      }
+    },
+    "substitution/head1": {
+      "n": 278,
+      "mass_mean": 0.03956831928100162,
+      "uniform_mean": 0.029015971590914656,
+      "random_mean": 0.03104806736789233,
+      "mean_token_uniform_enrichment": 1.6019258537902648,
+      "ratio_of_sums_uniform": 1.3636737669467207,
+      "ratio_of_sums_random": 1.2744213291008355,
+      "mass_minus_random_mean": 0.008520251913109287,
+      "entropy_mean": 0.0029696750044622302,
+      "offset_mean_sec": 1.3271529289579653,
+      "max_weight_mean": 0.9937030883144131,
+      "speaker_macro_mass_difference": {
+        "mean": 0.010882,
+        "std": 0.024426,
+        "se": 0.008636,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": -0.009539,
+        "ci_upper": 0.031303
+      }
+    },
+    "substitution/head2": {
+      "n": 278,
+      "mass_mean": 0.021582703746247867,
+      "uniform_mean": 0.029015971590914656,
+      "random_mean": 0.02866454120704885,
+      "mean_token_uniform_enrichment": 0.6290154917570446,
+      "ratio_of_sums_uniform": 0.7438215080485445,
+      "ratio_of_sums_random": 0.7529408404046076,
+      "mass_minus_random_mean": -0.007081837460800981,
+      "entropy_mean": 0.0012072286040737791,
+      "offset_mean_sec": 1.3847964865545102,
+      "max_weight_mean": 0.9976857021558199,
+      "speaker_macro_mass_difference": {
+        "mean": -0.007578,
+        "std": 0.018113,
+        "se": 0.006404,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": -0.022721,
+        "ci_upper": 0.007565
+      }
+    },
+    "substitution/head3": {
+      "n": 278,
+      "mass_mean": 0.022343336659816252,
+      "uniform_mean": 0.029015971590914656,
+      "random_mean": 0.030108205090185747,
+      "mean_token_uniform_enrichment": 0.4325836002155138,
+      "ratio_of_sums_uniform": 0.7700357918330845,
+      "ratio_of_sums_random": 0.7421012509011845,
+      "mass_minus_random_mean": -0.007764868430369495,
+      "entropy_mean": 0.006719475022335983,
+      "offset_mean_sec": 1.4820879499934185,
+      "max_weight_mean": 0.9843177533835816,
+      "speaker_macro_mass_difference": {
+        "mean": -0.008189,
+        "std": 0.029242,
+        "se": 0.010339,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": -0.032636,
+        "ci_upper": 0.016259
+      }
+    },
+    "deletion/head0": {
+      "n": 107,
+      "mass_mean": 0.04652732165060311,
+      "uniform_mean": 0.017207904065341603,
+      "random_mean": 0.019346872684067186,
+      "mean_token_uniform_enrichment": 1.732564814321773,
+      "ratio_of_sums_uniform": 2.7038343236881284,
+      "ratio_of_sums_random": 2.4049014231080332,
+      "mass_minus_random_mean": 0.027180448966535924,
+      "entropy_mean": 0.0008765557232253007,
+      "offset_mean_sec": 1.2682203853987752,
+      "max_weight_mean": 0.9988493490441938,
+      "speaker_macro_mass_difference": {
+        "mean": 0.028403,
+        "std": 0.06117,
+        "se": 0.021627,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": -0.022736,
+        "ci_upper": 0.079542
+      }
+    },
+    "deletion/head1": {
+      "n": 107,
+      "mass_mean": 0.02773995321487712,
+      "uniform_mean": 0.017207904065341603,
+      "random_mean": 0.01699031124361487,
+      "mean_token_uniform_enrichment": 1.9895434524411353,
+      "ratio_of_sums_uniform": 1.6120471795718627,
+      "ratio_of_sums_random": 1.632692469085996,
+      "mass_minus_random_mean": 0.01074964197126225,
+      "entropy_mean": 0.002215790751234396,
+      "offset_mean_sec": 1.219449395933043,
+      "max_weight_mean": 0.9960163887416091,
+      "speaker_macro_mass_difference": {
+        "mean": 0.011126,
+        "std": 0.035584,
+        "se": 0.012581,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": -0.018623,
+        "ci_upper": 0.040875
+      }
+    },
+    "deletion/head2": {
+      "n": 107,
+      "mass_mean": 0.01869158878507205,
+      "uniform_mean": 0.017207904065341603,
+      "random_mean": 0.01746326285592752,
+      "mean_token_uniform_enrichment": 0.9595015576339054,
+      "ratio_of_sums_uniform": 1.0862211175804224,
+      "ratio_of_sums_random": 1.0703377106144631,
+      "mass_minus_random_mean": 0.0012283259291445336,
+      "entropy_mean": 0.0016280241254454375,
+      "offset_mean_sec": 1.1572121783903515,
+      "max_weight_mean": 0.9977565530304596,
+      "speaker_macro_mass_difference": {
+        "mean": 0.001859,
+        "std": 0.054782,
+        "se": 0.019368,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": -0.043941,
+        "ci_upper": 0.047658
+      }
+    },
+    "deletion/head3": {
+      "n": 107,
+      "mass_mean": 0.028037383179202475,
+      "uniform_mean": 0.017207904065341603,
+      "random_mean": 0.017040936163737842,
+      "mean_token_uniform_enrichment": 0.9048731642963787,
+      "ratio_of_sums_uniform": 1.6293316764632888,
+      "ratio_of_sums_random": 1.645295945586866,
+      "mass_minus_random_mean": 0.010996447015464633,
+      "entropy_mean": 0.002444136896483888,
+      "offset_mean_sec": 1.326053681041183,
+      "max_weight_mean": 0.9956632540604778,
+      "speaker_macro_mass_difference": {
+        "mean": 0.007236,
+        "std": 0.03405,
+        "se": 0.012038,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": -0.02123,
+        "ci_upper": 0.035702
+      }
+    }
+  },
+  "intervention_metrics": {
+    "attention_local/all_errors": {
+      "baseline": {
+        "n": 2951,
+        "positives": 385,
+        "prevalence": 0.13046424940698068,
+        "ap": 0.29211181662326047,
+        "roc_auc": 0.7016615886062496
+      },
+      "intervened": {
+        "n": 2951,
+        "positives": 385,
+        "prevalence": 0.13046424940698068,
+        "ap": 0.29381871152597244,
+        "roc_auc": 0.7149730238584486
+      },
+      "paired_delta_ap": 0.001706894902711975,
+      "delta_ap_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          -0.013833576207640554,
+          0.01762571198667576
+        ]
+      },
+      "mean_logit_delta": 0.2112178656874431,
+      "mean_prob_delta": 0.02362145636778581,
+      "mean_abs_prob_delta": 0.03567745409570117,
+      "omission_recall_delta_at020": 0.21495327102803738,
+      "recall_delta_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          0.14150943396226415,
+          0.29025552100773333
+        ]
+      },
+      "speaker_macro_probability_delta": {
+        "mean": 0.023774,
+        "std": 0.008905,
+        "se": 0.003148,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": 0.016329,
+        "ci_upper": 0.031219
+      },
+      "speaker_macro_abs_probability_delta": {
+        "mean": 0.035661,
+        "std": 0.006017,
+        "se": 0.002127,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": 0.030631,
+        "ci_upper": 0.040691
+      },
+      "omission_operating_points": {
+        "0.2": {
+          "base": {
+            "threshold": 0.2,
+            "tpr": 0.3364485981308411,
+            "fnr": 0.6635514018691588,
+            "fpr": 0.16328916601714732
+          },
+          "intervened": {
+            "threshold": 0.2,
+            "tpr": 0.5514018691588785,
+            "fnr": 0.44859813084112155,
+            "fpr": 0.23421667965705378
+          }
+        },
+        "0.5": {
+          "base": {
+            "threshold": 0.5,
+            "tpr": 0.018691588785046728,
+            "fnr": 0.9813084112149533,
+            "fpr": 0.029618082618862042
+          },
+          "intervened": {
+            "threshold": 0.5,
+            "tpr": 0.018691588785046728,
+            "fnr": 0.9813084112149533,
+            "fpr": 0.026500389711613406
+          }
+        }
+      }
+    },
+    "attention_local/omission_vs_correct": {
+      "baseline": {
+        "n": 2673,
+        "positives": 107,
+        "prevalence": 0.040029928918817806,
+        "ap": 0.06899131796874766,
+        "roc_auc": 0.6917545035365419
+      },
+      "intervened": {
+        "n": 2673,
+        "positives": 107,
+        "prevalence": 0.040029928918817806,
+        "ap": 0.07262137064185568,
+        "roc_auc": 0.7195824622489638
+      },
+      "paired_delta_ap": 0.0036300526731080224,
+      "delta_ap_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          -0.004484018783913846,
+          0.009898319251606497
+        ]
+      },
+      "mean_logit_delta": 0.21157182117710166,
+      "mean_prob_delta": 0.02308357249526603,
+      "mean_abs_prob_delta": 0.03434040290702468,
+      "omission_recall_delta_at020": 0.21495327102803738,
+      "recall_delta_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          0.14150943396226415,
+          0.29025552100773333
+        ]
+      },
+      "speaker_macro_probability_delta": {
+        "mean": 0.023195,
+        "std": 0.008499,
+        "se": 0.003005,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": 0.016089,
+        "ci_upper": 0.0303
+      },
+      "speaker_macro_abs_probability_delta": {
+        "mean": 0.034307,
+        "std": 0.005512,
+        "se": 0.001949,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": 0.029699,
+        "ci_upper": 0.038915
+      },
+      "omission_operating_points": {
+        "0.2": {
+          "base": {
+            "threshold": 0.2,
+            "tpr": 0.3364485981308411,
+            "fnr": 0.6635514018691588,
+            "fpr": 0.16328916601714732
+          },
+          "intervened": {
+            "threshold": 0.2,
+            "tpr": 0.5514018691588785,
+            "fnr": 0.44859813084112155,
+            "fpr": 0.23421667965705378
+          }
+        },
+        "0.5": {
+          "base": {
+            "threshold": 0.5,
+            "tpr": 0.018691588785046728,
+            "fnr": 0.9813084112149533,
+            "fpr": 0.029618082618862042
+          },
+          "intervened": {
+            "threshold": 0.5,
+            "tpr": 0.018691588785046728,
+            "fnr": 0.9813084112149533,
+            "fpr": 0.026500389711613406
+          }
+        }
+      }
+    },
+    "attention_neighbor/all_errors": {
+      "baseline": {
+        "n": 2951,
+        "positives": 385,
+        "prevalence": 0.13046424940698068,
+        "ap": 0.29211181662326047,
+        "roc_auc": 0.7016615886062496
+      },
+      "intervened": {
+        "n": 2951,
+        "positives": 385,
+        "prevalence": 0.13046424940698068,
+        "ap": 0.2802762957291963,
+        "roc_auc": 0.6997854055531374
+      },
+      "paired_delta_ap": -0.011835520894064144,
+      "delta_ap_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          -0.025440493874965796,
+          0.0005243563221356639
+        ]
+      },
+      "mean_logit_delta": 0.22318351883927226,
+      "mean_prob_delta": 0.0243597129627782,
+      "mean_abs_prob_delta": 0.03609283719863837,
+      "omission_recall_delta_at020": 0.1308411214953271,
+      "recall_delta_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          0.009433962264150943,
+          0.23969164118246683
+        ]
+      },
+      "speaker_macro_probability_delta": {
+        "mean": 0.024456,
+        "std": 0.008084,
+        "se": 0.002858,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": 0.017698,
+        "ci_upper": 0.031214
+      },
+      "speaker_macro_abs_probability_delta": {
+        "mean": 0.036035,
+        "std": 0.005383,
+        "se": 0.001903,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": 0.031534,
+        "ci_upper": 0.040535
+      },
+      "omission_operating_points": {
+        "0.2": {
+          "base": {
+            "threshold": 0.2,
+            "tpr": 0.3364485981308411,
+            "fnr": 0.6635514018691588,
+            "fpr": 0.16328916601714732
+          },
+          "intervened": {
+            "threshold": 0.2,
+            "tpr": 0.4672897196261682,
+            "fnr": 0.5327102803738317,
+            "fpr": 0.23109898674980514
+          }
+        },
+        "0.5": {
+          "base": {
+            "threshold": 0.5,
+            "tpr": 0.018691588785046728,
+            "fnr": 0.9813084112149533,
+            "fpr": 0.029618082618862042
+          },
+          "intervened": {
+            "threshold": 0.5,
+            "tpr": 0.037383177570093455,
+            "fnr": 0.9626168224299065,
+            "fpr": 0.028448947778643804
+          }
+        }
+      }
+    },
+    "attention_neighbor/omission_vs_correct": {
+      "baseline": {
+        "n": 2673,
+        "positives": 107,
+        "prevalence": 0.040029928918817806,
+        "ap": 0.06899131796874766,
+        "roc_auc": 0.6917545035365419
+      },
+      "intervened": {
+        "n": 2673,
+        "positives": 107,
+        "prevalence": 0.040029928918817806,
+        "ap": 0.06556279675944884,
+        "roc_auc": 0.6939561920440557
+      },
+      "paired_delta_ap": -0.003428521209298818,
+      "delta_ap_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          -0.015666833619844583,
+          0.0023179377119196777
+        ]
+      },
+      "mean_logit_delta": 0.22618352028506775,
+      "mean_prob_delta": 0.02404764129996601,
+      "mean_abs_prob_delta": 0.03513877253681198,
+      "omission_recall_delta_at020": 0.1308411214953271,
+      "recall_delta_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          0.009433962264150943,
+          0.23969164118246683
+        ]
+      },
+      "speaker_macro_probability_delta": {
+        "mean": 0.02411,
+        "std": 0.008045,
+        "se": 0.002844,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": 0.017384,
+        "ci_upper": 0.030836
+      },
+      "speaker_macro_abs_probability_delta": {
+        "mean": 0.035081,
+        "std": 0.005092,
+        "se": 0.0018,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": 0.030825,
+        "ci_upper": 0.039338
+      },
+      "omission_operating_points": {
+        "0.2": {
+          "base": {
+            "threshold": 0.2,
+            "tpr": 0.3364485981308411,
+            "fnr": 0.6635514018691588,
+            "fpr": 0.16328916601714732
+          },
+          "intervened": {
+            "threshold": 0.2,
+            "tpr": 0.4672897196261682,
+            "fnr": 0.5327102803738317,
+            "fpr": 0.23109898674980514
+          }
+        },
+        "0.5": {
+          "base": {
+            "threshold": 0.5,
+            "tpr": 0.018691588785046728,
+            "fnr": 0.9813084112149533,
+            "fpr": 0.029618082618862042
+          },
+          "intervened": {
+            "threshold": 0.5,
+            "tpr": 0.037383177570093455,
+            "fnr": 0.9626168224299065,
+            "fpr": 0.028448947778643804
+          }
+        }
+      }
+    },
+    "attention_random/all_errors": {
+      "baseline": {
+        "n": 2951,
+        "positives": 385,
+        "prevalence": 0.13046424940698068,
+        "ap": 0.29211181662326047,
+        "roc_auc": 0.7016615886062496
+      },
+      "intervened": {
+        "n": 2951,
+        "positives": 385,
+        "prevalence": 0.13046424940698068,
+        "ap": 0.2835952893937704,
+        "roc_auc": 0.6969197598971566
+      },
+      "paired_delta_ap": -0.00851652722949009,
+      "delta_ap_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          -0.020458994126794024,
+          0.0034493086055946524
+        ]
+      },
+      "mean_logit_delta": 0.23364647721126297,
+      "mean_prob_delta": 0.0251378190549995,
+      "mean_abs_prob_delta": 0.03597143530228337,
+      "omission_recall_delta_at020": 0.12149532710280374,
+      "recall_delta_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          0.07407407407407407,
+          0.16744100294985248
+        ]
+      },
+      "speaker_macro_probability_delta": {
+        "mean": 0.02534,
+        "std": 0.00863,
+        "se": 0.003051,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": 0.018125,
+        "ci_upper": 0.032555
+      },
+      "speaker_macro_abs_probability_delta": {
+        "mean": 0.035935,
+        "std": 0.004886,
+        "se": 0.001728,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": 0.031851,
+        "ci_upper": 0.04002
+      },
+      "omission_operating_points": {
+        "0.2": {
+          "base": {
+            "threshold": 0.2,
+            "tpr": 0.3364485981308411,
+            "fnr": 0.6635514018691588,
+            "fpr": 0.16328916601714732
+          },
+          "intervened": {
+            "threshold": 0.2,
+            "tpr": 0.45794392523364486,
+            "fnr": 0.5420560747663552,
+            "fpr": 0.22876071706936868
+          }
+        },
+        "0.5": {
+          "base": {
+            "threshold": 0.5,
+            "tpr": 0.018691588785046728,
+            "fnr": 0.9813084112149533,
+            "fpr": 0.029618082618862042
+          },
+          "intervened": {
+            "threshold": 0.5,
+            "tpr": 0.009345794392523364,
+            "fnr": 0.9906542056074766,
+            "fpr": 0.03351519875292284
+          }
+        }
+      }
+    },
+    "attention_random/omission_vs_correct": {
+      "baseline": {
+        "n": 2673,
+        "positives": 107,
+        "prevalence": 0.040029928918817806,
+        "ap": 0.06899131796874766,
+        "roc_auc": 0.6917545035365419
+      },
+      "intervened": {
+        "n": 2673,
+        "positives": 107,
+        "prevalence": 0.040029928918817806,
+        "ap": 0.06494345056525058,
+        "roc_auc": 0.6799593534429382
+      },
+      "paired_delta_ap": -0.00404786740349708,
+      "delta_ap_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          -0.015182744207905498,
+          0.0015645299834715135
+        ]
+      },
+      "mean_logit_delta": 0.2358305155729204,
+      "mean_prob_delta": 0.024675562446278453,
+      "mean_abs_prob_delta": 0.035166378431419364,
+      "omission_recall_delta_at020": 0.12149532710280374,
+      "recall_delta_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          0.07407407407407407,
+          0.16744100294985248
+        ]
+      },
+      "speaker_macro_probability_delta": {
+        "mean": 0.024905,
+        "std": 0.008609,
+        "se": 0.003044,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": 0.017708,
+        "ci_upper": 0.032102
+      },
+      "speaker_macro_abs_probability_delta": {
+        "mean": 0.035154,
+        "std": 0.004698,
+        "se": 0.001661,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": 0.031226,
+        "ci_upper": 0.039082
+      },
+      "omission_operating_points": {
+        "0.2": {
+          "base": {
+            "threshold": 0.2,
+            "tpr": 0.3364485981308411,
+            "fnr": 0.6635514018691588,
+            "fpr": 0.16328916601714732
+          },
+          "intervened": {
+            "threshold": 0.2,
+            "tpr": 0.45794392523364486,
+            "fnr": 0.5420560747663552,
+            "fpr": 0.22876071706936868
+          }
+        },
+        "0.5": {
+          "base": {
+            "threshold": 0.5,
+            "tpr": 0.018691588785046728,
+            "fnr": 0.9813084112149533,
+            "fpr": 0.029618082618862042
+          },
+          "intervened": {
+            "threshold": 0.5,
+            "tpr": 0.009345794392523364,
+            "fnr": 0.9906542056074766,
+            "fpr": 0.03351519875292284
+          }
+        }
+      }
+    },
+    "feature_local/all_errors": {
+      "baseline": {
+        "n": 2951,
+        "positives": 385,
+        "prevalence": 0.13046424940698068,
+        "ap": 0.29211181662326047,
+        "roc_auc": 0.7016615886062496
+      },
+      "intervened": {
+        "n": 2951,
+        "positives": 385,
+        "prevalence": 0.13046424940698068,
+        "ap": 0.29224859967874084,
+        "roc_auc": 0.7012496077577917
+      },
+      "paired_delta_ap": 0.00013678305548037173,
+      "delta_ap_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          -0.0028585121104107575,
+          0.004208284832230724
+        ]
+      },
+      "mean_logit_delta": 0.00283740707415922,
+      "mean_prob_delta": 0.00030592643971116574,
+      "mean_abs_prob_delta": 0.0011131832344878512,
+      "omission_recall_delta_at020": 0.018691588785046728,
+      "recall_delta_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          0.0,
+          0.042735042735042736
+        ]
+      },
+      "speaker_macro_probability_delta": {
+        "mean": 0.000313,
+        "std": 0.000274,
+        "se": 9.7e-05,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": 8.3e-05,
+        "ci_upper": 0.000542
+      },
+      "speaker_macro_abs_probability_delta": {
+        "mean": 0.001108,
+        "std": 0.000334,
+        "se": 0.000118,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": 0.000828,
+        "ci_upper": 0.001387
+      },
+      "omission_operating_points": {
+        "0.2": {
+          "base": {
+            "threshold": 0.2,
+            "tpr": 0.3364485981308411,
+            "fnr": 0.6635514018691588,
+            "fpr": 0.16328916601714732
+          },
+          "intervened": {
+            "threshold": 0.2,
+            "tpr": 0.35514018691588783,
+            "fnr": 0.6448598130841121,
+            "fpr": 0.1636788776305534
+          }
+        },
+        "0.5": {
+          "base": {
+            "threshold": 0.5,
+            "tpr": 0.018691588785046728,
+            "fnr": 0.9813084112149533,
+            "fpr": 0.029618082618862042
+          },
+          "intervened": {
+            "threshold": 0.5,
+            "tpr": 0.018691588785046728,
+            "fnr": 0.9813084112149533,
+            "fpr": 0.029618082618862042
+          }
+        }
+      }
+    },
+    "feature_local/omission_vs_correct": {
+      "baseline": {
+        "n": 2673,
+        "positives": 107,
+        "prevalence": 0.040029928918817806,
+        "ap": 0.06899131796874766,
+        "roc_auc": 0.6917545035365419
+      },
+      "intervened": {
+        "n": 2673,
+        "positives": 107,
+        "prevalence": 0.040029928918817806,
+        "ap": 0.069526645927623,
+        "roc_auc": 0.6920149183062477
+      },
+      "paired_delta_ap": 0.0005353279588753423,
+      "delta_ap_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          -0.00029149228172863187,
+          0.0024412996038195296
+        ]
+      },
+      "mean_logit_delta": 0.003030713251800605,
+      "mean_prob_delta": 0.00030587870576075744,
+      "mean_abs_prob_delta": 0.0010928624346880176,
+      "omission_recall_delta_at020": 0.018691588785046728,
+      "recall_delta_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          0.0,
+          0.042735042735042736
+        ]
+      },
+      "speaker_macro_probability_delta": {
+        "mean": 0.000311,
+        "std": 0.000245,
+        "se": 8.7e-05,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": 0.000106,
+        "ci_upper": 0.000516
+      },
+      "speaker_macro_abs_probability_delta": {
+        "mean": 0.001086,
+        "std": 0.000398,
+        "se": 0.000141,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": 0.000753,
+        "ci_upper": 0.001419
+      },
+      "omission_operating_points": {
+        "0.2": {
+          "base": {
+            "threshold": 0.2,
+            "tpr": 0.3364485981308411,
+            "fnr": 0.6635514018691588,
+            "fpr": 0.16328916601714732
+          },
+          "intervened": {
+            "threshold": 0.2,
+            "tpr": 0.35514018691588783,
+            "fnr": 0.6448598130841121,
+            "fpr": 0.1636788776305534
+          }
+        },
+        "0.5": {
+          "base": {
+            "threshold": 0.5,
+            "tpr": 0.018691588785046728,
+            "fnr": 0.9813084112149533,
+            "fpr": 0.029618082618862042
+          },
+          "intervened": {
+            "threshold": 0.5,
+            "tpr": 0.018691588785046728,
+            "fnr": 0.9813084112149533,
+            "fpr": 0.029618082618862042
+          }
+        }
+      }
+    },
+    "feature_random/all_errors": {
+      "baseline": {
+        "n": 2951,
+        "positives": 385,
+        "prevalence": 0.13046424940698068,
+        "ap": 0.29211181662326047,
+        "roc_auc": 0.7016615886062496
+      },
+      "intervened": {
+        "n": 2951,
+        "positives": 385,
+        "prevalence": 0.13046424940698068,
+        "ap": 0.294083938347716,
+        "roc_auc": 0.7007854966545536
+      },
+      "paired_delta_ap": 0.0019721217244555445,
+      "delta_ap_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          0.0005515698515661028,
+          0.005210629382034439
+        ]
+      },
+      "mean_logit_delta": 0.0024658949740839504,
+      "mean_prob_delta": 0.00025661565064853713,
+      "mean_abs_prob_delta": 0.0009351091590996861,
+      "omission_recall_delta_at020": 0.0,
+      "recall_delta_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "speaker_macro_probability_delta": {
+        "mean": 0.000251,
+        "std": 0.000189,
+        "se": 6.7e-05,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": 9.3e-05,
+        "ci_upper": 0.000409
+      },
+      "speaker_macro_abs_probability_delta": {
+        "mean": 0.000936,
+        "std": 0.00025,
+        "se": 8.9e-05,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": 0.000726,
+        "ci_upper": 0.001145
+      },
+      "omission_operating_points": {
+        "0.2": {
+          "base": {
+            "threshold": 0.2,
+            "tpr": 0.3364485981308411,
+            "fnr": 0.6635514018691588,
+            "fpr": 0.16328916601714732
+          },
+          "intervened": {
+            "threshold": 0.2,
+            "tpr": 0.3364485981308411,
+            "fnr": 0.6635514018691588,
+            "fpr": 0.16212003117692908
+          }
+        },
+        "0.5": {
+          "base": {
+            "threshold": 0.5,
+            "tpr": 0.018691588785046728,
+            "fnr": 0.9813084112149533,
+            "fpr": 0.029618082618862042
+          },
+          "intervened": {
+            "threshold": 0.5,
+            "tpr": 0.018691588785046728,
+            "fnr": 0.9813084112149533,
+            "fpr": 0.029618082618862042
+          }
+        }
+      }
+    },
+    "feature_random/omission_vs_correct": {
+      "baseline": {
+        "n": 2673,
+        "positives": 107,
+        "prevalence": 0.040029928918817806,
+        "ap": 0.06899131796874766,
+        "roc_auc": 0.6917545035365419
+      },
+      "intervened": {
+        "n": 2673,
+        "positives": 107,
+        "prevalence": 0.040029928918817806,
+        "ap": 0.0692128076875848,
+        "roc_auc": 0.6919821388247464
+      },
+      "paired_delta_ap": 0.00022148971883713398,
+      "delta_ap_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          -0.0001547536283680156,
+          0.0009333690312795038
+        ]
+      },
+      "mean_logit_delta": 0.0027057045322988883,
+      "mean_prob_delta": 0.0002553712956752284,
+      "mean_abs_prob_delta": 0.0008539762541308882,
+      "omission_recall_delta_at020": 0.0,
+      "recall_delta_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "speaker_macro_probability_delta": {
+        "mean": 0.00025,
+        "std": 0.000203,
+        "se": 7.2e-05,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": 8e-05,
+        "ci_upper": 0.00042
+      },
+      "speaker_macro_abs_probability_delta": {
+        "mean": 0.00085,
+        "std": 0.000189,
+        "se": 6.7e-05,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": 0.000691,
+        "ci_upper": 0.001008
+      },
+      "omission_operating_points": {
+        "0.2": {
+          "base": {
+            "threshold": 0.2,
+            "tpr": 0.3364485981308411,
+            "fnr": 0.6635514018691588,
+            "fpr": 0.16328916601714732
+          },
+          "intervened": {
+            "threshold": 0.2,
+            "tpr": 0.3364485981308411,
+            "fnr": 0.6635514018691588,
+            "fpr": 0.16212003117692908
+          }
+        },
+        "0.5": {
+          "base": {
+            "threshold": 0.5,
+            "tpr": 0.018691588785046728,
+            "fnr": 0.9813084112149533,
+            "fpr": 0.029618082618862042
+          },
+          "intervened": {
+            "threshold": 0.5,
+            "tpr": 0.018691588785046728,
+            "fnr": 0.9813084112149533,
+            "fpr": 0.029618082618862042
+          }
+        }
+      }
+    },
+    "waveform_local/all_errors": {
+      "baseline": {
+        "n": 32,
+        "positives": 16,
+        "prevalence": 0.5,
+        "ap": 0.5502133607274327,
+        "roc_auc": 0.48828125
+      },
+      "intervened": {
+        "n": 32,
+        "positives": 16,
+        "prevalence": 0.5,
+        "ap": 0.513956358856388,
+        "roc_auc": 0.46875
+      },
+      "paired_delta_ap": -0.036257001871044636,
+      "delta_ap_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          -0.07782292724743863,
+          0.0015242290921638267
+        ]
+      },
+      "mean_logit_delta": 0.0014965217560529709,
+      "mean_prob_delta": -0.0017700413009151816,
+      "mean_abs_prob_delta": 0.0076165260979905725,
+      "omission_recall_delta_at020": 0.0,
+      "recall_delta_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "speaker_macro_probability_delta": {
+        "mean": -0.00177,
+        "std": 0.008235,
+        "se": 0.002912,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": -0.008655,
+        "ci_upper": 0.005115
+      },
+      "speaker_macro_abs_probability_delta": {
+        "mean": 0.007617,
+        "std": 0.003987,
+        "se": 0.001409,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": 0.004284,
+        "ci_upper": 0.010949
+      },
+      "omission_operating_points": {
+        "0.2": {
+          "base": {
+            "threshold": 0.2,
+            "tpr": 0.4375,
+            "fnr": 0.5625,
+            "fpr": 0.375
+          },
+          "intervened": {
+            "threshold": 0.2,
+            "tpr": 0.4375,
+            "fnr": 0.5625,
+            "fpr": 0.3125
+          }
+        },
+        "0.5": {
+          "base": {
+            "threshold": 0.5,
+            "tpr": 0.0,
+            "fnr": 1.0,
+            "fpr": 0.0
+          },
+          "intervened": {
+            "threshold": 0.5,
+            "tpr": 0.0,
+            "fnr": 1.0,
+            "fpr": 0.0
+          }
+        }
+      }
+    },
+    "waveform_local/omission_vs_correct": {
+      "baseline": {
+        "n": 32,
+        "positives": 16,
+        "prevalence": 0.5,
+        "ap": 0.5502133607274327,
+        "roc_auc": 0.48828125
+      },
+      "intervened": {
+        "n": 32,
+        "positives": 16,
+        "prevalence": 0.5,
+        "ap": 0.513956358856388,
+        "roc_auc": 0.46875
+      },
+      "paired_delta_ap": -0.036257001871044636,
+      "delta_ap_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          -0.07782292724743863,
+          0.0015242290921638267
+        ]
+      },
+      "mean_logit_delta": 0.0014965217560529709,
+      "mean_prob_delta": -0.0017700413009151816,
+      "mean_abs_prob_delta": 0.0076165260979905725,
+      "omission_recall_delta_at020": 0.0,
+      "recall_delta_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "speaker_macro_probability_delta": {
+        "mean": -0.00177,
+        "std": 0.008235,
+        "se": 0.002912,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": -0.008655,
+        "ci_upper": 0.005115
+      },
+      "speaker_macro_abs_probability_delta": {
+        "mean": 0.007617,
+        "std": 0.003987,
+        "se": 0.001409,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": 0.004284,
+        "ci_upper": 0.010949
+      },
+      "omission_operating_points": {
+        "0.2": {
+          "base": {
+            "threshold": 0.2,
+            "tpr": 0.4375,
+            "fnr": 0.5625,
+            "fpr": 0.375
+          },
+          "intervened": {
+            "threshold": 0.2,
+            "tpr": 0.4375,
+            "fnr": 0.5625,
+            "fpr": 0.3125
+          }
+        },
+        "0.5": {
+          "base": {
+            "threshold": 0.5,
+            "tpr": 0.0,
+            "fnr": 1.0,
+            "fpr": 0.0
+          },
+          "intervened": {
+            "threshold": 0.5,
+            "tpr": 0.0,
+            "fnr": 1.0,
+            "fpr": 0.0
+          }
+        }
+      }
+    },
+    "waveform_random/all_errors": {
+      "baseline": {
+        "n": 32,
+        "positives": 16,
+        "prevalence": 0.5,
+        "ap": 0.5502133607274327,
+        "roc_auc": 0.48828125
+      },
+      "intervened": {
+        "n": 32,
+        "positives": 16,
+        "prevalence": 0.5,
+        "ap": 0.5044674579233402,
+        "roc_auc": 0.46484375
+      },
+      "paired_delta_ap": -0.04574590280409241,
+      "delta_ap_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          -0.1022581393177201,
+          0.00577576270800555
+        ]
+      },
+      "mean_logit_delta": 0.016332518309354782,
+      "mean_prob_delta": 0.0008805264951661229,
+      "mean_abs_prob_delta": 0.01242326118517667,
+      "omission_recall_delta_at020": 0.0625,
+      "recall_delta_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          0.0,
+          0.1875
+        ]
+      },
+      "speaker_macro_probability_delta": {
+        "mean": 0.000881,
+        "std": 0.011649,
+        "se": 0.004119,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": -0.008858,
+        "ci_upper": 0.010619
+      },
+      "speaker_macro_abs_probability_delta": {
+        "mean": 0.012423,
+        "std": 0.009407,
+        "se": 0.003326,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": 0.004559,
+        "ci_upper": 0.020288
+      },
+      "omission_operating_points": {
+        "0.2": {
+          "base": {
+            "threshold": 0.2,
+            "tpr": 0.4375,
+            "fnr": 0.5625,
+            "fpr": 0.375
+          },
+          "intervened": {
+            "threshold": 0.2,
+            "tpr": 0.5,
+            "fnr": 0.5,
+            "fpr": 0.5
+          }
+        },
+        "0.5": {
+          "base": {
+            "threshold": 0.5,
+            "tpr": 0.0,
+            "fnr": 1.0,
+            "fpr": 0.0
+          },
+          "intervened": {
+            "threshold": 0.5,
+            "tpr": 0.0,
+            "fnr": 1.0,
+            "fpr": 0.0
+          }
+        }
+      }
+    },
+    "waveform_random/omission_vs_correct": {
+      "baseline": {
+        "n": 32,
+        "positives": 16,
+        "prevalence": 0.5,
+        "ap": 0.5502133607274327,
+        "roc_auc": 0.48828125
+      },
+      "intervened": {
+        "n": 32,
+        "positives": 16,
+        "prevalence": 0.5,
+        "ap": 0.5044674579233402,
+        "roc_auc": 0.46484375
+      },
+      "paired_delta_ap": -0.04574590280409241,
+      "delta_ap_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          -0.1022581393177201,
+          0.00577576270800555
+        ]
+      },
+      "mean_logit_delta": 0.016332518309354782,
+      "mean_prob_delta": 0.0008805264951661229,
+      "mean_abs_prob_delta": 0.01242326118517667,
+      "omission_recall_delta_at020": 0.0625,
+      "recall_delta_cluster_bootstrap": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          0.0,
+          0.1875
+        ]
+      },
+      "speaker_macro_probability_delta": {
+        "mean": 0.000881,
+        "std": 0.011649,
+        "se": 0.004119,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": -0.008858,
+        "ci_upper": 0.010619
+      },
+      "speaker_macro_abs_probability_delta": {
+        "mean": 0.012423,
+        "std": 0.009407,
+        "se": 0.003326,
+        "df": 7,
+        "t_crit": 2.3646,
+        "ci_lower": 0.004559,
+        "ci_upper": 0.020288
+      },
+      "omission_operating_points": {
+        "0.2": {
+          "base": {
+            "threshold": 0.2,
+            "tpr": 0.4375,
+            "fnr": 0.5625,
+            "fpr": 0.375
+          },
+          "intervened": {
+            "threshold": 0.2,
+            "tpr": 0.5,
+            "fnr": 0.5,
+            "fpr": 0.5
+          }
+        },
+        "0.5": {
+          "base": {
+            "threshold": 0.5,
+            "tpr": 0.0,
+            "fnr": 1.0,
+            "fpr": 0.0
+          },
+          "intervened": {
+            "threshold": 0.5,
+            "tpr": 0.0,
+            "fnr": 1.0,
+            "fpr": 0.0
+          }
+        }
+      }
+    }
+  },
+  "paired_local_random": {
+    "attention": {
+      "n": 2951,
+      "mean_local_minus_random_prob": -0.001516362687213689,
+      "paired_cluster_ci": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          -0.0035952891327127364,
+          0.00032506622619476566
+        ]
+      },
+      "mean_abs_sensitivity_difference": -0.00029398120658220335,
+      "paired_abs_cluster_ci": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          -0.002183533148933741,
+          0.0013602001923171587
+        ]
+      },
+      "by_type": {
+        "correct": {
+          "n": 2566,
+          "mean_local_minus_random": -0.0022632546221295884,
+          "paired_cluster_ci": {
+            "clusters": 8,
+            "resamples": 500,
+            "valid_resamples": 500,
+            "ci95": [
+              -0.004180913364795407,
+              -0.0003047562219158153
+            ]
+          }
+        },
+        "deletion": {
+          "n": 107,
+          "mean_local_minus_random": 0.014505815152601104,
+          "paired_cluster_ci": {
+            "clusters": 8,
+            "resamples": 500,
+            "valid_resamples": 500,
+            "ci95": [
+              0.008726323619439248,
+              0.019425619348390575
+            ]
+          }
+        },
+        "substitution": {
+          "n": 278,
+          "mean_local_minus_random": -0.0007891983845733482,
+          "paired_cluster_ci": {
+            "clusters": 8,
+            "resamples": 500,
+            "valid_resamples": 500,
+            "ci95": [
+              -0.007081348715590521,
+              0.006705555033782317
+            ]
+          }
+        }
+      },
+      "paired_local_minus_random_ap": 0.010223422132202065,
+      "paired_ap_cluster_ci": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          -0.0030541793465469784,
+          0.0259469804309094
+        ]
+      }
+    },
+    "feature": {
+      "n": 2951,
+      "mean_local_minus_random_prob": 4.931078906262862e-05,
+      "paired_cluster_ci": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          -0.00022862321410754965,
+          0.00032053822824231777
+        ]
+      },
+      "mean_abs_sensitivity_difference": 0.0001780740753881651,
+      "paired_abs_cluster_ci": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          -2.5536743709971578e-05,
+          0.0003652611293845457
+        ]
+      },
+      "by_type": {
+        "correct": {
+          "n": 2566,
+          "mean_local_minus_random": 2.9148823753672936e-05,
+          "paired_cluster_ci": {
+            "clusters": 8,
+            "resamples": 500,
+            "valid_resamples": 500,
+            "ci95": [
+              -0.0002224091380607287,
+              0.00025300961210485265
+            ]
+          }
+        },
+        "deletion": {
+          "n": 107,
+          "mean_local_minus_random": 0.0005627142561373309,
+          "paired_cluster_ci": {
+            "clusters": 8,
+            "resamples": 500,
+            "valid_resamples": 500,
+            "ci95": [
+              -0.0005529851442988517,
+              0.0014814243086037169
+            ]
+          }
+        },
+        "substitution": {
+          "n": 278,
+          "mean_local_minus_random": 3.780514879567589e-05,
+          "paired_cluster_ci": {
+            "clusters": 8,
+            "resamples": 500,
+            "valid_resamples": 500,
+            "ci95": [
+              -0.0008304770427022083,
+              0.0010869531671544959
+            ]
+          }
+        }
+      },
+      "paired_local_minus_random_ap": -0.0018353386689751727,
+      "paired_ap_cluster_ci": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          -0.005578993257899634,
+          0.0013646595737555613
+        ]
+      }
+    },
+    "waveform": {
+      "n": 32,
+      "mean_local_minus_random_prob": -0.0026505677960813046,
+      "paired_cluster_ci": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          -0.007247622561408207,
+          0.000999819574644788
+        ]
+      },
+      "mean_abs_sensitivity_difference": -0.004806735087186098,
+      "paired_abs_cluster_ci": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          -0.01084105314221233,
+          0.00031187983113341024
+        ]
+      },
+      "by_type": {
+        "correct": {
+          "n": 16,
+          "mean_local_minus_random": -0.0007012626156210899,
+          "paired_cluster_ci": {
+            "clusters": 8,
+            "resamples": 500,
+            "valid_resamples": 500,
+            "ci95": [
+              -0.009410312015097589,
+              0.006814132910221815
+            ]
+          }
+        },
+        "deletion": {
+          "n": 16,
+          "mean_local_minus_random": -0.004599872976541519,
+          "paired_cluster_ci": {
+            "clusters": 8,
+            "resamples": 500,
+            "valid_resamples": 500,
+            "ci95": [
+              -0.008945262921042741,
+              -0.001057975552976132
+            ]
+          }
+        }
+      },
+      "paired_local_minus_random_ap": 0.009488900933047772,
+      "paired_ap_cluster_ci": {
+        "clusters": 8,
+        "resamples": 500,
+        "valid_resamples": 500,
+        "ci95": [
+          -0.022805033493435514,
+          0.04091395698797766
+        ]
+      }
+    }
+  },
+  "limitations": [
+    "Only 8 validation speakers; percentile cluster bootstrap is exploratory and unstable at G=8.",
+    "Omission-enriched first-10 sample; not population prevalence or deployment AP.",
+    "Matched-case-control AP has 50% prevalence; not comparable to census AP.",
+    "Diagnostic FPR15 thresholds selected on same controls; not deployment calibration.",
+    "Waveform subset at most two matched pairs per speaker; low precision.",
+    "Gold omission windows are annotation conventions, not observable missing-phone acoustics.",
+    "Zeroing audio/features and attention restriction are artificial sensitivity probes, not natural omissions.",
+    "Contextual encoder features can retain local audio information outside the masked feature window.",
+    "No claim of natural-omission causal proof, unmeasured-population generalization, or TEST performance."
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "status": "PARTIAL_ARCHIVE_PARITY_FAILED",
+  "optimizer_updates": 0,
+  "backward_passes": 0,
+  "training": "NOT_AUTHORIZED_NOT_EXECUTED",
+  "elapsed_seconds": 102.2084710597992,
+  "last_valid_models": {
+    "1": "checkpoints/RQ1-TRN-02A/recovered/best.pt",
+    "2": "checkpoints/fold2/baseline_r_fold2/fixed_budget_checkpoint.pt",
+    "3": "checkpoints/fold3/baseline_r_fold3/fixed_budget_checkpoint.pt",
+    "4": "checkpoints/fold4/baseline_r_fold4/fixed_budget_checkpoint.pt"
+  }
+}
