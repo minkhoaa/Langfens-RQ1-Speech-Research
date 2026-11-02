@@ -19,8 +19,11 @@ No numerical parity, deployment readiness, speed or memory advantage is claimed.
   `KAGGLE_FP32` or `KAGGLE_FP16`; default command is `preflight`. Forwards to
   `langfens_bench.runtime.main(argv)` with the fixed profile. Cannot override it
   through `--profile`.
-- Common wrapper options: `[preflight|evaluate] --contract PATH --artifact-root
-  PATH --outdir NEW_PATH [--authorize-remote-inference]`. Evaluate without the
+- Common wrapper options: `[preflight|evaluate] --fold {1,2,3,4} --contract PATH
+  --artifact-root PATH --outdir NEW_PATH [--authorize-remote-inference]`.
+  `--fold` is mandatory for **every** Kaggle command, including default preflight.
+  It is forwarded to the common runtime; missing/invalid folds are refused before
+  runtime import. Evaluate without the
   explicit authorization flag is refused **before** any staging/runtime import.
 - `validate_kaggle_hardware(torch_module=None) -> dict`: checks Kaggle mounts,
   CUDA-enabled PyTorch, and NVIDIA T4 compute capability 7.5 at **cuda:0**. A
@@ -56,9 +59,12 @@ Expected private inputs (not provisioned by these files):
   reviewed source/resources only. Keep ZIP bytes intact; if the platform extracts
   `.zip` uploads, preserve a private immutable byte-file and pass its actual path
   via `--source-archive`. The filename extension is not significant.
-- `/kaggle/input/langfens-bench-artifacts/`: preserve each relative checkpoint
-  and authorized train/val ZIP path from `contract.json`; do not substitute a
-  Kaggle auto-extracted directory for the hash-pinned archive bytes.
+- `/kaggle/input/langfens-bench-artifacts/`: **one active fold only**. Preserve
+  only the requested fold's relative checkpoint and authorized train/val ZIP path
+  from `contract.json`; do not attach any other fold's artifacts or substitute a
+  Kaggle auto-extracted directory for the hash-pinned archive bytes. Use a
+  distinct private artifact input per fold/run, even if its mount name is the
+  same in separate isolated runtimes.
 - `/kaggle/input/langfens-bench-cache/`: existing offline HF_HOME including
   `hub/models--facebook--wav2vec2-base-960h/snapshots/22aad52d435eb6dbaf354bdad9b0da84ce7d6156/`
   and all local blobs/configs needed by that pinned snapshot. Cache symlinks must
@@ -70,12 +76,18 @@ SHA before opening the ZIP, validates **all** source members before extraction,
 and refuses traversal, symlinks, duplicate names, encrypted entries, data/weight
 members and oversized source packages. It never extracts the fold data ZIPs.
 
-Only the common runtime may inventory/stage the four separately authorized fold
-archives. It must verify all hashes/IDs and validation whitelists before any
-WAV/TextGrid read, reject each active-fold test speaker in archive inventories,
-and retain fold-specific paths/readers. Never stage the raw corpus, merge the
-fold audio into one cross-fold union, or extract a sealed active test partition.
-Speakers legitimately rotate across folds; authorization is per fold, not global.
+Only the common runtime may inventory/stage the **requested fold's** authorized
+archive. Never attach/stage all four train/val archives in one Kaggle runtime:
+speakers rotate, so another fold's archive can contain the active fold's sealed
+test speakers. The frozen contract lists all four endpoint hashes as provenance,
+but an active remote run accesses only the endpoint/package and validation IDs
+selected by `--fold`. Verify active-fold hashes, IDs and validation whitelist
+before any WAV/TextGrid read, and reject active-fold test speakers in its archive
+inventory. Never stage the raw corpus, merge fold audio into a cross-fold union,
+or extract a sealed active test partition. Authorization is per fold, not global.
+Run four isolated fold jobs with exactly one private fold artifact input each;
+the coordinator merges four completed fold output bundles back to the same 80
+ordered prediction IDs. No cross-fold audio union is needed for output merging.
 Generated predictions/labels/data/weights must stay out of Git. `/kaggle/working`
 is ephemeral (20 GB ceiling), not durable evidence storage.
 
@@ -116,11 +128,12 @@ private under CC BY-NC 4.0. Do not attach public data sources. The metadata fixe
 - `machine_shape: NvidiaTeslaT4`, `enable_gpu: true`, `is_private: true`;
 - internet disabled, all source attachment arrays empty (safe initial state).
 
-The checked-in script requires `--source-sha256`; a plain Save & Run All without
-configuration intentionally fails closed. Before an authorized push, an operator
-must supply the measured source digest and any non-default mount paths in the
+The checked-in script requires `--source-sha256` **and** `--fold`; a plain Save &
+Run All without configuration intentionally fails closed. Before an authorized
+push, an operator must supply the measured source digest, one active fold number,
+and any non-default mount paths in the
 final `bootstrap(...)` call in a **private reviewed deployment copy** of the
-script. For preflight, pass only bootstrap options and optionally `preflight`;
+script. For preflight, pass `--fold` with bootstrap options and optionally `preflight`;
 never add `evaluate` to the default. Kaggle script runs do not automatically pass
 shell arguments to `bootstrap`. The same options can be passed directly when
 invoking `python kernel.py` in an authorized Kaggle session.
@@ -134,7 +147,8 @@ kaggle kernels push -p deploy/bench_kaggle_fp32 --no-run
 ```
 
 If using a deployment copy, `-p` must name that reviewed copy instead. In the Web
-UI verify privacy/T4 allocation and immutable private inputs. This offline
+UI verify privacy/T4 allocation and immutable private inputs, with exactly one
+active-fold artifact input and **no other fold's archive attached**. This offline
 benchmark needs **no credential or HF_TOKEN**: it never downloads or mirrors
 checkpoints. Save & Run All initially runs preflight only. Record real preflight
 blockers/results and runtime environment; do not infer success from a staged
@@ -180,7 +194,8 @@ retain evidence and select a new root/outdir. No automatic delete/retry/fallback
 - **Safe restart:** verify lane commit/status and frozen manifest hashes; integrate
   A's runtime and C's fixed-profile bootstrap through coordinator; run both lane
   tests with explicit integrated PYTHONPATH; build/measure source package outside
-  Git. Do not push, call remote services, stage datasets, start GPU inference or
+  Git. Use one isolated private fold artifact input per run, never all four in
+  one remote runtime. Do not push, call remote services, stage datasets, start GPU inference or
   relax archive parity without new authorization. Historical DIAG-02B 9/80
   failures at unchanged tolerance remain unresolved.
 
@@ -188,3 +203,27 @@ retain evidence and select a new root/outdir. No automatic delete/retry/fallback
 PYTHONPATH=/tmp/langfens-bench-kaggle-fp32:/tmp/langfens-bench-kaggle-fp32/src \
 /home/khoa/Projects/KLTN/Dataset/.venv/bin/python -m pytest -o addopts='' -q tests/test_bench_kaggle_fp32.py
 ```
+
+### Follow-up checkpoint — fold-scoped remote isolation
+
+- **Approved clarification:** remote jobs must never mount all four fold
+  train/val archives together, because other folds can contain active test
+  speakers. This supersedes the original lane wording about inventorying four
+  separately authorized archives in a remote runtime; separate reader paths
+  alone are not sufficient remote isolation.
+- **Changes after initial commit `a51e47d72ab11c33f43e9b66775b17f0072f25ce`:**
+  shared wrapper and bootstrap require one `--fold` in 1–4 before runtime
+  import/source staging, and forward it to the common runtime. Default command
+  remains preflight. Added both-profile fold forwarding and missing/out-of-range
+  selector regressions. Operational guidance now requires one private artifact
+  input per fold/run and coordinator-only merging of four completed output
+  bundles to the same 80 IDs. All contract endpoint hashes remain provenance;
+  only the requested fold's artifacts are accessed by an active remote run.
+- **Verification:** same explicit-worktree-PYTHONPATH command above now reports
+  **47 passed in 0.11s**; Python compilation and `git diff --check` passed. The
+  earlier 28-test result remains historical evidence for the initial commit.
+- **Execution:** no remote calls, staging, GPU, model loading, backward or
+  optimizer activity. No original model/protocol/frozen-manifest edits.
+- **Restart:** integrate this follow-up with A's fold-scoped runtime and C's
+  bootstrap; C must require/forward the same `--fold`. Reviewer gate and all
+  remote authorization/cache/hardware/private-staging blockers remain pending.

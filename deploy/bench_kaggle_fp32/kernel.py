@@ -27,6 +27,8 @@ def bootstrap(argv=None) -> int:
     parser = argparse.ArgumentParser(description=f"{PROFILE}: offline source bootstrap; default preflight")
     parser.add_argument("--source-archive", type=Path, default=Path("/kaggle/input/langfens-bench-source/langfens-bench-source.zip"))
     parser.add_argument("--source-sha256", required=True, help="SHA-256 from separately reviewed local package build")
+    parser.add_argument("--fold", type=int, choices=(1, 2, 3, 4), required=True,
+                        help="Active fold; attach only this fold's private artifact input")
     parser.add_argument("--source-root", type=Path, default=Path("/kaggle/working/langfens-bench-source"))
     parser.add_argument("--hf-home", type=Path, default=Path("/kaggle/input/langfens-bench-cache"))
     args, remaining = parser.parse_known_args(argv)
@@ -88,7 +90,7 @@ def bootstrap(argv=None) -> int:
         # Source package must win over notebook cwd or an unrelated installed copy.
         sys.path[:0] = [str(destination / "src"), str(destination)]
         from langfens_bench.kaggle import main
-        return main(PROFILE, remaining)
+        return main(PROFILE, ["--fold", str(args.fold), *remaining])
     except (ValueError, OSError, ImportError, zipfile.BadZipFile) as exc:
         parser.error(f"BLOCKED: {exc}")
 

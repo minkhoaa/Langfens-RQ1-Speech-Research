@@ -140,6 +140,8 @@ def main(profile: str, argv=None) -> int:
         raise ValueError(f"Unsupported Kaggle profile: {profile}")
     parser = argparse.ArgumentParser(description=f"Offline {profile}; default is read-only preflight")
     parser.add_argument("command", choices=("preflight", "evaluate"), nargs="?", default="preflight")
+    parser.add_argument("--fold", type=int, choices=(1, 2, 3, 4), required=True,
+                        help="Active fold; mount only this fold's private artifacts")
     parser.add_argument("--contract", type=Path, default=Path(__file__).resolve().parents[2] / "manifests/RQ1-BENCH-01/contract.json")
     parser.add_argument("--artifact-root", type=Path, default=Path("/kaggle/input/langfens-bench-artifacts"))
     parser.add_argument("--outdir", type=Path, default=Path(f"/kaggle/working/bench-{profile.lower()}"))
@@ -157,7 +159,7 @@ def main(profile: str, argv=None) -> int:
         validate_kaggle_hardware()
     except (ValueError, OSError, ImportError) as exc:
         parser.error(f"BLOCKED: {exc}")
-    forwarded = [args.command, "--profile", profile, "--contract", str(contract),
+    forwarded = [args.command, "--profile", profile, "--fold", str(args.fold), "--contract", str(contract),
                  "--artifact-root", str(artifacts), "--outdir", str(output)]
     if args.authorize_remote_inference:
         forwarded.append("--authorize-remote-inference")

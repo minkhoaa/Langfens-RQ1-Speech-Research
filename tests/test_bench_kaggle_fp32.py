@@ -85,9 +85,9 @@ def mocked_runtime(monkeypatch):
 def test_both_wrappers_default_to_same_preflight_gate(mocked_runtime, profile, monkeypatch):
     # Do not leak deterministic/offline environment mutations to other tests.
     monkeypatch.setattr(kaggle.os, "environ", dict(kaggle.os.environ))
-    assert kaggle.main(profile, []) == 0
+    assert kaggle.main(profile, ["--fold", "1"]) == 0
     argv = mocked_runtime[0]
-    assert argv[:3] == ["preflight", "--profile", profile]
+    assert argv[:5] == ["preflight", "--profile", profile, "--fold", "1"]
     assert "--authorize-remote-inference" not in argv
     assert kaggle.os.environ["HF_HUB_OFFLINE"] == "1"
     assert kaggle.os.environ["CUBLAS_WORKSPACE_CONFIG"] == ":4096:8"
@@ -97,21 +97,40 @@ def test_both_wrappers_default_to_same_preflight_gate(mocked_runtime, profile, m
 @pytest.mark.parametrize("profile", kaggle.PROFILES)
 def test_evaluate_requires_explicit_authorization_before_runtime(mocked_runtime, profile):
     with pytest.raises(SystemExit) as error:
-        kaggle.main(profile, ["evaluate"])
+        kaggle.main(profile, ["evaluate", "--fold", "1"])
+    assert error.value.code == 2
+    assert mocked_runtime == []
+
+
+@pytest.mark.parametrize("profile", kaggle.PROFILES)
+@pytest.mark.parametrize("fold", [1, 2, 3, 4])
+def test_each_remote_fold_is_forwarded_to_common_runtime(mocked_runtime, monkeypatch, profile, fold):
+    monkeypatch.setattr(kaggle.os, "environ", dict(kaggle.os.environ))
+    assert kaggle.main(profile, ["--fold", str(fold)]) == 0
+    argv = mocked_runtime[0]
+    assert argv[argv.index("--fold") + 1] == str(fold)
+    assert argv[0] == "preflight"
+
+
+@pytest.mark.parametrize("profile", kaggle.PROFILES)
+@pytest.mark.parametrize("fold_args", [[], ["--fold", "0"], ["--fold", "5"], ["--fold", "all"]])
+def test_remote_fold_required_and_bounded_before_runtime(mocked_runtime, profile, fold_args):
+    with pytest.raises(SystemExit) as error:
+        kaggle.main(profile, fold_args)
     assert error.value.code == 2
     assert mocked_runtime == []
 
 
 def test_authorized_evaluation_calls_common_runtime_only(mocked_runtime, monkeypatch):
     monkeypatch.setattr(kaggle.os, "environ", dict(kaggle.os.environ))
-    assert kaggle.main("KAGGLE_FP32", ["evaluate", "--authorize-remote-inference"]) == 0
+    assert kaggle.main("KAGGLE_FP32", ["evaluate", "--fold", "1", "--authorize-remote-inference"]) == 0
     assert mocked_runtime[0][0] == "evaluate"
     assert mocked_runtime[0][-1] == "--authorize-remote-inference"
 
 
 def test_profile_cannot_be_overridden(mocked_runtime):
     with pytest.raises(SystemExit):
-        kaggle.main("KAGGLE_FP32", ["--profile", "KAGGLE_FP16"])
+        kaggle.main("KAGGLE_FP32", ["--fold", "1", "--profile", "KAGGLE_FP16"])
     assert mocked_runtime == []
 
 
@@ -196,7 +215,7 @@ def bootstrap_setup(tmp_path, kaggle_mounts, monkeypatch):
     monkeypatch.setattr(kaggle.os, "environ", dict(kaggle.os.environ))
     calls = []
     monkeypatch.setattr(kaggle, "main", lambda profile, argv: calls.append((profile, argv)) or 0)
-    args = ["--source-archive", str(source), "--source-sha256", digest,
+    args = ["--fold", "1", "--source-archive", str(source), "--source-sha256", digest,
             "--source-root", str(output), "--hf-home", str(cache)]
     return namespace["bootstrap"], args, source, output, calls
 
@@ -204,7 +223,7 @@ def bootstrap_setup(tmp_path, kaggle_mounts, monkeypatch):
 def test_bootstrap_calls_fixed_profile_and_leaves_default_preflight(bootstrap_setup):
     bootstrap, args, source, output, calls = bootstrap_setup
     assert bootstrap(args) == 0
-    assert calls == [("KAGGLE_FP32", [])]
+    assert calls == [("KAGGLE_FP32", ["--fold", "1"])]
     assert (output / "src/langfens_bench/runtime.py").is_file()
 
 
@@ -230,6 +249,15 @@ def test_bootstrap_rejects_unsafe_inventory_before_any_extraction(bootstrap_setu
     args[args.index("--source-sha256") + 1] = hashlib.sha256(source.read_bytes()).hexdigest()
     with pytest.raises(SystemExit):
         bootstrap(args)
+    assert not output.exists() and calls == []
+
+
+@pytest.mark.parametrize("fold_args", [[], ["--fold", "0"], ["--fold", "5"]])
+def test_bootstrap_requires_single_valid_fold_before_staging(bootstrap_setup, fold_args):
+    bootstrap, args, source, output, calls = bootstrap_setup
+    with pytest.raises(SystemExit) as error:
+        bootstrap([*fold_args, *args[2:]])
+    assert error.value.code == 2
     assert not output.exists() and calls == []
 
 
