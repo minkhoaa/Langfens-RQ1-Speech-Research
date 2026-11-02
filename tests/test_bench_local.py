@@ -175,6 +175,7 @@ def test_configure_torch_local_determinism():
 
 
 def test_remote_evaluation_authorization_checked_before_preflight(tmp_path, monkeypatch):
+    monkeypatch.setattr(bench, "KAGGLE_WORKING", tmp_path)
     monkeypatch.setattr(bench, "preflight", lambda *a: pytest.fail("preflight must not run without authorization"))
     out = tmp_path / "remote"
     result = bench.main(["evaluate", "--profile", "KAGGLE_FP16", "--contract", "manifests/RQ1-BENCH-01/contract.json",
@@ -209,6 +210,7 @@ def test_main_outputs_provenance_artifact_hashes_and_no_overwrite(tmp_path, monk
         predictions = json.load(stream)
     assert predictions["metadata"] == metrics["metadata"] == environment["metadata"]
     assert predictions["metadata"]["status"] == "COMPLETED"
+    assert predictions["metadata"]["scope_fold"] is None
     assert len(predictions["metadata"]["evaluator_semantics_sha256"]) == 64
     assert "completion_status" not in predictions["metadata"]
     assert "evaluator_semantic_sha256" not in predictions["metadata"]
@@ -284,11 +286,15 @@ def test_evaluate_fp16_postprocessing_casts_before_sigmoid_and_warms_once(monkey
                  for p, y, e in (("AA", 0, "correct"), ("B", 1, "deletion"))]
     annotation = SimpleNamespace(canonical_intervals=intervals, intervals=intervals)
     monkeypatch.setattr(textgrid, "parse_gold_textgrid_content", lambda *a: annotation)
-    contract = {"folds": [{"fold": 1, "checkpoint": {"sha256": "test-only"}}],
-                "utterances": [{"fold": 1, "speaker": "A", "utterance_id": "u", "prediction_id": "1/A/u"}]}
+    contract = {"folds": [{"fold": 1, "checkpoint": {"sha256": "test-only"}},
+                          {"fold": 2, "checkpoint": {"sha256": "must-not-load"}}],
+                "utterances": [{"fold": 1, "speaker": "A", "utterance_id": "u", "prediction_id": "1/A/u"},
+                               {"fold": 2, "speaker": "SEALED_FOR_FOLD_1", "utterance_id": "blocked",
+                                "prediction_id": "2/SEALED_FOR_FOLD_1/blocked"}]}
     paths = {"device": torch.device("cpu"), "offline_model": "offline-snapshot", "z_phones": {"1/A/u": ["AA", "B"]},
              1: {"checkpoint": Path("synthetic.pt"), "package": Path("synthetic.zip")}}
-    records, memory = bench.evaluate(contract, paths, "KAGGLE_FP16")
+    monkeypatch.setattr(bench, "KAGGLE_INPUT", Path.cwd())  # synthetic CPU-only precision fixture
+    records, memory = bench.evaluate(contract, paths, "KAGGLE_FP16", selected_fold=1)
     assert len(calls) == 4  # warmup O/Z, then timed O/Z
     assert closed == [True]
     expected = torch.tensor([8., -8.], dtype=torch.float32).sigmoid().tolist()
@@ -322,3 +328,139 @@ def test_remote_hardware_requires_kaggle_identity_before_cuda(monkeypatch):
     monkeypatch.setattr(torch.cuda, "is_available", lambda: pytest.fail("must refuse identity before CUDA"))
     with pytest.raises(bench.BenchmarkBlocked, match="Kaggle runtime identity"):
         bench.configure_torch("KAGGLE_FP32")
+
+
+@pytest.mark.parametrize("selected_fold", [1, 2, 3, 4])
+def test_fold_preflight_never_resolves_hashes_opens_or_inventories_other_fold_artifacts(tmp_path, monkeypatch, selected_fold):
+    contract = frozen_contract()
+    selected = next(f for f in contract["folds"] if f["fold"] == selected_fold)
+    accessed, inventoried, loaded = [], [], []
+    def verify(root, entry):
+        if root == bench.REPOSITORY:
+            return bench.REPOSITORY / entry["path"]
+        assert entry in [selected["checkpoint"], selected["package"]], "unselected artifact accessed"
+        accessed.append(entry["path"])
+        return tmp_path / entry["path"]
+    def inventory(path, fold):
+        assert fold["fold_index"] == selected_fold
+        inventoried.append(fold["fold_index"])
+        return {"active_test_excluded": True}
+    cfg = {"fold": selected_fold, "pretrained_model": bench.PRETRAINED_MODEL,
+           "pretrained_revision": bench.PRETRAINED_REVISION, "backbone_frozen": True,
+           "loss_weights": {"ctc": 1., "binary": 1.}}
+    def load(path, **kwargs):
+        assert path == tmp_path / selected["checkpoint"]["path"]
+        loaded.append(path)
+        return {"metadata": {"config": cfg}, "successful_updates": 3600, "epoch": 5, "model": {"weight": torch.ones(1)}}
+    monkeypatch.setattr(bench, "verify_hash", verify)
+    monkeypatch.setattr(bench, "audit_package", inventory)
+    monkeypatch.setattr(bench, "check_offline_cache", lambda: {"snapshot_path": "offline-snapshot"})
+    monkeypatch.setattr(torch, "load", load)
+    result, paths = bench.preflight(contract, tmp_path, "LOCAL_FP32", selected_fold)
+    assert result["status"] == "READY", result["blockers"]
+    assert accessed == [selected["checkpoint"]["path"], selected["package"]["path"]]
+    assert inventoried == [selected_fold]
+    assert len(loaded) == 1
+    assert {k for k in paths if isinstance(k, int)} == {selected_fold}
+    assert len(paths["z_phones"]) == 20
+    assert all(key.startswith(f"{selected_fold}/") for key in paths["z_phones"])
+    assert result["checks"]["selected_folds"] == [selected_fold]
+    assert set(result["checks"]["verified_artifacts"]["checkpoint_sha256"]) == {str(selected_fold)}
+    metadata = bench.provenance(bench.REPOSITORY / "manifests/RQ1-BENCH-01/contract.json", contract, "LOCAL_FP32", selected_fold)
+    assert metadata["scope"] == "fold" and metadata["fold"] == metadata["scope_fold"] == selected_fold
+    assert len(metadata["ordered_prediction_ids"]) == 20
+    assert set(metadata["checkpoint_sha256"]) == set(metadata["package_sha256"]) == {"1", "2", "3", "4"}
+
+
+@pytest.mark.parametrize("profile", ["KAGGLE_FP32", "KAGGLE_FP16"])
+def test_remote_preflight_and_evaluate_refuse_unscoped_inputs_without_reads(profile, tmp_path, monkeypatch):
+    monkeypatch.setattr(bench, "verify_hash", lambda *a: pytest.fail("must not access any artifact"))
+    monkeypatch.setattr(bench, "configure_torch", lambda *a: pytest.fail("must not probe GPU before fold scope"))
+    result, paths = bench.preflight(frozen_contract(), tmp_path, profile)
+    assert result["status"] == "BLOCKED" and not paths
+    assert "require --fold" in result["blockers"][0]
+    with pytest.raises(bench.BenchmarkBlocked, match="require --fold"):
+        bench.evaluate(frozen_contract(), {}, profile)
+
+
+@pytest.mark.parametrize("command", ["preflight", "evaluate"])
+def test_remote_cli_requires_fold_before_preflight_even_when_authorized(tmp_path, monkeypatch, command):
+    monkeypatch.setattr(bench, "KAGGLE_WORKING", tmp_path)
+    monkeypatch.setattr(bench, "preflight", lambda *a: pytest.fail("unscoped remote execution must stop"))
+    out = tmp_path / command
+    assert bench.main([command, "--profile", "KAGGLE_FP32", "--authorize-remote-inference",
+                       "--contract", "manifests/RQ1-BENCH-01/contract.json",
+                       "--artifact-root", str(tmp_path), "--outdir", str(out)]) == 2
+    assert "require --fold" in json.loads((out / "environment.json").read_text())["error"]["message"]
+
+
+def test_fold_cli_outputs_selected_order_scope_and_counts_with_all_contract_pins(tmp_path, monkeypatch):
+    contract = frozen_contract()
+    selected_fold = 3
+    records = [{**example_record(), **u} for u in contract["utterances"] if u["fold"] == selected_fold]
+    def preflight(c, root, profile, fold):
+        assert c == contract and fold == selected_fold
+        return {"status": "READY", "checks": {}, "blockers": []}, {}
+    def evaluate(c, paths, profile, fold):
+        assert c == contract and fold == selected_fold
+        return records, {"peak_ram_bytes": 1024, "peak_vram_allocated_bytes": None, "peak_vram_reserved_bytes": None}
+    monkeypatch.setattr(bench, "preflight", preflight)
+    monkeypatch.setattr(bench, "evaluate", evaluate)
+    out = tmp_path / "fold3"
+    assert bench.main(["evaluate", "--profile", "LOCAL_FP32", "--fold", "3",
+                       "--contract", "manifests/RQ1-BENCH-01/contract.json",
+                       "--artifact-root", str(tmp_path), "--outdir", str(out)]) == 0
+    metrics = json.loads((out / "metrics.json").read_text())
+    metadata = metrics["metadata"]
+    assert metadata["status"] == "COMPLETED" and metadata["scope"] == "fold" and metadata["fold"] == 3
+    assert metadata["ordered_prediction_ids"] == [r["prediction_id"] for r in records]
+    assert set(metadata["checkpoint_sha256"]) == {"1", "2", "3", "4"}
+    assert metrics["counts"]["utterances"] == 20
+    assert set(metrics["by_fold"]) == {"3"}
+    assert bench.scoped_contract(contract)["utterances"] == contract["utterances"]
+    with pytest.raises(bench.BenchmarkBlocked, match="Fold scope"):
+        bench.scoped_contract(contract, 5)
+
+
+def test_compute_quality_shared_merge_entrypoint():
+    assert bench.compute_quality([example_record()]) == bench.aggregate_metrics([example_record()])["quality"]
+    assert "omission_recall_0.3" in bench.compute_quality([example_record()], thresholds=(.3,))
+
+
+def test_remote_mount_inventory_isolation_and_known_other_fold_rejection(tmp_path, monkeypatch):
+    contract = frozen_contract()
+    mount = tmp_path / "input"
+    root = mount / "private-fold"
+    monkeypatch.setattr(bench, "KAGGLE_INPUT", mount)
+    selected = contract["folds"][0]
+    for kind in ("checkpoint", "package"):
+        path = root / selected[kind]["path"]
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(b"inventory only; hashes checked later")
+    assert bench.audit_remote_inputs(contract, root, 1)["payload_reads"] == 0
+    unexpected = mount / "other-mounted-data.bin"
+    unexpected.write_bytes(b"unknown")
+    with pytest.raises(bench.BenchmarkBlocked, match="isolation unverified"):
+        bench.audit_remote_inputs(contract, root, 1)
+    unexpected.unlink()
+    other = root / contract["folds"][1]["package"]["path"]
+    other.parent.mkdir(parents=True, exist_ok=True)
+    other.write_bytes(b"must not read")
+    with pytest.raises(bench.BenchmarkBlocked, match="Other fold artifact"):
+        bench.audit_remote_inputs(contract, root, 1)
+    other.unlink()
+    (mount / "alias").symlink_to(root, target_is_directory=True)
+    with pytest.raises(bench.BenchmarkBlocked, match="symlink"):
+        bench.audit_remote_inputs(contract, root, 1)
+    with pytest.raises(bench.BenchmarkBlocked, match="under /kaggle/input"):
+        bench.audit_remote_inputs(contract, tmp_path / "outside", 1)
+
+
+def test_remote_output_outside_working_refused_before_directory_creation(tmp_path, monkeypatch):
+    monkeypatch.setattr(bench, "KAGGLE_WORKING", tmp_path / "working")
+    out = tmp_path / "outside"
+    with pytest.raises(SystemExit):
+        bench.main(["preflight", "--profile", "KAGGLE_FP32", "--fold", "1",
+                    "--contract", "manifests/RQ1-BENCH-01/contract.json",
+                    "--artifact-root", str(tmp_path), "--outdir", str(out)])
+    assert not out.exists()

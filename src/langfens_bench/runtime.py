@@ -24,6 +24,8 @@ import time
 import zipfile
 
 REPOSITORY = Path(__file__).resolve().parents[2]
+KAGGLE_INPUT = Path("/kaggle/input")
+KAGGLE_WORKING = Path("/kaggle/working")
 PROFILES = ("LOCAL_FP32", "KAGGLE_FP32", "KAGGLE_FP16")
 PRETRAINED_MODEL = "facebook/wav2vec2-base-960h"
 PRETRAINED_REVISION = "22aad52d435eb6dbaf354bdad9b0da84ce7d6156"
@@ -200,7 +202,21 @@ def checkpoint_config(checkpoint: dict, fold: int) -> dict:
     return cfg
 
 
-def provenance(contract_path: Path, contract: dict, profile: str) -> dict:
+def scoped_contract(contract: dict, selected_fold: int | None = None) -> dict:
+    """Select execution inputs without changing any frozen contract pins."""
+    if selected_fold is None:
+        return contract
+    if selected_fold not in (1, 2, 3, 4):
+        raise BenchmarkBlocked("Fold scope must be one of 1, 2, 3, 4")
+    folds = [f for f in contract["folds"] if f["fold"] == selected_fold]
+    utterances = [u for u in contract["utterances"] if u["fold"] == selected_fold]
+    if len(folds) != 1 or not utterances:
+        raise BenchmarkBlocked(f"Missing/duplicate fold scope: {selected_fold}")
+    return {**contract, "folds": folds, "utterances": utterances}
+
+
+def provenance(contract_path: Path, contract: dict, profile: str, selected_fold: int | None = None) -> dict:
+    scope = scoped_contract(contract, selected_fold)
     sources = {name: sha256(REPOSITORY / name) for name in SOURCE_FILES}
     try:
         commit = subprocess.check_output(["git", "-C", str(REPOSITORY), "rev-parse", "HEAD"], text=True).strip()
@@ -212,8 +228,12 @@ def provenance(contract_path: Path, contract: dict, profile: str) -> dict:
         "evaluator_source_sha256": sources,
         "evaluator_semantics_sha256": hashlib.sha256(json_bytes({"sources": sources, "semantics": SEMANTICS})).hexdigest(),
         "source_commit": commit, "semantics": SEMANTICS,
+        # These maps preserve all frozen pins, not a claim of unselected artifact access.
         "checkpoint_sha256": {str(f["fold"]): f["checkpoint"]["sha256"] for f in contract["folds"]},
-        "ordered_prediction_ids": [u["prediction_id"] for u in contract["utterances"]],
+        "package_sha256": {str(f["fold"]): f["package"]["sha256"] for f in contract["folds"]},
+        "scope": "fold" if selected_fold is not None else "full", "fold": selected_fold,
+        "scope_fold": selected_fold,
+        "ordered_prediction_ids": [u["prediction_id"] for u in scope["utterances"]],
         "seed": 1337, "threads": 1, "batch_size": 1,
         "precision": {"stored_weights": "float32", "forward": "cuda_autocast_float16" if profile == "KAGGLE_FP16" else "float32",
                       "postprocessing": "float32", "metrics": "numpy.float64", "tf32": False},
@@ -221,9 +241,57 @@ def provenance(contract_path: Path, contract: dict, profile: str) -> dict:
     }
 
 
-def preflight(contract: dict, artifact_root: Path, profile: str) -> tuple[dict, dict]:
+def audit_remote_inputs(contract: dict, artifact_root: Path, selected_fold: int) -> dict:
+    """Prove mount isolation by inventory only; unknown mounted files fail closed.
+
+    Only the two hash-pinned selected-fold artifacts may be mounted as inputs.
+    Code/resources/offline cache must be provisioned outside the input mount;
+    absent a separate approved inventory, extra inputs cannot be certified safe.
+    """
+    input_root = KAGGLE_INPUT.resolve()
+    if not artifact_root.resolve().is_relative_to(input_root):
+        raise BenchmarkBlocked("Remote artifact root must be under /kaggle/input")
+    selected = scoped_contract(contract, selected_fold)["folds"][0]
+    expected = {repository_path(selected[k]["path"], artifact_root) for k in ("checkpoint", "package")}
+    for fold in contract["folds"]:
+        if fold["fold"] != selected_fold:
+            for kind in ("checkpoint", "package"):
+                path = artifact_root / fold[kind]["path"]
+                if path.exists() or path.is_symlink():
+                    raise BenchmarkBlocked(f"Other fold artifact mounted: {path}")
+    if not input_root.is_dir():
+        raise BenchmarkBlocked("Missing /kaggle/input; mounted isolation unverified")
+    seen, count = set(), 0
+    def fail_walk(error):
+        raise error
+    for directory, dirs, files in os.walk(input_root, followlinks=False, onerror=fail_walk):
+        for name in dirs + files:
+            path = Path(directory) / name
+            count += 1
+            if count > 10000 or path.is_symlink():
+                raise BenchmarkBlocked("Mounted isolation unverified: excessive inventory or symlink")
+        for name in files:
+            path = Path(directory) / name
+            if not path.is_file() or path.resolve() not in expected:
+                raise BenchmarkBlocked(f"Mounted isolation unverified: unauthorized input {path}")
+            seen.add(path.resolve())
+    if seen != expected:
+        raise BenchmarkBlocked("Mounted isolation unverified: selected artifact missing")
+    return {"status": "VERIFIED", "selected_fold": selected_fold, "files": len(seen), "payload_reads": 0}
+
+
+def preflight(contract: dict, artifact_root: Path, profile: str, selected_fold: int | None = None) -> tuple[dict, dict]:
     checks, blockers, paths = {}, [], {}
+    if profile != "LOCAL_FP32" and selected_fold is None:
+        return {"status": "BLOCKED", "blockers": ["Remote profiles require --fold; cross-fold staging is refused"], "checks": checks}, paths
+    if profile != "LOCAL_FP32":
+        try:
+            checks["mounted_input_isolation"] = audit_remote_inputs(contract, artifact_root, selected_fold)
+        except (BenchmarkBlocked, OSError, ValueError, KeyError) as exc:
+            return {"status": "BLOCKED", "blockers": [str(exc)], "checks": checks}, paths
     try:
+        scope = scoped_contract(contract, selected_fold)
+        checks["selected_folds"] = [f["fold"] for f in scope["folds"]]
         if any(contract.get(k) != v for k, v in {
             "schema_version": 1, "seed": 1337, "threads": 1, "batch_size": 1,
             "warmup_utterances_per_fold": 1, "repeats": 1, "thresholds": [.2, .5],
@@ -234,14 +302,18 @@ def preflight(contract: dict, artifact_root: Path, profile: str) -> tuple[dict, 
         checks["split_ids"] = "VERIFIED"
         for name, entry in contract["resources"].items():
             paths[name] = verify_hash(REPOSITORY, entry)
-        # Verify every artifact hash before any inventory or any audio/label read.
-        for fold in contract["folds"]:
+        # Verify every in-scope artifact before any inventory/payload read.
+        # Unselected fold packages/checkpoints are never resolved, hashed or opened.
+        for fold in scope["folds"]:
             paths[fold["fold"]] = {kind: verify_hash(artifact_root, fold[kind])
                                    for kind in ("checkpoint", "package")}
-        checks["all_hashes"] = "VERIFIED"
+        checks["all_hashes"] = "VERIFIED_IN_SCOPE"
+        checks["verified_artifacts"] = {
+            kind + "_sha256": {str(f["fold"]): f[kind]["sha256"] for f in scope["folds"]}
+            for kind in ("checkpoint", "package")}
         checks["archive_inventories"] = {
             str(f["fold"]): audit_package(paths[f["fold"]]["package"], folds[f["fold"]])
-            for f in contract["folds"]}
+            for f in scope["folds"]}
     except (BenchmarkBlocked, OSError, ValueError, KeyError, zipfile.BadZipFile) as exc:
         blockers.append(f"artifacts: {type(exc).__name__}: {exc}")
     try:
@@ -265,11 +337,11 @@ def preflight(contract: dict, artifact_root: Path, profile: str) -> tuple[dict, 
             prompts = load_arctic_prompts(paths["prompts"])
             # Refuse absent prompts/OOV before opening any selected payload.
             paths["z_phones"] = {u["prediction_id"]: g2p.phonemize(prompts[u["utterance_id"]])
-                                 for u in contract["utterances"]}
+                                 for u in scope["utterances"]}
             if not all(paths["z_phones"].values()):
                 raise BenchmarkBlocked("Empty Protocol Z prompt phones")
             checks["checkpoint_configs"] = {}
-            for f in contract["folds"]:
+            for f in scope["folds"]:
                 ckpt = torch.load(paths[f["fold"]]["checkpoint"], map_location="cpu", weights_only=False)
                 cfg = checkpoint_config(ckpt, f["fold"])
                 checks["checkpoint_configs"][str(f["fold"])] = {
@@ -320,7 +392,7 @@ def binary_metrics(labels, scores) -> dict:
             "roc_auc": finite_or_none(roc_auc_binary(labels, scores)) if labels else None}
 
 
-def aggregate_metrics(records: list[dict]) -> dict:
+def aggregate_metrics(records: list[dict], thresholds=(.2, .5)) -> dict:
     import numpy as np
     from audit_scripts.evaluate_fold1_ctc_binary import compute_levenshtein_edits
     labels = [v for r in records for v in r["labels"]]
@@ -346,7 +418,7 @@ def aggregate_metrics(records: list[dict]) -> dict:
         "protocol_z": {"ap": z["ap"], "roc_auc": z["roc_auc"],
                        "coverage": z["n"] / len(labels) if labels else None},
     }
-    for threshold in (.2, .5):
+    for threshold in thresholds:
         omission_scores = np.asarray(omissions, dtype=np.float64)
         quality[f"omission_recall_{threshold}"] = float(np.mean(omission_scores >= threshold)) if omissions else None
         quality[f"omission_fnr_{threshold}"] = float(np.mean(omission_scores < threshold)) if omissions else None
@@ -362,6 +434,11 @@ def aggregate_metrics(records: list[dict]) -> dict:
                    "protocol_z_unaligned_g2p": sum(r["protocol_z"]["unaligned_g2p_count"] for r in records)},
         "attention_uniform_mass": float(np.mean([t["uniform_in_window_mass"] for t in attn], dtype=np.float64)) if attn else None,
     }
+
+
+def compute_quality(records: list[dict], thresholds=(.2, .5)) -> dict:
+    """Recompute merge quality through the same scorer used by evaluation."""
+    return aggregate_metrics(records, thresholds=thresholds)["quality"]
 
 
 def forward_pair(model, waveform, o_phones, z_phones, profile: str, device):
@@ -386,7 +463,15 @@ def forward_pair(model, waveform, o_phones, z_phones, profile: str, device):
     return o, z, time.perf_counter() - start
 
 
-def evaluate(contract: dict, paths: dict, profile: str) -> tuple[list[dict], dict]:
+def evaluate(contract: dict, paths: dict, profile: str, selected_fold: int | None = None) -> tuple[list[dict], dict]:
+    if profile != "LOCAL_FP32" and selected_fold is None:
+        raise BenchmarkBlocked("Remote profiles require --fold; cross-fold staging is refused")
+    contract = scoped_contract(contract, selected_fold)
+    if profile != "LOCAL_FP32":
+        for fold in contract["folds"]:
+            for kind in ("checkpoint", "package"):
+                if not Path(paths[fold["fold"]][kind]).resolve().is_relative_to(KAGGLE_INPUT.resolve()):
+                    raise BenchmarkBlocked("Remote selected-fold artifacts must be under /kaggle/input")
     import torch
     from audit_scripts.evaluate_fold1_ctc_binary import build_eval_model, greedy_ctc_decode
     from langfens_prep.alignment import align_canonical_sequences
@@ -487,31 +572,37 @@ def main(argv=None) -> int:
     parser.add_argument("--contract", required=True, type=Path)
     parser.add_argument("--artifact-root", required=True, type=Path)
     parser.add_argument("--outdir", required=True, type=Path)
+    parser.add_argument("--fold", type=int, choices=(1, 2, 3, 4), help="Evaluate one fold only; required for remote profiles")
     parser.add_argument("--authorize-remote-inference", action="store_true")
     args = parser.parse_args(argv)
+    if args.profile != "LOCAL_FP32" and not args.outdir.resolve().is_relative_to(KAGGLE_WORKING.resolve()):
+        parser.error("Remote output must be under /kaggle/working")
     if args.outdir.exists():
         parser.error("New output path required; refusing overwrite")
     contract_path = args.contract if args.contract.is_absolute() else REPOSITORY / args.contract
     contract = json.loads(contract_path.read_text())
-    metadata = provenance(contract_path, contract, args.profile)
+    metadata = provenance(contract_path, contract, args.profile, args.fold)
     environment = environment_snapshot(metadata)
     args.outdir.mkdir(parents=True, exist_ok=False)
     try:
         if args.command == "evaluate" and args.profile != "LOCAL_FP32" and not args.authorize_remote_inference:
             raise BenchmarkBlocked("Remote evaluation requires --authorize-remote-inference")
-        result, paths = preflight(contract, args.artifact_root.resolve(), args.profile)
+        if args.profile != "LOCAL_FP32" and args.fold is None:
+            raise BenchmarkBlocked("Remote profiles require --fold; cross-fold staging is refused")
+        result, paths = preflight(contract, args.artifact_root.resolve(), args.profile, args.fold)
         environment["preflight"] = result
         if result["status"] != "READY":
             raise BenchmarkBlocked("; ".join(result["blockers"]))
         metadata["status"] = "PREFLIGHT_READY"
         if args.command == "evaluate":
-            records, memory = evaluate(contract, paths, args.profile)
+            records, memory = evaluate(contract, paths, args.profile, args.fold)
             if [r["prediction_id"] for r in records] != metadata["ordered_prediction_ids"]:
                 raise BenchmarkBlocked("Incomplete/misordered evaluation")
             metadata["status"] = "COMPLETED"
             metrics = aggregate_metrics(records)
             metrics["performance"].update(memory)
-            metrics["by_fold"] = {str(f): aggregate_metrics([r for r in records if r["fold"] == f]) for f in range(1, 5)}
+            metrics["by_fold"] = {str(f): aggregate_metrics([r for r in records if r["fold"] == f])
+                                  for f in sorted({r["fold"] for r in records})}
             write_json(args.outdir / "metrics.json", {"metadata": metadata, **metrics})
             write_predictions(args.outdir / "predictions.json.gz", {"metadata": metadata, "utterances": records})
             environment["artifacts"] = {name: sha256(args.outdir / name) for name in ("metrics.json", "predictions.json.gz")}

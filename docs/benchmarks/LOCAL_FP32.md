@@ -113,3 +113,42 @@ Current generated artifacts (outside Git, ephemeral):
 Current `evaluator_semantics_sha256`: `b82a99b590ea01f428e151f052b3ebf087d729600649faee511e1eff8a24b67d`. Contract hash unchanged. Fresh timing: p50 **2.1009985105 s**, p95 **3.2032561050 s**, throughput **0.4685712467 utt/s**, process peak RAM **2,099,798,016 bytes**. Scientific quality values are identical to the earlier table. These remain local observations, not comparative performance claims.
 
 Restart from current source and this new artifact directory, not the historical schema directory. Preserve both runs; do not overwrite either. All original authorization/exclusion/remote-parity boundaries remain unchanged: no training/backward/optimizer/GPU/remote execution; benchmark updates 0; no new model artifact. Coordinator still owns global index/checkpoint, packaging integration, comparison and independent review.
+
+## Fold-scope interruption and bounded recovery checkpoint
+
+State: **FOLD_SCOPE_IMPLEMENTED; RECOVERY_TESTS_PASSED; REMOTE_EXECUTION_UNMEASURED**.
+Restart base: `ee6dd3918612a3bb77abbeddd12516c5b4954ed3`. Previous child session timed out at 1,800,000 ms with runtime/tests edits preserved. Recovery verified `/tmp/langfens-bench-local-timeout.patch` SHA-256 `046348185368a9426ffc247226a826b8e2783d48d665d433f7191a553d3b6239` before continuing. Historical evidence above is retained, not reinterpreted as current-source parity.
+
+### Interruption state
+
+Before timeout, the fold-scope patch passed 63 selected regressions and a genuine local `evaluate --fold 2` finished at `/tmp/rq1-bench-local-fold2-8191d56d`. This existing bundle is retained for coordinator verification; recovery did not rerun it. A subsequent full CPU run into `/tmp/rq1-bench-local-full-scoped-runtime-8191d56d` was aborted. That directory is **empty**: no metrics/predictions/environment completion artifact exists, and no completion/parity claim is made. Previously completed initial/schema2 bundles remain historical executed evidence.
+
+### Current interface and safety boundaries
+
+- CLI adds `--fold {1,2,3,4}`. It selects exactly one fold's checkpoint/package verification, inventory and payload reads, and 20 ordered benchmark IDs. Unselected package/checkpoint paths are not hashed/opened. Full local validation-whitelist evaluation remains supported when `--fold` is absent.
+- Both remote profiles require `--fold` for preflight/evaluation; unscoped remote execution is refused before artifact access. Metadata preserves all frozen checkpoint/package hash pins while distinguishing verified in-scope hashes in `environment.preflight.checks.verified_artifacts`.
+- Metadata includes `scope: "fold"`, `fold: N`, **`scope_fold: N`** for a selected fold; full local scope has `scope: "full"`, `fold: null`, **`scope_fold: null`**. Ordered IDs and `by_fold` reflect only the selected scope. `status: "COMPLETED"` means the selected scope completed, not necessarily all 80 IDs. Coordinator owns merge and complete-run comparison.
+- Public **`compute_quality(records, thresholds=(.2,.5))`** delegates to the shared aggregate scorer and returns its `quality` object; no duplicate metric implementation.
+- Remote artifact root/selected artifact paths must resolve under `/kaggle/input`; CLI output must resolve under `/kaggle/working` before directory creation. Before hash/payload access, known other-fold package/checkpoint paths in the artifact root are rejected.
+- Broad mount isolation is fail-closed: directory inventory across **all `/kaggle/input`**, without WAV/TextGrid payload reads, permits only the exact two selected pinned artifact file paths. Extra/unknown mounted files, symlinks, missing selected artifacts, unreadable/excessive inventory or other-fold artifacts produce **BLOCKED**. Package member inventories/hashes are still checked afterward. This does not assert that arbitrary existing packaging is safe: code/resources/cache mounted as extra input files are unverified and blocked; provision them outside input or obtain a separately approved inventory through coordinator integration. No remote readiness/execution PASS is claimed.
+
+### Recovery validation actually executed
+
+No inference, GPU/remote commands, training/backward/optimizer, downloads or original model/protocol edits during recovery. Ran twice after edits:
+
+```bash
+PYTHONPATH=/tmp/langfens-bench-local:/tmp/langfens-bench-local/src \
+MKL_CBWR=COMPATIBLE CUBLAS_WORKSPACE_CONFIG=:4096:8 \
+HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 \
+/home/khoa/Projects/KLTN/Dataset/.venv/bin/python -m pytest -q \
+ tests/test_bench_local.py \
+ tests/test_rq1_diag_01_phoneme_omission_fn.py \
+ tests/test_rq1_diag_02_temporal_alignment_validation.py \
+ tests/test_rq1_diag_02b_counterfactual_validity.py
+```
+
+Result each time: **66 passed** (35 benchmark +31 existing DIAG). New coverage verifies selected-fold-only path/hash/load/inventory access for all four folds, preserved pins/20-ID scope, refusal of unscoped remote runs, mount-wide unexpected-input/symlink/other-fold rejection, output containment, `scope_fold` null/int and shared merge-quality API. Synthetic precision tests remain CPU-only; not actual CUDA validation. `git diff --check` passed. No full suite or new full CPU evaluation attempted.
+
+### Safe restart
+
+Integrate the recovery commit after `ee6dd39`; verify current source hashes independently. Do not reuse an old semantic hash as evidence for these new source bytes. Coordinator independently audits existing completed bundles and baseline parity, merges fold bundles, integrates dependencies/provenance and updates the shared process index. Preserve the empty aborted directory as interruption evidence; any separately authorized future run must use a new path. Current successful optimizer updates **0**, skipped benchmark updates **0/not applicable**; original four model endpoints unchanged. Remote readiness remains blocked for unverified extra mounted inputs and unmeasured actual hardware/execution, not waived.
