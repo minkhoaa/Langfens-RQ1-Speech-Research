@@ -25,7 +25,7 @@ Reuse: original audio loader, TextGrid parser, pinned CMUDictG2P, strict `build_
 
 All stored model parameters remain FP32/frozen/eval. FP16 uses CUDA autocast only around forward, never `.half()`. Logits and returned averaged attention are converted to FP32 before sigmoid, argmax or diagnostic reductions; metrics use NumPy float64. Gold labels/times are scoring-only; Protocol O forwards gold phone identities, while Z forwards phones derived only from written prompts. Batch size 1, seed 1337, deterministic algorithms and one CPU thread are fixed. There is one untimed **O+Z** warmup utterance per fold. Latency is the synchronized sum of the O and Z forwards per utterance, excluding tensor preparation, loading, staging and offline scoring.
 
-## Stable output schema for comparison
+## Initial output schema (historical; superseded by integration-schema checkpoint below)
 
 Evaluation produces:
 
@@ -74,3 +74,42 @@ Installed versions are recorded in environment: torch `2.14.1+cpu`, torchaudio `
 Verify branch/commit and current source hashes against the environment artifact before comparing. Re-run only into **new** output directories with unchanged contract, original artifacts and explicit validation whitelists. Keep generated predictions/labels/weights out of Git. Forward successful optimizer updates **0**, skipped benchmark updates **0/not applicable**, last valid model artifacts remain the unchanged four original 3,600-update endpoints.
 
 Remote prerequisite checks and real CUDA FP32/FP16 execution are unmeasured, requiring separate explicit deployment authorization. Local tests of precision boundaries do not establish real T4 parity. Coordinator must integrate packaging, run independent review and implement the frozen comparison thresholds before declaring any cross-platform PASS. Historical DIAG-02B archive failures remain unchanged and were not waived or relabeled; this lane does not implement the separate historical archive comparison.
+
+## Integration-schema checkpoint — coordinator follow-up
+
+State: **REQUESTED_SCHEMA_IMPLEMENTED; LOCAL_REPLAY_COMPLETED; REMOTE_PARITY_UNMEASURED**.
+Execution base for this follow-up: `258a811facb74707f7667b710e7e5efe3975b008`. The earlier implementation, measurements, hashes and schema above are preserved as historical evidence; use this section and the new output directory for integration. No scientific/model/preprocessing/precision/timing semantics changed.
+
+Coordinator requested canonical comparison names after the initial lane commit. Current `metrics.json` top-level fields are `metadata, quality, performance, counts, attention_uniform_mass, by_fold`:
+
+- **`quality`**: `ap`, `roc_auc`, `per`, `omission_recall_0.2`, `omission_fnr_0.2`, `omission_recall_0.5`, `omission_fnr_0.5`, `attention_mass`, `attention_entropy`, `attention_peak_offset_seconds`, and nested `protocol_z: {ap, roc_auc, coverage}`. Omission denominators/thresholds, PER fraction, Z alignment coverage and attention definitions are unchanged.
+- **`performance`**: `latency_p50_seconds`, `latency_p95_seconds`, `throughput_utterances_per_second`, `peak_ram_bytes`, `peak_vram_allocated_bytes`, `peak_vram_reserved_bytes`. RAM remains process peak RSS; local VRAM fields remain null.
+- `counts` preserves denominators: `utterances, tokens, error_tokens, omission_tokens, ctc_edits, ctc_reference_tokens, protocol_z_aligned_tokens, protocol_z_unaligned_gold, protocol_z_unaligned_g2p`. `attention_uniform_mass` preserves token-pooled K/T. `by_fold` repeats fold-level aggregate quality/performance/counts/uniform-mass fields, without separate memory attribution.
+- Shared prediction/metrics/environment metadata now uses exactly **`evaluator_semantics_sha256`** and **`status`**, with successful evaluation **`status: "COMPLETED"`**. Contract/checkpoint/source hashes, seed, profile, precision, preprocessing and ordered IDs remain included. The obsolete singular `evaluator_semantic_sha256` and `completion_status` keys are not emitted.
+- **`environment.artifacts`** directly maps `metrics.json` and `predictions.json.gz` to their SHA-256 strings; it replaces `artifact_sha256`. Environment provenance remains in the same shared `metadata` object as the other artifacts.
+- Flat prediction records and their nested Protocol Z/attention fields are unchanged. No compare implementation or threshold config edited.
+
+Executed the same deterministic/PYTHONPATH pytest command listed above after schema integration: **54 passed**, including exact canonical quality/performance/provenance/artifact-key assertions.
+
+Re-executed genuine CPU inference with:
+
+```bash
+PYTHONPATH=/tmp/langfens-bench-local:/tmp/langfens-bench-local/src \
+/home/khoa/Projects/KLTN/Dataset/.venv/bin/python -m langfens_bench evaluate \
+  --profile LOCAL_FP32 --contract manifests/RQ1-BENCH-01/contract.json \
+  --artifact-root /home/khoa/Projects/KLTN/Dataset \
+  --outdir /tmp/rq1-bench-local-evaluate-schema2-8191d56d
+```
+
+Result: **COMPLETED**, 80 ordered utterances / 2,951 active tokens; preflight and inference succeeded without runtime errors. Independent Python audit verified shared metadata, canonical status, contract ID order, all source/artifact SHA-256 values and recomputed quality. All prediction-record fields are **identical to the initial measured run except remeasured latency**; no numerical threshold relaxation or change in scientific metrics.
+
+Current generated artifacts (outside Git, ephemeral):
+
+| Artifact | SHA-256 |
+|---|---|
+| `/tmp/rq1-bench-local-evaluate-schema2-8191d56d/metrics.json` | `95fd0bbf1e5cfe7488c3aae31030937aa61e24dba8d92681af6e747f08b12edc` |
+| `/tmp/rq1-bench-local-evaluate-schema2-8191d56d/predictions.json.gz` | `3f1dd5532161d30cb795c01bfc0c38f7a8a1b1876a8c1ef9fb664e4ec72fe4fe` |
+
+Current `evaluator_semantics_sha256`: `b82a99b590ea01f428e151f052b3ebf087d729600649faee511e1eff8a24b67d`. Contract hash unchanged. Fresh timing: p50 **2.1009985105 s**, p95 **3.2032561050 s**, throughput **0.4685712467 utt/s**, process peak RAM **2,099,798,016 bytes**. Scientific quality values are identical to the earlier table. These remain local observations, not comparative performance claims.
+
+Restart from current source and this new artifact directory, not the historical schema directory. Preserve both runs; do not overwrite either. All original authorization/exclusion/remote-parity boundaries remain unchanged: no training/backward/optimizer/GPU/remote execution; benchmark updates 0; no new model artifact. Coordinator still owns global index/checkpoint, packaging integration, comparison and independent review.

@@ -210,14 +210,14 @@ def provenance(contract_path: Path, contract: dict, profile: str) -> dict:
         "schema_version": 1, "benchmark_id": contract["benchmark_id"],
         "contract_sha256": sha256(contract_path), "profile": profile,
         "evaluator_source_sha256": sources,
-        "evaluator_semantic_sha256": hashlib.sha256(json_bytes({"sources": sources, "semantics": SEMANTICS})).hexdigest(),
+        "evaluator_semantics_sha256": hashlib.sha256(json_bytes({"sources": sources, "semantics": SEMANTICS})).hexdigest(),
         "source_commit": commit, "semantics": SEMANTICS,
         "checkpoint_sha256": {str(f["fold"]): f["checkpoint"]["sha256"] for f in contract["folds"]},
         "ordered_prediction_ids": [u["prediction_id"] for u in contract["utterances"]],
         "seed": 1337, "threads": 1, "batch_size": 1,
         "precision": {"stored_weights": "float32", "forward": "cuda_autocast_float16" if profile == "KAGGLE_FP16" else "float32",
                       "postprocessing": "float32", "metrics": "numpy.float64", "tf32": False},
-        "preprocessing": SEMANTICS["preprocessing"], "completion_status": "PREFLIGHT",
+        "preprocessing": SEMANTICS["preprocessing"], "status": "PREFLIGHT",
     }
 
 
@@ -336,24 +336,31 @@ def aggregate_metrics(records: list[dict]) -> dict:
     z = binary_metrics(z_labels, z_scores)
     attn = [t for r in records for t in r["attention_metrics"]["tokens"]]
     latencies = np.asarray([r["latency_seconds"] for r in records], dtype=np.float64)
+    o = binary_metrics(labels, scores)
+    quality = {
+        "ap": o["ap"], "roc_auc": o["roc_auc"],
+        "per": edits / ref_count if ref_count else None,
+        "attention_mass": float(np.mean([t["in_window_mass"] for t in attn], dtype=np.float64)) if attn else None,
+        "attention_entropy": float(np.mean([t["normalized_entropy"] for t in attn], dtype=np.float64)) if attn else None,
+        "attention_peak_offset_seconds": float(np.mean([t["absolute_peak_offset_seconds"] for t in attn], dtype=np.float64)) if attn else None,
+        "protocol_z": {"ap": z["ap"], "roc_auc": z["roc_auc"],
+                       "coverage": z["n"] / len(labels) if labels else None},
+    }
+    for threshold in (.2, .5):
+        omission_scores = np.asarray(omissions, dtype=np.float64)
+        quality[f"omission_recall_{threshold}"] = float(np.mean(omission_scores >= threshold)) if omissions else None
+        quality[f"omission_fnr_{threshold}"] = float(np.mean(omission_scores < threshold)) if omissions else None
     return {
-        "protocol_o": {**binary_metrics(labels, scores), "ctc_per": edits / ref_count if ref_count else None,
-                       "ctc_edits": edits, "ctc_reference_tokens": ref_count,
-                       "omission_operating_points": {
-                           f"{threshold:.2f}": {"n": len(omissions),
-                                               "recall": float(np.mean(np.asarray(omissions, dtype=np.float64) >= threshold)) if omissions else None,
-                                               "fnr": float(np.mean(np.asarray(omissions, dtype=np.float64) < threshold)) if omissions else None}
-                           for threshold in (.2, .5)}},
-        "protocol_z": {"aligned_ap": z["ap"], "aligned_roc_auc": z["roc_auc"],
-                       "aligned_tokens": z["n"], "coverage": z["n"] / len(labels) if labels else None,
-                       "unaligned_gold": sum(r["protocol_z"]["unaligned_gold_count"] for r in records),
-                       "unaligned_g2p": sum(r["protocol_z"]["unaligned_g2p_count"] for r in records)},
-        "attention": {key: float(np.mean([t[key] for t in attn], dtype=np.float64)) if attn else None
-                      for key in ("in_window_mass", "uniform_in_window_mass", "normalized_entropy", "absolute_peak_offset_seconds")},
-        "telemetry": {"timed_utterances": len(records),
-                      "latency_p50_seconds": float(np.quantile(latencies, .5)) if records else None,
-                      "latency_p95_seconds": float(np.quantile(latencies, .95)) if records else None,
-                      "throughput_utterances_per_second": len(records) / float(latencies.sum()) if records and latencies.sum() > 0 else None},
+        "quality": quality,
+        "performance": {"latency_p50_seconds": float(np.quantile(latencies, .5)) if records else None,
+                        "latency_p95_seconds": float(np.quantile(latencies, .95)) if records else None,
+                        "throughput_utterances_per_second": len(records) / float(latencies.sum()) if records and latencies.sum() > 0 else None},
+        "counts": {"utterances": len(records), "tokens": len(labels), "error_tokens": o["positives"],
+                   "omission_tokens": len(omissions), "ctc_edits": edits, "ctc_reference_tokens": ref_count,
+                   "protocol_z_aligned_tokens": z["n"],
+                   "protocol_z_unaligned_gold": sum(r["protocol_z"]["unaligned_gold_count"] for r in records),
+                   "protocol_z_unaligned_g2p": sum(r["protocol_z"]["unaligned_g2p_count"] for r in records)},
+        "attention_uniform_mass": float(np.mean([t["uniform_in_window_mass"] for t in attn], dtype=np.float64)) if attn else None,
     }
 
 
@@ -455,9 +462,9 @@ def evaluate(contract: dict, paths: dict, profile: str) -> tuple[list[dict], dic
     # Preserve frozen contract order, not incidental fold grouping order.
     by_id = {r["prediction_id"]: r for r in records}
     records = [by_id[u["prediction_id"]] for u in contract["utterances"]]
-    return records, {"peak_process_rss_bytes": resource.getrusage(resource.RUSAGE_SELF).ru_maxrss * (1 if sys.platform == "darwin" else 1024),
-                     "peak_cuda_allocated_bytes": peak_allocated if device.type == "cuda" else None,
-                     "peak_cuda_reserved_bytes": peak_reserved if device.type == "cuda" else None}
+    return records, {"peak_ram_bytes": resource.getrusage(resource.RUSAGE_SELF).ru_maxrss * (1 if sys.platform == "darwin" else 1024),
+                     "peak_vram_allocated_bytes": peak_allocated if device.type == "cuda" else None,
+                     "peak_vram_reserved_bytes": peak_reserved if device.type == "cuda" else None}
 
 
 def environment_snapshot(metadata: dict) -> dict:
@@ -470,7 +477,7 @@ def environment_snapshot(metadata: dict) -> dict:
     return {"metadata": metadata, "python": sys.version, "platform": platform.platform(),
             "installed_versions": versions,
             "deterministic_environment": {k: os.environ.get(k) for k in ("MKL_CBWR", "CUBLAS_WORKSPACE_CONFIG", "HF_HUB_OFFLINE", "TRANSFORMERS_OFFLINE")},
-            "artifact_sha256": {}}
+            "artifacts": {}}
 
 
 def main(argv=None) -> int:
@@ -496,24 +503,24 @@ def main(argv=None) -> int:
         environment["preflight"] = result
         if result["status"] != "READY":
             raise BenchmarkBlocked("; ".join(result["blockers"]))
-        metadata["completion_status"] = "PREFLIGHT_READY"
+        metadata["status"] = "PREFLIGHT_READY"
         if args.command == "evaluate":
             records, memory = evaluate(contract, paths, args.profile)
             if [r["prediction_id"] for r in records] != metadata["ordered_prediction_ids"]:
                 raise BenchmarkBlocked("Incomplete/misordered evaluation")
-            metadata["completion_status"] = "COMPLETE"
+            metadata["status"] = "COMPLETED"
             metrics = aggregate_metrics(records)
-            metrics["telemetry"].update(memory)
+            metrics["performance"].update(memory)
             metrics["by_fold"] = {str(f): aggregate_metrics([r for r in records if r["fold"] == f]) for f in range(1, 5)}
             write_json(args.outdir / "metrics.json", {"metadata": metadata, **metrics})
             write_predictions(args.outdir / "predictions.json.gz", {"metadata": metadata, "utterances": records})
-            environment["artifact_sha256"] = {name: sha256(args.outdir / name) for name in ("metrics.json", "predictions.json.gz")}
+            environment["artifacts"] = {name: sha256(args.outdir / name) for name in ("metrics.json", "predictions.json.gz")}
         write_json(args.outdir / "environment.json", environment)
-        print(json.dumps({"completion_status": metadata["completion_status"], "outdir": str(args.outdir)}))
+        print(json.dumps({"status": metadata["status"], "outdir": str(args.outdir)}))
         return 0
     except Exception as exc:
-        metadata["completion_status"] = "BLOCKED" if isinstance(exc, BenchmarkBlocked) else "FAILED"
+        metadata["status"] = "BLOCKED" if isinstance(exc, BenchmarkBlocked) else "FAILED"
         environment["error"] = {"type": type(exc).__name__, "message": str(exc)}
         write_json(args.outdir / "environment.json", environment)
-        print(f"{metadata['completion_status']}: {type(exc).__name__}: {exc}", file=sys.stderr)
+        print(f"{metadata['status']}: {type(exc).__name__}: {exc}", file=sys.stderr)
         return 2

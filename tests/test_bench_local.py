@@ -117,14 +117,14 @@ def example_record():
 
 def test_aggregate_metrics_ap_auc_per_omissions_alignment_and_float64():
     result = bench.aggregate_metrics([example_record()])
-    o, z = result["protocol_o"], result["protocol_z"]
+    o, z = result["quality"], result["quality"]["protocol_z"]
     assert o["ap"] == o["roc_auc"] == 1
-    assert o["ctc_per"] == pytest.approx(1 / 3)
-    assert o["omission_operating_points"]["0.20"]["recall"] == 1
-    assert o["omission_operating_points"]["0.50"]["fnr"] == 1
-    assert z["aligned_ap"] == z["aligned_roc_auc"] == 1
+    assert o["per"] == pytest.approx(1 / 3)
+    assert o["omission_recall_0.2"] == 1
+    assert o["omission_fnr_0.5"] == 1
+    assert z["ap"] == z["roc_auc"] == 1
     assert z["coverage"] == pytest.approx(2 / 3)
-    assert result["telemetry"]["throughput_utterances_per_second"] == 2
+    assert result["performance"]["throughput_utterances_per_second"] == 2
     assert bench.binary_metrics([0, 0], [.5, .5])["ap"] is None
     assert bench.binary_metrics([1, 1], [.5, .5])["roc_auc"] is None
     assert bench.binary_metrics([1, 0], [.5, .5])["ap"] == .5
@@ -181,7 +181,7 @@ def test_remote_evaluation_authorization_checked_before_preflight(tmp_path, monk
                          "--artifact-root", str(tmp_path), "--outdir", str(out)])
     assert result == 2
     environment = json.loads((out / "environment.json").read_text())
-    assert environment["metadata"]["completion_status"] == "BLOCKED"
+    assert environment["metadata"]["status"] == "BLOCKED"
     assert "authorize-remote-inference" in environment["error"]["message"]
     assert not (out / "predictions.json.gz").exists()
 
@@ -197,7 +197,8 @@ def test_main_outputs_provenance_artifact_hashes_and_no_overwrite(tmp_path, monk
     contract = frozen_contract()
     records = [{**example_record(), **u} for u in contract["utterances"]]
     monkeypatch.setattr(bench, "preflight", lambda *a: ({"status": "READY", "checks": {}, "blockers": []}, {}))
-    monkeypatch.setattr(bench, "evaluate", lambda *a: (records, {"peak_process_rss_bytes": 1024}))
+    monkeypatch.setattr(bench, "evaluate", lambda *a: (records, {
+        "peak_ram_bytes": 1024, "peak_vram_allocated_bytes": None, "peak_vram_reserved_bytes": None}))
     out = tmp_path / "evaluation"
     args = ["evaluate", "--profile", "LOCAL_FP32", "--contract", "manifests/RQ1-BENCH-01/contract.json",
             "--artifact-root", str(tmp_path), "--outdir", str(out)]
@@ -207,9 +208,21 @@ def test_main_outputs_provenance_artifact_hashes_and_no_overwrite(tmp_path, monk
     with gzip.open(out / "predictions.json.gz", "rt") as stream:
         predictions = json.load(stream)
     assert predictions["metadata"] == metrics["metadata"] == environment["metadata"]
-    assert predictions["metadata"]["completion_status"] == "COMPLETE"
+    assert predictions["metadata"]["status"] == "COMPLETED"
+    assert len(predictions["metadata"]["evaluator_semantics_sha256"]) == 64
+    assert "completion_status" not in predictions["metadata"]
+    assert "evaluator_semantic_sha256" not in predictions["metadata"]
+    assert set(metrics["quality"]) == {
+        "ap", "roc_auc", "per", "omission_recall_0.2", "omission_fnr_0.2",
+        "omission_recall_0.5", "omission_fnr_0.5", "attention_mass", "attention_entropy",
+        "attention_peak_offset_seconds", "protocol_z"}
+    assert set(metrics["quality"]["protocol_z"]) == {"ap", "roc_auc", "coverage"}
+    assert set(metrics["performance"]) == {
+        "latency_p50_seconds", "latency_p95_seconds", "throughput_utterances_per_second",
+        "peak_ram_bytes", "peak_vram_allocated_bytes", "peak_vram_reserved_bytes"}
+    assert set(environment["artifacts"]) == {"metrics.json", "predictions.json.gz"}
     assert len(predictions["utterances"]) == 80
-    for name, digest in environment["artifact_sha256"].items():
+    for name, digest in environment["artifacts"].items():
         assert digest == bench.sha256(out / name)
     with pytest.raises(SystemExit):
         bench.main(args)
@@ -223,7 +236,7 @@ def test_evaluation_error_records_failure_without_fallback(tmp_path, monkeypatch
     out = tmp_path / "failed"
     assert bench.main(["evaluate", "--profile", "LOCAL_FP32", "--contract", "manifests/RQ1-BENCH-01/contract.json",
                        "--artifact-root", str(tmp_path), "--outdir", str(out)]) == 2
-    assert json.loads((out / "environment.json").read_text())["metadata"]["completion_status"] == "FAILED"
+    assert json.loads((out / "environment.json").read_text())["metadata"]["status"] == "FAILED"
     assert not (out / "predictions.json.gz").exists()
 
 
@@ -284,7 +297,7 @@ def test_evaluate_fp16_postprocessing_casts_before_sigmoid_and_warms_once(monkey
     assert records[0]["ctc_reference_ids"] == [1]  # deleted B excluded from CTC target
     assert records[0]["ctc_ids"] == [1, 2]
     assert records[0]["attention_metrics"]["normalized_entropy"] == 1
-    assert memory["peak_cuda_allocated_bytes"] is None
+    assert memory["peak_vram_allocated_bytes"] is None
 
 
 def test_checkpoint_config_rejects_wrong_fold_budget_and_half_weights():
