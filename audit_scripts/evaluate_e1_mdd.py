@@ -330,9 +330,15 @@ def evaluate_checkpoint(
             ref_ctc_all.append(ctc_ref_indices)
             hyp_ctc_all.append(ctc_hyp_indices)
 
-            # Attention weights
-            attn_w = out_o.alignment_weights[0, :len(can_phones), :active_frames].cpu().numpy()
-            skip_w = out_o.skip_weights[0, :len(can_phones), 0].cpu().numpy() if out_o.skip_weights is not None else None
+            # Separate skip token from acoustic frames if enabled
+            raw_attn = out_o.alignment_weights[0, :len(can_phones)].cpu().numpy()
+            if enable_skip_token:
+                # Index 0 is skip token; indices 1..1+active_frames are acoustic frames
+                skip_weights_row = raw_attn[:, 0]
+                acoustic_attn_w = raw_attn[:, 1:1 + active_frames]
+            else:
+                skip_weights_row = np.zeros(len(can_phones), dtype=np.float32)
+                acoustic_attn_w = raw_attn[:, :active_frames]
 
             # Protocol Z
             z_phones = g2p.phonemize(prompts[uid])
@@ -354,7 +360,7 @@ def evaluate_checkpoint(
                 lbl = iv.binary_label_strict
                 et = iv.error_type
                 sc = b_scores[idx]
-                sw = float(skip_w[idx]) if skip_w is not None else float("nan")
+                sw = float(skip_weights_row[idx])
 
                 proto_o_labels.append(lbl)
                 proto_o_scores.append(sc)
@@ -362,19 +368,20 @@ def evaluate_checkpoint(
                 proto_o_phones.append(iv.canonical_phone)
                 proto_o_skip_weights.append(sw)
 
-                # Attention window metrics
+                # Attention window metrics on ACOUSTIC frames (excluding skip token)
                 start_frame = min(active_frames - 1, max(0, int(iv.xmin / 0.020)))
                 end_frame = min(active_frames, max(start_frame + 1, int(math.ceil(iv.xmax / 0.020))))
-                weights_row = attn_w[idx]
-                w_sum = weights_row.sum()
-                in_win = float(weights_row[start_frame:end_frame].sum() / max(w_sum, 1e-12))
+                ac_row = acoustic_attn_w[idx]
+                ac_sum = float(ac_row.sum())
+                abs_in_win = float(ac_row[start_frame:end_frame].sum())
+                cond_in_win = float(abs_in_win / max(ac_sum, 1e-12))
                 unif_mass = float((end_frame - start_frame) / max(active_frames, 1))
-                peak_f = int(np.argmax(weights_row))
+                peak_f = int(np.argmax(ac_row))
                 peak_time = peak_f * 0.020
                 center_time = (iv.xmin + iv.xmax) / 2.0
                 offset = abs(peak_time - center_time)
 
-                in_window_masses.append(in_win)
+                in_window_masses.append(abs_in_win)
                 uniform_masses.append(unif_mass)
                 peak_offsets.append(offset)
 
@@ -391,7 +398,8 @@ def evaluate_checkpoint(
                     "skip_weight": sw,
                     "word_position": w_pos.get(idx, "unknown"),
                     "duration_sec": iv.xmax - iv.xmin,
-                    "in_window_mass": in_win,
+                    "in_window_mass": abs_in_win,
+                    "conditional_in_window_mass": cond_in_win,
                     "uniform_mass": unif_mass,
                     "peak_offset_sec": offset,
                 })
@@ -409,10 +417,19 @@ def evaluate_checkpoint(
     proto_z_ap = float(average_precision_binary(z_y, z_s)) if len(z_y) > 0 else float("nan")
     proto_z_auc = float(roc_auc_binary(z_y, z_s)) if len(z_y) > 0 else float("nan")
 
+    cond_masses = [r["conditional_in_window_mass"] for r in token_records]
+    del_skip_masses = [r["skip_weight"] for r in token_records if r["error_type"] == "deletion" and not math.isnan(r["skip_weight"])]
+    cor_skip_masses = [r["skip_weight"] for r in token_records if r["error_type"] == "correct" and not math.isnan(r["skip_weight"])]
+    all_skip_masses = [r["skip_weight"] for r in token_records if not math.isnan(r["skip_weight"])]
+
     attention_summary = {
-        "mean_in_window_mass": round(float(np.mean(in_window_masses)), 6),
-        "mean_uniform_mass": round(float(np.mean(uniform_masses)), 6),
-        "mean_peak_offset_seconds": round(float(np.mean(peak_offsets)), 6),
+        "mean_absolute_in_window_mass": round(float(np.mean(in_window_masses)), 6) if in_window_masses else None,
+        "mean_conditional_in_window_mass": round(float(np.mean(cond_masses)), 6) if cond_masses else None,
+        "mean_uniform_mass": round(float(np.mean(uniform_masses)), 6) if uniform_masses else None,
+        "mean_peak_offset_seconds": round(float(np.mean(peak_offsets)), 6) if peak_offsets else None,
+        "mean_skip_mass_all": round(float(np.mean(all_skip_masses)), 6) if all_skip_masses else None,
+        "mean_skip_mass_deletions": round(float(np.mean(del_skip_masses)), 6) if del_skip_masses else None,
+        "mean_skip_mass_correct": round(float(np.mean(cor_skip_masses)), 6) if cor_skip_masses else None,
     }
 
     # Disaggregated breakdowns by L1, speaker, position, phoneme
@@ -506,7 +523,9 @@ def main():
         print(f"  {k:26s}: {v}")
     print(f"  {'Binary ROC-AUC':26s}: {report['secondary_metrics']['binary_roc_auc']}")
     print(f"  {'Protocol Z Aligned AP':26s}: {report['protocol_z']['aligned_ap']}")
-    print(f"  {'Mean In-Window Attention Mass':26s}: {report['attention_localization']['mean_in_window_mass']}")
+    print(f"  {'Mean Absolute In-Win Mass':26s}: {report['attention_localization']['mean_absolute_in_window_mass']}")
+    print(f"  {'Mean Cond In-Win Mass':26s}: {report['attention_localization']['mean_conditional_in_window_mass']}")
+    print(f"  {'Mean Deletion Skip Mass':26s}: {report['attention_localization']['mean_skip_mass_deletions']}")
     print(f"  {'Mean Peak Temporal Offset':26s}: {report['attention_localization']['mean_peak_offset_seconds']} s")
     print(f"\nReport written to: {report_path}")
 

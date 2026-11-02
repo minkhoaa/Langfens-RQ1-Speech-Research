@@ -109,7 +109,7 @@ Taking Fold 1 TRAIN (2,464 deletions) as representative (with identical patterns
   - The dataset provides ample statistical power: $>2,300$ omissions and $>9,300$ substitutions per fold.
   - Class coverage across 39 phonemes, 6 L1s, and all word positions is extensive.
 - **Manual Labeling Recommendation:** **NO (Do NOT perform manual labeling).**
-  - *Evidence 1 (Label Volume):* The model already trains on $>2,400$ omission examples. Baseline R still yields an omission AP of $0.0305$ and missed-error rate of $97.5\%$. Additional labels would not alter this outcome.
+  - *Evidence 1 (Label Volume):* The model already trains on $>2,400$ omission examples per fold. Baseline R still yields an omission AP of $0.0305$, missed-error rate of $97.5\%$ at $\tau=0.50$, and catches only $31.32\%$ of omissions on the full validation census at a 15% FPR ceiling ($10.61\%$ on duration-matched case-control pairs). Additional labels would not alter this architectural limitation.
   - *Evidence 2 (Architectural Bottleneck):* DIAG-01 and DIAG-02 proved that unconstrained cross-attention queries mathematically collapse: attention weights cycle over 6–7 global anchor frames ($>1.4\,\text{s}$ away), while the binary MLP defaults to predicting the dominant prior ($89.4\%$ correct).
   - *Evidence 3 (Thesis ROI):* Manual labeling is expensive and time-consuming. For a graduation thesis, resolving the mathematical attention collapse via model architecture (E1) delivers high scientific value and directly solves the false-negative bottleneck.
 
@@ -144,13 +144,25 @@ When phoneme $c_i$ is omitted in the audio, no acoustic frame represents $c_i$. 
 
 ### 5.2 Registered Primary Evaluation Metrics & Acceptance Gates
 
-| Metric | Code Key | Baseline R Historical Reference | E1 Pre-Registered Acceptance Gate | Research Target |
+The experimental baseline numbers are grounded in the verified four-fold Baseline R evaluation artifacts (`manifests/RQ1-TRN-03A/evaluation/FOUR_FOLD_VALIDATION_REPORT.json` and `FOUR_FOLD_PAIRED_PREDICTION_RECORDS.json.gz`). Diagnostic matched-pair subsets are kept strictly separated from full census metrics:
+
+#### A. Full Pooled Validation Census Baseline & E1 Acceptance Gates ($N=39,576$ tokens, $629$ deletions, $35,363$ correct)
+
+| Metric | Code Key | Baseline R (E0) Reference | E1 Pre-Registered Acceptance Gate | Research Objective |
 |---|---|:---:|:---:|---|
-| **Omission AP** | `omission_ap` | **$0.0305$** | $\ge \mathbf{0.080}$ | $\ge 2.6\times$ relative improvement on omissions |
-| **Recall @ FPR $\le$ 15%** | `omission_recall_at_fpr15` | **$10.6\%$** | $\ge \mathbf{30.0\%}$ | $\ge 2.8\times$ reduction in omission false negatives |
-| **Binary AP** | `binary_ap` | **$0.2792$** | $\ge \mathbf{0.279}$ | Preserve or improve overall mispronunciation ranking |
-| **CTC PER** | `ctc_per` | **$23.90\%$** | $\le \mathbf{24.5\%}$ | Preserve acoustic recognition fidelity guardrail |
-| *In-Window Attention Mass* | `mean_in_window_mass` | *$0.0280$* | $\ge \mathbf{0.150}$ | Eliminate distant attention collapse ($>5\times$ mass) |
+| **Pooled Omission Recall @ 15% FPR** | `omission_recall_at_fpr15` | **$0.3132$ ($31.32\%$)** | $\ge \mathbf{0.4500}$ ($45.0\%$) | $\ge +13.68\%$ absolute ($>43\%$ relative) reduction in omission false negatives at matched $\tau_{15}=0.220024$ |
+| **Omission AP** | `omission_ap` | **$0.030506$** | $\ge \mathbf{0.0800}$ | $\ge 2.6\times$ relative elevation in omission detection ranking |
+| **Macro Binary AP** | `macro_binary_ap` | **$0.279207$** (95% CI $[0.195, 0.363]$) | $\ge \mathbf{0.2792}$ | Preserve or elevate cross-fold macro ranking quality |
+| **Pooled Micro Binary AP** | `binary_ap` | **$0.272580$** | $\ge \mathbf{0.2726}$ | Preserve or elevate global token-level detection AP |
+| **Macro CTC PER** | `ctc_per` | **$23.90\%$** | $\le \mathbf{24.50\%}$ | Preserve speech recognition fidelity (guardrail) |
+| *Conditional In-Window Mass* | `mean_conditional_in_window_mass` | *$0.0280$* | $\ge \mathbf{0.1500}$ | Eliminate distant attention collapse ($>5\times$ acoustic concentration) |
+| *Mean Acoustic Peak Offset* | `mean_peak_offset_seconds` | *$1.392\,\text{s}$* | $\le \mathbf{0.500\,\text{s}}$ | Temporal acoustic localization error reduced by $>64\%$ |
+
+#### B. Diagnostic Matched-Pair Caliper Subset ($N=132$ tokens, 66 matched pairs)
+*(Separated from population metrics; reported as an exploratory diagnostic contrast):*
+- **Baseline R Matched TPR @ 15% FPR:** $0.1061$ ($10.61\%$).
+- **E1 Diagnostic Target:** $\ge \mathbf{0.3000}$ ($30.0\%$).
+- **Distinction:** The $10.6\%$ figure represents the matched 20ms duration caliper subset, whereas **$0.3132$ ($31.32\%$)** represents the true full validation population census baseline. E1 acceptance requires measurable improvement over the true $0.3132$ census baseline.
 
 ---
 
@@ -236,7 +248,7 @@ PYTHONPATH=.:src HF_HUB_OFFLINE=1 .venv/bin/python audit_scripts/evaluate_e1_mdd
 
 In strict compliance with `AGENTS.md`:
 - **Execution Boundary:** Zero GPU training, zero backward passes, and zero Kaggle runs executed. Test set ($S_{\text{test}}^{(1..4)}$) remains 100% sealed.
-- **Publication Boundary:** No remote git push attempted (origin repository is public; inherited ancestor commit `9428d15` contains token-level records requiring explicit private delivery authorization).
+- **Publication Boundary:** Feature branches `feat/rq-model-01-dataset-sufficiency-and-e1` and `feat/rq1-bench-01-parallel-benchmark-setup` are synchronized with remote origin following explicit operator command.
 - **Readiness:** Model architecture, dataset census, training configs, Kaggle deployment packages, evaluation harness, and regression test suites are complete.
 
 **STOP. Ready for operator review and training authorization.**

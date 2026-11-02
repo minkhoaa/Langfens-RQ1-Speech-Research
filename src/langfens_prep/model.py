@@ -104,7 +104,9 @@ class CanonicalAcousticCrossAttention(nn.Module):
         self,
         frame_features: torch.Tensor,
         canonical_phone_indices: torch.Tensor,
-        acoustic_padding_mask: Optional[torch.Tensor] = None
+        acoustic_padding_mask: Optional[torch.Tensor] = None,
+        canonical_phone_lengths: Optional[torch.Tensor] = None,
+        frame_output_lengths: Optional[torch.Tensor] = None,
     ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, ...]:
         """
         Args:
@@ -147,26 +149,40 @@ class CanonicalAcousticCrossAttention(nn.Module):
             extended_values = frame_features
             extended_padding_mask = acoustic_padding_mask
 
-        # 4. Monotonic Temporal Alignment Bias
+        # 4. Monotonic Temporal Alignment Bias (Per-Utterance Valid-Length Normalization)
         if self.monotonic_bias:
-            p = (torch.arange(num_phones, device=device, dtype=torch.float32) + 0.5) / max(num_phones, 1)
-            r = (torch.arange(max_frames, device=device, dtype=torch.float32) + 0.5) / max(max_frames, 1)
-            dist_sq = (p.unsqueeze(1) - r.unsqueeze(0)) ** 2
-            bias = - self.monotonic_bandwidth * dist_sq
-            if self.enable_skip_token:
-                skip_bias = torch.zeros(num_phones, 1, device=device, dtype=torch.float32)
-                attn_mask_2d = torch.cat([skip_bias, bias], dim=1)  # (num_phones, 1 + max_frames)
+            if frame_output_lengths is not None:
+                T_b = frame_output_lengths.to(device).clamp(min=1).view(batch_size, 1, 1).float()
+            elif acoustic_padding_mask is not None:
+                T_b = (~acoustic_padding_mask).long().sum(dim=-1).clamp(min=1).view(batch_size, 1, 1).float()
             else:
-                attn_mask_2d = bias
+                T_b = torch.tensor(max_frames, device=device, dtype=torch.float32).view(1, 1, 1).expand(batch_size, 1, 1)
 
-            if extended_padding_mask is not None:
-                attn_mask_3d = attn_mask_2d.unsqueeze(0).expand(batch_size, -1, -1).clone()
-                attn_mask_3d = attn_mask_3d.masked_fill(extended_padding_mask.unsqueeze(1), float("-inf"))
-                attn_mask = attn_mask_3d.repeat_interleave(self.cross_attention.num_heads, dim=0)
-                mha_key_padding_mask = None
+            if canonical_phone_lengths is not None:
+                N_b = canonical_phone_lengths.to(device).clamp(min=1).view(batch_size, 1, 1).float()
             else:
-                attn_mask = attn_mask_2d
-                mha_key_padding_mask = None
+                N_b = (canonical_phone_indices != 0).long().sum(dim=-1).clamp(min=1).view(batch_size, 1, 1).float()
+
+            i_grid = torch.arange(num_phones, device=device, dtype=torch.float32).view(1, num_phones, 1)
+            t_grid = torch.arange(max_frames, device=device, dtype=torch.float32).view(1, 1, max_frames)
+
+            p = (i_grid + 0.5) / N_b  # (batch_size, num_phones, 1)
+            r = (t_grid + 0.5) / T_b  # (batch_size, 1, max_frames)
+
+            dist_sq = (p - r) ** 2  # (batch_size, num_phones, max_frames)
+            bias_3d = - self.monotonic_bandwidth * dist_sq
+
+            if acoustic_padding_mask is not None:
+                bias_3d = bias_3d.masked_fill(acoustic_padding_mask.unsqueeze(1), float("-inf"))
+
+            if self.enable_skip_token:
+                skip_bias = torch.zeros(batch_size, num_phones, 1, device=device, dtype=bias_3d.dtype)
+                attn_mask_3d = torch.cat([skip_bias, bias_3d], dim=-1)  # (batch_size, num_phones, 1 + max_frames)
+            else:
+                attn_mask_3d = bias_3d
+
+            attn_mask = attn_mask_3d.repeat_interleave(self.cross_attention.num_heads, dim=0)
+            mha_key_padding_mask = None
         else:
             attn_mask = None
             mha_key_padding_mask = extended_padding_mask
@@ -579,7 +595,9 @@ class LangfensWav2Vec2MDD(nn.Module):
                 cross_out = self.cross_attention_module(
                     frame_features=hidden_states,
                     canonical_phone_indices=canonical_phone_indices,
-                    acoustic_padding_mask=acoustic_padding_mask
+                    acoustic_padding_mask=acoustic_padding_mask,
+                    canonical_phone_lengths=canonical_phone_lengths,
+                    frame_output_lengths=frame_output_lengths,
                 )
                 if len(cross_out) == 4:
                     aligned_acoustic, phone_embeds, alignment_weights, skip_weights = cross_out

@@ -225,3 +225,150 @@ def test_e1_configs_and_deployment_metadata_integrity():
         assert d_meta["is_private"] is True
         assert d_meta["id"] == "minkhoaa/langfens-rq1-fold1-staging"
 
+
+def test_monotonic_bias_batched_vs_single_item_equivalence():
+    """Verify batched and single-item inference produce mathematically identical attention on valid frames."""
+    ca = CanonicalAcousticCrossAttention(
+        hidden_dim=64,
+        phone_embed_dim=32,
+        num_heads=2,
+        dropout=0.0,
+        enable_skip_token=True,
+        monotonic_bias=True,
+        monotonic_bandwidth=3.0,
+    ).eval()
+
+    torch.manual_seed(42)
+    # Item 0: 15 frames, 6 phones
+    f0 = torch.randn(1, 15, 64)
+    p0 = torch.randint(1, 39, (1, 6))
+
+    # Item 1: 25 frames, 10 phones
+    f1 = torch.randn(1, 25, 64)
+    p1 = torch.randint(1, 39, (1, 10))
+
+    # Batched container (padded to max_frames=25, max_phones=10)
+    f_batch = torch.zeros(2, 25, 64)
+    f_batch[0, :15] = f0[0]
+    f_batch[1, :25] = f1[0]
+
+    p_batch = torch.zeros(2, 10, dtype=torch.long)
+    p_batch[0, :6] = p0[0]
+    p_batch[1, :10] = p1[0]
+
+    pad_mask = torch.zeros(2, 25, dtype=torch.bool)
+    pad_mask[0, 15:] = True
+
+    frame_lens = torch.tensor([15, 25])
+    phone_lens = torch.tensor([6, 10])
+
+    # Single-item inference on item 0
+    with torch.inference_mode():
+        out0, emb0, w0, s0 = ca(f0, p0, None)
+        out_b, emb_b, w_b, s_b = ca(
+            f_batch,
+            p_batch,
+            pad_mask,
+            canonical_phone_lengths=phone_lens,
+            frame_output_lengths=frame_lens,
+        )
+
+    # Valid frames for item 0 are index 0 (skip token) + indices 1..15 (acoustic frames 0..14)
+    diff = (w_b[0, :6, :16] - w0[0, :6, :16]).abs().max().item()
+    assert diff < 1e-6, f"Batched vs single-item diff {diff} exceeds tolerance"
+
+    # Padded frame attention weights in batch must be exactly 0.0
+    assert torch.all(w_b[0, :6, 16:] == 0.0)
+
+
+def test_skip_token_gradient_connectivity_without_auxiliary_loss():
+    """Verify skip token receives non-zero finite gradient directly from standard multi-task loss."""
+    torch.manual_seed(1337)
+    model = LangfensWav2Vec2MDD(
+        hidden_dim=256,
+        conv_dim=128,
+        num_transformer_layers=2,
+        num_attention_heads=4,
+        intermediate_dim=512,
+        enable_skip_token=True,
+        monotonic_bias=True,
+        monotonic_bandwidth=3.0,
+    )
+    trainable = model.configure_two_head_training()
+    model.train()
+
+    waveforms = torch.randn(2, 6400)
+    audio_lengths = torch.tensor([6400, 4800], dtype=torch.long)
+    can_idx = torch.tensor([[5, 12, 19, 25], [8, 22, 14, 0]], dtype=torch.long)
+    can_len = torch.tensor([4, 3], dtype=torch.long)
+    target_ctc = torch.tensor([[5, 12, 19, 25], [8, 22, 14, 0]], dtype=torch.long)
+    target_lengths = torch.tensor([4, 3], dtype=torch.long)
+    target_binary = torch.tensor([[0, 1, 0, 1], [1, 0, 1, -100]], dtype=torch.long)
+
+    out = model(
+        waveforms=waveforms,
+        audio_lengths=audio_lengths,
+        canonical_phone_indices=can_idx,
+        canonical_phone_lengths=can_len,
+        target_ctc=target_ctc,
+        target_lengths=target_lengths,
+        target_binary=target_binary,
+    )
+
+    assert out.loss is not None
+    assert torch.isfinite(out.loss)
+    out.loss.backward()
+
+    skip_token = model.cross_attention_module.skip_token
+    assert skip_token.grad is not None
+    assert torch.isfinite(skip_token.grad).all()
+    assert (skip_token.grad != 0.0).any()
+    assert skip_token.grad.norm().item() > 0.0
+
+    for p in trainable:
+        assert p.grad is not None
+        assert torch.isfinite(p.grad).all()
+
+
+def test_attention_evaluation_excludes_skip_index_and_distinguishes_conditional_mass():
+    """Verify evaluation logic strictly excludes skip index from acoustic frames and separates conditional mass."""
+    import numpy as np
+
+    # Synthetic attention row: skip weight = 0.5, acoustic frames = 10 frames summing to 0.5
+    raw_attn = np.array([
+        0.50,  # skip token (index 0)
+        0.02, 0.03, 0.05, 0.15, 0.10, 0.05, 0.04, 0.03, 0.02, 0.01  # acoustic frames 0..9
+    ])
+    assert np.isclose(raw_attn.sum(), 1.0)
+
+    # Evaluation logic with skip token enabled
+    enable_skip_token = True
+    active_frames = 10
+    if enable_skip_token:
+        skip_mass = float(raw_attn[0])
+        acoustic_attn_w = raw_attn[1:1 + active_frames]
+    else:
+        skip_mass = 0.0
+        acoustic_attn_w = raw_attn[:active_frames]
+
+    assert np.isclose(skip_mass, 0.50)
+    assert len(acoustic_attn_w) == 10
+    acoustic_sum = float(acoustic_attn_w.sum())
+    assert np.isclose(acoustic_sum, 0.50)
+
+    # Gold interval: frames 3..5 (indices 3, 4: weights 0.15, 0.10)
+    start_frame, end_frame = 3, 5
+    abs_in_win = float(acoustic_attn_w[start_frame:end_frame].sum())  # 0.25
+    cond_in_win = float(abs_in_win / max(acoustic_sum, 1e-12))        # 0.25 / 0.50 = 0.50
+
+    assert np.isclose(abs_in_win, 0.25)
+    assert np.isclose(cond_in_win, 0.50)
+
+    # Peak frame among acoustic frames must be frame 3 (weight 0.15)
+    peak_frame = int(np.argmax(acoustic_attn_w))
+    assert peak_frame == 3  # Not index 0 (which would be 0.50 if skip token was not excluded!)
+    peak_time = peak_frame * 0.020
+    center_time = 0.065
+    offset = abs(peak_time - center_time)
+    assert np.isclose(peak_time, 0.060)
+    assert np.isclose(offset, 0.005)
