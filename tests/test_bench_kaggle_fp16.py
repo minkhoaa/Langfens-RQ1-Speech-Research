@@ -49,7 +49,7 @@ def staged(tmp_path, monkeypatch, launcher):
         monkeypatch.setenv(key, "incorrect-existing-value")
     outdir = working_root / "fresh-run"
     args = [
-        "--source-root", str(source), "--artifact-root", str(artifacts),
+        "--fold", "1", "--source-root", str(source), "--artifact-root", str(artifacts),
         "--hf-cache", str(cache), "--outdir", str(outdir),
     ]
     return SimpleNamespace(
@@ -64,12 +64,37 @@ def test_default_preflight_delegates_fixed_fp16_without_reading_data(launcher, s
     assert launcher.main(staged.args) == 0
     staged.importer.assert_called_once_with("langfens_bench.runtime")
     staged.runtime.main.assert_called_once_with([
-        "preflight", "--profile", "KAGGLE_FP16", "--contract", str(staged.contract),
+        "preflight", "--profile", "KAGGLE_FP16", "--fold", "1", "--contract", str(staged.contract),
         "--artifact-root", str(staged.artifacts), "--outdir", str(staged.outdir),
     ])
     assert not staged.outdir.exists()
     assert set(staged.input_root.rglob("*")) == before
     assert staged.contract.read_text() == "{}"
+
+
+@pytest.mark.parametrize("mode", ["preflight", "evaluate"])
+def test_fold_is_required_before_import(launcher, staged, mode, capsys):
+    args_without_fold = staged.args[2:]
+    with pytest.raises(SystemExit) as exc:
+        launcher.main([mode, *args_without_fold, "--authorize-remote-inference"])
+    assert exc.value.code == 2
+    assert "required: --fold" in capsys.readouterr().err
+    staged.importer.assert_not_called()
+
+
+@pytest.mark.parametrize("fold", ["0", "5", "all", "1,2"])
+def test_invalid_or_cross_fold_selection_rejected(launcher, staged, fold):
+    with pytest.raises(SystemExit):
+        launcher.main([*staged.args, "--fold", fold])
+    staged.importer.assert_not_called()
+
+
+@pytest.mark.parametrize("fold", ["1", "2", "3", "4"])
+def test_selected_fold_is_forwarded(launcher, staged, fold):
+    launcher.main([*staged.args, "--fold", fold])
+    argv = staged.runtime.main.call_args.args[0]
+    assert argv[argv.index("--fold") + 1] == fold
+    assert argv.count("--fold") == 1
 
 
 def test_evaluate_requires_explicit_authorization_before_import(launcher, staged, capsys):

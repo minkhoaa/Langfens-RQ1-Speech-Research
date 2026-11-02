@@ -9,7 +9,9 @@ This is an inference-only deployment wrapper, not another evaluator. It calls
 selects evaluation. `evaluate` additionally requires
 `--authorize-remote-inference`. The common runtime must independently verify
 Kaggle/T4 hardware and all scientific input gates; the flag is not evidence of
-hardware, quota, privacy, or approval. There is no CPU/FP32 fallback.
+hardware, quota, privacy, or approval. Both modes require exactly one
+`--fold {1,2,3,4}`, forwarded unchanged to the common runtime. There is no
+CPU/FP32 fallback.
 
 The 80 ordered validation utterances are omission-enriched (eight speakers),
 not a representative population. Protocol O uses gold canonical identities only;
@@ -34,9 +36,18 @@ After separate operator deployment authorization, prepare immutable inputs:
 | Location | Required contents |
 | --- | --- |
 | `/kaggle/input/langfens-rq1-bench-source/repo` | Reviewed integrated source snapshot, including `src/langfens_bench/runtime.py`, existing model/evaluation dependencies, frozen contract/split, CMUdict and prompts at repository-relative paths. Freeze and independently verify the integrated source commit and file hashes before staging; the lane base alone lacks A's runtime. |
-| `/kaggle/input/langfens-rq1-bench-artifacts` | Four unchanged checkpoints and four authorized train/validation archives at the exact artifact-root-relative paths in `contract.json`. Keep archives separate by fold; do not extract a cross-fold audio union or stage active-test members for that fold. |
+| `/kaggle/input/langfens-rq1-bench-fold1-artifacts` (example for `--fold 1`) | Only the selected fold's unchanged checkpoint and authorized train/validation archive, at the exact artifact-root-relative paths in `contract.json`. Use the corresponding fold2/fold3/fold4 attachment in a separate runtime/run, never together. |
 | `/kaggle/input/langfens-rq1-bench-cache/huggingface/hub` | Offline Hugging Face cache for `facebook/wav2vec2-base-960h`, revision `22aad52d435eb6dbaf354bdad9b0da84ce7d6156`, including complete snapshot/blob links contained in the private staged cache. No download fallback. |
 | `/kaggle/working/<new-run>` | New output directory only; ephemeral, within the 20 GB ceiling, never the sole durable evidence store. |
+
+**One fold-scoped private data input per runtime/run. Never attach all four
+archives together**, even if they remain compressed or reside in separate
+folders: speakers rotate, so another fold's train/validation archive can contain
+the active fold's sealed test speakers. Do not attach other-fold data sources,
+extract a cross-fold union, or leave a previous fold's data in the runtime.
+Source/cache attachments must contain no corpus audio/labels. The coordinator
+will validate and merge four completed fold prediction bundles (20 IDs per fold)
+into the ordered 80-ID benchmark; do not co-locate the source audio to merge.
 
 Install/verify dependencies from approved offline wheels or the preinstalled
 runtime before launch; do not clone source or install from the network at run
@@ -44,9 +55,11 @@ time. Record actually installed versions. No credentials are needed by this
 offline launcher. Do not search for credentials or mount remote data streams.
 Keep original Drive archives unchanged; this lane performs no uploads.
 
-The common preflight must verify all contract/resource/checkpoint/package
-hashes, all 80 IDs against each fold's validation whitelist, and active-test
-speaker exclusion in archive inventories **before reading any WAV/TextGrid**.
+The common preflight must verify frozen contract/resource hashes, the selected
+fold's checkpoint/package hashes and 20 IDs against its validation whitelist,
+and active-test speaker exclusion in archive inventories **before reading any
+WAV/TextGrid**. Remote preflight must reject data for any other fold in the
+runtime, not merely avoid reading it.
 Missing staging, dependencies, pinned offline cache, hardware, or authorization
 are blockers, not grounds to fall back or relax checks. No blanket extraction.
 
@@ -63,17 +76,20 @@ existing outputs fail closed. The runtime is imported only from staged source.
 ```bash
 # Default: read-only preflight checks, not evaluation or a launch command.
 python /kaggle/input/langfens-rq1-bench-source/repo/deploy/bench_kaggle_fp16/bench_kaggle_fp16.py \
-  --outdir /kaggle/working/rq1-bench-fp16-preflight-001
+  --fold 1 \
+  --outdir /kaggle/working/rq1-bench-fp16-fold1-preflight-001
 
 # ONLY after separate operator approval and successful common-runtime gates:
 python /kaggle/input/langfens-rq1-bench-source/repo/deploy/bench_kaggle_fp16/bench_kaggle_fp16.py evaluate \
-  --authorize-remote-inference \
-  --outdir /kaggle/working/rq1-bench-fp16-evaluate-001
+  --fold 1 --authorize-remote-inference \
+  --outdir /kaggle/working/rq1-bench-fp16-fold1-evaluate-001
 ```
 
 Alternate private attachment mount names can be supplied with `--source-root`,
 `--artifact-root`, and `--hf-cache`; the same containment rules apply. There is
-no `--profile`, device, precision, or fallback override. Common-runtime failure
+no `--profile`, device, precision, or fallback override. Without `--fold` even
+default preflight refuses; select one fold explicitly. The default artifact
+mount and output name include that fold. Common-runtime failure
 and nonzero exit status propagate without retrying another profile.
 
 Future deployment must follow the repository's stage-with-`--no-run`, Web UI
@@ -107,7 +123,7 @@ These are required integration checks, **not claims that CUDA was executed**:
   and reserved bytes. Report actual observations only; no speed/memory claim
   from mocks, estimates, or metadata.
 - Preserve Protocol O/Z semantics, active lengths, original averaged attention,
-  `diag_del_ins` alignment, null undefined metrics, complete ordered records,
+  `sub_first` alignment (verified existing-code spelling), null undefined metrics, complete ordered records,
   and source/artifact integrity. No evaluator fork in this wrapper.
 
 A's runtime is absent at this lane's base commit, so its internal precision,
@@ -117,7 +133,9 @@ review/test these controls after integration and before any remote approval.
 ## Numerical drift comparison — instructions, not executed results
 
 After authorized genuine LOCAL_FP32 and KAGGLE_FP16 runs of the same integrated
-runtime and frozen contract, use the coordinator-owned comparison command:
+runtime and frozen contract, have the coordinator verify/merge the four remote
+fold bundles into one complete ordered 80-ID prediction bundle without mixing
+corpus inputs. Then use the coordinator-owned comparison command:
 
 ```bash
 PYTHONPATH=.:src python -m langfens_bench compare \
@@ -177,3 +195,28 @@ The historical DIAG-02B archive tolerance of 0.000200 is not waived by FP16 gate
   before private staging/deployment; verify all remote prerequisites and run
   default preflight first. Do not treat this lane checkpoint as a GPU execution
   record, PyTorch checkpoint, or scientific acceptance.
+
+### Fold-isolation clarification follow-up
+
+- **Input/state:** continued from clean lane commit
+  `ffe4dbbc385e0fb9cffe29352829e74ab80fdd56`, following coordinator's explicit
+  correction: Kaggle runs must be fold-scoped because speakers rotate across
+  folds. The earlier guidance to stage four archives together is withdrawn;
+  keeping them compressed/separate does not make that safe.
+- **Changes:** require and forward one `--fold 1..4` for both modes; include
+  fold in default input/output paths; document one private fold data input per
+  runtime/run, selected-fold preflight, and coordinator merge of four 20-ID
+  result bundles. Correct documented existing alignment spelling to
+  `sub_first`, superseding the frozen contract's provisional `diag_del_ins`
+  wording after source verification reported by coordinator. No A/B edits.
+- **Executed evidence:** same lane pytest command now reports **36 passed in
+  0.09 s**, including missing/invalid fold rejection and all four selections
+  forwarded to the mocked runtime. Script help passed; no-fold invocation and
+  `evaluate --fold 1` without authorization each refused with expected exit
+  **2** before runtime import. `git diff --check` passed.
+- **Still pending:** actual common-runtime fold isolation across mounted inputs,
+  precision/hardware checks, real preflight, four-bundle merge, reviewer gate
+  and any deployment authorization. No data, CUDA, inference, remote calls or
+  training/backward executed; successful updates remain 0. Restart by reviewing
+  the follow-up commit after the initial lane commit, integrating A's required
+  fold interface, and retaining separate fold runtimes/data attachments.

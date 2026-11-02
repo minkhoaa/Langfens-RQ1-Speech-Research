@@ -24,8 +24,9 @@ def _contained_path(value: str, root: Path, parser: argparse.ArgumentParser) -> 
 def main(argv: list[str] | None = None) -> int | None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("mode", nargs="?", choices=("preflight", "evaluate"), default="preflight")
+    parser.add_argument("--fold", type=int, choices=(1, 2, 3, 4), required=True)
     parser.add_argument("--source-root", default="/kaggle/input/langfens-rq1-bench-source/repo")
-    parser.add_argument("--artifact-root", default="/kaggle/input/langfens-rq1-bench-artifacts")
+    parser.add_argument("--artifact-root")
     parser.add_argument("--hf-cache", default="/kaggle/input/langfens-rq1-bench-cache/huggingface")
     parser.add_argument("--outdir")
     parser.add_argument("--authorize-remote-inference", action="store_true")
@@ -34,9 +35,12 @@ def main(argv: list[str] | None = None) -> int | None:
         parser.error("evaluate requires --authorize-remote-inference; no inference started")
 
     source = _contained_path(args.source_root, INPUT_ROOT, parser)
-    artifacts = _contained_path(args.artifact_root, INPUT_ROOT, parser)
+    artifacts = _contained_path(
+        args.artifact_root or f"/kaggle/input/langfens-rq1-bench-fold{args.fold}-artifacts",
+        INPUT_ROOT, parser,
+    )
     cache = _contained_path(args.hf_cache, INPUT_ROOT, parser)
-    output_value = args.outdir or f"/kaggle/working/rq1-bench-fp16-{args.mode}"
+    output_value = args.outdir or f"/kaggle/working/rq1-bench-fp16-fold{args.fold}-{args.mode}"
     if Path(output_value).is_symlink():
         parser.error(f"output path is an existing symlink; choose a new --outdir: {output_value}")
     outdir = _contained_path(output_value, WORKING_ROOT, parser)
@@ -68,7 +72,7 @@ def main(argv: list[str] | None = None) -> int | None:
     if Path(runtime.__file__).resolve() != runtime_file.resolve():
         parser.error("common runtime was not imported from the pre-staged source root")
     runtime_argv = [
-        args.mode, "--profile", PROFILE, "--contract", str(contract),
+        args.mode, "--profile", PROFILE, "--fold", str(args.fold), "--contract", str(contract),
         "--artifact-root", str(artifacts), "--outdir", str(outdir),
     ]
     if args.authorize_remote_inference:
