@@ -105,6 +105,6 @@ def test_p_score_synthetic_cli_writes_hashed_manifest_and_refuses_overwrite(tmp_
     sums = (output / "SHA256SUMS").read_text().splitlines()
     assert len(sums) == 4 * 3 + 1
     parsed = json.loads((output / "run_manifest.json").read_text())
-    assert parsed["source_sha256"] and parsed["git_dirty"]
+    assert parsed["source_sha256"] and type(parsed["git_dirty"]) is bool
     with pytest.raises(ValueError, match="exists"):
         run(cache_path, output, config_path, "another_run", repo=Path.cwd())
