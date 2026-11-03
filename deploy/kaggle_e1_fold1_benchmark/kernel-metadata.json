@@ -1,0 +1,20 @@
+{
+  "id": "minkhoaa/langfens-e1-fold1-validation-benchmark",
+  "title": "Langfens E1 Fold1 Validation Benchmark",
+  "code_file": "langfens-e1-fold1-validation-benchmark.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "dataset_sources": [
+    "minkhoaa/langfens-rq1-fold1-staging"
+  ],
+  "kernel_sources": [
+    "minkhoaa/langfens-rq-model-01-e1-fold1-train"
+  ],
+  "competition_sources": [],
+  "model_sources": [],
+  "machine_shape": "NvidiaTeslaT4"
+}

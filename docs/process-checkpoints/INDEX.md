@@ -33,7 +33,7 @@ Status: **PARTIAL; SOURCE_INTEGRATED; REMOTE_READINESS_AND_PUBLICATION_BLOCKED**
 | **RQ1-DIAG-01** | Phoneme omission and false-negative root cause diagnostic audit across 4-fold validation sets. | `COMPLETED` | Step 01: Phoneme Omission & False-Negative Root Cause | `b0ef963` | [PROCESS_CHECKPOINT.md](../../manifests/RQ1-DIAG-01/PROCESS_CHECKPOINT.md) | Proceed to RQ1-DIAG-02 | None |
 | **RQ1-DIAG-02** | Temporal acoustic alignment root-cause validation, counterfactual masking, and CTC omission boundary audit. | `HISTORICAL; CAUSAL_CLAIMS_SUPERSEDED_BY_DIAG-02B` | Step 01: Temporal Alignment Root-Cause Validation | `dd2dee9` | [PROCESS_CHECKPOINT.md](../../manifests/RQ1-DIAG-02/PROCESS_CHECKPOINT.md) | Read DIAG-02B corrections; no training GO | Invalid forced-MHA counterfactual and unsupported CTC conclusions |
 | **RQ1-DIAG-02B** | Counterfactual validity, matched CTC discrimination, separated waveform/feature probes and numerical reconciliation. | `PARTIAL; NO_GO_TRAINING_CAUSAL_GATE` | Bounded CPU scientific report and regression evidence | `dd2dee9` execution base; dedicated `feat/rq1-diag-02b-counterfactual-validity` branch | [PROCESS_CHECKPOINT.md](../../manifests/RQ1-DIAG-02B/PROCESS_CHECKPOINT.md) | STOP; review report and resolve archive parity before further authorization | Archived scores exceed unchanged tolerance on 9/80 utterances; only G=8 validation speakers |
-| **RQ-MODEL-01** | Dataset sufficiency audit across 4-fold train sets, Vietnamese omission concentration, and E1 alignment-aware MDD implementation with explicit skip modeling. | `READY_FOR_OPERATOR_AUTHORIZATION` | Step 01: Dataset Sufficiency Audit & E1 Model Implementation | `bd141bd` | [RQ_MODEL_01_REPORT.md](../../manifests/RQ-MODEL-01/RQ_MODEL_01_REPORT.md) | Await operator authorization for Kaggle T4 execution | Remote GPU training gated |
+| **RQ-MODEL-01** | Dataset sufficiency audit across 4-fold train sets, E1 alignment-aware MDD implementation, and Kaggle GPU Fold 1 benchmark. | `COMPLETED_FOLD1_BENCHMARK; NO_GO_FOLDS_2_4` | Step 02: E0 vs E1 Fold 1 Kaggle GPU Validation Benchmark | `baa4989` | [PROCESS_CHECKPOINT.md](../../manifests/RQ-MODEL-01/PROCESS_CHECKPOINT.md) | Baseline R retained; Folds 2–4 remain Baseline R | E1 skip mass separation collapsed (0.000000 on omissions); Omission AP degraded (-7.90%) |
 
 ---
 
@@ -237,6 +237,24 @@ Status: **PARTIAL; SOURCE_INTEGRATED; REMOTE_READINESS_AND_PUBLICATION_BLOCKED**
 
 ---
 
+### RQ-MODEL-01 — Dataset Sufficiency Audit & E1 Alignment-Aware MDD
+- **Overview Checkpoint:** [manifests/RQ-MODEL-01/PROCESS_CHECKPOINT.md](../../manifests/RQ-MODEL-01/PROCESS_CHECKPOINT.md)
+- **Phase Report:** [RQ_MODEL_01_REPORT.md](../../manifests/RQ-MODEL-01/RQ_MODEL_01_REPORT.md)
+- **Status:** `COMPLETED_FOLD1_BENCHMARK; NO_GO_FOLDS_2_4`.
+- **Source:** Pinned execution commit `baa4989243d5ff46b8b3bf5a3c280cdf2857382b`, branch `feat/rq-model-01-dataset-sufficiency-and-e1`.
+- **Execution Platform:** Kaggle GPU (Tesla T4, PyTorch 2.11.0+cu128, FP32 inference only, 0 training/optimizer updates).
+- **Execution Kernel:** `minkhoaa/langfens-e1-fold1-validation-benchmark` (Version 4, Status: `COMPLETE`).
+- **Benchmark Findings (Fold 1, 300 val utterances, 9,956 phonemes):**
+  - Omission AP: E0=0.035020 vs E1=0.032252 ($\Delta = -0.002768$, -7.90% relative).
+  - Recall @ 15% FPR: E0=0.400000 vs E1=0.365517 ($\Delta = -0.034483$, -8.62% relative).
+  - Binary AP: E0=0.317021 vs E1=0.309293 ($\Delta = -0.007728$, -2.44% relative).
+  - CTC PER: E0=0.236818 vs E1=0.232365 ($\Delta = -0.004453$, -1.88% relative).
+  - Attention localization: In-window conditional mass E0=0.032023 vs E1=0.035854 (+11.96%).
+  - Skip mass separation: Deletions=0.000000, Correct=0.000031. Complete collapse of skip token activation on deletions.
+- **Scientific Disposition:** STRICT NO-GO for cross-fold rollout. Baseline R retained as authoritative production model.
+
+---
+
 ## 3. Cross-Platform Storage & Artifact Index
 
 | Artifact Identifier | Role / Description | Canonical Location / Identifier | Cryptographic SHA-256 Digest | Verification Status |
@@ -295,6 +313,9 @@ Status: **PARTIAL; SOURCE_INTEGRATED; REMOTE_READINESS_AND_PUBLICATION_BLOCKED**
 | `pilot_arm2b_best.pt` | Arm 2B Weighted Peak Val AP Weights (Epoch 1 / 600 up) | HF: `minkhoaa/langfens-rq1-cross-fold-checkpoints` (`pilot/pilot_arm2b_weighted/best.pt`) | `a94434ca31308d29853bf28b020101820dc47353d598620a50a2a65fea12608a` | Verified (Private) |
 | `pilot_arm2b_last.pt` | Arm 2B Weighted Exploratory Near-Budget (Epoch 6 / 3,598 up) | HF: `minkhoaa/langfens-rq1-cross-fold-checkpoints` (`pilot/pilot_arm2b_weighted/last.pt`) | `3e886a4fbd64414c60b0993b92419c66007b5cd34085c25978069fac5d3310ac` | Verified (Private) |
 | `pilot_arm2b_history.json` | Arm 2B Weighted 6-Epoch Metrics History (2 AMP Skips) | HF: `minkhoaa/langfens-rq1-cross-fold-checkpoints` (`pilot/pilot_arm2b_weighted/history.json`) | `860c0a0c2c1a40cb673892fdb7610ee7c54bfcfce06423cb3a9675386a61127c` | Verified (Private) |
+| `E1_FOLD1_BENCHMARK_SUMMARY.json` | E0 vs E1 Fold 1 Kaggle GPU Benchmark Summary | `manifests/RQ-MODEL-01/evaluation/E1_FOLD1_BENCHMARK_SUMMARY.json` | `006611ccf0796938d4114bf62a1d17979c0af9ece362415dc1600670e6b086a3` | Verified |
+| `E0_E1_EVALUATION_REPORT.json` | Baseline R Fold 1 Full Validation Report (300 utts) | `manifests/RQ-MODEL-01/evaluation/RQ_MODEL_01_E0_FOLD1_EVAL/E1_EVALUATION_REPORT.json` | `b2315fef480daa37df2e69f60d6a3594d3bfafbb5589bb68bf00b00476685e3e` | Verified |
+| `E1_E1_EVALUATION_REPORT.json` | E1 Skip MDD Fold 1 Full Validation Report (300 utts) | `manifests/RQ-MODEL-01/evaluation/RQ_MODEL_01_E1_FOLD1_EVAL/E1_EVALUATION_REPORT.json` | `0d9c6e6a3d63d26f8f3bcc4780389e96494f9ba33a6dccc05c425136c449b0d4` | Verified |
 | `BASELINE_R_ARTIFACT_MANIFEST.json` | Remote Release Ledger | Google Drive (`1yrTbDR9ki0u-kv_TyaCfwqdJw20CbTKP`) | `6222c92b63ea58f584267b39fb3ffc51394562086f90de21bbab8c8c1abe1e22` | Verified |
 
 ---

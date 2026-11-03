@@ -1,0 +1,49 @@
+{
+  "omission_ap": {
+    "E0": 0.03502,
+    "E1": 0.032252,
+    "delta_E1_minus_E0": -0.002768
+  },
+  "omission_recall_at_fpr15": {
+    "E0": 0.4,
+    "E1": 0.365517,
+    "delta_E1_minus_E0": -0.034483
+  },
+  "binary_ap": {
+    "E0": 0.317021,
+    "E1": 0.309293,
+    "delta_E1_minus_E0": -0.007728
+  },
+  "ctc_per": {
+    "E0": 0.236818,
+    "E1": 0.232365,
+    "delta_E1_minus_E0": -0.004453
+  },
+  "skip_behavior": {
+    "E0": {
+      "mean_skip_mass_deletions": 0.0,
+      "mean_skip_mass_correct": 0.0,
+      "mean_conditional_in_window_mass": 0.032023,
+      "mean_peak_offset_seconds": 1.191963
+    },
+    "E1": {
+      "mean_skip_mass_deletions": 0.0,
+      "mean_skip_mass_correct": 3.1e-05,
+      "mean_conditional_in_window_mass": 0.035854,
+      "mean_peak_offset_seconds": 1.197316
+    }
+  },
+  "population": {
+    "fold": 1,
+    "validation_utterances": 300,
+    "canonical_tokens": 9956,
+    "omissions": 145,
+    "correct": 8799,
+    "substitutions": 1012
+  },
+  "checkpoint_sha256": {
+    "E0": "a2445c8d17910bf3c03101f50fc419675e8d1bc012af43af10267a28dbba948b",
+    "E1": "3b686730cc0a1101a1bbc96b59dc7bd38a9fc3cc7da7effe26b2d9498f079d24"
+  },
+  "source_sha": "baa4989243d5ff46b8b3bf5a3c280cdf2857382b"
+}

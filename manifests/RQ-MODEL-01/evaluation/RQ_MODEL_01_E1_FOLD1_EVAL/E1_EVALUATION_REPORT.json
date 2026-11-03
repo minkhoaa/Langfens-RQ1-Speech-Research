@@ -1,0 +1,72 @@
+{
+  "provenance": {
+    "checkpoint_path": "/kaggle/input/notebooks/minkhoaa/langfens-rq-model-01-e1-fold1-train/checkpoints/fold1/e1_fold1_alignment_aware/fixed_budget_checkpoint.pt",
+    "checkpoint_sha256": "3b686730cc0a1101a1bbc96b59dc7bd38a9fc3cc7da7effe26b2d9498f079d24",
+    "fold": 1,
+    "experiment": "RQ-MODEL-01-E1",
+    "model_arm": "E1_alignment_aware_skip",
+    "enable_skip_token": true,
+    "monotonic_bias": true,
+    "evaluation_timestamp_utc": "2026-11-03T02:50:34Z",
+    "eval_duration_seconds": 15.5,
+    "utterances_evaluated": 300
+  },
+  "primary_registered_metrics": {
+    "omission_ap": 0.032252,
+    "omission_recall_at_fpr15": 0.365517,
+    "binary_ap": 0.309293,
+    "ctc_per": 0.232365
+  },
+  "secondary_metrics": {
+    "binary_roc_auc": 0.749722,
+    "omission_roc_auc": 0.730946,
+    "omission_fnr_at_fpr15": 0.634483,
+    "diagnostic_threshold_fpr15": 0.16089,
+    "actual_correct_fpr15": 0.149903,
+    "substitution_ap": 0.300876,
+    "substitution_roc_auc": 0.752412,
+    "ctc_sub_rate": 0.168505,
+    "ctc_del_rate": 0.042101,
+    "ctc_ins_rate": 0.021759,
+    "total_ctc_edits": 2296,
+    "total_ctc_ref_tokens": 9881
+  },
+  "counts": {
+    "total_tokens": 9956,
+    "correct_tokens": 8799,
+    "substitution_tokens": 1012,
+    "deletion_tokens": 145,
+    "total_errors": 1157
+  },
+  "protocol_z": {
+    "aligned_tokens": 9919,
+    "coverage": 0.996284,
+    "aligned_ap": 0.305736,
+    "aligned_roc_auc": 0.746348
+  },
+  "attention_localization": {
+    "mean_absolute_in_window_mass": 0.035854,
+    "mean_conditional_in_window_mass": 0.035854,
+    "mean_uniform_mass": 0.030883,
+    "mean_peak_offset_seconds": 1.197316,
+    "mean_skip_mass_all": 2.8e-05,
+    "mean_skip_mass_deletions": 0.0,
+    "mean_skip_mass_correct": 3.1e-05
+  },
+  "disaggregated_by_l1": {
+    "Hindi": {
+      "tokens": 4945,
+      "errors": 516,
+      "deletions": 65,
+      "binary_ap": 0.245874,
+      "omission_ap": 0.034216
+    },
+    "Spanish": {
+      "tokens": 5011,
+      "errors": 641,
+      "deletions": 80,
+      "binary_ap": 0.383344,
+      "omission_ap": 0.03182
+    }
+  }
+}
