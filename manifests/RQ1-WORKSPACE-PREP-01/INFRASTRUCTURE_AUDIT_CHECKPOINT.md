@@ -116,9 +116,19 @@ This process checkpoint documents the completion of infrastructure verification 
 
 ## 6. Restart & Continuation Instructions
 
-1. **Hold State:** Training execution remains on HOLD pending formal operator authorization for the P-SUP experimental objective amendment.
-2. **Next Safe Action:**
-   - Review `manifests/RQ1-WORKSPACE-PREP-01/INFRASTRUCTURE_AUDIT_REPORT.md`.
-   - Deploy preflight kernels via CLI: `kaggle kernels push -p deploy/kaggle_psup_control_preflight --no-run`.
-   - Verify GPU allocation and staging in Kaggle Web UI without executing model updates.
-   - Upon operator training authorization, toggle `EXECUTE_TRAINING = True` in training packages and launch.
+---
+
+## 7. Final Kaggle Launch Safety Fix (2026-11-03)
+
+**STATUS: KERNELS_PINNED_AND_STAGED; READY_FOR_OPERATOR_LAUNCH.**
+
+1. **Pinned Source Commit:** Both notebooks pinned to immutable full SHA `df55f125f5e0e26211986dae32a2dac78c364aaa` on branch `prep/rq1-p-sup`. Floating runtime branch checkouts/pulls removed. Fail-closed assertion asserts exact commit match.
+2. **Remote Execution Flag:** `--remote-execution` active in both notebooks, enforcing CUDA availability, Tesla T4 GPU validation, and FP16 AMP support.
+3. **Isolated Checkpoint Prefixes:**
+   - Treatment T-OP: local `/kaggle/working/checkpoints/RQ1-P-SUP/t_op`, remote `psup/t_op/`
+   - Control B-CONTROL: local `/kaggle/working/checkpoints/RQ1-P-SUP/b_control`, remote `psup/b_control/`
+4. **Staged Kernel URLs (Version 2, push --no-run):**
+   - Treatment T-OP: https://www.kaggle.com/code/minkhoaa/langfens-rq1-psup-t-op-t4x2
+   - Control B-CONTROL: https://www.kaggle.com/code/minkhoaa/langfens-rq1-psup-b-control-t4x2
+5. **Operator Web UI Action Required:** Attach secret `HF_TOKEN` under Add-ons -> Secrets, then click "Save & Run All".
+

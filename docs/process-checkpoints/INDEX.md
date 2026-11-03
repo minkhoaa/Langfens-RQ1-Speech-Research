@@ -12,7 +12,17 @@
 
 ## RQ1 — One-shot parallel experimental campaign: P-SCORE vs P-SUP (current)
 
-**P-SCORE_BENCHMARK_COMPLETE; P-SUP_PIPELINE_STAGED_AWAITING_KAGGLE_WEB_UI; INFRASTRUCTURE_VERIFIED; CRITERIA_FROZEN.** Four independent Gemini subagents executed concurrently under strict platform boundaries (Local CPU evaluation, Kaggle T4 staging, zero sealed TEST access).
+**P-SCORE_BENCHMARK_COMPLETE; P-SUP_STAGED_PINNED_V2_AWAITING_KAGGLE_WEB_UI; INFRASTRUCTURE_VERIFIED; CRITERIA_FROZEN.**
+- **P-SUP Kernel Staging:** Pinned to immutable source commit `df55f125f5e0e26211986dae32a2dac78c364aaa` on branch `prep/rq1-p-sup`. Floating runtime branch pull removed. `--remote-execution` flag enforced. Staged via official CLI `--no-run` as Version 2:
+  - Treatment T-OP: `https://www.kaggle.com/code/minkhoaa/langfens-rq1-psup-t-op-t4x2`
+  - Control B-CONTROL: `https://www.kaggle.com/code/minkhoaa/langfens-rq1-psup-b-control-t4x2`
+  - Ready for operator Web UI secret `HF_TOKEN` attachment and "Save & Run All".
+- **P-SCORE Benchmark Execution (commit `a9f4947985651253cee980086a346056885b51c6`):**
+  - Omission AP: `0.051026` (+73.5% rel, +2.16 pp vs SF-S).
+  - Recall @ FPR15: `0.430657` (+18.25 pp vs SF-S).
+  - Substitution AP: `0.222544` (-2.43 pp vs SF-S, tradeoff identified).
+  - Greedy CTC PER: `0.236818` (2,340/9,881 references, exact E0 parity).
+  - Full population ($N=9,956$) vs Aligned population ($N=9,919$) reconciled (37 unaligned tokens mapped: 25 cor, 4 sub, 8 del).
 
 1. **P-SCORE Experimental Execution (commit `a9f4947985651253cee980086a346056885b51c6` on `prep/rq1-p-score`):**
    - 269 synthetic unit/regression tests passed.
