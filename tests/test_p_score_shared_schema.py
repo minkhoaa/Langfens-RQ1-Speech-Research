@@ -12,15 +12,26 @@ import pytest
 
 from langfens_prep.p_score.runtime import reject_gold_fields, score_record
 
-SHARED_VALIDATOR_PATH = Path(
-    "/home/khoa/Projects/KLTN/Dataset/manifests/RQ1-WORKSPACE-PREP-01/"
-    "implementation-readiness/strict_runtime_validator.py"
-)
+REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
+SHARED_VALIDATOR_PATH = (
+    REPOSITORY_ROOT / "manifests/RQ1-WORKSPACE-PREP-01/implementation-readiness/"
+    "strict_runtime_validator.py"
+).resolve()
+assert SHARED_VALIDATOR_PATH.is_relative_to(REPOSITORY_ROOT.resolve())
+assert SHARED_VALIDATOR_PATH.is_file()
 spec = importlib.util.spec_from_file_location("rq1_shared_strict_runtime_validator", SHARED_VALIDATOR_PATH)
 shared = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(shared)
 
 SCORERS = ("sf_s", "sf_sd", "greedy_dp", "gop_sa")
+
+
+def test_p_score_shared_validator_is_loaded_from_this_checkout():
+    expected = (REPOSITORY_ROOT / "manifests/RQ1-WORKSPACE-PREP-01/"
+                "implementation-readiness/strict_runtime_validator.py").resolve()
+    assert SHARED_VALIDATOR_PATH == expected
+    assert Path(shared.__file__).resolve() == expected
+    assert expected.is_relative_to(REPOSITORY_ROOT.resolve())
 
 
 def _emissions(symbols):
