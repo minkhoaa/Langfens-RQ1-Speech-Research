@@ -1,0 +1,482 @@
+{
+  "process": "RQ-RESEARCH-01",
+  "scope": "documentary verification, not scientific model PASS",
+  "base_commit": "b25a7595360294798d8d06b37592dd65dd4c9c33",
+  "workflow_id": "723092bc-f51f-4a2a-8cd9-bf63b7c93d0b",
+  "all_six_initial_executions_overlap": true,
+  "launch_span_seconds": 0.193,
+  "reports": [
+    {
+      "role": "a-independent-lane-e",
+      "run_id": "13fe3b5c-1317-4fa4-9a7f-81a9464ce192",
+      "initial_terminal_state": "completed",
+      "started_at_epoch_ms": 1793682278303,
+      "ended_at_epoch_ms": 1793682777676,
+      "report": "independent/A_INDEPENDENT_LANE_E.md",
+      "bytes": 45773,
+      "sha256": "7d89fd881629b750faa0d47975a8b4bba88a66d809b62dda8906b1258792f42e"
+    },
+    {
+      "role": "b-source-data",
+      "run_id": "ad405792-be84-4986-bae9-f006a0ba2bb9",
+      "initial_terminal_state": "completed",
+      "started_at_epoch_ms": 1793682278235,
+      "ended_at_epoch_ms": 1793682774987,
+      "report": "independent/B_SOURCE_DATA_COMPATIBILITY.md",
+      "bytes": 42460,
+      "sha256": "5426f76e929f6ad6f2848432d8b617912c0f6134c71619628584943d6ae17f1d"
+    },
+    {
+      "role": "c-primary-literature",
+      "run_id": "e6563a12-1bce-4c00-b646-a7c95a00ed03",
+      "initial_terminal_state": "failed",
+      "started_at_epoch_ms": 1793682278243,
+      "ended_at_epoch_ms": 1793682788353,
+      "report": "independent/C_PRIMARY_LITERATURE_VERIFICATION.md",
+      "bytes": 42725,
+      "sha256": "75aaa30caa45e9d20d763900316f4dbbed58cc084f242cc61eccc36bb159faf5"
+    },
+    {
+      "role": "d-scientific-protocol",
+      "run_id": "49884ad3-99c4-4e06-8e4b-cf39b515a15b",
+      "initial_terminal_state": "completed",
+      "started_at_epoch_ms": 1793682278293,
+      "ended_at_epoch_ms": 1793682723982,
+      "report": "independent/D_SCIENTIFIC_PROTOCOL_CORRECTIONS.md",
+      "bytes": 37927,
+      "sha256": "31cb409a405e577adb4a754254ac908fc58639b4180393d15aba3bd88250f929"
+    },
+    {
+      "role": "e-thesis-product",
+      "run_id": "9539cd21-129b-4879-86e6-b2d8668bbad3",
+      "initial_terminal_state": "completed",
+      "started_at_epoch_ms": 1793682278306,
+      "ended_at_epoch_ms": 1793682703004,
+      "report": "independent/E_THESIS_ALIGNMENT_AUDIT.md",
+      "bytes": 46451,
+      "sha256": "dd8e831189c741c1cdcc594d2a1d7cec52ad95d5cafbc69b223d6b0259f7f59f"
+    },
+    {
+      "role": "f-cross-session",
+      "run_id": "f5d71002-ce08-44ad-809f-e84f517e87c3",
+      "initial_terminal_state": "completed",
+      "started_at_epoch_ms": 1793682278428,
+      "ended_at_epoch_ms": 1793682737501,
+      "report": "independent/F_CROSS_SESSION_CORRECTION_LEDGER.md",
+      "bytes": 41229,
+      "sha256": "c767056c7f053a23edfe58c7561c3c386a0e8fe0c3c9847cf60167c03dd70039"
+    }
+  ],
+  "c_recovery": {
+    "run_id": "8372f239-79f3-42c6-9b4f-54867e8137e0",
+    "terminal_state": "complete",
+    "reason": "usage-limit after substantive report write; one native read-back recovery",
+    "confirmation": "independent/C_RECOVERY_CONFIRMATION.md"
+  },
+  "checks": {
+    "protected_files_unchanged_before_parent_checkpoint_append": 229,
+    "nested_diff_matches_initial": true,
+    "six_reports_match_harness_bytes": true,
+    "all_six_reports_read_by_coordinator": true,
+    "relative_markdown_links_checked": 41,
+    "broken_relative_links": [],
+    "base_rubric_rows_recomputed": 19,
+    "sensitivity_totals_recomputed": 45,
+    "archive_delta_checks": 4,
+    "protected_files_unchanged_after_parent_append": 228,
+    "parent_checkpoint_original_prefix_preserved": true,
+    "final_closure_relative_links_checked": 49,
+    "all_requested_deliverables_present": true,
+    "all_six_report_digests_still_match": true
+  },
+  "audit_interruption": "First timestamp parser expected ISO strings; receipt uses epoch-ms integers. Failed before verification receipt creation; corrected and full assertions rerun. No failed run counted as PASS.",
+  "ranking_profiles": {
+    "balanced": [
+      25,
+      25,
+      20,
+      15,
+      15
+    ],
+    "evidence": [
+      40,
+      20,
+      15,
+      10,
+      15
+    ],
+    "minimal_change": [
+      15,
+      20,
+      30,
+      25,
+      10
+    ],
+    "feedback": [
+      15,
+      15,
+      15,
+      15,
+      40
+    ],
+    "omission": [
+      20,
+      40,
+      15,
+      10,
+      15
+    ]
+  },
+  "ranking_rows": [
+    {
+      "id": "Q01",
+      "components": [
+        4,
+        4,
+        5,
+        4,
+        3
+      ],
+      "balanced_total": 81
+    },
+    {
+      "id": "Q02",
+      "components": [
+        4,
+        3,
+        5,
+        5,
+        3
+      ],
+      "balanced_total": 79
+    },
+    {
+      "id": "Q03",
+      "components": [
+        3,
+        4,
+        4,
+        4,
+        4
+      ],
+      "balanced_total": 75
+    },
+    {
+      "id": "Q04",
+      "components": [
+        2,
+        4,
+        5,
+        4,
+        4
+      ],
+      "balanced_total": 74
+    },
+    {
+      "id": "Q05",
+      "components": [
+        4,
+        2,
+        5,
+        4,
+        3
+      ],
+      "balanced_total": 71
+    },
+    {
+      "id": "Q06",
+      "components": [
+        2,
+        4,
+        4,
+        4,
+        4
+      ],
+      "balanced_total": 70
+    },
+    {
+      "id": "Q07",
+      "components": [
+        3,
+        4,
+        3,
+        3,
+        4
+      ],
+      "balanced_total": 68
+    },
+    {
+      "id": "Q08",
+      "components": [
+        3,
+        3,
+        5,
+        3,
+        3
+      ],
+      "balanced_total": 68
+    },
+    {
+      "id": "Q09",
+      "components": [
+        4,
+        2,
+        3,
+        3,
+        5
+      ],
+      "balanced_total": 66
+    },
+    {
+      "id": "Q10",
+      "components": [
+        4,
+        3,
+        3,
+        2,
+        4
+      ],
+      "balanced_total": 65
+    },
+    {
+      "id": "Q11",
+      "components": [
+        3,
+        2,
+        4,
+        4,
+        3
+      ],
+      "balanced_total": 62
+    },
+    {
+      "id": "Q12",
+      "components": [
+        4,
+        2,
+        3,
+        3,
+        3
+      ],
+      "balanced_total": 60
+    },
+    {
+      "id": "Q13",
+      "components": [
+        2,
+        3,
+        4,
+        3,
+        3
+      ],
+      "balanced_total": 59
+    },
+    {
+      "id": "Q14",
+      "components": [
+        4,
+        3,
+        2,
+        2,
+        3
+      ],
+      "balanced_total": 58
+    },
+    {
+      "id": "Q15",
+      "components": [
+        4,
+        3,
+        2,
+        2,
+        3
+      ],
+      "balanced_total": 58
+    },
+    {
+      "id": "Q16",
+      "components": [
+        3,
+        2,
+        3,
+        3,
+        3
+      ],
+      "balanced_total": 55
+    },
+    {
+      "id": "Q17",
+      "components": [
+        3,
+        2,
+        3,
+        3,
+        3
+      ],
+      "balanced_total": 55
+    },
+    {
+      "id": "Q18",
+      "components": [
+        2,
+        2,
+        3,
+        2,
+        4
+      ],
+      "balanced_total": 50
+    },
+    {
+      "id": "Q19",
+      "components": [
+        2,
+        3,
+        2,
+        2,
+        3
+      ],
+      "balanced_total": 48
+    }
+  ],
+  "limitations": [
+    "latest distinct omission proposal not located in enumerated documentary scopes",
+    "Joint-Align primary HTTP420; detailed claims excluded",
+    "external code/model licensing/provenance partly unresolved",
+    "no candidate empirical/resource/feedback reproduction",
+    "DIAG-02B archive parity PARTIAL"
+  ],
+  "executed_model_tests": false,
+  "successful_optimizer_updates": 0,
+  "skipped_optimizer_updates": 0,
+  "new_model_artifact": null,
+  "child_transcript_tool_audit": [
+    {
+      "run_id": "13fe3b5c-1317-4fa4-9a7f-81a9464ce192",
+      "tool_counts": {
+        "read": 29,
+        "ls": 8,
+        "bash": 16,
+        "find": 2,
+        "contact_supervisor": 1,
+        "grep": 8,
+        "write": 1
+      },
+      "write_targets": [
+        {
+          "tool": "write",
+          "path": "/home/khoa/.pi/agent/sessions/--home-khoa-Projects-KLTN-Dataset--/subagent-artifacts/outputs/723092bc-f51f-4a2a-8cd9-bf63b7c93d0b/reports/A_INDEPENDENT_LANE_E.md"
+        }
+      ],
+      "model_execution_pattern_candidates": [],
+      "current_closure_repository_reads": []
+    },
+    {
+      "run_id": "ad405792-be84-4986-bae9-f006a0ba2bb9",
+      "tool_counts": {
+        "read": 45,
+        "bash": 13,
+        "ls": 3,
+        "grep": 6,
+        "find": 2,
+        "contact_supervisor": 1,
+        "write": 1
+      },
+      "write_targets": [
+        {
+          "tool": "write",
+          "path": "/home/khoa/.pi/agent/sessions/--home-khoa-Projects-KLTN-Dataset--/subagent-artifacts/outputs/723092bc-f51f-4a2a-8cd9-bf63b7c93d0b/reports/B_SOURCE_DATA_COMPATIBILITY.md"
+        }
+      ],
+      "model_execution_pattern_candidates": [],
+      "current_closure_repository_reads": []
+    },
+    {
+      "run_id": "e6563a12-1bce-4c00-b646-a7c95a00ed03",
+      "tool_counts": {
+        "read": 8,
+        "ls": 1,
+        "bash": 27,
+        "grep": 2,
+        "contact_supervisor": 2,
+        "write": 2
+      },
+      "write_targets": [
+        {
+          "tool": "write",
+          "path": "/home/khoa/.pi/agent/sessions/--home-khoa-Projects-KLTN-Dataset--/subagent-artifacts/outputs/723092bc-f51f-4a2a-8cd9-bf63b7c93d0b/reports/C_PRIMARY_LITERATURE_VERIFICATION.md"
+        },
+        {
+          "tool": "write",
+          "path": "/home/khoa/.pi/agent/sessions/--home-khoa-Projects-KLTN-Dataset--/subagent-artifacts/outputs/723092bc-f51f-4a2a-8cd9-bf63b7c93d0b/reports/C_PRIMARY_LITERATURE_VERIFICATION.8372f239.md"
+        }
+      ],
+      "model_execution_pattern_candidates": [],
+      "current_closure_repository_reads": []
+    },
+    {
+      "run_id": "49884ad3-99c4-4e06-8e4b-cf39b515a15b",
+      "tool_counts": {
+        "read": 32,
+        "ls": 4,
+        "bash": 8,
+        "find": 2,
+        "grep": 7,
+        "contact_supervisor": 2,
+        "write": 1
+      },
+      "write_targets": [
+        {
+          "tool": "write",
+          "path": "/home/khoa/.pi/agent/sessions/--home-khoa-Projects-KLTN-Dataset--/subagent-artifacts/outputs/723092bc-f51f-4a2a-8cd9-bf63b7c93d0b/reports/D_SCIENTIFIC_PROTOCOL_CORRECTIONS.md"
+        }
+      ],
+      "model_execution_pattern_candidates": [],
+      "current_closure_repository_reads": []
+    },
+    {
+      "run_id": "9539cd21-129b-4879-86e6-b2d8668bbad3",
+      "tool_counts": {
+        "read": 17,
+        "bash": 14,
+        "ls": 1,
+        "grep": 4,
+        "contact_supervisor": 1,
+        "write": 1,
+        "edit": 1
+      },
+      "write_targets": [
+        {
+          "tool": "write",
+          "path": "/home/khoa/.pi/agent/sessions/--home-khoa-Projects-KLTN-Dataset--/subagent-artifacts/outputs/723092bc-f51f-4a2a-8cd9-bf63b7c93d0b/reports/E_THESIS_ALIGNMENT_AUDIT.md"
+        },
+        {
+          "tool": "edit",
+          "path": "/home/khoa/.pi/agent/sessions/--home-khoa-Projects-KLTN-Dataset--/subagent-artifacts/outputs/723092bc-f51f-4a2a-8cd9-bf63b7c93d0b/reports/E_THESIS_ALIGNMENT_AUDIT.md"
+        }
+      ],
+      "model_execution_pattern_candidates": [],
+      "current_closure_repository_reads": []
+    },
+    {
+      "run_id": "f5d71002-ce08-44ad-809f-e84f517e87c3",
+      "tool_counts": {
+        "read": 46,
+        "bash": 12,
+        "ls": 1,
+        "grep": 9,
+        "contact_supervisor": 3,
+        "write": 1
+      },
+      "write_targets": [
+        {
+          "tool": "write",
+          "path": "/home/khoa/.pi/agent/sessions/--home-khoa-Projects-KLTN-Dataset--/subagent-artifacts/outputs/723092bc-f51f-4a2a-8cd9-bf63b7c93d0b/reports/F_CROSS_SESSION_CORRECTION_LEDGER.md"
+        }
+      ],
+      "model_execution_pattern_candidates": [],
+      "current_closure_repository_reads": []
+    }
+  ],
+  "child_transcript_tool_audit_scope": "Mutation targets and obvious model/remote execution patterns checked; receipt is documentary evidence, not a formal exhaustive sandbox audit.",
+  "documentary_disposition": "COMPLETE_WITH_ACCOUNTED_SOURCE_LIMITATIONS; NO_ARCHITECTURE_SELECTED; EXPERIMENTS_NOT_AUTHORIZED"
+}

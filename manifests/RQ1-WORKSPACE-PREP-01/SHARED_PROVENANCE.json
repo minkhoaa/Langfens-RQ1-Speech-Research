@@ -1,0 +1,178 @@
+{
+  "schema_version": 1,
+  "status": "DOCUMENTARY_ONLY_NOT_EXECUTION_AUTHORIZATION",
+  "initial_local_head": "b25a7595360294798d8d06b37592dd65dd4c9c33",
+  "frozen_common_base": "Resolve commit introducing this file; exact SHA also recorded in descendant arm manifests and final coordinator receipt.",
+  "contract": {
+    "path": "manifests/RQ1-WORKSPACE-PREP-01/EVALUATION_CONTRACT_V1.md",
+    "sha256": "4d99723e4b3f62f506165ced089eca82d4417279c76973b35470bd337cedfab2"
+  },
+  "thesis": {
+    "path": "/home/khoa/Projects/KLTN/DC KLTN0127 23520772&23520757_TranThiHongYen (1).md",
+    "sha256": "98fa922584b750510d4b0c183c59a84455da9e64ab231b59bdb58862c56133d3"
+  },
+  "latest_distinct_omission_proposal": {
+    "status": "NOT_LOCATED",
+    "no_substitution": true
+  },
+  "source_input_archive_sha256": {
+    "AGENTS.md": "8854a4c45e2fc745a5b7b29496489b037468ccadc5902672540ae102f9d1268f",
+    "audit_scripts/diagnose_counterfactual_validity.py": "7d43173ef4bbade93aec017f10d27615d33eadc5f2946332475940e6ea6e1424",
+    "audit_scripts/evaluate_e1_mdd.py": "043236d46ea6c89f2faff3478d26550b9d07fc62e2c3f8d54cef7ecadfa4dfe7",
+    "audit_scripts/evaluate_fold1_ctc_binary.py": "b419cd2a2dbcd20035d327b937ab22f973f123793a434b26230ded0d75c3e586",
+    "audit_scripts/train_fold1_ctc_binary.py": "311e452ff88501cf84e48da145d0eb9d94412fcfaa760f2a19e8ca632f97369e",
+    "configs/rq1_trn_02a_fold1.yaml": "807c3cf92efb53e620a91393d963c6e6dae06ef4e9ef3e506023f6eb15134896",
+    "configs/rq_model_01_e1_fold1.yaml": "1069097bd24e4c48e9ee303d86bc35a863c246a52746d7c41527c6b8db35d04d",
+    "manifests/RQ-MODEL-01/PROCESS_CHECKPOINT.md": "86b11e88bd0c3f18188ae0daafbddf458784b5e4341ac62a4574045ec9b85de8",
+    "manifests/RQ-MODEL-01/RQ_MODEL_01_REPORT.md": "4b729c6495d3f8e12c848f47fdfcb88a47414a58c117258e24920d54af438859",
+    "manifests/RQ-MODEL-01/TRAIN_COVERAGE_CENSUS.json": "24cfa9cc48382f73078bd6b3498aa57f30f109ef92419ddeb3a11d2d482eeb53",
+    "manifests/RQ-MODEL-01/evaluation/E1_FOLD1_BENCHMARK_SUMMARY.json": "006611ccf0796938d4114bf62a1d17979c0af9ece362415dc1600670e6b086a3",
+    "manifests/RQ-MODEL-01/evaluation/RQ_MODEL_01_E0_FOLD1_EVAL/E1_EVALUATION_REPORT.json": "b2315fef480daa37df2e69f60d6a3594d3bfafbb5589bb68bf00b00476685e3e",
+    "manifests/RQ-MODEL-01/evaluation/RQ_MODEL_01_E0_FOLD1_EVAL/primary_metrics_summary.csv": "68724a360b7aab2dee74a6974b779ae3ee1e6afd38f7c598de279054d3972eba",
+    "manifests/RQ-MODEL-01/evaluation/RQ_MODEL_01_E1_FOLD1_EVAL/E1_EVALUATION_REPORT.json": "0d9c6e6a3d63d26f8f3bcc4780389e96494f9ba33a6dccc05c425136c449b0d4",
+    "manifests/RQ-MODEL-01/evaluation/RQ_MODEL_01_E1_FOLD1_EVAL/primary_metrics_summary.csv": "95e4aaf5cac27b331874a6477b168ce9ebba57bb1d1cb5e4374ebe0758b8270e",
+    "manifests/RQ-RESEARCH-01/closure-2026-11-03/CROSS_SESSION_CORRECTION_LEDGER.md": "3b883b4c3ffbe81da6dec8ed533022c6c2b09f68e545f5ca0ed74eea53318cdb",
+    "manifests/RQ-RESEARCH-01/closure-2026-11-03/INTEGRATED_DECISION_REPORT.md": "f16a0d895fde4040528a1be6e7ecbc16d4b399174c8b66a41c88fae62496435a",
+    "manifests/RQ-RESEARCH-01/closure-2026-11-03/PARALLEL_PILOT_SPECIFICATIONS.md": "86f964fcdfda8de5854640572f378aeadf45fe0f07b53e23033e42972ba42196",
+    "manifests/RQ-RESEARCH-01/closure-2026-11-03/PROCESS_CHECKPOINT.md": "8afe21e97f7fa88509e88ffd48c0d666131c49bf768a106f1dd8c19b93ca48ae",
+    "manifests/RQ-RESEARCH-01/closure-2026-11-03/SCIENTIFIC_PROTOCOL_CORRECTION_REPORT.md": "cd9d42481933627e6f9bbbecc4ca9617b94e100f15cd451fd45fff0e33dfcc1a",
+    "manifests/RQ-RESEARCH-01/closure-2026-11-03/SHA256SUMS": "c012f39d1141d1379650c3c7df0eb8e5c41358c84b7f3277da4455da8421bc1e",
+    "manifests/RQ-RESEARCH-01/closure-2026-11-03/SOURCE_DATA_COMPATIBILITY_AUDIT.md": "13bc6bd117541cb2582e70688fa0c9819df13c59476d613d4992ebcc13f117f1",
+    "manifests/RQ-RESEARCH-01/closure-2026-11-03/SOURCE_EVIDENCE_MATRIX.md": "79c3f51d364299d65d1e7d1d4473cc2f009062171d77844099706c2288676955",
+    "manifests/RQ-RESEARCH-01/closure-2026-11-03/THESIS_ALIGNMENT_AUDIT.md": "10f54ba7a24f78789d3a2db90ec360ff112b9471693a31cc1d821fa1c24c002b",
+    "manifests/RQ-RESEARCH-01/closure-2026-11-03/UNIFIED_CANDIDATE_COMPARISON.md": "3cecf5b48a79893366b31d7244da50967b10202b621c22d4a502475b84f70224",
+    "manifests/RQ-RESEARCH-01/closure-2026-11-03/VERIFICATION_EVIDENCE.json": "f2f82bbe8beeef66401f196042e60258d5955385297814ec450fa2cda01d083a",
+    "manifests/RQ-RESEARCH-01/closure-2026-11-03/independent/A_INDEPENDENT_LANE_E.md": "7d89fd881629b750faa0d47975a8b4bba88a66d809b62dda8906b1258792f42e",
+    "manifests/RQ-RESEARCH-01/closure-2026-11-03/independent/B_SOURCE_DATA_COMPATIBILITY.md": "5426f76e929f6ad6f2848432d8b617912c0f6134c71619628584943d6ae17f1d",
+    "manifests/RQ-RESEARCH-01/closure-2026-11-03/independent/C_PRIMARY_LITERATURE_VERIFICATION.md": "75aaa30caa45e9d20d763900316f4dbbed58cc084f242cc61eccc36bb159faf5",
+    "manifests/RQ-RESEARCH-01/closure-2026-11-03/independent/C_RECOVERY_CONFIRMATION.md": "d2472574364303c549a2de9fc8149f58afbd465b5c41944eca6594e06d5cf34c",
+    "manifests/RQ-RESEARCH-01/closure-2026-11-03/independent/D_SCIENTIFIC_PROTOCOL_CORRECTIONS.md": "31cb409a405e577adb4a754254ac908fc58639b4180393d15aba3bd88250f929",
+    "manifests/RQ-RESEARCH-01/closure-2026-11-03/independent/E_THESIS_ALIGNMENT_AUDIT.md": "dd8e831189c741c1cdcc594d2a1d7cec52ad95d5cafbc69b223d6b0259f7f59f",
+    "manifests/RQ-RESEARCH-01/closure-2026-11-03/independent/F_CROSS_SESSION_CORRECTION_LEDGER.md": "c767056c7f053a23edfe58c7561c3c386a0e8fe0c3c9847cf60167c03dd70039",
+    "manifests/RQ-RESEARCH-01/revalidation-2026-11-03/A_CTC_GOP.md": "f6111b14fe5c8d88b97e563c210610dd87594e8f106ea4971d0852484df99cb7",
+    "manifests/RQ-RESEARCH-01/revalidation-2026-11-03/A_PROVENANCE_CORRECTION.md": "624841bef7928221bbecbaca00db6b9e1f89d232b5c5f84741a815da1c3d45eb",
+    "manifests/RQ-RESEARCH-01/revalidation-2026-11-03/B_ACOUSTIC_REALIZATION.md": "e66677fc42648c5da3dbfc756f03157a36a744d5c50a287908ea954ac25120b9",
+    "manifests/RQ-RESEARCH-01/revalidation-2026-11-03/C_SUPERVISED_OBJECTIVES.md": "fb44a361716eab65ebeba8b835b59eeb7c68c6b5de3cbdf913138b179da93ca2",
+    "manifests/RQ-RESEARCH-01/revalidation-2026-11-03/D_EDIT_ALIGNMENT.md": "679a447bdce241ecb1d5039f1b58e11f1eb9f322998c793a9dbfd70154368d12",
+    "manifests/RQ-RESEARCH-01/revalidation-2026-11-03/E_JOINT_MODELING_STATUS_AND_COORDINATOR_SUPPLEMENT.md": "b8e9a98366b046d61a82f4a7432da13a775904717c204c912837de8e1d161187",
+    "manifests/RQ-RESEARCH-01/revalidation-2026-11-03/F_RETRIEVAL_HYBRIDS.md": "e8970d5ad0557fbe8f99afc3a447104e8838f11e5af78b943f50232ea5e3a0b3",
+    "manifests/RQ-RESEARCH-01/revalidation-2026-11-03/INTEGRATED_DECISION_REPORT.md": "4087e6f9cc3ee35ca522b8d2125f9171b6bf3f3c98fb638e64bc887a7f25ef6a",
+    "manifests/RQ-RESEARCH-01/revalidation-2026-11-03/PROCESS_CHECKPOINT.md": "662ab483e865d77593357196fe868eae6799408386a3ce8d97303ae5455ab417",
+    "manifests/RQ-RESEARCH-01/revalidation-2026-11-03/SHA256SUMS": "68257e1c129ffaf5699138aeadc99f2c278b5d08057c3c0051e37b749170fac7",
+    "manifests/RQ-RESEARCH-01/revalidation-2026-11-03/SOURCE_EVIDENCE_MATRIX.md": "37d2c3ed11e6c5c99251cb20d0684c502acbb810463c26475e8cd443fc8da190",
+    "manifests/RQ-RESEARCH-01/revalidation-2026-11-03/THESIS_ALIGNMENT_MATRIX.md": "a2bf60b0532f23ae5dc69c1ef90e133b3dd4d7a256ed000f62967a101cab2ebc",
+    "manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json": "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b",
+    "resources/CMUDict/cmudict.dict": "81917843c7f44ce2b094ac63873c2c7a4cf802040792c455ba3ca406891c3d22",
+    "resources/L2-ARCTIC/prompts.json": "87843d363bc7e2bbe849842efe16974cb6634dfe0539efb42d666aed7e17f11e",
+    "src/langfens_prep/alignment.py": "28e64545eb2614be7ff9109492beb87b7b3b30dc6850dc03d83ada2247885881",
+    "src/langfens_prep/audio_loader.py": "a6221e90bb1e1b47e07f0637dc41f319f1906cf706d848a22059b3640047103a",
+    "src/langfens_prep/collate.py": "c8e1d5ee0e31a75aafe0fa5e91b3607d8d28ad12adb81b0ad9d2f135abde5c42",
+    "src/langfens_prep/dataset.py": "b23058e75777816d429b1097eabd637576b1d4b37f6cbf963e4e13a910daaa6c",
+    "src/langfens_prep/g2p.py": "a8e0b1a037e4ca87b08566c87fdfb6d976f73f826f7d87db441d59e5fe095c23",
+    "src/langfens_prep/losses.py": "8c2c61724d81471478eb54bca62551c55abf2665df37f037d33f4af7448d8b3e",
+    "src/langfens_prep/model.py": "af2a1271c3e4a120f1505aa576bb2d75dc3ed90495b3b7ba675096ebb332f592",
+    "src/langfens_prep/phoneme_normalizer.py": "1096d8d95c9e3b3b3f2bacf0fa0d6109c36d4027e40cf832bf6b6cbc045df9fe",
+    "src/langfens_prep/textgrid_parser.py": "e765bcc0a03c8dbc3d6005db39f221e2658470692e48edf2d21998369d029ef1"
+  },
+  "checkpoint_sha256_from_archive_NOT_reverified": {
+    "E0": "a2445c8d17910bf3c03101f50fc419675e8d1bc012af43af10267a28dbba948b",
+    "E1": "3b686730cc0a1101a1bbc96b59dc7bd38a9fc3cc7da7effe26b2d9498f079d24"
+  },
+  "archived_evaluator_source": "baa4989243d5ff46b8b3bf5a3c280cdf2857382b",
+  "backbone": {
+    "model": "facebook/wav2vec2-base-960h",
+    "revision": "22aad52d435eb6dbaf354bdad9b0da84ce7d6156",
+    "frozen_eval": true
+  },
+  "fold1_partitions": {
+    "train": {
+      "speakers": [
+        "BWC",
+        "ERMS",
+        "HKK",
+        "HQTV",
+        "MBMPS",
+        "NCC",
+        "SKA",
+        "SVBI",
+        "THV",
+        "TLV",
+        "TNI",
+        "TXHC",
+        "YBAA",
+        "YDCK",
+        "YKWK",
+        "ZHAA"
+      ],
+      "utterances": 2399,
+      "ordered_id_sha256": "2ebe54f2fc77e2a3ee9890ce3dc21f725897ebbe85f812d3c017c3b495f14b27"
+    },
+    "fit": {
+      "speakers": [
+        "BWC",
+        "ERMS",
+        "HKK",
+        "HQTV",
+        "SKA",
+        "SVBI",
+        "TNI",
+        "TXHC",
+        "YBAA",
+        "YDCK",
+        "YKWK",
+        "ZHAA"
+      ],
+      "utterances": 1799,
+      "ordered_id_sha256": "f716975ac312ee020a6c1e382cf1e4e7e4d3c4450879c337cc3e0e8127cd16be"
+    },
+    "selection": {
+      "speakers": [
+        "MBMPS",
+        "TLV"
+      ],
+      "utterances": 300,
+      "ordered_id_sha256": "bbc79fa48c296a9f8cc277267e9bd0eda8ea59fe415984a4dde598de28266a48"
+    },
+    "calibration": {
+      "speakers": [
+        "NCC",
+        "THV"
+      ],
+      "utterances": 300,
+      "ordered_id_sha256": "931900b7ab1778df28b4098fc7d3048a93c41ecaee5ef14e43477a4b04e51034"
+    },
+    "val": {
+      "speakers": [
+        "NJS",
+        "RRBI"
+      ],
+      "utterances": 300,
+      "ordered_id_sha256": "6d34642b15bbf80cbd5bd102b5574ab36f5adac74be6d6d0ae7218b002eff065"
+    }
+  },
+  "sealed_test_speakers": [
+    "ABA",
+    "ASI",
+    "EBVS",
+    "HJK",
+    "LXC",
+    "PNV"
+  ],
+  "checkpoint_and_fold_package_verification": "NOT_PERFORMED; before authorized execution verify actual private artifact readback, package membership, source/config/weights/precision/load semantics. No weight or corpus read during setup.",
+  "inherited_train_val_package_sha256_from_archive": "b750eb3bf3971afccd9ab9058a64fa6b3f5781399b9ef0f1294d29bf580784a9",
+  "current_process": {
+    "training": "NOT_STARTED",
+    "successful_optimizer_updates": 0,
+    "skipped_updates": 0,
+    "new_model_artifact": null
+  },
+  "resume_requires": [
+    "verify Git identity and clean arm status",
+    "verify contract and source/input hashes",
+    "resolve latest-proposal gap or obtain explicit limitation acceptance",
+    "approve prospective effect margins and arm registration",
+    "P-SUP distinct-objective policy amendment",
+    "separate implementation/execution authorization",
+    "private artifact and license verification; no sealed TEST access"
+  ]
+}
