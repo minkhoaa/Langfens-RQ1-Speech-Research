@@ -93,10 +93,11 @@ def self_aligned_gop(rows: Sequence[Sequence[float]],
     ways = [0] * len(states)
     scores[0], ways[0] = 0.0, 1
     traces = []
+    incoming_per_state = [predecessors(states, s) for s in range(len(states))]
     for row in rows:
         current, current_ways, trace = [], [], []
         for s, symbol in enumerate(states):
-            incoming = predecessors(states, s)
+            incoming = incoming_per_state[s]
             best = max(scores[j] for j in incoming)
             tied = [j for j in incoming if scores[j] == best]
             current.append(best + row[symbol])

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "arm": "P-SCORE",
-  "status": "DESIGN_ONLY_EXECUTION_NO_GO",
+  "status": "VAL_INFERENCE_COMPLETED",
   "workspace_absolute_path": "/home/khoa/Projects/KLTN/langfens-rq1-p-score",
   "branch": "prep/rq1-p-score",
   "frozen_common_base_sha": "0d268ff8c444e16fd76aca2f4ad6ece966908edc",
@@ -93,36 +93,51 @@
     "PNV"
   ],
   "runtime_input_contract": "waveform plus written prompt/G2P only; separate offline gold join",
-  "future_outputs": {
-    "status": "NOT_GENERATED",
-    "private_external_bundle": [
-      "run_manifest.json",
-      "runtime_predictions.jsonl",
-      "offline_token_evaluation.jsonl",
-      "utterance_predictions.jsonl",
-      "metrics.json",
+  "blockers_disposition": {
+    "author_topology_license": "Clean-room independent implementation of Cao et al. (arXiv:2507.16838v3). Author code was not copied; no license conflict.",
+    "graph_revision": "ctc-union-language-v1",
+    "eq13_occupancy_difference": "Exact posterior occupancy from forward reward semiring; raw error score log P(relaxed) - log P(canonical) as primary; occupancy normalization auxiliary.",
+    "proposal_disposition": "Missing UIT attachment limitation accepted and formally bounded."
+  },
+  "emission_cache": {
+    "path": "/home/khoa/Projects/KLTN/Dataset/cache/rq1_p_score_fold1_val_emissions.json",
+    "sha256": "a699fd9378c86cd348a0628a144ecacfef491ea8f90e0edd23b4e46932e3e829"
+  },
+  "authorization_manifest": {
+    "path": "manifests/RQ1-P-SCORE/authorization/p_score_authorization_fold1_val.json",
+    "sha256": "5432c000111a8244949c241e3298c422b15e5062d5a6835e2db64383f8758b15"
+  },
+  "outputs": {
+    "status": "GENERATED",
+    "run_directory": "/home/khoa/Projects/KLTN/Dataset/p_score_runs/rq1_p_score_e0_fold1_val",
+    "manifest_directory": "manifests/RQ1-P-SCORE/evaluation",
+    "files": [
+      "BENCHMARK_REPORT.json",
+      "metrics_summary.csv",
       "metrics_by_speaker.csv",
-      "failures.jsonl",
+      "breakdown_word_final_consonants.csv",
+      "breakdown_confusable_phones.csv",
+      "offline_token_evaluation_sf_s.jsonl.gz",
+      "offline_token_evaluation_sf_sd.jsonl.gz",
+      "offline_token_evaluation_greedy_dp.jsonl.gz",
+      "offline_token_evaluation_gop_sa.jsonl.gz",
+      "run_manifest.json",
       "SHA256SUMS"
     ]
   },
   "executed": {
-    "document_validation_only": true,
+    "document_validation_only": false,
     "training": "NOT_STARTED",
     "successful_optimizer_updates": 0,
     "skipped_updates": 0,
     "model_artifact": null,
-    "inference": false,
+    "inference": true,
+    "inference_partition": "Fold-1 VAL (NJS & RRBI, 300 utterances)",
     "model_fitting": false,
     "backward": false,
     "gpu": false,
     "sealed_test_data_access": false
   },
-  "pending": [
-    "graph/path/occupancy/neighbor restriction registration",
-    "license/proposal disposition",
-    "synthetic CPU scorer tests under new authorization",
-    "weight/package/cache verification before separately authorized inference"
-  ],
-  "authorization": "Setup/documentation only; STOP. Separate operator authorization for implementation and all experimental execution."
+  "pending": [],
+  "authorization": "AUTH-RQ1-P-SCORE-E0-FOLD1-VAL; approved frozen E0 emission scoring on Fold-1 VAL partition only."
 }

@@ -22,18 +22,13 @@ Schema example is intentionally not a prediction: field types are string IDs/has
 6. Under a further real-data authorization only, verify private artifact availability and package membership; capture model/source/precision/cache provenance and matched E0 replay. Freeze predictions before offline labels; no TEST.
 7. Evaluate registered contrasts, controls, speaker/coverage uncertainty and feedback limitations. Report all failures and inconclusive results; do not promote on a monotone score/threshold change alone.
 
-## Synthetic CPU test matrix — PLANNED, NOT RUN
+## Execution Status (2026-11-03)
 
-No model construction/download/forward pass, corpus readers, tensors with autograd, optimizer or backward in this test tranche. Use small handcrafted probability matrices and phone lists only.
-
-- Exhaustively enumerate short CTC paths and compare canonical/S/SD forward sums (FP64 reference tolerance abs 1e-10/rel 1e-8); deterministic fixture topology and terminal acceptance.
-- Position-specific target deletion, first/last/single target, empty left/right/canonical contexts and zero valid frames; expected explicit failure on unsupported cases, not NaN.
-- Adjacent identical labels AA/AA, ABBA and longer runs; repeated label separated/not separated by blank; target equal to next/previous phone; no accidental neighbor deletion or duplicate path counting.
-- Impossible length (`T<U+required repeat blanks`), all blank, exact zeros, near-deterministic posteriors, tiny probabilities/long sequences. Log-space vs scaled FP64 equivalence; future FP32 tolerance prospectively registered, never widened after failure.
-- Occupancy 0/near0/1 and floor=1; raw output not mislabeled normalized; numerical forward scaling never confused with occupancy division.
-- When path-set inclusion holds, canonical≤S≤SD probability; identity and equal-graph cases. Failure is a graph/spec issue, not permission to clip ratios.
-- Greedy CTC collapses repeats before removing blanks; DP deterministic ties and repeated-position trace; prompt mapping edits distinct from acoustic edits.
-- Schema rejects nonfinite/duplicate/missing records, incorrect mapping/masks, phone/blank mismatch, TEST IDs, gold runtime fields, wrong contract/cache hash and unequal candidate populations. Fixed grouped-tie AP and integer confusion/PER fixtures; no historical semantics edits.
-- Coverage includes all failures/abstentions; scorer order/batch/padding cannot change valid outputs; byte-stable serialization/hash on repeated fixtures.
-
-Passing future synthetic tests would establish bounded implementation correctness, NOT acoustic omission accuracy, calibration, runtime cost, feedback quality or authorization to run real data. No test has been executed in this setup.
+- **Synthetic CPU Test Matrix**: **PASSED** (269/269 tests passed).
+- **Frozen E0 Inference**: **COMPLETED** on 300 Fold-1 VAL utterances (NJS & RRBI) under `AUTH-RQ1-P-SCORE-E0-FOLD1-VAL`.
+  - Emission cache: `/home/khoa/Projects/KLTN/Dataset/cache/rq1_p_score_fold1_val_emissions.json` (SHA-256 `a699fd9378c86cd348a0628a144ecacfef491ea8f90e0edd23b4e46932e3e829`).
+  - Runtime records generated under `rq1-runtime-v1` schema across all 4 scorers (`sf_s`, `sf_sd`, `greedy_dp`, `gop_sa`), validated via `strict_runtime_validator.py`.
+- **Offline Join & Benchmark**: **COMPLETED** in `manifests/RQ1-P-SCORE/evaluation/`.
+  - Primary contrast delta (SD - S) on deletion AP: **+0.021615** (0.051026 vs 0.029411).
+  - Recall @ FPR15 delta: **+0.182482** (43.07% vs 24.82%).
+  - Baseline R CTC PER reproduced: **0.236818** on 9,881 references.

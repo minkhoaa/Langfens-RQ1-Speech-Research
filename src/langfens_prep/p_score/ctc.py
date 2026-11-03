@@ -14,7 +14,27 @@ NEG_INF = -math.inf
 GRAPH_REVISION = "ctc-union-language-v1"
 
 
+def _lse2(a: float, b: float) -> float:
+    if a > b:
+        return a if b == NEG_INF else a + math.log1p(math.exp(b - a))
+    return b if a == NEG_INF else b + math.log1p(math.exp(a - b))
+
+
+def _lse3(a: float, b: float, c: float) -> float:
+    m = a if (a >= b and a >= c) else (b if b >= c else c)
+    if m == NEG_INF:
+        return NEG_INF
+    return m + math.log(math.exp(a - m) + math.exp(b - m) + math.exp(c - m))
+
+
 def logsumexp(values: Sequence[float]) -> float:
+    n = len(values)
+    if n == 1:
+        return values[0]
+    if n == 2:
+        return _lse2(values[0], values[1])
+    if n == 3:
+        return _lse3(values[0], values[1], values[2])
     maximum = max(values, default=NEG_INF)
     if maximum == NEG_INF:
         return NEG_INF
@@ -104,14 +124,26 @@ def ctc_forward(
     reward = [NEG_INF] * len(states)
     alpha[0] = 0.0  # virtual time -1, before any emitted frames
     target_state = None if target_index is None else 2 * target_index + 1
+    incoming_per_state = [predecessors(states, s) for s in range(len(states))]
     for row in log_emissions:
         next_alpha, next_reward = [], []
         for s, symbol in enumerate(states):
-            incoming = predecessors(states, s)
-            a = logsumexp([alpha[j] for j in incoming]) + row[symbol]
-            r = logsumexp([reward[j] for j in incoming]) + row[symbol]
+            inc = incoming_per_state[s]
+            n = len(inc)
+            if n == 1:
+                j0 = inc[0]
+                a = alpha[j0] + row[symbol]
+                r = reward[j0] + row[symbol]
+            elif n == 2:
+                j0, j1 = inc
+                a = _lse2(alpha[j0], alpha[j1]) + row[symbol]
+                r = _lse2(reward[j0], reward[j1]) + row[symbol]
+            else:
+                j0, j1, j2 = inc
+                a = _lse3(alpha[j0], alpha[j1], alpha[j2]) + row[symbol]
+                r = _lse3(reward[j0], reward[j1], reward[j2]) + row[symbol]
             if s == target_state:
-                r = logsumexp([r, a])
+                r = _lse2(r, a)
             next_alpha.append(a)
             next_reward.append(r)
         alpha, reward = next_alpha, next_reward

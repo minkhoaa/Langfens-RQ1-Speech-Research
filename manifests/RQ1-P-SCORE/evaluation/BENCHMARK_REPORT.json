@@ -1,0 +1,673 @@
+{
+  "metadata": {
+    "experiment": "RQ1-P-SCORE",
+    "model": "Baseline_R_E0",
+    "checkpoint_sha256": "a2445c8d17910bf3c03101f50fc419675e8d1bc012af43af10267a28dbba948b",
+    "contract_sha256": "4d99723e4b3f62f506165ced089eca82d4417279c76973b35470bd337cedfab2",
+    "split_sha256": "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b",
+    "cache_sha256": "a699fd9378c86cd348a0628a144ecacfef491ea8f90e0edd23b4e46932e3e829",
+    "authorization_sha256": "5432c000111a8244949c241e3298c422b15e5062d5a6835e2db64383f8758b15",
+    "evaluation_split": "Fold-1 VAL (NJS & RRBI)",
+    "total_utterances": 300,
+    "total_canonical_gold_tokens": 9956,
+    "total_aligned_tokens": 9919
+  },
+  "primary_contrast_sf_sd_minus_sf_s": {
+    "delta_omission_ap": 0.021614555936695545,
+    "delta_substitution_ap": -0.024256164281564796,
+    "delta_binary_ap": -0.009045152327224637,
+    "delta_omission_recall_at_fpr15": 0.1824817518248175
+  },
+  "scorers": {
+    "sf_s": {
+      "scorer": "sf_s",
+      "coverage": {
+        "total_aligned_records": 9919,
+        "valid_ok_records": 9919,
+        "abstained_records": 0,
+        "ok_fraction": 1.0
+      },
+      "populations": {
+        "binary": {
+          "total": 9919,
+          "errors": 1145,
+          "correct": 8774
+        },
+        "omission": {
+          "total": 8911,
+          "deletions": 137,
+          "correct": 8774
+        },
+        "substitution": {
+          "total": 9782,
+          "substitutions": 1008,
+          "correct": 8774
+        }
+      },
+      "primary_metrics": {
+        "omission_ap": 0.029411119615985474,
+        "omission_roc_auc": 0.6094557742766867,
+        "substitution_ap": 0.24680045640517578,
+        "substitution_roc_auc": 0.7580201786664061,
+        "binary_ap": 0.25909437677525954,
+        "binary_roc_auc": 0.7402443503682475
+      },
+      "operating_points": {
+        "tau_fpr15": 0.9283468775730199,
+        "omission_recall_at_fpr15": 0.24817518248175183,
+        "omission_precision_at_fpr15": 0.025185185185185185,
+        "actual_fpr15": 0.14998860268976522,
+        "omission_fnr_at_fpr15": 0.7518248175182481,
+        "f1_at_fpr15": 0.0457296570275723,
+        "tau_fpr10": 1.3349518802743816,
+        "omission_recall_at_fpr10": 0.20437956204379562,
+        "actual_fpr10": 0.09995441075906086,
+        "tau_fpr05": 1.953902135227679,
+        "omission_recall_at_fpr05": 0.1678832116788321,
+        "actual_fpr05": 0.04992021882835651
+      },
+      "greedy_ctc_per": {
+        "ctc_per": 0.23681813581621294,
+        "sub_rate": 0.17275579394798096,
+        "del_rate": 0.04361906689606315,
+        "ins_rate": 0.020443274972168808,
+        "total_edits": 2340,
+        "total_subs": 1707,
+        "total_dels": 431,
+        "total_ins": 202,
+        "total_ref_tokens": 9881
+      },
+      "occupancy_normalized_auxiliary": {
+        "omission_ap": 0.03088051306838236,
+        "binary_ap": 0.2595522008979842
+      }
+    },
+    "sf_sd": {
+      "scorer": "sf_sd",
+      "coverage": {
+        "total_aligned_records": 9919,
+        "valid_ok_records": 9919,
+        "abstained_records": 0,
+        "ok_fraction": 1.0
+      },
+      "populations": {
+        "binary": {
+          "total": 9919,
+          "errors": 1145,
+          "correct": 8774
+        },
+        "omission": {
+          "total": 8911,
+          "deletions": 137,
+          "correct": 8774
+        },
+        "substitution": {
+          "total": 9782,
+          "substitutions": 1008,
+          "correct": 8774
+        }
+      },
+      "primary_metrics": {
+        "omission_ap": 0.05102567555268102,
+        "omission_roc_auc": 0.7698109377573754,
+        "substitution_ap": 0.222544292123611,
+        "substitution_roc_auc": 0.7430339594617575,
+        "binary_ap": 0.2500492244480349,
+        "binary_roc_auc": 0.7462378424543337
+      },
+      "operating_points": {
+        "tau_fpr15": 1.1092880378510372,
+        "omission_recall_at_fpr15": 0.4306569343065693,
+        "omission_precision_at_fpr15": 0.04290909090909091,
+        "actual_fpr15": 0.14998860268976522,
+        "omission_fnr_at_fpr15": 0.5693430656934306,
+        "f1_at_fpr15": 0.07804232804232805,
+        "tau_fpr10": 1.526001944178848,
+        "omission_recall_at_fpr10": 0.35036496350364965,
+        "actual_fpr10": 0.09995441075906086,
+        "tau_fpr05": 2.2554626690536885,
+        "omission_recall_at_fpr05": 0.1897810218978102,
+        "actual_fpr05": 0.04992021882835651
+      },
+      "greedy_ctc_per": {
+        "ctc_per": 0.23681813581621294,
+        "sub_rate": 0.17275579394798096,
+        "del_rate": 0.04361906689606315,
+        "ins_rate": 0.020443274972168808,
+        "total_edits": 2340,
+        "total_subs": 1707,
+        "total_dels": 431,
+        "total_ins": 202,
+        "total_ref_tokens": 9881
+      },
+      "occupancy_normalized_auxiliary": {
+        "omission_ap": 0.0527829916948837,
+        "binary_ap": 0.24869674947954395
+      }
+    },
+    "greedy_dp": {
+      "scorer": "greedy_dp",
+      "coverage": {
+        "total_aligned_records": 9919,
+        "valid_ok_records": 4212,
+        "abstained_records": 5707,
+        "ok_fraction": 0.42463958060288337
+      },
+      "populations": {
+        "binary": {
+          "total": 4212,
+          "errors": 464,
+          "correct": 3748
+        },
+        "omission": {
+          "total": 3790,
+          "deletions": 42,
+          "correct": 3748
+        },
+        "substitution": {
+          "total": 4170,
+          "substitutions": 422,
+          "correct": 3748
+        }
+      },
+      "primary_metrics": {
+        "omission_ap": 0.019002066867596833,
+        "omission_roc_auc": 0.6256416120343549,
+        "substitution_ap": 0.17505828467174891,
+        "substitution_roc_auc": 0.6508052319847046,
+        "binary_ap": 0.18667830483468717,
+        "binary_roc_auc": 0.6485274905236816
+      },
+      "operating_points": {
+        "tau_fpr15": 1.0,
+        "omission_recall_at_fpr15": 0.38095238095238093,
+        "omission_precision_at_fpr15": 0.03187250996015936,
+        "actual_fpr15": 0.12966915688367128,
+        "omission_fnr_at_fpr15": 0.6190476190476191,
+        "f1_at_fpr15": 0.05882352941176471,
+        "tau_fpr10": 1.0000000000000002,
+        "omission_recall_at_fpr10": 0.0,
+        "actual_fpr10": 0.0,
+        "tau_fpr05": 1.0000000000000002,
+        "omission_recall_at_fpr05": 0.0,
+        "actual_fpr05": 0.0
+      },
+      "greedy_ctc_per": {
+        "ctc_per": 0.23681813581621294,
+        "sub_rate": 0.17275579394798096,
+        "del_rate": 0.04361906689606315,
+        "ins_rate": 0.020443274972168808,
+        "total_edits": 2340,
+        "total_subs": 1707,
+        "total_dels": 431,
+        "total_ins": 202,
+        "total_ref_tokens": 9881
+      },
+      "occupancy_normalized_auxiliary": {
+        "omission_ap": null,
+        "binary_ap": null
+      }
+    },
+    "gop_sa": {
+      "scorer": "gop_sa",
+      "coverage": {
+        "total_aligned_records": 9919,
+        "valid_ok_records": 9919,
+        "abstained_records": 0,
+        "ok_fraction": 1.0
+      },
+      "populations": {
+        "binary": {
+          "total": 9919,
+          "errors": 1145,
+          "correct": 8774
+        },
+        "omission": {
+          "total": 8911,
+          "deletions": 137,
+          "correct": 8774
+        },
+        "substitution": {
+          "total": 9782,
+          "substitutions": 1008,
+          "correct": 8774
+        }
+      },
+      "primary_metrics": {
+        "omission_ap": 0.049845995181360715,
+        "omission_roc_auc": 0.7548604952588853,
+        "substitution_ap": 0.22810410781421173,
+        "substitution_roc_auc": 0.7443493424837453,
+        "binary_ap": 0.2543698832662577,
+        "binary_roc_auc": 0.7456070087983253
+      },
+      "operating_points": {
+        "tau_fpr15": 1.0598201751708984,
+        "omission_recall_at_fpr15": 0.41605839416058393,
+        "omission_precision_at_fpr15": 0.041514930808448654,
+        "actual_fpr15": 0.14998860268976522,
+        "omission_fnr_at_fpr15": 0.583941605839416,
+        "f1_at_fpr15": 0.07549668874172186,
+        "tau_fpr10": 1.4563517570495605,
+        "omission_recall_at_fpr10": 0.3357664233576642,
+        "actual_fpr10": 0.09995441075906086,
+        "tau_fpr05": 2.1321332454681396,
+        "omission_recall_at_fpr05": 0.19708029197080293,
+        "actual_fpr05": 0.04992021882835651
+      },
+      "greedy_ctc_per": {
+        "ctc_per": 0.23681813581621294,
+        "sub_rate": 0.17275579394798096,
+        "del_rate": 0.04361906689606315,
+        "ins_rate": 0.020443274972168808,
+        "total_edits": 2340,
+        "total_subs": 1707,
+        "total_dels": 431,
+        "total_ins": 202,
+        "total_ref_tokens": 9881
+      },
+      "occupancy_normalized_auxiliary": {
+        "omission_ap": null,
+        "binary_ap": null
+      }
+    }
+  },
+  "speaker_breakdown": [
+    {
+      "scorer": "sf_s",
+      "speaker": "NJS",
+      "total_tokens": 4998,
+      "deletions": 78,
+      "substitutions": 560,
+      "correct": 4360,
+      "omission_ap": 0.04355569882968965,
+      "substitution_ap": 0.2787243759492809,
+      "binary_ap": 0.29482503994249926,
+      "omission_recall_at_fpr15": 0.2948717948717949,
+      "achieved_fpr15": 0.15
+    },
+    {
+      "scorer": "sf_s",
+      "speaker": "RRBI",
+      "total_tokens": 4921,
+      "deletions": 59,
+      "substitutions": 448,
+      "correct": 4414,
+      "omission_ap": 0.02077349582984032,
+      "substitution_ap": 0.2220453067483784,
+      "binary_ap": 0.22932409438162626,
+      "omission_recall_at_fpr15": 0.1864406779661017,
+      "achieved_fpr15": 0.14997734481196193
+    },
+    {
+      "scorer": "sf_sd",
+      "speaker": "NJS",
+      "total_tokens": 4998,
+      "deletions": 78,
+      "substitutions": 560,
+      "correct": 4360,
+      "omission_ap": 0.06521199547314209,
+      "substitution_ap": 0.25129716237985367,
+      "binary_ap": 0.2823500891075944,
+      "omission_recall_at_fpr15": 0.47435897435897434,
+      "achieved_fpr15": 0.15
+    },
+    {
+      "scorer": "sf_sd",
+      "speaker": "RRBI",
+      "total_tokens": 4921,
+      "deletions": 59,
+      "substitutions": 448,
+      "correct": 4414,
+      "omission_ap": 0.041845269795268016,
+      "substitution_ap": 0.2005698710195727,
+      "binary_ap": 0.2233303832138203,
+      "omission_recall_at_fpr15": 0.3728813559322034,
+      "achieved_fpr15": 0.14997734481196193
+    },
+    {
+      "scorer": "greedy_dp",
+      "speaker": "NJS",
+      "total_tokens": 2065,
+      "deletions": 23,
+      "substitutions": 221,
+      "correct": 1821,
+      "omission_ap": 0.025395149291001555,
+      "substitution_ap": 0.18323179999677408,
+      "binary_ap": 0.1983680032700742,
+      "omission_recall_at_fpr15": 0.43478260869565216,
+      "achieved_fpr15": 0.12465678198791873
+    },
+    {
+      "scorer": "greedy_dp",
+      "speaker": "RRBI",
+      "total_tokens": 2147,
+      "deletions": 19,
+      "substitutions": 201,
+      "correct": 1927,
+      "omission_ap": 0.013830320337289538,
+      "substitution_ap": 0.16763015689375257,
+      "binary_ap": 0.175757567805955,
+      "omission_recall_at_fpr15": 0.3157894736842105,
+      "achieved_fpr15": 0.1344058121432278
+    },
+    {
+      "scorer": "gop_sa",
+      "speaker": "NJS",
+      "total_tokens": 4998,
+      "deletions": 78,
+      "substitutions": 560,
+      "correct": 4360,
+      "omission_ap": 0.06179093031699075,
+      "substitution_ap": 0.25329577561872285,
+      "binary_ap": 0.2827301964145997,
+      "omission_recall_at_fpr15": 0.44871794871794873,
+      "achieved_fpr15": 0.15
+    },
+    {
+      "scorer": "gop_sa",
+      "speaker": "RRBI",
+      "total_tokens": 4921,
+      "deletions": 59,
+      "substitutions": 448,
+      "correct": 4414,
+      "omission_ap": 0.041963544067277224,
+      "substitution_ap": 0.20858342165500682,
+      "binary_ap": 0.23030963355610237,
+      "omission_recall_at_fpr15": 0.3728813559322034,
+      "achieved_fpr15": 0.14997734481196193
+    }
+  ],
+  "word_final_consonant_breakdown": [
+    {
+      "scorer": "sf_s",
+      "stratum": "word_final_consonants",
+      "total_tokens": 1866,
+      "deletions": 93,
+      "errors": 358,
+      "omission_ap": 0.13207114073680012,
+      "binary_ap": 0.41544869665379947
+    },
+    {
+      "scorer": "sf_s",
+      "stratum": "other_positions",
+      "total_tokens": 8053,
+      "deletions": 44,
+      "errors": 787,
+      "omission_ap": 0.013499696734032238,
+      "binary_ap": 0.2347913310649471
+    },
+    {
+      "scorer": "sf_sd",
+      "stratum": "word_final_consonants",
+      "total_tokens": 1866,
+      "deletions": 93,
+      "errors": 358,
+      "omission_ap": 0.18126506413592894,
+      "binary_ap": 0.3930346567507178
+    },
+    {
+      "scorer": "sf_sd",
+      "stratum": "other_positions",
+      "total_tokens": 8053,
+      "deletions": 44,
+      "errors": 787,
+      "omission_ap": 0.029798933879781716,
+      "binary_ap": 0.22189241269161294
+    },
+    {
+      "scorer": "greedy_dp",
+      "stratum": "word_final_consonants",
+      "total_tokens": 781,
+      "deletions": 27,
+      "errors": 126,
+      "omission_ap": 0.07065142329977057,
+      "binary_ap": 0.24225998624978712
+    },
+    {
+      "scorer": "greedy_dp",
+      "stratum": "other_positions",
+      "total_tokens": 3431,
+      "deletions": 15,
+      "errors": 338,
+      "omission_ap": 0.00859646548482653,
+      "binary_ap": 0.17585217590390376
+    },
+    {
+      "scorer": "gop_sa",
+      "stratum": "word_final_consonants",
+      "total_tokens": 1866,
+      "deletions": 93,
+      "errors": 358,
+      "omission_ap": 0.1772354751716984,
+      "binary_ap": 0.3959838547587294
+    },
+    {
+      "scorer": "gop_sa",
+      "stratum": "other_positions",
+      "total_tokens": 8053,
+      "deletions": 44,
+      "errors": 787,
+      "omission_ap": 0.02783752365116897,
+      "binary_ap": 0.22639892335681075
+    }
+  ],
+  "confusable_phone_breakdown": [
+    {
+      "scorer": "sf_s",
+      "confusable_group": "dental_stops_fricatives",
+      "total_tokens": 2180,
+      "deletions": 86,
+      "errors": 452,
+      "omission_ap": 0.09799487535332249,
+      "binary_ap": 0.4774499938550233
+    },
+    {
+      "scorer": "sf_s",
+      "confusable_group": "liquids_glides",
+      "total_tokens": 1157,
+      "deletions": 25,
+      "errors": 89,
+      "omission_ap": 0.07233181437453037,
+      "binary_ap": 0.1322089217692819
+    },
+    {
+      "scorer": "sf_s",
+      "confusable_group": "labiodental_bilabial",
+      "total_tokens": 774,
+      "deletions": 9,
+      "errors": 62,
+      "omission_ap": 0.04248287570687005,
+      "binary_ap": 0.358588855750013
+    },
+    {
+      "scorer": "sf_s",
+      "confusable_group": "sibilants_affricates",
+      "total_tokens": 247,
+      "deletions": 0,
+      "errors": 22,
+      "omission_ap": null,
+      "binary_ap": 0.26795873952194776
+    },
+    {
+      "scorer": "sf_s",
+      "confusable_group": "tense_lax_vowels",
+      "total_tokens": 1838,
+      "deletions": 4,
+      "errors": 136,
+      "omission_ap": 0.026853942721833314,
+      "binary_ap": 0.15521577945622853
+    },
+    {
+      "scorer": "sf_s",
+      "confusable_group": "other",
+      "total_tokens": 3723,
+      "deletions": 13,
+      "errors": 384,
+      "omission_ap": 0.016140169157586023,
+      "binary_ap": 0.22995774540649655
+    },
+    {
+      "scorer": "sf_sd",
+      "confusable_group": "dental_stops_fricatives",
+      "total_tokens": 2180,
+      "deletions": 86,
+      "errors": 452,
+      "omission_ap": 0.1307710774065633,
+      "binary_ap": 0.43893535440504294
+    },
+    {
+      "scorer": "sf_sd",
+      "confusable_group": "liquids_glides",
+      "total_tokens": 1157,
+      "deletions": 25,
+      "errors": 89,
+      "omission_ap": 0.10811200984438991,
+      "binary_ap": 0.13976389002401043
+    },
+    {
+      "scorer": "sf_sd",
+      "confusable_group": "labiodental_bilabial",
+      "total_tokens": 774,
+      "deletions": 9,
+      "errors": 62,
+      "omission_ap": 0.05629307847751294,
+      "binary_ap": 0.3509309285849295
+    },
+    {
+      "scorer": "sf_sd",
+      "confusable_group": "sibilants_affricates",
+      "total_tokens": 247,
+      "deletions": 0,
+      "errors": 22,
+      "omission_ap": null,
+      "binary_ap": 0.24371871619273097
+    },
+    {
+      "scorer": "sf_sd",
+      "confusable_group": "tense_lax_vowels",
+      "total_tokens": 1838,
+      "deletions": 4,
+      "errors": 136,
+      "omission_ap": 0.022145825949489766,
+      "binary_ap": 0.14449172855804612
+    },
+    {
+      "scorer": "sf_sd",
+      "confusable_group": "other",
+      "total_tokens": 3723,
+      "deletions": 13,
+      "errors": 384,
+      "omission_ap": 0.06412942366603624,
+      "binary_ap": 0.21976344373057144
+    },
+    {
+      "scorer": "greedy_dp",
+      "confusable_group": "dental_stops_fricatives",
+      "total_tokens": 900,
+      "deletions": 24,
+      "errors": 157,
+      "omission_ap": 0.04889018840913158,
+      "binary_ap": 0.31951959848588146
+    },
+    {
+      "scorer": "greedy_dp",
+      "confusable_group": "liquids_glides",
+      "total_tokens": 466,
+      "deletions": 7,
+      "errors": 39,
+      "omission_ap": 0.04595128373930217,
+      "binary_ap": 0.09028639071557526
+    },
+    {
+      "scorer": "greedy_dp",
+      "confusable_group": "labiodental_bilabial",
+      "total_tokens": 314,
+      "deletions": 4,
+      "errors": 27,
+      "omission_ap": 0.04155927835051546,
+      "binary_ap": 0.12712046151536596
+    },
+    {
+      "scorer": "greedy_dp",
+      "confusable_group": "sibilants_affricates",
+      "total_tokens": 115,
+      "deletions": 0,
+      "errors": 9,
+      "omission_ap": null,
+      "binary_ap": 0.1243616287094548
+    },
+    {
+      "scorer": "greedy_dp",
+      "confusable_group": "tense_lax_vowels",
+      "total_tokens": 785,
+      "deletions": 1,
+      "errors": 65,
+      "omission_ap": 0.0013869625520110957,
+      "binary_ap": 0.10993376522038942
+    },
+    {
+      "scorer": "greedy_dp",
+      "confusable_group": "other",
+      "total_tokens": 1632,
+      "deletions": 6,
+      "errors": 167,
+      "omission_ap": 0.005971271133513511,
+      "binary_ap": 0.1732146321168405
+    },
+    {
+      "scorer": "gop_sa",
+      "confusable_group": "dental_stops_fricatives",
+      "total_tokens": 2180,
+      "deletions": 86,
+      "errors": 452,
+      "omission_ap": 0.135231983831872,
+      "binary_ap": 0.451573338168036
+    },
+    {
+      "scorer": "gop_sa",
+      "confusable_group": "liquids_glides",
+      "total_tokens": 1157,
+      "deletions": 25,
+      "errors": 89,
+      "omission_ap": 0.114085325037208,
+      "binary_ap": 0.14826497510336525
+    },
+    {
+      "scorer": "gop_sa",
+      "confusable_group": "labiodental_bilabial",
+      "total_tokens": 774,
+      "deletions": 9,
+      "errors": 62,
+      "omission_ap": 0.06578469380927678,
+      "binary_ap": 0.34730747274537926
+    },
+    {
+      "scorer": "gop_sa",
+      "confusable_group": "sibilants_affricates",
+      "total_tokens": 247,
+      "deletions": 0,
+      "errors": 22,
+      "omission_ap": null,
+      "binary_ap": 0.25317576970529965
+    },
+    {
+      "scorer": "gop_sa",
+      "confusable_group": "tense_lax_vowels",
+      "total_tokens": 1838,
+      "deletions": 4,
+      "errors": 136,
+      "omission_ap": 0.024764837829171913,
+      "binary_ap": 0.15387480125011122
+    },
+    {
+      "scorer": "gop_sa",
+      "confusable_group": "other",
+      "total_tokens": 3723,
+      "deletions": 13,
+      "errors": 384,
+      "omission_ap": 0.04224101417921309,
+      "binary_ap": 0.21972613219490414
+    }
+  ]
+}

@@ -1,6 +1,7 @@
 """Inference-only cache CLI. Default is synthetic; no audio/weight loader exists."""
 
 import argparse
+import concurrent.futures
 from datetime import datetime, timezone
 import platform
 from pathlib import Path
@@ -20,9 +21,16 @@ def _git(repo: Path, *args: str) -> str:
     return subprocess.check_output(["git", "-C", str(repo), *args], text=True).strip()
 
 
+def _score_worker(args: tuple[dict, str, str]) -> tuple[list[dict], dict]:
+    encoded, scorer_run, scorer = args
+    record = decoded_record(encoded)
+    return score_record(record, scorer_run, scorer)
+
+
 def run(cache_path: Path, output: Path, config_path: Path, run_id: str,
         *, mode: str = "synthetic", authorization_path: Path | None = None,
-        authorization_sha256: str | None = None, repo: Path | None = None) -> dict:
+        authorization_sha256: str | None = None, repo: Path | None = None,
+        workers: int = 1) -> dict:
     repo = repo or Path(__file__).resolve().parents[3]
     if not re.fullmatch(r"[A-Za-z0-9_-]+", run_id):
         raise ValueError("run_id must be a safe nonempty identifier")
@@ -54,11 +62,17 @@ def run(cache_path: Path, output: Path, config_path: Path, run_id: str,
     started = datetime.now(timezone.utc).isoformat()
     bundles = {}
     for scorer in CONFIG["scorers"]:
+        print(f"[SCORER] Starting {scorer} scoring ({len(cache['records'])} records, workers={workers})...", flush=True)
         scorer_run = run_id + "_" + scorer
         rows, utterances, expected = [], [], {}
-        for encoded in cache["records"]:
+        if workers > 1 and len(cache["records"]) > 1:
+            with concurrent.futures.ProcessPoolExecutor(max_workers=workers) as executor:
+                items = [(rec, scorer_run, scorer) for rec in cache["records"]]
+                results = list(executor.map(_score_worker, items))
+        else:
+            results = [_score_worker((rec, scorer_run, scorer)) for rec in cache["records"]]
+        for (scored, utterance), encoded in zip(results, cache["records"]):
             record = decoded_record(encoded)
-            scored, utterance = score_record(record, scorer_run, scorer)
             utterance.update(emission_cache_sha256=cache_hash,
                              emission_shape=[len(record["log_emissions"]), 40],
                              source_speaker_id=record["source_speaker_id"],
@@ -72,6 +86,7 @@ def run(cache_path: Path, output: Path, config_path: Path, run_id: str,
         if len(utterances) != len(cache["records"]):
             raise ValueError("incomplete utterance/failure accounting")
         bundles[scorer] = (rows, utterances, counts)
+        print(f"[SCORER] Completed {scorer} scoring (statuses: {counts}).", flush=True)
     source_hashes = {str(p.relative_to(repo)): sha256(p.read_bytes())
                      for p in sorted((repo / "src/langfens_prep/p_score").glob("*.py"))}
     source_hashes["audit_scripts/p_score_infer.py"] = sha256((repo / "audit_scripts/p_score_infer.py").read_bytes())
@@ -148,10 +163,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--mode", choices=("synthetic", "frozen-cache"), default="synthetic")
     parser.add_argument("--authorization", type=Path)
     parser.add_argument("--authorization-sha256")
+    parser.add_argument("--workers", type=int, default=1, help="worker processes for record scoring")
     args = parser.parse_args(argv)
     try:
         manifest = run(args.cache, args.output, args.config, args.run_id, mode=args.mode,
-                       authorization_path=args.authorization, authorization_sha256=args.authorization_sha256)
+                       authorization_path=args.authorization, authorization_sha256=args.authorization_sha256,
+                       workers=args.workers)
     except (ValueError, TypeError, KeyError, OSError, StopIteration) as exc:
         print(json_bytes({"status": "failure", "reason": str(exc), "output_certified": False}).decode().strip(), file=sys.stderr)
         return 2
