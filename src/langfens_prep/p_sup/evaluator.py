@@ -64,7 +64,10 @@ def evaluate_checkpoint_v1(
     if device is None:
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    ckpt_data = torch.load(ckpt_path, map_location="cpu")
+    try:
+        ckpt_data = torch.load(ckpt_path, map_location="cpu", weights_only=False)
+    except TypeError:
+        ckpt_data = torch.load(ckpt_path, map_location="cpu")
     metadata = ckpt_data.get("metadata", {})
     objective = metadata.get("objective", "operation_ce")
 
