@@ -43,3 +43,61 @@ Read AGENTS, global index, shared addendum/contract/provenance and this checkpoi
 The above documents the historical preparation-only state. At the explicit user's later implementation authorization, Luna resumed the intentionally paused partial source on branch `prep/rq1-p-sup` at `d6ef18443752b0add3f3dfcfff42f7fa7be967c1`; no prior work was discarded. Initial Git state, handoff and safety boundaries: [checkpoint 01](checkpoints/01-luna-handoff-and-initial-state.md). Additive prototype and validation: [checkpoint 02](checkpoints/02-implementation-and-validation.md).
 
 Bounded isolated implementation is complete in tested source commit `d2b9702627fa03c7d2de97ff8e825bb3ffbe0b86`; the synthetic CPU forward-only suite passed **88 tests**; preflight explicitly reports EXPERIMENT_HOLD and no trainer. This is prototype code review GO only, not experiment/training/deployment GO. The preflight package contains no data/model/remote imports and was not pushed or run remotely. Full actual update counts remain NOT_STARTED, 0 successful/0 skipped/0 attempts, no artifact. Missing remote data allowlist adapter, per-epoch durable checkpoint/resume, authorized T4 trainer, scientific objective and execution approvals, missing-proposal/margin/license/support verification remain explicit blockers. No real data/labels/TEST contents, weights, backward, optimizer, GPU, API or remote service were accessed. The original historical state above is retained; use latest [source receipt](checkpoints/03-source-commit-receipt.md) and checkpoint for current state.
+
+---
+
+## Append-only continuation — P-SUP Pipeline Implementation & Kaggle Staging (2026-11-03)
+
+State: **PIPELINE_IMPLEMENTED; TESTS_PASS (97 passed); PREFLIGHT_AUDITED; KAGGLE_STAGED_NO_RUN; AWAITING_WEB_UI_EXECUTION.**
+Carried out under explicit execution authorization for Agent B (P-SUP Execution) on branch `prep/rq1-p-sup`.
+
+### 1. Objective Policy Amendment
+Documented in [OBJECTIVE_POLICY_AMENDMENT.md](OBJECTIVE_POLICY_AMENDMENT.md). Formally authorizes:
+- **Treatment Arm `T-OP`:** `CompactOperationHead` (266,667 parameters) supervised by `objective="operation_ce"` (3-way categorical Cross-Entropy: correct=0, substitution=1, deletion=2) + chronological realized CTC loss.
+- **Capacity-Matched Control Arm `B-CONTROL`:** Identical `CompactOperationHead` supervised by `objective="binary_collapsed"` ($\text{LSE}(z_1, z_2) - z_0$ with BCE loss) + realized CTC loss. Subtype logits in control are explicitly unidentifiable under binary supervision.
+- **Acoustic Backbone:** `facebook/wav2vec2-base-960h` (rev `22aad52d435eb6dbaf354bdad9b0da84ce7d6156`) kept strictly frozen in eval mode (`requires_grad=False`).
+
+### 2. Dataset Allowlist & Loader Implementation
+Implemented in `src/langfens_prep/p_sup/dataset.py`:
+- `PSupL2ArcticDataset` and `collate_psup_batch`.
+- Connects Fold 1 TRAIN (2,399 utterances across 16 speakers: BWC, ERMS, HKK, HQTV, MBMPS, NCC, SKA, SVBI, THV, TLV, TNI, TXHC, YBAA, YDCK, YKWK, ZHAA).
+- Subpartitions: FIT (1,799 utterances), SELECTION (300 utterances), CALIBRATION (300 utterances).
+- Connects Fold 1 VAL (300 utterances across NJS, RRBI).
+- **Fail-Closed Test Sealing:** Active Fold 1 TEST speakers (`ABA`, `ASI`, `EBVS`, `HJK`, `LXC`, `PNV`) are physically absent from `authorized_RQ1-TRN-02A_fold1_train_val_only.zip` (SHA-256 `b750eb3bf3971afccd9ab9058a64fa6b3f5781399b9ef0f1294d29bf580784a9`) and strictly rejected with `SealedSpeakerContaminationError` upon any attempted access.
+- Cryptographic verification of split manifest (`7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b`).
+
+### 3. Training & Evaluation Pipelines
+- **Trainer (`src/langfens_prep/p_sup/trainer.py`, `audit_scripts/train_p_sup.py`):**
+  - Contracts enforced: seed 1337, batch_size 2, accumulation 2 (effective batch 4), tail group divisor `actual_group_size`, AdamW lr 1e-3, weight decay 1e-2, gradient clipping 1.0, warmup 100 updates, cosine schedule over 15,000 horizon, max 3,600 successful updates, CUDA FP16 AMP.
+  - Dual checkpointing: fixed-budget checkpoint (`fixed_budget_3600.pt`) at exactly 3,600 updates, validation-selected `best.pt` (strict binary AP, blank_fraction < 0.99, patience 5 logged), and per-epoch `last.pt`. All checkpoints save model weights, optimizer, scheduler, scaler, full RNG states, metadata, and compute SHA-256.
+- **Evaluator (`src/langfens_prep/p_sup/evaluator.py`, `audit_scripts/evaluate_p_sup.py`):**
+  - Conforms to Evaluation Contract V1 (`rq1-runtime-v1` schema).
+  - Computes binary AP, legacy-comparable omission/substitution AP, dedicated omission AP, PER, blank fraction, and per-speaker breakdowns (NJS, RRBI).
+  - Validates full run via `validate_complete_run` and `validate_runtime_row`.
+
+### 4. Verification Evidence
+- Scoped test suite: **97 passed** (`pytest -q tests/test_p_sup_labels.py tests/test_p_sup_model.py tests/test_p_sup_runtime.py tests/test_p_sup_pipeline.py`).
+- Preflight audit: `python audit_scripts/p_sup_preflight.py` verified and reports `STAGING_VERIFIED_PASSED` for `deploy/kaggle_p_sup_train`.
+
+### 5. Kaggle T4 Deployment Package & Staging
+- Deployment directory: `deploy/kaggle_p_sup_train/`.
+- Target: `machine_shape: NvidiaTeslaT4`, `enable_gpu: true`, `is_private: true`, `dataset_sources: ["minkhoaa/langfens-rq1-fold1-staging"]`.
+- Staged via official CLI workflow:
+  ```bash
+  kaggle kernels push -p deploy/kaggle_p_sup_train --no-run
+  ```
+- Kernel slug: `minkhoaa/langfens-rq1-p-sup-t4-training`.
+- Verification status: `KernelWorkerStatus.COMPLETE` (kernel version saved without background execution).
+
+### 6. Restart & Execution Instructions (Permanent Kaggle Workflow)
+Per `AGENTS.md` and `KAGGLE_T4_DEPLOYMENT_DESIGN.md`:
+1. Open Kaggle Web UI editor: `https://www.kaggle.com/code/minkhoaa/langfens-rq1-p-sup-t4-training`.
+2. Attach user secret `HF_TOKEN` under Add-ons -> Secrets.
+3. Start official training execution via **Save & Run All**.
+4. Monitor progress and logs via CLI:
+   ```bash
+   kaggle kernels status minkhoaa/langfens-rq1-p-sup-t4-training
+   kaggle kernels output minkhoaa/langfens-rq1-p-sup-t4-training
+   ```
+5. Checkpoint durability: Notebook mirrors checkpoints atomically to private Hugging Face repository `minkhoaa/langfens-rq1-cross-fold-checkpoints:p_sup/` with SHA-256 readback.
+6. Post-execution evaluation: Once completed, evaluate both endpoints using `audit_scripts/evaluate_p_sup.py`.

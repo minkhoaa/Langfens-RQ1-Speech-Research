@@ -1,0 +1,143 @@
+#!/usr/bin/env python3
+"""LANGFENS — RQ1 P-SUP Official Training Entrypoint.
+
+Supports both:
+a) Subtype treatment: CompactOperationHead with objective="operation_ce"
+b) Matched binary control: CompactOperationHead with objective="binary_collapsed"
+
+Enforces exact contracts:
+- seed 1337
+- batch_size 2, gradient_accumulation_steps 2 (effective batch 4)
+- warmup_updates 100, cosine schedule over 15,000 horizon
+- max 3,600 successful updates
+- AdamW lr 0.001, weight decay 0.01, gradient clipping 1.0, CUDA FP16 AMP
+- Dual checkpointing: fixed_budget_3600.pt and best.pt
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import sys
+from pathlib import Path
+
+# Add repo root and src to sys.path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+import torch
+from langfens_prep.p_sup.trainer import train_p_sup
+
+
+def main():
+    parser = argparse.ArgumentParser(description="P-SUP Training Entrypoint")
+    parser.add_argument(
+        "--arm",
+        type=str,
+        choices=["treatment", "control", "both"],
+        default="both",
+        help="Arm to train: treatment (operation_ce), control (binary_collapsed), or both"
+    )
+    parser.add_argument(
+        "--objective",
+        type=str,
+        choices=["operation_ce", "binary_collapsed"],
+        default=None,
+        help="Direct objective name override"
+    )
+    parser.add_argument(
+        "--split-manifest",
+        type=str,
+        default="manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json",
+        help="Path to splits manifest"
+    )
+    parser.add_argument(
+        "--zip-path",
+        type=str,
+        default="/home/khoa/Projects/KLTN/Dataset/datasets/L2-ARCTIC/authorized_RQ1-TRN-02A_fold1_train_val_only.zip",
+        help="Path to authorized Fold 1 train/val audio zip"
+    )
+    parser.add_argument(
+        "--output-dir",
+        type=str,
+        default="/kaggle/working/checkpoints/RQ1-P-SUP",
+        help="Base directory for output checkpoints"
+    )
+    parser.add_argument("--seed", type=int, default=1337)
+    parser.add_argument("--batch-size", type=int, default=2)
+    parser.add_argument("--gradient-accumulation-steps", type=int, default=2)
+    parser.add_argument("--warmup-updates", type=int, default=100)
+    parser.add_argument("--max-updates", type=int, default=3600)
+    parser.add_argument("--lr", type=float, default=0.001)
+    parser.add_argument("--weight-decay", type=float, default=0.01)
+    parser.add_argument("--gradient-clip", type=float, default=1.0)
+    parser.add_argument("--max-epochs", type=int, default=25)
+    args = parser.parse_args()
+
+    repo_root = Path(__file__).resolve().parent.parent
+    split_manifest = Path(args.split_manifest)
+    if not split_manifest.is_absolute():
+        split_manifest = repo_root / split_manifest
+
+    zip_path = Path(args.zip_path)
+    if not zip_path.is_file():
+        # Fallback check under /kaggle/input
+        kaggle_candidate = Path("/kaggle/input/langfens-rq1-fold1-staging/authorized_RQ1-TRN-02A_fold1_train_val_only.zip")
+        if kaggle_candidate.is_file():
+            zip_path = kaggle_candidate
+        else:
+            local_rel = repo_root / "datasets/L2-ARCTIC/authorized_RQ1-TRN-02A_fold1_train_val_only.zip"
+            if local_rel.is_file():
+                zip_path = local_rel
+
+    base_out = Path(args.output_dir)
+
+    objectives = []
+    if args.objective:
+        objectives = [args.objective]
+    elif args.arm == "treatment":
+        objectives = ["operation_ce"]
+    elif args.arm == "control":
+        objectives = ["binary_collapsed"]
+    elif args.arm == "both":
+        objectives = ["operation_ce", "binary_collapsed"]
+
+    print("=" * 80)
+    print("LANGFENS — Official P-SUP Training Launch")
+    print(f"Arms to execute: {objectives}")
+    print(f"Split manifest: {split_manifest}")
+    print(f"Zip path: {zip_path}")
+    print(f"Base output dir: {base_out}")
+    print("=" * 80)
+
+    results = {}
+    for obj in objectives:
+        arm_name = "T-OP_treatment" if obj == "operation_ce" else "B-CONTROL_matched_binary"
+        arm_out = base_out / arm_name
+        arm_out.mkdir(parents=True, exist_ok=True)
+
+        res = train_p_sup(
+            objective=obj,
+            split_manifest_path=split_manifest,
+            zip_path=zip_path,
+            output_dir=arm_out,
+            seed=args.seed,
+            batch_size=args.batch_size,
+            gradient_accumulation_steps=args.gradient_accumulation_steps,
+            warmup_updates=args.warmup_updates,
+            cosine_horizon_updates=15000,
+            max_successful_updates=args.max_updates,
+            lr=args.lr,
+            weight_decay=args.weight_decay,
+            gradient_clip=args.gradient_clip,
+            max_epochs=args.max_epochs
+        )
+        results[obj] = res
+
+    print("=" * 80)
+    print("P-SUP Training Completed Successfully.")
+    print(json.dumps(results, indent=2))
+    print("=" * 80)
+
+
+if __name__ == "__main__":
+    main()

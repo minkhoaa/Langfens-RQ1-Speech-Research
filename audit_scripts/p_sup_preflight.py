@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 """Offline package audit only: no corpus/model load, CUDA probe, service or training."""
+from __future__ import annotations
+
 import argparse
 import hashlib
 import json
@@ -7,6 +9,54 @@ from pathlib import Path
 import subprocess
 
 from langfens_prep.p_sup.runtime import BASE_SHA, CONTRACT_SHA256
+
+
+def audit_training_staging_package(root: Path) -> dict:
+    staging_dir = root / "deploy/kaggle_p_sup_train"
+    if not staging_dir.is_dir():
+        return {"status": "NOT_PRESENT"}
+
+    metadata_path = staging_dir / "kernel-metadata.json"
+    if not metadata_path.is_file():
+        raise ValueError("Missing kernel-metadata.json in training staging package")
+
+    meta = json.loads(metadata_path.read_text(encoding="utf-8"))
+    if meta.get("machine_shape") != "NvidiaTeslaT4":
+        raise ValueError(f"Expected machine_shape NvidiaTeslaT4, got {meta.get('machine_shape')}")
+    if meta.get("enable_gpu") is not True:
+        raise ValueError("enable_gpu must be true")
+    if meta.get("is_private") is not True:
+        raise ValueError("is_private must be true")
+    if meta.get("dataset_sources") != ["minkhoaa/langfens-rq1-fold1-staging"]:
+        raise ValueError(f"dataset_sources mismatch: {meta.get('dataset_sources')}")
+
+    notebook_path = staging_dir / "kaggle_train.ipynb"
+    if not notebook_path.is_file():
+        raise ValueError("Missing kaggle_train.ipynb in training staging package")
+    json.loads(notebook_path.read_text(encoding="utf-8"))
+
+    # Verify trainer and dataset modules are in place
+    trainer_script = root / "audit_scripts/train_p_sup.py"
+    if not trainer_script.is_file():
+        raise ValueError("Missing audit_scripts/train_p_sup.py")
+
+    dataset_module = root / "src/langfens_prep/p_sup/dataset.py"
+    if not dataset_module.is_file():
+        raise ValueError("Missing src/langfens_prep/p_sup/dataset.py")
+
+    policy_doc = root / "manifests/RQ1-P-SUP/OBJECTIVE_POLICY_AMENDMENT.md"
+    if not policy_doc.is_file():
+        raise ValueError("Missing manifests/RQ1-P-SUP/OBJECTIVE_POLICY_AMENDMENT.md")
+
+    return {
+        "status": "STAGING_VERIFIED_PASSED",
+        "package_dir": str(staging_dir.relative_to(root)),
+        "kernel_id": meta.get("id"),
+        "machine_shape": meta.get("machine_shape"),
+        "enable_gpu": meta.get("enable_gpu"),
+        "is_private": meta.get("is_private"),
+        "dataset_sources": meta.get("dataset_sources")
+    }
 
 
 def preflight(root: Path):
@@ -68,11 +118,15 @@ def preflight(root: Path):
     base = subprocess.check_output(["git", "merge-base", "HEAD", BASE_SHA], cwd=root, text=True).strip()
     if base != BASE_SHA:
         raise ValueError("wrong ancestry")
+
+    staging_audit = audit_training_staging_package(root)
+
     return {"status": "PREPARATION_AUDITED_EXPERIMENT_HOLD", "contract_sha256": CONTRACT_SHA256,
             "config_sha256": hashlib.sha256(config_path.read_bytes()).hexdigest(),
             "git_tip": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip(),
             "training": "NOT_STARTED", "successful_updates": 0, "skipped_updates": 0, "attempts": 0,
             "new_model_artifact": None, "training_entrypoint_available": False,
+            "staging_package_audit": staging_audit,
             "blockers": ["remote data adapter and allowlist/hash verification not implemented",
                          "per-epoch atomic private durability and strict resume integration not implemented",
                          "end-to-end authorized T4 FP16 trainer not implemented",
