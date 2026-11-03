@@ -16,7 +16,7 @@ Status: **PARTIAL; SOURCE_INTEGRATED; REMOTE_READINESS_AND_PUBLICATION_BLOCKED**
 
 ## RQ1-P-SCORE — implementation continuation (Luna handoff)
 
-**SYNTHETIC_CPU_IMPLEMENTATION_COMPLETE; REAL_DATA_EXPERIMENT_HOLD.** Authorized Luna continuation preserved paused Sol worker outputs and completed standalone scoring source plus synthetic-only forward tests. [Completion checkpoint](../../manifests/RQ1-P-SCORE/implementation/PROCESS_CHECKPOINT_LUNA.md), [readiness and blockers](../../manifests/RQ1-P-SCORE/implementation/READINESS.md). 251 scoped CPU tests passed; synthetic CLI smoke only. Source commit `edd5e5cc2f4ca714acb712b6a25737922c8a7aa9`. No model/audio/corpus input, inference, training, GPU, remote staging, or TEST access; no scientific performance PASS/winner.
+**SYNTHETIC_CPU_IMPLEMENTATION_COMPLETE; REAL_DATA_EXPERIMENT_HOLD.** Authorized Luna continuation preserved paused Sol worker outputs and completed standalone scoring source plus synthetic-only forward tests. [Completion checkpoint](../../manifests/RQ1-P-SCORE/implementation/PROCESS_CHECKPOINT_LUNA.md), [readiness and blockers](../../manifests/RQ1-P-SCORE/implementation/READINESS.md). 251 scoped CPU tests passed; synthetic CLI smoke only. Source commit `edd5e5cc2f4ca714acb712b6a25737922c8a7aa9`; latest validation commit `2a2729c2845ff5e49d6483f50214a4707727dd0d`. No model/audio/corpus input, inference, training, GPU, remote staging, or TEST access; no scientific performance PASS/winner.
 
 ## RQ1-P-SCORE — isolated preparation delivered
 
