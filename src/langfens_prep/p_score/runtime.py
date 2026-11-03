@@ -164,10 +164,10 @@ def score_record(record: dict, run_id: str, scorer: str) -> tuple[list[dict], di
                     zero_canonical_mass=score.canonical_log_mass == -math.inf,
                     zero_relaxed_mass=score.relaxed_log_mass == -math.inf,
                     raw_gop=score.raw_gop,
-                    posterior_target_occupancy=score.posterior_target_occupancy,
+                    posterior_phone_state_occupancy=score.posterior_target_occupancy,
                     occupancy_floor=1.0,
                     posterior_occupancy_normalized_error=score.occupancy_normalized_error,
-                    normalization="raw", occupancy_definition="exact_posterior_nonblank_target_visits")
+                    normalization="raw", occupancy_definition="exact_posterior_nonblank_prompt_phone_state_visits")
                 row["scores"]["s_error"] = score.s_error
                 row.update(status=score.status, abstention_reason=score.reason,
                            finite=score.status == "ok")
