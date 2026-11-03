@@ -1,0 +1,11 @@
+{
+  "schema_version": "p-score-config-v1",
+  "runtime_schema": "rq1-runtime-v1",
+  "protocol": "Z-PROMPT-V1",
+  "graph_revision": "ctc-union-language-v1",
+  "normalization": "raw",
+  "occupancy_floor": 1,
+  "scorers": ["sf_s", "sf_sd", "greedy_dp", "gop_sa"],
+  "calibration": null,
+  "sdi_supported": false
+}
