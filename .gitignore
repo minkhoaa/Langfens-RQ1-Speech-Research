@@ -32,6 +32,7 @@ data_stage/
 audio_stage/
 cache/
 p_score_runs/
+manifests/RQ1-P-SUP/evaluation/*/
 tmp/
 *.tmp
 *.temp
