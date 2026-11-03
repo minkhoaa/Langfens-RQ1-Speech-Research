@@ -10,7 +10,12 @@
 
 ---
 
+## RQ1 — coordinator final P-SCORE/P-SUP implementation receipt (current)
+
+**SYNTHETIC_IMPLEMENTATION_QA_COMPLETE; EXPERIMENTS_HOLD.** Coordinator-only final receipt: [COORDINATOR_IMPLEMENTATION_RECEIPT.md](../../manifests/RQ1-WORKSPACE-PREP-01/COORDINATOR_IMPLEMENTATION_RECEIPT.md). Final arm HEADs after arm QA commits: P-SCORE `5e4806e1ba03aa549b370f78b8a00938eda27ad1`; P-SUP `cf9c82b606a5bd4517bd1b2b3f80d1660f7f944b`. P-SCORE source/bridge `69d05e36c83b7ce10cb679730855ea440cf10e8e`, 269 passed; shared 22 and safe existing 9 passed. P-SCORE synthetic integration GO; P-SUP bounded prototype GO only based on prior 88-test review (not rerun), no trainer. Both experiments/training/deployment HOLD; unresolved source/license/parity/margin/provenance/authorization gates. Training NOT_STARTED; no artifact. No real data/model/TEST/GPU/API/training.
+
 ## RQ1 — P-SCORE schema remediation independent recheck (current)
+
 
 **SYNTHETIC_RUNTIME_SCHEMA_INTEGRATION_REPRODUCED; EXPERIMENTS_HOLD.** Independently verified P-SCORE source/test commit `2ffcaee162c210fadd0dce3c35b1bfe719b17e84` against the unchanged shared validator (SHA `1eecf657cad3a1831246a9e21ca13618483fd396bcccd714f543cf038bf24e81`). P-SCORE scoped tests **268 passed**, shared JSON tests **22 passed**, safe existing synthetic tests **9 passed**; all four scorers passed bridge cases for repeated positions, empty prompt, no frames, recording failure and invalid/nonfinite emissions. All 57 shared provenance fingerprints in each of 3 trees and frozen V1 digest match. P-SCORE synthetic contract integration GO; author topology/license, empirical validity and real experiment remain HOLD. P-SUP remains prototype-review GO only based on prior independent 88-test run; not rerun now, no trainer exists. Append-only evidence: [recheck report](../../manifests/RQ1-WORKSPACE-PREP-01/implementation-readiness/P_SCORE_SCHEMA_RECHECK_REPORT.md), [checkpoint](../../manifests/RQ1-WORKSPACE-PREP-01/implementation-readiness/P_SCORE_SCHEMA_RECHECK_CHECKPOINT.md), [coordinator handoff](../../manifests/RQ1-WORKSPACE-PREP-01/implementation-readiness/P_SCORE_SCHEMA_RECHECK_HANDOFF.md). No real data/model/TEST/inference/training/GPU/API use. Training NOT_STARTED, zero updates/attempts, no artifact. Parent records eventual arm tips after documentation commits.
 
