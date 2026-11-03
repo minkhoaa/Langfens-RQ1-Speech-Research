@@ -7,6 +7,12 @@
 - Training/inference NOT_STARTED: 0 successful, 0 skipped, 0 attempts, no artifact. No real data/audio/labels/timestamps/weights/TEST/GPU/remote/API used. Resource estimates are qualitative only.
 - Restart: correct output metadata name, add strict shared-validator bridge test, rerun specified CPU/offline commands; capture new source SHA before considering implementation integration complete. See `INDEPENDENT_QA.md` and shared QA report.
 
+## Append-only independent recheck (2026-11-03)
+
+The initial blocker above is preserved as historical evidence. Independent QA revalidated the correction at source/tests commit `2ffcaee162c210fadd0dce3c35b1bfe719b17e84` (lane receipt at QA start `1a5fc5d5d1d87332e06388cea94742116b9e8203`): renamed only the serialized metadata key/definition, not computation; shared validator and guards unchanged. New bridge suite tests every scorer across normal repeated-phone prompts and no-frame/recording-failure/invalid-emission cases, plus empty prompts, finite JSON, accounting, duplicate rejection, and gold-field rejection.
+
+Independent reruns: P-SCORE **268 passed** (245 CTC + 6 runtime + 17 shared bridge), shared JSON **22 passed**, selected safe inherited synthetic regression **9 passed**, CLI help passed. An initial ad-hoc fixture used non-normalized synthetic probabilities; validation correctly rejected it. Corrected normalized fixture passed across all scorer/failure/empty cases. All 57 provenance hashes per each of 3 worktrees, shared validator hash, V1 digest, protected source equality and nested dirt verified. Synthetic runtime/schema integration **GO**; real experiment remains HOLD. No real data/inference/model/TEST/training/GPU/API. See shared `P_SCORE_SCHEMA_RECHECK_REPORT.md` for exact commands, final handoff and gates.
+
 ## Append-only remediation record (2026-11-03)
 
 The prior QA blocker above is preserved as the historical finding. On the authorized Luna continuation, only the serialized runtime metadata field was renamed from `posterior_target_occupancy` to `posterior_phone_state_occupancy`; the occupancy computation, score sign, algorithm, and internal `PhoneScore.posterior_target_occupancy` field were unchanged. Serialized `occupancy_definition` now explicitly says `exact_posterior_nonblank_prompt_phone_state_visits`. Shared guard/schema files were not edited or weakened.
