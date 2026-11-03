@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:langfens:rq1:runtime:v1",
+  "title": "RQ1 prompt-only runtime position record",
+  "$comment": "Use SHARED_SCHEMA_AND_ACCOUNTING.md and strict_runtime_validator.py as well: JSON Schema alone cannot detect duplicate JSON names, duplicate rows, origin leakage, or missing positions.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "run_id", "protocol", "condition", "speaker_id", "utterance_id", "prompt_index", "prompt_phone_id", "word_index", "scores", "raw_scores", "probabilities", "score_orientation", "score_semantics", "alignment", "uncertainty", "confidence", "status", "abstention_reason", "finite", "threshold", "calibration_reference"],
+  "properties": {
+    "schema_version": {"const": "rq1-runtime-v1"},
+    "run_id": {"type": "string", "minLength": 1},
+    "protocol": {"const": "Z-PROMPT-V1"},
+    "condition": {"type": "string", "minLength": 1},
+    "speaker_id": {"type": "string", "minLength": 1},
+    "utterance_id": {"type": "string", "minLength": 1},
+    "prompt_index": {"type": "integer", "minimum": 0},
+    "prompt_phone_id": {"type": "integer", "minimum": 1, "maximum": 39},
+    "word_index": {"anyOf": [{"type": "integer", "minimum": 0}, {"type": "null"}]},
+    "scores": {
+      "type": "object", "additionalProperties": false,
+      "required": ["s_error", "s_omit", "s_sub"],
+      "properties": {
+        "s_error": {"$ref": "#/$defs/nullable_number"},
+        "s_omit": {"$ref": "#/$defs/nullable_number"},
+        "s_sub": {"$ref": "#/$defs/nullable_number"}
+      }
+    },
+    "raw_scores": {"$ref": "#/$defs/metadata"},
+    "probabilities": {"anyOf": [
+      {"type": "null"},
+      {"type": "object", "propertyNames": {"$ref": "#/$defs/runtime_name"},
+       "additionalProperties": {"anyOf": [{"type": "number", "minimum": 0, "maximum": 1}, {"type": "null"}]}}
+    ]},
+    "score_orientation": {"const": "higher_is_error"},
+    "score_semantics": {"type": "string", "minLength": 1},
+    "alignment": {"$ref": "#/$defs/nullable_metadata"},
+    "uncertainty": {"$ref": "#/$defs/nullable_metadata"},
+    "confidence": {"$ref": "#/$defs/nullable_metadata"},
+    "status": {"enum": ["ok", "abstain", "failure"]},
+    "abstention_reason": {"anyOf": [{"type": "null"}, {"type": "string", "minLength": 1}]},
+    "finite": {"type": "boolean"},
+    "threshold": {"$ref": "#/$defs/nullable_number"},
+    "calibration_reference": {"anyOf": [{"type": "null"}, {"type": "string", "minLength": 1}]}
+  },
+  "$defs": {
+    "nullable_number": {"anyOf": [{"type": "number"}, {"type": "null"}]},
+    "runtime_name": {
+      "type": "string",
+      "pattern": "^(?!(?:.*(?:gold|textgrid|perceived|realized|timestamp)|.*(?:label|target|reference_phone|phone_interval|error_type|operation_id|operation_tag|xmin|xmax)))[a-z][a-z0-9_]*$"
+    },
+    "nullable_metadata": {"anyOf": [{"type": "null"}, {"$ref": "#/$defs/metadata"}]},
+    "metadata": {
+      "type": "object",
+      "propertyNames": {"$ref": "#/$defs/runtime_name"},
+      "additionalProperties": {"$ref": "#/$defs/value"}
+    },
+    "value": {"anyOf": [
+      {"type": "null"}, {"type": "number"}, {"type": "boolean"}, {"type": "string"},
+      {"type": "array", "items": {"$ref": "#/$defs/value"}},
+      {"$ref": "#/$defs/metadata"}
+    ]}
+  }
+}

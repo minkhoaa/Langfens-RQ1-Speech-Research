@@ -10,6 +10,10 @@
 
 ---
 
+## RQ1 — isolated P-SCORE / P-SUP shared implementation readiness (current)
+
+**SHARED_SYNTHETIC_RUNTIME_CONTRACT_READY; EXPERIMENTS_NOT_AUTHORIZED.** Luna continued inherited shared-base work after intentional Sol model handoff; prior authorship and partial files are preserved. Shared JSON schema/validator, strict serializer, synthetic tests, provenance/license/proposal/method addenda and process checkpoint are in [implementation-readiness](../../manifests/RQ1-WORKSPACE-PREP-01/implementation-readiness/PROCESS_CHECKPOINT.md). 22 JSON-only unit tests passed; no audio, labels, weights, model inference/loading, fitting, training, GPU, remote staging or TEST access. Chosen prospective GOP hypothesis is the named independent `ctc-union-language-v1` S/SD graph, raw primary score; this is not author topology reproduction or scientific approval. P-SUP implementation permission remains forward-only synthetic and does not amend historical CTC+binary training policy. Distinct latest omission proposal remains missing; actual weight/durable-store identity not reverified; DIAG-02B causal-training NO-GO and E1 rollout NO-GO unchanged. Nested repository dirt preserved. See exact final checkpoint and artifact hashes in the linked checkpoint.
+
 ## RQ1-BENCH-01 — parallel inference benchmark infrastructure
 
 Status: **PARTIAL; SOURCE_INTEGRATED; REMOTE_READINESS_AND_PUBLICATION_BLOCKED**. Shared contract frozen from base `467c8233c3f19381c66f10d5fa64d1f44a1c6066` before three isolated worktree lanes; one timed-out lane recovered once. Integrated inference-safe tests pass; final-source CPU replay evidence is tracked in checkpoint. Kaggle dependency/private-staging readiness remains unverified and no remote execution is authorized. Public-origin inherited-data privacy blocks push. [Process checkpoint](../../manifests/RQ1-BENCH-01/PROCESS_CHECKPOINT.md), [contract](../../manifests/RQ1-BENCH-01/CONTRACT.md). No cross-platform parity established; DIAG-02B scientific disposition unchanged.
