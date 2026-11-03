@@ -1034,9 +1034,20 @@ def train_p_sup(
 
     start_time = time.time()
 
+    try:
+        git_sha = subprocess.check_output(
+            ["git", "rev-parse", "HEAD"],
+            cwd=Path(__file__).resolve().parents[3],
+            text=True
+        ).strip()
+    except Exception:
+        git_sha = None
+
     metadata = {
         "registration": "P-SUP-COMPACT-OP-V1",
         "objective": objective,
+        "git_sha": git_sha,
+        "created_at_utc": datetime.now(timezone.utc).isoformat(),
         "seed": seed,
         "batch_size": batch_size,
         "gradient_accumulation_steps": gradient_accumulation_steps,
@@ -1263,6 +1274,20 @@ def train_p_sup(
                     print(f"[{objective.upper()} MIRROR WARNING] Error mirroring best.pt: {e}")
         else:
             patience += 1
+
+        if patience >= early_stopping_patience:
+            print(
+                f"[{objective.upper()}] Early stopping triggered after {patience} epochs "
+                "without AP improvement on SELECT partition."
+            )
+            break
+
+        if ledger.fixed_budget_reached:
+            print(
+                f"[{objective.upper()}] Reached registered fixed-budget ceiling of "
+                f"{max_successful_updates} successful updates. Terminating training."
+            )
+            break
 
     total_time = time.time() - start_time
     summary = {
