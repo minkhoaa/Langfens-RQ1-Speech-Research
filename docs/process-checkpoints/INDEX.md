@@ -26,7 +26,16 @@ Status: **PARTIAL; SOURCE_INTEGRATED; REMOTE_READINESS_AND_PUBLICATION_BLOCKED**
 
 **INDEPENDENT_QA_COMPLETE_WITH_P-SCORE_SCHEMA_BLOCKER; EXPERIMENTS_NOT_AUTHORIZED.** Eight new shared artifacts are synchronized byte-identically. Shared JSON suite: 22 passed; P-SCORE: 251; P-SUP: 88; safe inherited synthetic tests: 9 passed. QA independently found P-SCORE actual runtime rows rejected by strict shared validator because `posterior_target_occupancy` contains prohibited key substring `target`; P-SCORE integration HOLD pending correction, P-SUP review GO only. See identical [cross-lane QA report](../../manifests/RQ1-WORKSPACE-PREP-01/implementation-readiness/INDEPENDENT_QA_REPORT.md) and [checkpoint](../../manifests/RQ1-WORKSPACE-PREP-01/implementation-readiness/INDEPENDENT_QA_CHECKPOINT.md). V1 is immutable; experiments remain HOLD, training NOT_STARTED, 0 successful/0 skipped/0 attempts, no artifact. Missing distinct proposal, author permission/topology parity, scientific margins and remote provenance remain unresolved; DIAG-02B causal-training NO-GO and E1 rollout NO-GO unchanged.
 
-## RQ1-P-SUP — implementation and staging continuation (current)
+## RQ1-P-SUP — data partitioning fix and regression closure (current)
+
+**DATA_PARTITIONING_FIXED; ALL_TESTS_PASS (107 passed); PREFLIGHT_AUDITED.**
+Carried out under Agent A authorization on branch `prep/rq1-p-sup`.
+- Fixed data partitioning: FIT partition (1,799 utterances across 12 speakers) for training; SELECT partition (300 utterances across MBMPS, TLV) for validation loss, AP tracking, early stopping, and saving `best.pt`; CAL partition (300 utterances across NCC, THV) for threshold/temperature calibration; Fold-1 VAL (300 utterances across NJS, RRBI) preserved strictly unseen during training/selection for final evaluation under Evaluation Contract V1.
+- Active Fold 1 TEST partition (900 utterances across 6 speakers: ABA, ASI, EBVS, HJK, LXC, PNV) strictly prohibited; fail-closed with `SealedSpeakerContaminationError`.
+- Updated `src/langfens_prep/p_sup/dataset.py`, `src/langfens_prep/p_sup/trainer.py`, `audit_scripts/train_p_sup.py`, and verified `configs/rq1_p_sup_v1.json`.
+- Added regression test suite `tests/test_p_sup_partitions.py` (10 tests). Full test suite passes: 19/19 partition/pipeline tests, 107/107 total P-SUP scoped tests. See [checkpoint](../../manifests/RQ1-P-SUP/PROCESS_CHECKPOINT.md).
+
+## RQ1-P-SUP — implementation and staging continuation (historical)
 
 **PIPELINE_IMPLEMENTED; TESTS_PASS (97 passed); PREFLIGHT_AUDITED; KAGGLE_STAGED_NO_RUN; AWAITING_WEB_UI_EXECUTION.**
 Carried out under Agent B (P-SUP Execution) authorization on branch `prep/rq1-p-sup`.

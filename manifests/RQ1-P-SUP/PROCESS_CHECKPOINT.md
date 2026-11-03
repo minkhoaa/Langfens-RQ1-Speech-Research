@@ -101,3 +101,30 @@ Per `AGENTS.md` and `KAGGLE_T4_DEPLOYMENT_DESIGN.md`:
    ```
 5. Checkpoint durability: Notebook mirrors checkpoints atomically to private Hugging Face repository `minkhoaa/langfens-rq1-cross-fold-checkpoints:p_sup/` with SHA-256 readback.
 6. Post-execution evaluation: Once completed, evaluate both endpoints using `audit_scripts/evaluate_p_sup.py`.
+
+---
+
+## Append-only continuation — P-SUP Data Partitioning Fix (2026-11-03)
+
+State: **DATA_PARTITIONING_FIXED; ALL_TESTS_PASS (107 passed); PREFLIGHT_AUDITED.**
+Carried out under Agent A authorization on branch `prep/rq1-p-sup`.
+
+### 1. Partition Corrections
+- **Training dataset (`partition="fit"`):** Exactly 1,799 utterances across 12 speakers: `BWC`, `ERMS`, `HKK`, `HQTV`, `SKA`, `SVBI`, `TNI`, `TXHC`, `YBAA`, `YDCK`, `YKWK`, `ZHAA`.
+- **Selection dataset (`partition="selection"` / `"select"`):** Exactly 300 utterances across 2 speakers: `MBMPS`, `TLV`. Used for validation loss, AP tracking, early stopping, and saving `best.pt` during training.
+- **Calibration dataset (`partition="calibration"` / `"cal"`):** Exactly 300 utterances across 2 speakers: `NCC`, `THV`. Reserved for threshold/temperature calibration.
+- **Evaluation dataset (`partition="val"` / `"evaluation"`):** Exactly 300 utterances across 2 speakers: `NJS`, `RRBI`. Preserved strictly unseen during training and selection; used ONLY for final candidate comparison under Evaluation Contract V1.
+- **Sealed TEST partition (`ABA`, `ASI`, `EBVS`, `HJK`, `LXC`, `PNV`: 900 utterances):** Strictly prohibited. Fail-closed with `SealedSpeakerContaminationError` upon any access or attempt to instantiate with `split="test"` or `partition="test"`.
+
+### 2. Implementation Updates
+- `src/langfens_prep/p_sup/dataset.py`: Updated `PSupL2ArcticDataset` to support `partition` ("fit", "selection"/"select", "calibration"/"cal", "val"/"evaluation") and `split`. Enforced fail-closed `SealedSpeakerContaminationError` for test split/partition requests and sealed test speaker encounters. Added `FIT_SPEAKERS`, `SELECT_SPEAKERS`, `CALIBRATION_SPEAKERS`, `VAL_SPEAKERS`, `PARTITION_SPEAKERS`, and `PARTITION_UTTERANCE_COUNTS`. Added `speakers` and `speaker_counts()` helpers.
+- `src/langfens_prep/p_sup/trainer.py`: Enforced training on `partition="fit"` (1,799 utterances) and validation/AP tracking/checkpoint selection on `partition="selection"` (300 utterances). Verified strict VAL and TEST speaker isolation. Updated metadata and logging to reflect SELECT AP.
+- `audit_scripts/train_p_sup.py`: Added preflight partition verification verifying FIT (1,799), SELECT (300), CAL (300), VAL (300), disjointness, and sealed test speaker rejection.
+- `configs/rq1_p_sup_v1.json`: Verified `fit_speakers` (12), `selection_speakers` (2), `calibration_speakers` (2), `evaluation_speakers` (2), and utterance counts (1799, 300, 300, 300).
+- `tests/test_p_sup_partitions.py`: Added comprehensive regression test suite verifying exact utterance counts, speaker memberships, pairwise speaker/utterance disjointness, sealed test speaker fail-closed rejection, config reflection, and bit-exact SHA-256 alignment with `SHARED_PROVENANCE.json`.
+
+### 3. Verification Evidence
+- Partition and pipeline test suite: **19 passed** in 2.85s (`pytest tests/test_p_sup_partitions.py tests/test_p_sup_pipeline.py`).
+- Full P-SUP scoped test suite: **107 passed** in 2.61s (`pytest tests/test_p_sup_*.py`).
+- Preflight audit: `python audit_scripts/p_sup_preflight.py` reports `STAGING_VERIFIED_PASSED`.
+

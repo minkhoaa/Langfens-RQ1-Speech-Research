@@ -6,6 +6,11 @@ a) Subtype treatment: CompactOperationHead with objective="operation_ce"
 b) Matched binary control: CompactOperationHead with objective="binary_collapsed"
 
 Enforces exact contracts:
+- Training dataset: FIT only (1,799 utterances across 12 speakers: BWC, ERMS, HKK, HQTV, SKA, SVBI, TNI, TXHC, YBAA, YDCK, YKWK, ZHAA)
+- Selection dataset: SELECT (300 utterances across 2 speakers: MBMPS, TLV) for validation loss, AP tracking, early stopping, and saving best.pt during training
+- Calibration dataset: CAL (300 utterances across 2 speakers: NCC, THV) for threshold/temperature calibration
+- Fold-1 VAL: (300 utterances across 2 speakers: NJS, RRBI) preserved strictly unseen during training & selection; used ONLY for final candidate comparison under Evaluation Contract V1
+- Sealed TEST partition: (900 utterances across 6 speakers: ABA, ASI, EBVS, HJK, LXC, PNV) strictly prohibited; fail-closed with SealedSpeakerContaminationError
 - seed 1337
 - batch_size 2, gradient_accumulation_steps 2 (effective batch 4)
 - warmup_updates 100, cosine schedule over 15,000 horizon
@@ -26,6 +31,16 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 import torch
 from langfens_prep.p_sup.trainer import train_p_sup
+from langfens_prep.p_sup.dataset import (
+    PSupL2ArcticDataset,
+    FIT_SPEAKERS,
+    SELECT_SPEAKERS,
+    CALIBRATION_SPEAKERS,
+    VAL_SPEAKERS,
+    PARTITION_SPEAKERS,
+    SealedSpeakerContaminationError
+)
+from langfens_prep.p_sup.runtime import SEALED_SPEAKERS
 
 
 def main():
@@ -107,7 +122,45 @@ def main():
     print(f"Split manifest: {split_manifest}")
     print(f"Zip path: {zip_path}")
     print(f"Base output dir: {base_out}")
+    print("Partition Contract:")
+    print("  FIT (train): 1,799 utterances across 12 speakers")
+    print("  SELECT (validation/best.pt): 300 utterances across 2 speakers (MBMPS, TLV)")
+    print("  CAL (calibration): 300 utterances across 2 speakers (NCC, THV)")
+    print("  VAL (evaluation): 300 utterances across 2 speakers (NJS, RRBI) [PRESERVED UNSEEN]")
+    print("  TEST (sealed): 900 utterances across 6 speakers [STRICTLY PROHIBITED]")
     print("=" * 80)
+
+    # Preflight partition verification
+    fit_ds = PSupL2ArcticDataset(split_manifest, zip_path, partition="fit", verify_checksums=False)
+    select_ds = PSupL2ArcticDataset(split_manifest, zip_path, partition="selection", verify_checksums=False)
+    cal_ds = PSupL2ArcticDataset(split_manifest, zip_path, partition="calibration", verify_checksums=False)
+    val_ds = PSupL2ArcticDataset(split_manifest, zip_path, partition="val", verify_checksums=False)
+
+    if len(fit_ds) != 1799 or fit_ds.speakers != FIT_SPEAKERS:
+        raise ValueError(f"FIT partition verification failed: len={len(fit_ds)}, speakers={fit_ds.speakers}")
+    if len(select_ds) != 300 or select_ds.speakers != SELECT_SPEAKERS:
+        raise ValueError(f"SELECT partition verification failed: len={len(select_ds)}, speakers={select_ds.speakers}")
+    if len(cal_ds) != 300 or cal_ds.speakers != CALIBRATION_SPEAKERS:
+        raise ValueError(f"CAL partition verification failed: len={len(cal_ds)}, speakers={cal_ds.speakers}")
+    if len(val_ds) != 300 or val_ds.speakers != VAL_SPEAKERS:
+        raise ValueError(f"VAL partition verification failed: len={len(val_ds)}, speakers={val_ds.speakers}")
+
+    # Strict disjointness check
+    partitions = [fit_ds.speakers, select_ds.speakers, cal_ds.speakers, val_ds.speakers, SEALED_SPEAKERS]
+    for i in range(len(partitions)):
+        for j in range(i + 1, len(partitions)):
+            overlap = partitions[i] & partitions[j]
+            if overlap:
+                raise ValueError(f"Partition speaker overlap detected: {overlap}")
+
+    # Sealed test access check
+    try:
+        PSupL2ArcticDataset(split_manifest, zip_path, partition="test", verify_checksums=False)
+        raise RuntimeError("FAIL-CLOSED CHECK FAILED: test partition did not raise SealedSpeakerContaminationError!")
+    except SealedSpeakerContaminationError:
+        pass
+
+    print("[PREFLIGHT] All partition sizes, memberships, disjointness, and sealed-test checks passed.")
 
     results = {}
     for obj in objectives:

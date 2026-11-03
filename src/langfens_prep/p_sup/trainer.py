@@ -43,7 +43,16 @@ from langfens_prep.p_sup.model import (
 )
 from langfens_prep.p_sup.objectives import task_loss, realized_ctc_loss, collapsed_binary_logit
 from langfens_prep.p_sup.planning import UpdateLedger, learning_rate_multiplier, accumulation_groups
-from langfens_prep.p_sup.dataset import PSupL2ArcticDataset, collate_psup_batch
+from langfens_prep.p_sup.dataset import (
+    PSupL2ArcticDataset,
+    collate_psup_batch,
+    PARTITION_SPEAKERS,
+    FIT_SPEAKERS,
+    SELECT_SPEAKERS,
+    CALIBRATION_SPEAKERS,
+    VAL_SPEAKERS,
+    SealedSpeakerContaminationError
+)
 from langfens_prep.p_sup.runtime import CONTRACT_SHA256, SEALED_SPEAKERS
 
 DEFAULT_PRETRAINED_CHECKPOINT = "facebook/wav2vec2-base-960h"
@@ -350,16 +359,57 @@ def train_p_sup(
     use_cuda_amp = (device.type == "cuda")
 
     # 1. Datasets & Loaders
+    # Training dataset: FIT only (1,799 utterances across 12 speakers:
+    # BWC, ERMS, HKK, HQTV, SKA, SVBI, TNI, TXHC, YBAA, YDCK, YKWK, ZHAA)
     train_dataset = PSupL2ArcticDataset(
         split_manifest_path=split_manifest_path,
         zip_path=zip_path,
-        split="train"
+        partition="fit"
     )
-    val_dataset = PSupL2ArcticDataset(
+    if len(train_dataset) != 1799:
+        raise ValueError(
+            f"FAIL-CLOSED: FIT training dataset must have exactly 1,799 utterances, got {len(train_dataset)}"
+        )
+    train_speakers = frozenset(spk for spk, _ in train_dataset.entries)
+    if train_speakers != FIT_SPEAKERS:
+        raise ValueError(
+            f"FAIL-CLOSED: FIT training dataset speakers mismatch: {train_speakers} != {FIT_SPEAKERS}"
+        )
+    if train_speakers & SEALED_SPEAKERS:
+        raise SealedSpeakerContaminationError(
+            f"FAIL-CLOSED: Sealed test speaker found in FIT training dataset: {train_speakers & SEALED_SPEAKERS}"
+        )
+
+    # Selection dataset: SELECT (300 utterances across 2 speakers: MBMPS, TLV)
+    # Used for validation loss, AP tracking, early stopping, and saving best.pt during training
+    selection_dataset = PSupL2ArcticDataset(
         split_manifest_path=split_manifest_path,
         zip_path=zip_path,
-        split="val"
+        partition="selection"
     )
+    if len(selection_dataset) != 300:
+        raise ValueError(
+            f"FAIL-CLOSED: SELECT dataset must have exactly 300 utterances, got {len(selection_dataset)}"
+        )
+    selection_speakers = frozenset(spk for spk, _ in selection_dataset.entries)
+    if selection_speakers != SELECT_SPEAKERS:
+        raise ValueError(
+            f"FAIL-CLOSED: SELECT dataset speakers mismatch: {selection_speakers} != {SELECT_SPEAKERS}"
+        )
+    if selection_speakers & SEALED_SPEAKERS:
+        raise SealedSpeakerContaminationError(
+            f"FAIL-CLOSED: Sealed test speaker found in SELECT dataset: {selection_speakers & SEALED_SPEAKERS}"
+        )
+
+    # Fold-1 VAL (300 utterances across NJS, RRBI) MUST be preserved strictly unseen during training & selection
+    if train_speakers & VAL_SPEAKERS:
+        raise ValueError(
+            f"FAIL-CLOSED: Fold-1 VAL speakers leaked into training set: {train_speakers & VAL_SPEAKERS}"
+        )
+    if selection_speakers & VAL_SPEAKERS:
+        raise ValueError(
+            f"FAIL-CLOSED: Fold-1 VAL speakers leaked into selection set: {selection_speakers & VAL_SPEAKERS}"
+        )
 
     train_loader = DataLoader(
         train_dataset,
@@ -369,13 +419,14 @@ def train_p_sup(
         num_workers=0,
         drop_last=False
     )
-    val_loader = DataLoader(
-        val_dataset,
+    selection_loader = DataLoader(
+        selection_dataset,
         batch_size=batch_size,
         shuffle=False,
         collate_fn=collate_psup_batch,
         num_workers=0
     )
+    val_loader = selection_loader  # Alias for validation during training
 
     # 2. Model & Backbone Initialization
     wav2vec2 = Wav2Vec2Model.from_pretrained(
@@ -427,7 +478,15 @@ def train_p_sup(
         "split_manifest_sha256": compute_file_sha256(split_manifest_path),
         "zip_path": str(zip_path),
         "zip_sha256": compute_file_sha256(zip_path) if Path(zip_path).is_file() else None,
-        "parameters": parameter_inventory(head)
+        "parameters": parameter_inventory(head),
+        "fit_utterances": len(train_dataset),
+        "selection_utterances": len(selection_dataset),
+        "calibration_utterances": 300,
+        "evaluation_utterances": 300,
+        "fit_speakers": sorted(FIT_SPEAKERS),
+        "selection_speakers": sorted(SELECT_SPEAKERS),
+        "calibration_speakers": sorted(CALIBRATION_SPEAKERS),
+        "evaluation_speakers": sorted(VAL_SPEAKERS)
     }
 
     print(f"[{objective.upper()}] Starting P-SUP training on {device} (AMP: {use_cuda_amp})...")
@@ -531,8 +590,8 @@ def train_p_sup(
                     fixed_budget_saved = True
                     print(f"[{objective.upper()}] Fixed-budget endpoint 3,600 reached and saved at epoch {epoch}!")
 
-        # Epoch Validation
-        val_metrics = evaluate_val_set(adapter, val_loader, device, objective)
+        # Epoch Validation on SELECT partition (MBMPS, TLV)
+        val_metrics = evaluate_val_set(adapter, selection_loader, device, objective)
         val_ap = val_metrics["val_ap"]
         blank_frac = val_metrics["blank_fraction"]
         per = val_metrics["per"]
@@ -543,6 +602,7 @@ def train_p_sup(
             "skipped_amp": ledger.skipped,
             "attempts": ledger.attempts,
             "val_ap": val_ap,
+            "selection_ap": val_ap,
             "blank_fraction": blank_frac,
             "per": per,
             "avg_task_loss": epoch_task_loss / max(1, epoch_batches),
@@ -552,7 +612,7 @@ def train_p_sup(
         history.append(epoch_record)
         print(
             f"[{objective.upper()}] Epoch {epoch:02d} | Updates: {ledger.successful}/{max_successful_updates} "
-            f"| Val AP: {val_ap:.4f} | Blank: {blank_frac:.4f} | PER: {per:.4f}"
+            f"| Selection AP: {val_ap:.4f} | Blank: {blank_frac:.4f} | PER: {per:.4f}"
         )
 
         # Save last.pt each epoch
@@ -573,7 +633,7 @@ def train_p_sup(
             metadata=metadata
         )
 
-        # Check best.pt selection (strict binary AP with blank_fraction < 0.99)
+        # Check best.pt selection (strict binary AP on SELECT with blank_fraction < 0.99)
         if blank_frac < 0.99 and val_ap > best_ap:
             best_ap = val_ap
             patience = 0
@@ -593,7 +653,7 @@ def train_p_sup(
                 history=history,
                 metadata=metadata
             )
-            print(f"[{objective.upper()}] -> New best validation AP: {best_ap:.4f} saved to best.pt")
+            print(f"[{objective.upper()}] -> New best selection AP: {best_ap:.4f} saved to best.pt")
         else:
             patience += 1
 
