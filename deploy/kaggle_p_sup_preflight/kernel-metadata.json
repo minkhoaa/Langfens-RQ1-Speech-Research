@@ -1,0 +1,14 @@
+{
+  "id": "minkhoaa/langfens-p-sup-preparation-preflight",
+  "title": "LANGFENS P-SUP preparation preflight (HOLD)",
+  "code_file": "preflight.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": true,
+  "machine_shape": "NvidiaTeslaT4",
+  "enable_internet": false,
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "model_sources": []
+}

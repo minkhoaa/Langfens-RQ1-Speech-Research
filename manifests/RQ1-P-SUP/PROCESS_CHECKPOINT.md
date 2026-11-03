@@ -35,3 +35,11 @@ git merge-base HEAD 0d268ff8c444e16fd76aca2f4ad6ece966908edc
 ```
 
 Read AGENTS, global index, shared addendum/contract/provenance and this checkpoint/spec/label/deployment design. Confirm exact base, clean state and hashes. Request objective-policy amendment plus separate bounded label/collator implementation authorization first; no backward/model fitting locally even for a smoke test. Remote training/deployment needs its own later authorization and verified allocation. **STOP after documentation.** Archived E0/E1 remain last valid references; no model produced here. DIAG-02B PARTIAL and E1 rollout NO-GO retained.
+
+---
+
+## Append-only continuation — Luna implementation (2026-11-03)
+
+The above documents the historical preparation-only state. At the explicit user's later implementation authorization, Luna resumed the intentionally paused partial source on branch `prep/rq1-p-sup` at `d6ef18443752b0add3f3dfcfff42f7fa7be967c1`; no prior work was discarded. Initial Git state, handoff and safety boundaries: [checkpoint 01](checkpoints/01-luna-handoff-and-initial-state.md). Additive prototype and validation: [checkpoint 02](checkpoints/02-implementation-and-validation.md).
+
+Bounded isolated implementation is complete; the synthetic CPU forward-only suite passed **88 tests**; preflight explicitly reports EXPERIMENT_HOLD and no trainer. This is prototype code review GO only, not experiment/training/deployment GO. The preflight package contains no data/model/remote imports and was not pushed or run remotely. Full actual update counts remain NOT_STARTED, 0 successful/0 skipped/0 attempts, no artifact. Missing remote data allowlist adapter, per-epoch durable checkpoint/resume, authorized T4 trainer, scientific objective and execution approvals, missing-proposal/margin/license/support verification remain explicit blockers. No real data/labels/TEST contents, weights, backward, optimizer, GPU, API or remote service were accessed. The original historical state above is retained; use latest checkpoint for current state.
