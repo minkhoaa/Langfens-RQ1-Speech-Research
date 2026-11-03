@@ -1,0 +1,129 @@
+{
+  "schema_version": 1,
+  "arm": "P-SUP",
+  "status": "DESIGN_ONLY_EXECUTION_NO_GO",
+  "workspace_absolute_path": "/home/khoa/Projects/KLTN/langfens-rq1-p-sup",
+  "branch": "prep/rq1-p-sup",
+  "frozen_common_base_sha": "0d268ff8c444e16fd76aca2f4ad6ece966908edc",
+  "contract": {
+    "path": "manifests/RQ1-WORKSPACE-PREP-01/EVALUATION_CONTRACT_V1.md",
+    "sha256": "4d99723e4b3f62f506165ced089eca82d4417279c76973b35470bd337cedfab2"
+  },
+  "shared_provenance": {
+    "path": "manifests/RQ1-WORKSPACE-PREP-01/SHARED_PROVENANCE.json",
+    "sha256": "e75eb1bb4e0f797446441c94653301fd8078f9b29528aee3a5b965aa20140d12"
+  },
+  "checkpoint_inputs": {
+    "status": "ARCHIVAL_METADATA_ONLY_NOT_COPIED_OR_REHASHED",
+    "E0": "a2445c8d17910bf3c03101f50fc419675e8d1bc012af43af10267a28dbba948b",
+    "E1_reference_only": "3b686730cc0a1101a1bbc96b59dc7bd38a9fc3cc7da7effe26b2d9498f079d24"
+  },
+  "input_partitions": {
+    "train": {
+      "speakers": [
+        "BWC",
+        "ERMS",
+        "HKK",
+        "HQTV",
+        "MBMPS",
+        "NCC",
+        "SKA",
+        "SVBI",
+        "THV",
+        "TLV",
+        "TNI",
+        "TXHC",
+        "YBAA",
+        "YDCK",
+        "YKWK",
+        "ZHAA"
+      ],
+      "utterances": 2399,
+      "ordered_id_sha256": "2ebe54f2fc77e2a3ee9890ce3dc21f725897ebbe85f812d3c017c3b495f14b27"
+    },
+    "fit": {
+      "speakers": [
+        "BWC",
+        "ERMS",
+        "HKK",
+        "HQTV",
+        "SKA",
+        "SVBI",
+        "TNI",
+        "TXHC",
+        "YBAA",
+        "YDCK",
+        "YKWK",
+        "ZHAA"
+      ],
+      "utterances": 1799,
+      "ordered_id_sha256": "f716975ac312ee020a6c1e382cf1e4e7e4d3c4450879c337cc3e0e8127cd16be"
+    },
+    "selection": {
+      "speakers": [
+        "MBMPS",
+        "TLV"
+      ],
+      "utterances": 300,
+      "ordered_id_sha256": "bbc79fa48c296a9f8cc277267e9bd0eda8ea59fe415984a4dde598de28266a48"
+    },
+    "calibration": {
+      "speakers": [
+        "NCC",
+        "THV"
+      ],
+      "utterances": 300,
+      "ordered_id_sha256": "931900b7ab1778df28b4098fc7d3048a93c41ecaee5ef14e43477a4b04e51034"
+    },
+    "val": {
+      "speakers": [
+        "NJS",
+        "RRBI"
+      ],
+      "utterances": 300,
+      "ordered_id_sha256": "6d34642b15bbf80cbd5bd102b5574ab36f5adac74be6d6d0ae7218b002eff065"
+    }
+  },
+  "sealed_test_speakers": [
+    "ABA",
+    "ASI",
+    "EBVS",
+    "HJK",
+    "LXC",
+    "PNV"
+  ],
+  "runtime_input_contract": "waveform plus written prompt/G2P only; separate offline gold join",
+  "future_outputs": {
+    "status": "NOT_GENERATED",
+    "private_external_bundle": [
+      "run_manifest.json",
+      "runtime_predictions.jsonl",
+      "offline_token_evaluation.jsonl",
+      "utterance_predictions.jsonl",
+      "metrics.json",
+      "metrics_by_speaker.csv",
+      "failures.jsonl",
+      "SHA256SUMS"
+    ]
+  },
+  "executed": {
+    "document_validation_only": true,
+    "training": "NOT_STARTED",
+    "successful_optimizer_updates": 0,
+    "skipped_updates": 0,
+    "model_artifact": null,
+    "inference": false,
+    "model_fitting": false,
+    "backward": false,
+    "gpu": false,
+    "sealed_test_data_access": false
+  },
+  "pending": [
+    "objective policy amendment and ONE compact treatment selection",
+    "parameter-matched contemporaneous binary control registration",
+    "label/collator/initialization design approval",
+    "synthetic CPU no-training tests under new authorization",
+    "remote-only implementation/AMP/durability validation before separately authorized training"
+  ],
+  "authorization": "Setup/documentation only; STOP. Separate operator authorization for implementation and all experimental execution."
+}
