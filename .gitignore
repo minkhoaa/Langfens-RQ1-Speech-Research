@@ -30,6 +30,8 @@ datasets/
 staged_audio/
 data_stage/
 audio_stage/
+cache/
+p_score_runs/
 tmp/
 *.tmp
 *.temp

@@ -43,3 +43,51 @@ Retained references: E0 `a2445c8d17910bf3c03101f50fc419675e8d1bc012af43af10267a2
 ## Append-only completion record
 
 **SETUP_COMPLETE_WITH_ACCOUNTED_SOURCE_LIMITATIONS; EXPERIMENTS_NOT_AUTHORIZED.** Frozen common base is `0d268ff8c444e16fd76aca2f4ad6ece966908edc`; shared contract SHA-256 `4d99723e4b3f62f506165ced089eca82d4417279c76973b35470bd337cedfab2`. Both isolated arm documentation commits are direct children: P-SCORE `de1db5cc2f0b4ed8b750ccc6120a314679dc3b6f`, P-SUP `d6ef18443752b0add3f3dfcfff42f7fa7be967c1`. Exact paths, evidence, unresolved source/objective/implementation gates, one corrected audit-predicate failure, preserved inherited whitespace and safe commands are in [WORKSPACE_VERIFICATION.md](WORKSPACE_VERIFICATION.md) and [JSON receipt](WORKSPACE_VERIFICATION.json). Original nested dirt remains unchanged. No implementation/tests/inference/fitting/backward/training/GPU/deployment/TEST access. Current successful/skipped updates remain 0/0; no model artifact. STOP after documentation. This coordinator completion commit records receipts only and does not change either arm's frozen base or authorize execution.
+
+## Scientific QA & Comparative Audit Record — Agent D
+
+**PREPARATION_AUDITED_CRITERIA_FROZEN; CANDIDATE_METRICS_PENDING_EXECUTION; EXPERIMENTS_HOLD.** Completed formal scientific QA and comparative evaluation report: [SCIENTIFIC_QA_AND_COMPARISON_REPORT.md](SCIENTIFIC_QA_AND_COMPARISON_REPORT.md).
+
+- **Evaluation Contract V1 Verified:** SHA-256 `4d99723e4b3f62f506165ced089eca82d4417279c76973b35470bd337cedfab2` verified bit-identically across coordinator and both arm worktrees. Data sealing invariants confirmed (Fold 1 TEST partition ABA/ASI/EBVS/HJK/LXC/PNV 900 utterances strictly absent from staging package).
+- **Historical E0/E1 Provenance Reconciled:** Baseline R `best.pt` (3,600 updates, SHA-256 `a2445c8d17910bf3c03101f50fc419675e8d1bc012af43af10267a28dbba948b`). Historical AP numbers reconciled: online GPU FP16 AMP `0.316062`, offline CPU FP32 replay `0.317021` (explained by FP16/FP32 precision boundaries), cross-fold pilot `0.317012`, Protocol Z Aligned-Only `0.313530` ($N=9,919$). E1 benchmark confirmed omission AP `0.032252` and complete collapse of skip mass on deletions (`0.000000`).
+- **Strict Label & Denominator Accounting:** Fold 1 validation population confirmed at 300 utterances and 9,956 canonical phone tokens ($N_{\text{cor}}=8,799$, $N_{\text{sub}}=1,012$, $N_{\text{del}}=145$). Distinct evaluation cohorts certified: Binary AP ($N=9,956$), Omission AP ($N=8,944$, substitutions strictly excluded), Substitution AP ($N=9,811$, deletions strictly excluded), Realized PER reference ($N_{\text{realized}}=9,881$). Deletion-vs-all metrics mislabeled as omission AP rejected.
+- **Prospective Acceptance Criteria Frozen:** Prespecified margins frozen prior to candidate metric inspection: P-SCORE primary contrast SF-SD vs SF-S ($\Delta \text{AP}_{\text{omit}} \ge +0.020$, $\Delta \text{Recall@FPR15} \ge +0.030$, noninferiority $\ge -0.005$); P-SUP primary contrast T-OP vs B-CONTROL ($\Delta \text{AP}_{\text{omit}} \ge +0.030$, $\Delta \text{Recall@FPR15} \ge +0.040$, noninferiority $\ge -0.005$, $\Delta \text{PER} \le +0.005$).
+- **Controls Audited:** Within-speaker cyclic shift-1 mismatch control (`within_speaker_cyclic`, baseline acoustic gap $+0.022299$) and canonical prior baseline ($\text{AP}=0.303063$, neural margin $+0.013958$) certified as mandatory falsifiers.
+- **Candidate Predictions & Execution State:** Neither candidate has executed real-data inference or training (updates=0, attempts=0, model artifacts=0). Candidate comparative rankings are deferred until verified real-data predictions are produced. Inferring statistical superiority from synthetic tests or small sample sizes ($G=2$) is strictly prohibited.
+## One-Shot Parallel Campaign Integration Record — Coordinator
+
+**P-SCORE_BENCHMARK_COMPLETE; P-SUP_PIPELINE_STAGED_AWAITING_KAGGLE_WEB_UI; INFRASTRUCTURE_VERIFIED; CRITERIA_FROZEN.** Four independent Gemini subagents executed concurrently under strict platform boundaries (Local CPU evaluation, Kaggle T4 staging, zero sealed TEST access).
+
+1. **P-SCORE Experimental Execution (commit `a9f4947985651253cee980086a346056885b51c6` on `prep/rq1-p-score`):**
+   - 269 synthetic unit/regression tests passed.
+   - Closed graph, normalization and clean-room independent author-code licensing blockers (`ctc-union-language-v1` S/SD graphs, exact posterior occupancy, raw primary scoring).
+   - Generated FP32 log-emissions cache on CPU using frozen E0 checkpoint (`best.pt`, SHA-256 `a2445c8d17910bf3c03101f50fc419675e8d1bc012af43af10267a28dbba948b`) for all 300 Fold-1 VAL utterances (NJS: 150, RRBI: 150). Cache SHA-256 `a699fd9378c86cd348a0628a144ecacfef491ea8f90e0edd23b4e46932e3e829`.
+   - Executed `p_score_infer.py` with `--mode frozen-cache` across 11 CPU workers; emitted 39,824 tokens passing `strict_runtime_validator.py` with 0 errors.
+   - Primary contrast (**GOP-CTC-SF-SD minus GOP-CTC-SF-S** on $N=9,919$ aligned):
+     - **Delta Omission AP**: **+0.021615** (+2.16 AP points, 0.051026 vs 0.029411, relative +73.5%), meeting prospective acceptance margin ($\ge +0.020$).
+     - **Delta Recall @ FPR15**: **+0.182482** (+18.25 percentage points, 43.07% vs 24.82%), meeting prospective margin ($\ge +0.030$).
+     - **Delta Substitution AP**: **-0.024256** (0.222544 vs 0.246800), identifying omission-substitution tradeoff and failing strict noninferiority ($\ge -0.005$).
+     - **Delta Binary AP**: **-0.009045** (0.250049 vs 0.259094).
+   - Controls: Greedy CTC PER **0.236818** (2,340 edits / 9,881 references), exactly replicating historical baseline R. GOP-SA (Viterbi control): Omission AP 0.049846, Binary AP 0.254370. Greedy DP: Omission AP 0.019002 (42.38% coverage).
+   - Word-final consonants (93/137 deletions): Omission AP delta **+0.049194** (0.181265 vs 0.132071).
+
+2. **P-SUP Implementation & Staging Execution (commit `10c4157` on `prep/rq1-p-sup`):**
+   - 97 unit and pipeline tests passed (`tests/test_p_sup_pipeline.py`).
+   - Implemented end-to-end dataset allowlist, loader, trainer, and evaluator under Evaluation Contract V1 connecting Fold-1 TRAIN (2,399 utts) and VAL (300 utts) with strict sealed test speaker rejection.
+   - Registered arm-scoped objective policy amendment in `manifests/RQ1-P-SUP/OBJECTIVE_POLICY_AMENDMENT.md` for Subtype Treatment `T-OP` (`operation_ce`) and Matched Binary Control `B-CONTROL` (`binary_collapsed`), exactly matching parameter budget (266,667 head parameters).
+   - Audited preflight gate (`STAGING_VERIFIED_PASSED`) and staged Kaggle deployment package to private kernel `minkhoaa/langfens-rq1-p-sup-t4-training` using official CLI `--no-run`.
+   - Documented exact operational status: Kaggle Web UI user secret `HF_TOKEN` attachment and manual "Save & Run All" is required by AGENTS.md policy before background remote T4 execution begins. No local training fallback was attempted.
+
+3. **Infrastructure & Storage Verification:**
+   - Cryptographically verified authorized Fold-1 dataset `authorized_RQ1-TRN-02A_fold1_train_val_only.zip` (SHA-256 `b750eb3bf3971afccd9ab9058a64fa6b3f5781399b9ef0f1294d29bf580784a9`).
+   - Verified strict speaker isolation (16 train, 2 val, 0 test; zero test leakage).
+   - Verified Baseline R E0 checkpoint `best.pt` (SHA-256 `a2445c8d17910bf3c03101f50fc419675e8d1bc012af43af10267a28dbba948b`, 3,600 updates, AP 0.316062).
+   - Verified Kaggle weekly GPU quota: 28.64h available out of 30.00h. Probed Hugging Face private repository checkpoint write-readback-delete durability.
+
+4. **Scientific QA & Comparison Synthesis:**
+   - Authored master scientific report: [SCIENTIFIC_QA_AND_COMPARISON_REPORT.md](SCIENTIFIC_QA_AND_COMPARISON_REPORT.md).
+   - Reconciled historical AP baselines (.316062 online Colab FP16, .317021 offline CPU FP32, .317012 cross-fold pilot, .313530 Protocol Z aligned).
+   - Certified strict denominators: Binary ($N=9,956$), Omission ($N=8,944$, substitutions strictly excluded), Substitution ($N=9,811$, deletions strictly excluded).
+   - Confirmed prospective criteria frozen prior to candidate evaluation.
+
+
