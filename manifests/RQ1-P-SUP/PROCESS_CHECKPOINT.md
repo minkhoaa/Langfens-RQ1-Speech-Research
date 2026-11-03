@@ -128,3 +128,42 @@ Carried out under Agent A authorization on branch `prep/rq1-p-sup`.
 - Full P-SUP scoped test suite: **107 passed** in 2.61s (`pytest tests/test_p_sup_*.py`).
 - Preflight audit: `python audit_scripts/p_sup_preflight.py` reports `STAGING_VERIFIED_PASSED`.
 
+## Append-only continuation — P-SUP Training Durability & Checkpoint Hardening (2026-11-03)
+
+State: **DURABILITY_HARDENED; TESTS_PASS (38 durability passed, 135 total p_sup passed); NO_STAGED_DIRT.**
+Carried out under Agent B task contract on branch `fix/p-sup-durability`.
+
+### 1. Durability & Checkpoint Management Enhancements
+Implemented in `src/langfens_prep/p_sup/trainer.py` and `audit_scripts/train_p_sup.py`:
+- **Remote Persistent Mirroring (`RemoteCheckpointMirror`):**
+  - Supports atomic synchronization with cryptographic SHA-256 readback verification for `huggingface` (via `HfApi.upload_file` and `hf_hub_download`) and `local_dir` / `directory` backends.
+  - Active write-readback-delete probe in `verify_readiness()`.
+  - Rejection of ephemeral `/kaggle/working` as remote target.
+- **Fail-Closed Ephemeral Storage Protection:**
+  - Ephemeral container paths (`/kaggle/working`, `/content`) are strictly prohibited from being treated as durable storage.
+  - Every epoch checkpoint (`last.pt`, `best.pt`), plus `fixed_budget_3600.pt` at update 3,600, must be uploaded atomically and verified with remote SHA-256 readback before continuing.
+- **Full State Checkpoint Payload:**
+  - Mandatory keys validated on save and load: `head`, `model` (alias), `optimizer`, `scheduler`, `scaler`, `epoch`, `micro_steps`, `successful_updates`, `skipped_amp_attempts_total`, `best_ap`, `history`, `rng`, `metadata`.
+  - RNG state captures Python `random`, NumPy `np.random`, PyTorch CPU `torch.get_rng_state()`, and CUDA `torch.cuda.get_rng_state_all()`.
+- **Fail-Closed CUDA / Tesla T4 / FP16 AMP Checks (`verify_cuda_t4_environment`):**
+  - In remote execution mode, asserts `torch.cuda.is_available()`, validates device type is CUDA, verifies GPU device name contains `Tesla T4` (or `T4`), and executes FP16 AMP operational probe.
+  - Fails closed if CUDA is unavailable, non-CUDA device is requested, accelerator is not Tesla T4, or FP16 AMP is unsupported.
+- **Exact Accounting:**
+  - Optimizer updates advance strictly on successful unscaled backward steps without overflow (`ledger.record_attempt(overflow=overflow)`).
+  - Tracks `successful_updates` (hard capped at 3,600) and `skipped_amp_attempts_total`.
+  - Cosine scheduler steps only on unskipped updates.
+- **Checkpoint Resumption (`resume_from_checkpoint`):**
+  - Restores model weights into `CompactOperationHead`.
+  - Restores optimizer state (momentum, step, param_groups) without scheduler-initialization LR overwrite.
+  - Restores scheduler state, scaler state, update counters, and deterministic RNG stream.
+  - Recovers missing local checkpoints from remote persistent mirror when available.
+
+### 2. Verification Evidence
+- Durability test suite: **38 passed** in `tests/test_p_sup_durability.py`:
+  - Mock remote mirror upload + SHA-256 readback probe (local_dir & huggingface).
+  - Exact save and resume roundtrip restoring identical weights, optimizer states, and deterministic RNG.
+  - Fail-closed behavior on missing remote mirror, ephemeral storage, and corrupted SHA-256 digests.
+  - Fail-closed CUDA / Tesla T4 / FP16 AMP checks.
+  - Exact accounting and budget ceiling enforcement.
+- Full P-SUP suite: **135 passed** (`pytest tests/test_p_sup_*.py`).
+

@@ -37,8 +37,16 @@ Carried out under Agent A authorization on branch `prep/rq1-p-sup`.
 
 ## RQ1-P-SUP — implementation and staging continuation (historical)
 
-**PIPELINE_IMPLEMENTED; TESTS_PASS (97 passed); PREFLIGHT_AUDITED; KAGGLE_STAGED_NO_RUN; AWAITING_WEB_UI_EXECUTION.**
-Carried out under Agent B (P-SUP Execution) authorization on branch `prep/rq1-p-sup`.
+**DURABILITY_HARDENED; PIPELINE_IMPLEMENTED; TESTS_PASS (38 durability passed, 135 total p_sup passed); PREFLIGHT_AUDITED; KAGGLE_STAGED_NO_RUN; AWAITING_WEB_UI_EXECUTION.**
+Carried out under Agent B (P-SUP Execution / Durability Hardening) authorization on branch `fix/p-sup-durability`.
+- Training durability & checkpoint management hardened in `src/langfens_prep/p_sup/trainer.py` and `audit_scripts/train_p_sup.py`:
+  - Per-epoch atomic remote checkpoint mirroring with SHA-256 readback via `RemoteCheckpointMirror` supporting Hugging Face Hub (via `HfApi` and `hf_hub_download`) and persistent directory backends.
+  - Ephemeral containment & fail-closed storage rules: `/kaggle/working` is never treated as durable storage. Every checkpoint (`last.pt`, `best.pt`, `fixed_budget_3600.pt`) is mirrored with SHA-256 readback before continuing.
+  - Fail-closed CUDA / Tesla T4 / FP16 AMP environment checks (`verify_cuda_t4_environment`).
+  - Exact update accounting with unskipped step enforcement and 3,600 maximum budget cap (`UpdateLedger`).
+  - Full state checkpoint payload validation (`validate_checkpoint_payload`) and resumption (`resume_from_checkpoint`).
+  - Recovery of missing local checkpoints from remote persistent mirror.
+  - 38 unit and regression tests in `tests/test_p_sup_durability.py`.
 - Objective policy amendment formally authorized in [OBJECTIVE_POLICY_AMENDMENT.md](../../manifests/RQ1-P-SUP/OBJECTIVE_POLICY_AMENDMENT.md): treatment `T-OP` (`operation_ce`: 3-way CE) and capacity-matched control `B-CONTROL` (`binary_collapsed`: logsumexp BCE), both on `CompactOperationHead` (266,667 parameters) + frozen Wav2Vec2 backbone + chronological realized CTC loss.
 - Dataset allowlist and loader implemented in `src/langfens_prep/p_sup/dataset.py`: connects Fold 1 TRAIN (2,399 utterances across 16 speakers) and VAL (300 utterances across NJS, RRBI) from `authorized_RQ1-TRN-02A_fold1_train_val_only.zip` (SHA-256 `b750eb3bf3971afccd9ab9058a64fa6b3f5781399b9ef0f1294d29bf580784a9`).
 - Active Fold 1 TEST speakers (`ABA`, `ASI`, `EBVS`, `HJK`, `LXC`, `PNV`) physically absent and strictly rejected with `SealedSpeakerContaminationError`.
