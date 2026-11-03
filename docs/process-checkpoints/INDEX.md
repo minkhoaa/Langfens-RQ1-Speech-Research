@@ -16,7 +16,7 @@ Status: **PARTIAL; SOURCE_INTEGRATED; REMOTE_READINESS_AND_PUBLICATION_BLOCKED**
 
 ## RQ1 — P-SCORE schema remediation independent recheck (current)
 
-**SYNTHETIC_RUNTIME_SCHEMA_INTEGRATION_REPRODUCED; EXPERIMENTS_HOLD.** P-SCORE source/test commit `2ffcaee162c210fadd0dce3c35b1bfe719b17e84` independently passed **268** scoped tests and all four scorer bridges against unchanged shared validator; shared 22 and safe existing 9 also passed. Per-worktree hashes: 57/57 in each tree; V1 unchanged. See `P_SCORE_SCHEMA_RECHECK_REPORT.md` and checkpoint in the common implementation-readiness directory. P-SCORE synthetic contract integration GO only; real experiment HOLD. P-SUP prototype review GO only based on prior 88-test run (not rerun in this recheck); there is no trainer. No real data/model/TEST/inference/training/GPU/API.
+**SYNTHETIC_RUNTIME_SCHEMA_INTEGRATION_REPRODUCED; EXPERIMENTS_HOLD.** P-SCORE source/test commit `2ffcaee162c210fadd0dce3c35b1bfe719b17e84` independently passed **268** scoped tests and all four scorer bridges against unchanged shared validator; shared 22 and safe existing 9 also passed. Per-worktree hashes: 57/57 in each tree; V1 unchanged. See `P_SCORE_SCHEMA_RECHECK_REPORT.md`, checkpoint, and `P_SCORE_SCHEMA_RECHECK_HANDOFF.md` in the common implementation-readiness directory. P-SCORE synthetic contract integration GO only; real experiment HOLD. P-SUP prototype review GO only based on prior 88-test run (not rerun in this recheck); there is no trainer. No real data/model/TEST/inference/training/GPU/API.
 
 ## RQ1 — P-SCORE / P-SUP shared implementation readiness (historical initial QA)
 
