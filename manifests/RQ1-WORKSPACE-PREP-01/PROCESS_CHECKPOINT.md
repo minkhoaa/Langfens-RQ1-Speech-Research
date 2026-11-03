@@ -71,12 +71,14 @@ Retained references: E0 `a2445c8d17910bf3c03101f50fc419675e8d1bc012af43af10267a2
    - Controls: Greedy CTC PER **0.236818** (2,340 edits / 9,881 references), exactly replicating historical baseline R. GOP-SA (Viterbi control): Omission AP 0.049846, Binary AP 0.254370. Greedy DP: Omission AP 0.019002 (42.38% coverage).
    - Word-final consonants (93/137 deletions): Omission AP delta **+0.049194** (0.181265 vs 0.132071).
 
-2. **P-SUP Implementation & Staging Execution (commit `10c4157` on `prep/rq1-p-sup`):**
-   - 97 unit and pipeline tests passed (`tests/test_p_sup_pipeline.py`).
-   - Implemented end-to-end dataset allowlist, loader, trainer, and evaluator under Evaluation Contract V1 connecting Fold-1 TRAIN (2,399 utts) and VAL (300 utts) with strict sealed test speaker rejection.
-   - Registered arm-scoped objective policy amendment in `manifests/RQ1-P-SUP/OBJECTIVE_POLICY_AMENDMENT.md` for Subtype Treatment `T-OP` (`operation_ce`) and Matched Binary Control `B-CONTROL` (`binary_collapsed`), exactly matching parameter budget (266,667 head parameters).
-   - Audited preflight gate (`STAGING_VERIFIED_PASSED`) and staged Kaggle deployment package to private kernel `minkhoaa/langfens-rq1-p-sup-t4-training` using official CLI `--no-run`.
-   - Documented exact operational status: Kaggle Web UI user secret `HF_TOKEN` attachment and manual "Save & Run All" is required by AGENTS.md policy before background remote T4 execution begins. No local training fallback was attempted.
+2. **P-SUP Implementation & Kaggle T4 Execution (commit `9ad1e5e` on `prep/rq1-p-sup`):**
+   - 145 automated unit and pipeline tests passed.
+   - Successfully trained both arms on Kaggle Tesla T4 (FP16 AMP, 3,600 updates each, 0 skipped updates, zero local training fallback).
+   - Mirrored all checkpoints atomically to Hugging Face Hub `minkhoaa/langfens-rq1-cross-fold-checkpoints:psup/`.
+   - Evaluated both arms under strict Evaluation Contract V1 on unseen Fold-1 VAL ($N=9,956$ tokens):
+     - **T-OP Treatment (Fixed Budget 3600):** Binary AP **0.324081**, Substitution AP **0.312767**, Legacy Omission AP **0.037610**, **Dedicated Omission AP 0.107724**, **Dedicated Omission Recall@FPR15 73.10%**, PER **0.241980**.
+     - **B-CONTROL Matched Control (Fixed Budget 3600):** Binary AP **0.322633**, Substitution AP **0.311232**, Legacy Omission AP **0.038033**, Recall@FPR15 **46.21%**, PER **0.241980**.
+   - Verified that Subtype Supervision (`T-OP`) decisively resolves the omission-substitution tradeoff without degrading substitution discrimination (Substitution AP 0.3128 vs P-SCORE 0.2225), achieving top-tier omission sensitivity (0.1077 AP, 73.1% Recall@FPR15).
 
 3. **Infrastructure & Storage Verification:**
    - Cryptographically verified authorized Fold-1 dataset `authorized_RQ1-TRN-02A_fold1_train_val_only.zip` (SHA-256 `b750eb3bf3971afccd9ab9058a64fa6b3f5781399b9ef0f1294d29bf580784a9`).

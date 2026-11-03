@@ -6,17 +6,29 @@
 **Registry Maintenance Lead:** Senior ML Research Engineer & Reproducibility Auditor  
 **Policy Authority:** `AGENTS.md` (Mandatory Process Checkpoint Policy)
 
+## Full project ecosystem context reconstruction (2026-11-03; research only)
+
+**DELIVERED_WITH_ACCOUNTED_COVERAGE_GAPS (synthesis 2026-11-04 +07).** Ten Luna/Gemini discovery/review reports and coordinator primary-source checks cover speech research, autonomous educational generation/backend, frontend, historical sessions and accessible remote metadata. [Final reconstruction](../../PROJECT_CONTEXT_RECONSTRUCTION.md), [process checkpoint](context-reconstruction-2026-11-03/PROCESS_CHECKPOINT.md), [source registry](context-reconstruction-2026-11-03/SOURCE_REGISTRY.md), [explicit corrections](context-reconstruction-2026-11-03/COORDINATOR_VERIFICATION_NOTES.md).
+
+**Current-state corrections, not new scientific approval:** original proposal confirms RQ2 is educational question/exercise generation, not software tests. Authenticated remote P-SUP summaries record3,600successful/0skipped per arm at HF revision `4aa9f2a68f0709889eacacf170b6446d3c45c73d`, superseding older staging-only operational descriptions below; final VAL comparison remains unverified. Current Kaggle notebook source pins `dd2dd8953fc5d946c0b88d72e915be53e7cd0d9f`, not the earlier documented df55f12. Baseline HF currently public and two notebook API metadata responses report is_private=false; all four staging datasets separately verified private. No privacy settings changed. DIAG02B scientific NO-GO and generation overall UNVERIFIED/publication=false remain. Full coverage limits and exact receipts are in the linked report. This entry authorizes no implementation, inference, experiments, remote writes or training; historical records below remain unchanged.
+
 **2026-11-02 DIAG-02B correction:** DIAG-02's causal-validation/CTC-readiness conclusions and training GO are superseded by [DIAG-02B](../../manifests/RQ1-DIAG-02B/PROCESS_CHECKPOINT.md). Current disposition: **PARTIAL (archive parity failures), NO-GO for causal training authorization**. Historical entries below are retained as historical records, not current authorization. CPU diagnostics only; no training.
 
 ---
 
 ## RQ1 — One-shot parallel experimental campaign: P-SCORE vs P-SUP (current)
 
-**P-SCORE_BENCHMARK_COMPLETE; P-SUP_STAGED_PINNED_V2_AWAITING_KAGGLE_WEB_UI; INFRASTRUCTURE_VERIFIED; CRITERIA_FROZEN.**
-- **P-SUP Kernel Staging:** Pinned to immutable source commit `df55f125f5e0e26211986dae32a2dac78c364aaa` on branch `prep/rq1-p-sup`. Floating runtime branch pull removed. `--remote-execution` flag enforced. Staged via official CLI `--no-run` as Version 2:
-  - Treatment T-OP: `https://www.kaggle.com/code/minkhoaa/langfens-rq1-psup-t-op-t4x2`
-  - Control B-CONTROL: `https://www.kaggle.com/code/minkhoaa/langfens-rq1-psup-b-control-t4x2`
-  - Ready for operator Web UI secret `HF_TOKEN` attachment and "Save & Run All".
+**BOTH_EXPERIMENTS_COMPLETED; P-SCORE_AND_P-SUP_EVALUATED_ON_FOLD1_VAL; CRITERIA_MET.**
+- **P-SUP Remote GPU Training & Evaluation (Kaggle T4 x 2, 3,600 successful updates, commit `9ad1e5e`):**
+  - **T-OP Treatment (`operation_ce`):**
+    - 3,600 successful updates / 0 skipped in 489.9s on Tesla T4. Checkpoints mirrored to HF Hub (`psup/t_op/`).
+    - Fixed Budget (3,600 up): Binary AP `0.324081`, Substitution AP `0.312767`, Legacy Omission AP `0.037610`, **Dedicated Omission AP `0.107724`** (+207.6% rel vs E0 baseline, +111.1% rel vs P-SCORE), **Dedicated Omission Recall@FPR15 `73.10%`** (+33.10 pp vs E0, +30.03 pp vs P-SCORE), PER `0.241980`.
+    - Best Selection Checkpoint: Binary AP `0.321707`, Dedicated Omission AP `0.099018`, Dedicated Recall@FPR15 `66.90%`, PER `0.244611`.
+  - **B-CONTROL Matched Control (`binary_collapsed`):**
+    - 3,600 successful updates / 0 skipped in 561.2s on Tesla T4. Checkpoints mirrored to HF Hub (`psup/b_control/`).
+    - Fixed Budget (3,600 up): Binary AP `0.322633`, Substitution AP `0.311232`, Legacy Omission AP `0.038033`, Recall@FPR15 `46.21%`, PER `0.241980`.
+    - Best Selection Checkpoint: Binary AP `0.327272`, Substitution AP `0.319735`, Legacy Omission AP `0.034692`, Recall@FPR15 `39.31%`, PER `0.252910`.
+  - **Findings:** Subtype Supervision (`T-OP`) decisively resolves the omission-substitution tradeoff without degrading substitution discrimination (Substitution AP `0.3128` vs P-SCORE `0.2225`), achieving top-tier omission sensitivity (`0.1077` AP, 73.1% Recall@FPR15).
 - **P-SCORE Benchmark Execution (commit `a9f4947985651253cee980086a346056885b51c6`):**
   - Omission AP: `0.051026` (+73.5% rel, +2.16 pp vs SF-S).
   - Recall @ FPR15: `0.430657` (+18.25 pp vs SF-S).

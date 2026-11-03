@@ -1,0 +1,134 @@
+{
+  "T-OP (Fixed Budget 3600)": {
+    "run_id": "eval_fixed_budget_3600",
+    "checkpoint": "checkpoints/RQ1-P-SUP/t_op/fixed_budget_3600.pt",
+    "checkpoint_sha256": "a8559b382ff6ec09f9c90ed4eccba59fa45ff41e20e10aae1cea9eff7697fbd9",
+    "objective": "operation_ce",
+    "contract_sha256": "4d99723e4b3f62f506165ced089eca82d4417279c76973b35470bd337cedfab2",
+    "binary_ap": 0.32408084453099983,
+    "omission_ap_legacy": 0.03761022963678566,
+    "omission_ap_dedicated": 0.10772420319860554,
+    "substitution_ap": 0.3127669187768879,
+    "per": 0.24197955672502783,
+    "blank_fraction": 0.7941581373077153,
+    "speaker_breakdown": {
+      "NJS": {
+        "binary_ap": 0.3955074139631755,
+        "per": 0.23593466424682397,
+        "tokens": 5011
+      },
+      "RRBI": {
+        "binary_ap": 0.2669587557902152,
+        "per": 0.2480698902885006,
+        "tokens": 4945
+      }
+    },
+    "run_validation": {
+      "utterances": 300,
+      "prompt_positions": 9956,
+      "ok": 9956,
+      "abstain": 0,
+      "failure": 0,
+      "utterance_failures": 0
+    }
+  },
+  "T-OP (Best Selection)": {
+    "run_id": "eval_best",
+    "checkpoint": "checkpoints/RQ1-P-SUP/t_op/best.pt",
+    "checkpoint_sha256": "3b492049399608a1f0319accee0404de50fe4972340ff5cc3c930f58867a14e9",
+    "objective": "operation_ce",
+    "contract_sha256": "4d99723e4b3f62f506165ced089eca82d4417279c76973b35470bd337cedfab2",
+    "binary_ap": 0.32170668680350406,
+    "omission_ap_legacy": 0.035379189165392295,
+    "omission_ap_dedicated": 0.09901759497992346,
+    "substitution_ap": 0.31184465945349626,
+    "per": 0.24461086934520798,
+    "blank_fraction": 0.7911454280640849,
+    "speaker_breakdown": {
+      "NJS": {
+        "binary_ap": 0.4047818181821404,
+        "per": 0.24400080661423673,
+        "tokens": 5011
+      },
+      "RRBI": {
+        "binary_ap": 0.2548678955827859,
+        "per": 0.24522551808208046,
+        "tokens": 4945
+      }
+    },
+    "run_validation": {
+      "utterances": 300,
+      "prompt_positions": 9956,
+      "ok": 9956,
+      "abstain": 0,
+      "failure": 0,
+      "utterance_failures": 0
+    }
+  },
+  "B-CONTROL (Fixed Budget 3600)": {
+    "run_id": "eval_fixed_budget_3600",
+    "checkpoint": "checkpoints/RQ1-P-SUP/b_control/fixed_budget_3600.pt",
+    "checkpoint_sha256": "e121a7b965747b49608263f1e3ec447f2a631f09a36e326e20fe5f2cfe619201",
+    "objective": "binary_collapsed",
+    "contract_sha256": "4d99723e4b3f62f506165ced089eca82d4417279c76973b35470bd337cedfab2",
+    "binary_ap": 0.32263271313468944,
+    "omission_ap_legacy": 0.03803289243467973,
+    "omission_ap_dedicated": null,
+    "substitution_ap": 0.3112319148328409,
+    "per": 0.24197955672502783,
+    "blank_fraction": 0.7940184752897987,
+    "speaker_breakdown": {
+      "NJS": {
+        "binary_ap": 0.3977015778479427,
+        "per": 0.2363379713651946,
+        "tokens": 5011
+      },
+      "RRBI": {
+        "binary_ap": 0.26554186334689595,
+        "per": 0.24766355140186916,
+        "tokens": 4945
+      }
+    },
+    "run_validation": {
+      "utterances": 300,
+      "prompt_positions": 9956,
+      "ok": 9956,
+      "abstain": 0,
+      "failure": 0,
+      "utterance_failures": 0
+    }
+  },
+  "B-CONTROL (Best Selection)": {
+    "run_id": "eval_best",
+    "checkpoint": "checkpoints/RQ1-P-SUP/b_control/best.pt",
+    "checkpoint_sha256": "2dbad5a0160224f9d936e564a6c5d52dffe6a8efdbde8e409c50a8cc393be93f",
+    "objective": "binary_collapsed",
+    "contract_sha256": "4d99723e4b3f62f506165ced089eca82d4417279c76973b35470bd337cedfab2",
+    "binary_ap": 0.32727171629002405,
+    "omission_ap_legacy": 0.03469198378893695,
+    "omission_ap_dedicated": null,
+    "substitution_ap": 0.3197348819757843,
+    "per": 0.25290962453192994,
+    "blank_fraction": 0.793200454899144,
+    "speaker_breakdown": {
+      "NJS": {
+        "binary_ap": 0.413612732228409,
+        "per": 0.25529340592861466,
+        "tokens": 5011
+      },
+      "RRBI": {
+        "binary_ap": 0.2592741024049311,
+        "per": 0.25050792360828933,
+        "tokens": 4945
+      }
+    },
+    "run_validation": {
+      "utterances": 300,
+      "prompt_positions": 9956,
+      "ok": 9956,
+      "abstain": 0,
+      "failure": 0,
+      "utterance_failures": 0
+    }
+  }
+}
