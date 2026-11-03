@@ -71,6 +71,37 @@ def main():
     parser.add_argument("--weight-decay", type=float, default=0.01)
     parser.add_argument("--gradient-clip", type=float, default=1.0)
     parser.add_argument("--max-epochs", type=int, default=25)
+    parser.add_argument(
+        "--remote-mirror-backend",
+        type=str,
+        default="local_dir",
+        choices=["local_dir", "huggingface"],
+        help="Remote persistent mirror backend: local_dir or huggingface"
+    )
+    parser.add_argument(
+        "--remote-mirror-target",
+        type=str,
+        default=None,
+        help="Remote persistent mirror target: directory or Hugging Face repo id"
+    )
+    parser.add_argument(
+        "--remote-mirror-token",
+        type=str,
+        default=None,
+        help="Auth token for remote mirror (e.g. HF_TOKEN)"
+    )
+    parser.add_argument(
+        "--remote-execution",
+        action="store_true",
+        default=False,
+        help="Enable strict remote execution fail-closed checks (CUDA, Tesla T4, FP16 AMP)"
+    )
+    parser.add_argument(
+        "--resume-checkpoint",
+        type=str,
+        default=None,
+        help="Path to checkpoint file to resume training from"
+    )
     args = parser.parse_args()
 
     repo_root = Path(__file__).resolve().parent.parent
@@ -109,6 +140,25 @@ def main():
     print(f"Base output dir: {base_out}")
     print("=" * 80)
 
+    # Remote Persistent Mirror Setup
+    remote_mirror = None
+    mirror_target = (
+        args.remote_mirror_target
+        or os.environ.get("REMOTE_MIRROR_TARGET")
+        or os.environ.get("KAGGLE_REMOTE_MIRROR_TARGET")
+    )
+    if mirror_target:
+        from langfens_prep.p_sup.trainer import RemoteCheckpointMirror
+        remote_mirror = RemoteCheckpointMirror(
+            backend=args.remote_mirror_backend,
+            remote_target=mirror_target,
+            auth_token=args.remote_mirror_token
+        )
+        ok, msg = remote_mirror.verify_readiness()
+        if not ok:
+            raise RuntimeError(f"FAIL-CLOSED: Remote mirror verification failed: {msg}")
+        print(f"[REMOTE MIRROR] Verified remote persistent mirror: {args.remote_mirror_backend}:{mirror_target}")
+
     results = {}
     for obj in objectives:
         arm_name = "T-OP_treatment" if obj == "operation_ce" else "B-CONTROL_matched_binary"
@@ -129,7 +179,11 @@ def main():
             lr=args.lr,
             weight_decay=args.weight_decay,
             gradient_clip=args.gradient_clip,
-            max_epochs=args.max_epochs
+            max_epochs=args.max_epochs,
+            remote_mirror=remote_mirror,
+            remote_rel_prefix=arm_name,
+            remote_execution=args.remote_execution,
+            resume_checkpoint_path=args.resume_checkpoint,
         )
         results[obj] = res
 
