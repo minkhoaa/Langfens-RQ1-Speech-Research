@@ -139,7 +139,7 @@ def test_psup_deployment_packages_metadata_and_privacy():
 
 
 def test_psup_train_notebooks_fail_closed_execution_gate():
-    """Proves P-SUP training notebooks contain mandatory EXECUTE_TRAINING=False fail-closed gate."""
+    """Proves P-SUP training notebooks have EXECUTE_TRAINING=True configured for immediate Save & Run All execution."""
     train_pkgs = [
         "deploy/kaggle_psup_control_train/kaggle_train.ipynb",
         "deploy/kaggle_psup_treatment_train/kaggle_train.ipynb",
@@ -150,15 +150,53 @@ def test_psup_train_notebooks_fail_closed_execution_gate():
         assert nb_path.is_file()
         nb = json.loads(nb_path.read_text())
 
-        # Find gate cell
+        # Find gate cell / definition
         gate_found = False
         for cell in nb["cells"]:
             src = "".join(cell.get("source", []))
-            if "EXECUTE_TRAINING = False" in src:
+            if "EXECUTE_TRAINING = True" in src:
                 gate_found = True
-                assert "sys.exit(0)" in src, f"Gate in {rel_nb} must exit cleanly on False"
+                assert "sys.exit(0)" in src, f"Gate in {rel_nb} must preserve fail-closed sys.exit on False"
+                assert "if not EXECUTE_TRAINING:" in src, f"Gate in {rel_nb} must check if not EXECUTE_TRAINING"
                 break
-        assert gate_found, f"Mandatory EXECUTE_TRAINING=False gate not found in {rel_nb}"
+        assert gate_found, f"Mandatory EXECUTE_TRAINING=True gate not found in {rel_nb}"
+
+
+def test_psup_train_notebooks_arm_isolation_and_matched_parameters():
+    """Proves each notebook executes EXACTLY one arm with matched parameters, partitions, and remote mirror."""
+    treatment_nb_path = REPO_ROOT / "deploy/kaggle_psup_treatment_train/kaggle_train.ipynb"
+    control_nb_path = REPO_ROOT / "deploy/kaggle_psup_control_train/kaggle_train.ipynb"
+
+    t_nb = json.loads(treatment_nb_path.read_text())
+    c_nb = json.loads(control_nb_path.read_text())
+
+    t_src = "".join("".join(c.get("source", [])) for c in t_nb["cells"])
+    c_src = "".join("".join(c.get("source", [])) for c in c_nb["cells"])
+
+    # Treatment arm checks: exactly one objective operation_ce
+    assert '"--arm", "treatment"' in t_src or "'--arm', 'treatment'" in t_src
+    assert '"--objective", "operation_ce"' in t_src or "'--objective', 'operation_ce'" in t_src
+    assert "binary_collapsed" not in t_src or "matching control" in t_src
+
+    # Control arm checks: exactly one objective binary_collapsed
+    assert '"--arm", "control"' in c_src or "'--arm', 'control'" in c_src
+    assert '"--objective", "binary_collapsed"' in c_src or "'--objective', 'binary_collapsed'" in c_src
+    assert "operation_ce" not in c_src or "matching treatment" in c_src
+
+    # Matched parameters across both arms
+    for src, name in [(t_src, "treatment"), (c_src, "control")]:
+        assert 'UserSecretsClient().get_secret("HF_TOKEN")' in src, f"Missing Kaggle secrets HF_TOKEN query in {name}"
+        assert '"--max-updates", "3600"' in src or "'--max-updates', '3600'" in src, f"3600 update budget missing in {name}"
+        assert '"--batch-size", "2"' in src or "'--batch-size', '2'" in src, f"batch-size 2 missing in {name}"
+        assert '"--gradient-accumulation-steps", "2"' in src or "'--gradient-accumulation-steps', '2'" in src, f"accum 2 missing in {name}"
+        assert '"--seed", "1337"' in src or "'--seed', '1337'" in src, f"seed 1337 missing in {name}"
+        assert '"--lr", "0.001"' in src or "'--lr', '0.001'" in src, f"lr 0.001 missing in {name}"
+        assert '"--train-partition", "fit"' in src, f"FIT partition parameter missing in {name}"
+        assert '"--select-partition", "selection"' in src, f"SELECT partition parameter missing in {name}"
+        assert '"--cal-partition", "calibration"' in src, f"CAL partition parameter missing in {name}"
+        assert '"--val-partition", "val"' in src, f"VAL partition parameter missing in {name}"
+        assert '"--remote-mirror-target", "minkhoaa/langfens-rq1-cross-fold-checkpoints"' in src, f"Remote mirror target missing in {name}"
+
 
 
 def test_remote_mirror_durability_contract():

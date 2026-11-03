@@ -64,19 +64,37 @@ This process checkpoint documents the completion of infrastructure verification 
    - `deploy/kaggle_psup_control_train`: Training execution package for B-Control (`minkhoaa/langfens-rq1-psup-b-control-t4x2`).
    - `deploy/kaggle_psup_treatment_preflight`: Preflight verification package for T-Op (`minkhoaa/langfens-rq1-psup-t-op-preflight`).
    - `deploy/kaggle_psup_treatment_train`: Training execution package for T-Op (`minkhoaa/langfens-rq1-psup-t-op-t4x2`).
-   - All packages configured with `is_private: true`, `enable_gpu: true`, `machine_shape: NvidiaTeslaT4`, `enable_internet: true`.
-   - Both training notebooks enforce the fail-closed execution gate: `EXECUTE_TRAINING = False`.
+   - All packages configured with `is_private: true`, `enable_gpu: true`, `machine_shape: NvidiaTeslaT4`, `enable_internet: true`, `dataset_sources: ["minkhoaa/langfens-rq1-fold1-staging"]`.
+   - Both training notebooks configure `EXECUTE_TRAINING = True` for immediate execution upon Web UI "Save & Run All", with fail-closed exit if toggled False.
+   - Separate, arm-isolated objectives: Treatment executes `--arm treatment` (`operation_ce`), Control executes `--arm control` (`binary_collapsed`).
+   - Matched parameters: 3,600 successful updates, batch 2 / accum 2 (effective batch 4), AdamW lr 1e-3, cosine scheduler over 15,000 horizon, warmup 100 updates, seed 1337.
+   - Partition strategy enforced in `audit_scripts/train_p_sup.py`: FIT (1,799 utts, 12 spks), SELECT (300 utts, 2 spks: MBMPS, TLV), CAL (300 utts, 2 spks: NCC, THV), VAL (300 utts, 2 spks: NJS, RRBI, preserved unseen), SEALED TEST (900 utts, strictly prohibited).
+   - Remote persistent mirroring to `minkhoaa/langfens-rq1-cross-fold-checkpoints` (`psup/t_op/` and `psup/b_control/`).
+   - Verified Kaggle CLI push:
+     - Treatment: `https://www.kaggle.com/code/minkhoaa/langfens-rq1-psup-t-op-t4x2`
+     - Control: `https://www.kaggle.com/code/minkhoaa/langfens-rq1-psup-b-control-t4x2`
 3. **Automated Safety Test Suite:**
-   - `tests/test_rq1_psup_infrastructure_deployment.py` (5 automated tests, 100% passed).
+   - `tests/test_rq1_psup_infrastructure_deployment.py` (6 automated tests, 100% passed).
 
 ---
 
 ## 5. Verification Commands & Evidence
 
-- Package & Checkpoint Test Suite:
+- Package & Deployment Verification Test Suite:
   ```bash
-  /home/khoa/Projects/KLTN/Dataset/.venv/bin/python -m pytest tests/test_rq1_psup_infrastructure_deployment.py
-  # Result: 5 passed in 1.56s
+  PYTHONPATH=. .venv-cuda/bin/pytest tests/test_rq1_psup_infrastructure_deployment.py
+  # Result: 6 passed in 2.91s
+  ```
+- Kernel CLI Deployment Validation:
+  ```bash
+  kaggle kernels push -p deploy/kaggle_psup_treatment_train --no-run
+  # Result: Kernel version 1 successfully saved without running. See https://www.kaggle.com/code/minkhoaa/langfens-rq1-psup-t-op-t4x2
+  kaggle kernels push -p deploy/kaggle_psup_control_train --no-run
+  # Result: Kernel version 1 successfully saved without running. See https://www.kaggle.com/code/minkhoaa/langfens-rq1-psup-b-control-t4x2
+  kaggle kernels status minkhoaa/langfens-rq1-psup-t-op-t4x2
+  # Result: minkhoaa/langfens-rq1-psup-t-op-t4x2 has status "KernelWorkerStatus.COMPLETE"
+  kaggle kernels status minkhoaa/langfens-rq1-psup-b-control-t4x2
+  # Result: minkhoaa/langfens-rq1-psup-b-control-t4x2 has status "KernelWorkerStatus.COMPLETE"
   ```
 - Combined Deployment Regression Suite:
   ```bash

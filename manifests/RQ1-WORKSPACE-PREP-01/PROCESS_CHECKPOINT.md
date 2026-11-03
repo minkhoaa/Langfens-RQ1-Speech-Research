@@ -90,4 +90,34 @@ Retained references: E0 `a2445c8d17910bf3c03101f50fc419675e8d1bc012af43af10267a2
    - Certified strict denominators: Binary ($N=9,956$), Omission ($N=8,944$, substitutions strictly excluded), Substitution ($N=9,811$, deletions strictly excluded).
    - Confirmed prospective criteria frozen prior to candidate evaluation.
 
+## Scientific Evaluation Audit & Metric Reconciliation Record — Agent D
+
+**POPULATION_RECONCILED; HONEST_TRADEOFF_RECORDED; SPECIFICATIONS_VERIFIED.** Comprehensive scientific evaluation audit report authored: [P_SUP_AUDIT_AND_METRIC_RECONCILIATION.md](P_SUP_AUDIT_AND_METRIC_RECONCILIATION.md).
+
+- **Population Reconciliation (9,956 Full vs 9,919 Aligned):**
+  - Mapped all 37 unaligned tokens in Protocol Z Levenshtein dynamic programming alignment (`sub_first` tie-break): 25 correct, 4 substitutions, 8 deletions (total 37).
+  - Categorized root causes: 9 wh-aspirate discrepancies (`/HH W/` in annotator TextGrid vs `/W/` in CMUdict G2P), 2 contraction expansions ("we'll" `/W IY W IH L/`), 14 weak vowel/syllabicity variants ("privileges" `/IH/`, "could", "talk"), 8 gold acoustic deletions dropped by G2P frontend phonemization, and 4 phonetic substitutions.
+  - Certified metrics on both populations:
+    - Aligned population ($N=9,919$, $N_{\text{cor}}=8,774$, $N_{\text{sub}}=1,008$, $N_{\text{del}}=137$): Baseline R Binary AP 0.313530, Omission AP 0.032564, Recall@FPR15 39.42%, Substitution AP 0.304811, PER 0.236818.
+    - Full population ($N=9,956$, $N_{\text{cor}}=8,799$, $N_{\text{sub}}=1,012$, $N_{\text{del}}=145$): Baseline R Binary AP 0.317021, Omission AP 0.035020, Recall@FPR15 40.00%, Substitution AP 0.307366, PER 0.236818.
+- **Cross-Model Comparative Evaluation on Exact Same Population ($N=9,919$):**
+  - Direct side-by-side comparison establishes:
+    - `GOP-CTC-SF-S`: Omission AP 0.029411, Recall@FPR15 24.82%, Substitution AP 0.246800, Binary AP 0.259094, PER 0.236818.
+    - `GOP-CTC-SF-SD`: Omission AP 0.051026, Recall@FPR15 43.07%, Substitution AP 0.222544, Binary AP 0.250049, PER 0.236818.
+    - `GOP-SA` (Viterbi Control): Omission AP 0.049846, Recall@FPR15 41.61%, Substitution AP 0.228104, Binary AP 0.254370, PER 0.236818.
+    - `Greedy DP`: Omission AP 0.019002, Recall@FPR15 38.10%, Substitution AP 0.175058, Binary AP 0.186678, PER 0.236818 (coverage 42.46%).
+- **Prospective Gate Compliance Audit & Omission-Substitution Tradeoff:**
+  - Primary Omission AP: $\Delta = +0.021615$ vs target $\ge +0.020$ $\to$ **PASS** (+73.5% relative).
+  - Operating Sensitivity: $\Delta \text{Recall@FPR15} = +0.182482$ (+18.25 pp) vs target $\ge +0.030$ $\to$ **PASS** (43.07% vs 24.82%).
+  - Substitution AP Noninferiority: $\Delta = -0.024256$ vs target $\ge -0.005$ $\to$ **FAIL (Severe Noninferiority Breach)**.
+  - Binary AP Noninferiority: $\Delta = -0.009045$ vs SF-S; $\Delta = -0.063481$ vs Baseline R $\to$ **FAIL**.
+  - Omission-Substitution Tradeoff thoroughly documented: The $\epsilon$-deletion shortcut in the denominator lattice bypasses substituted acoustic segments, artificially deflating substitution posteriors and degrading substitution diagnosis by 9.83% relative.
+- **Matched T-OP vs B-CONTROL Training & Evaluation Specifications:**
+  - Verified identical random initialization (`seed: 1337`) via `matched_initial_pair()`.
+  - Verified identical head architecture: `CompactOperationHead` comprises exactly 266,667 trainable parameters across both arms.
+  - Verified identical frozen backbone: `facebook/wav2vec2-base-960h` (94.4M params, frozen in eval).
+  - Verified identical optimization hyperparameters: AdamW (lr 0.001, wd 0.01), cosine schedule over 15,000 updates, 100 warmup updates, batch size 2x2 = 4, CUDA FP16 AMP.
+  - Enforced mandatory dual checkpoint accounting on Fold-1 VAL: Evaluation must report fixed-budget 3,600 updates (`fixed_budget_3600.pt`) AND validation-selected `best.pt` separately to avoid confounding update exposure with algorithmic performance.
+
+
 
