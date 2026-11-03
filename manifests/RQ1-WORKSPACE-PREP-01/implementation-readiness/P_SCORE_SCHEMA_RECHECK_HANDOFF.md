@@ -55,4 +55,12 @@ PYTHONPATH=.:src HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 CUDA_VISIBLE_DEVICES=''
 
 It requires a valid separately authorized private cache and allowlist/provenance, which do not exist in this QA. P-SUP has no separately authorizable training command until a trainer, input/persistence/recovery system, scientific approval and execution authorization exist. Its `audit_scripts/p_sup_preflight.py` returns HOLD and is not training.
 
-This handoff intentionally records arm QA commit IDs rather than a self-referential future file-commit tip. The parent/orchestrator should record the eventual final arm and coordinator HEADs after synchronized handoff commits and decide acceptance/publication.
+## Final branch-tip observation before this report-only refresh
+
+After the shared recheck report/checkpoint, arm QA checkpoints and indexes were committed and the shared readiness files were identical. Immediately before adding this tip observation, actual repository HEADs were:
+
+- P-SCORE: `98ff51a3088383dd3e151c158c4cf796765ffb0f` (`docs(rq1-p-score): add independent QA handoff`).
+- P-SUP: `721f4ef62282e5bd18d9be5096768a3775f9c772` (`docs(rq1-p-sup): add independent QA handoff`).
+- Coordinator: `9f506db1c2233d312d958601f3797e2028966a8f` (`docs(rq1): record independent schema recheck handoff`).
+
+This report-only tip observation is then synchronized identically to all three repositories; the resulting receipt commits necessarily advance each tip again. The parent/orchestrator should record those eventual `git rev-parse HEAD` values and decide final acceptance/publication. All source/test SHAs above remain exact and unchanged.
