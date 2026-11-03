@@ -1,0 +1,102 @@
+{
+  "status": "SETUP_VERIFIED_DOCUMENTATION_ONLY_EXECUTION_NO_GO",
+  "frozen_common_base_sha": "0d268ff8c444e16fd76aca2f4ad6ece966908edc",
+  "initial_local_head": "b25a7595360294798d8d06b37592dd65dd4c9c33",
+  "contract": {
+    "path": "manifests/RQ1-WORKSPACE-PREP-01/EVALUATION_CONTRACT_V1.md",
+    "sha256": "4d99723e4b3f62f506165ced089eca82d4417279c76973b35470bd337cedfab2"
+  },
+  "workspaces": {
+    "P-SCORE": {
+      "path": "/home/khoa/Projects/KLTN/langfens-rq1-p-score",
+      "branch": "prep/rq1-p-score",
+      "commit_sha": "de1db5cc2f0b4ed8b750ccc6120a314679dc3b6f",
+      "parent_sha": "0d268ff8c444e16fd76aca2f4ad6ece966908edc",
+      "clean": true,
+      "contract_sha256": "4d99723e4b3f62f506165ced089eca82d4417279c76973b35470bd337cedfab2",
+      "57_shared_fingerprints_match": true,
+      "arm_only_changed_files": [
+        "docs/process-checkpoints/INDEX.md",
+        "manifests/RQ1-P-SCORE/EXPERIMENT_SPEC.md",
+        "manifests/RQ1-P-SCORE/OUTPUT_SCHEMA_AND_TASK_PLAN.md",
+        "manifests/RQ1-P-SCORE/PROCESS_CHECKPOINT.md",
+        "manifests/RQ1-P-SCORE/PROVENANCE_MANIFEST.json"
+      ],
+      "new_registry_links_verified": 7,
+      "document_sha256": {
+        "docs/process-checkpoints/INDEX.md": "8cf9fd60a8d905e9c4426e0d69bb1b1b13987ca102c472436709712336b38742",
+        "manifests/RQ1-P-SCORE/EXPERIMENT_SPEC.md": "df20812ef94b6ff2b6bfef3e3c8c59ca4aaa216d3349ff9a59f5094316e3b1db",
+        "manifests/RQ1-P-SCORE/OUTPUT_SCHEMA_AND_TASK_PLAN.md": "889a5a519642db34ee0342e2fa80fd61f4340beb408b1088fa979eafbfa21109",
+        "manifests/RQ1-P-SCORE/PROCESS_CHECKPOINT.md": "727884ca8baf7eb897e298e5384a1accf3971cfaf72f721a3abd36e09ba6fd39",
+        "manifests/RQ1-P-SCORE/PROVENANCE_MANIFEST.json": "a38c3330f5277438b0df02fde25b12885f7c90bc3022ec5d48de82e496f42e5e"
+      }
+    },
+    "P-SUP": {
+      "path": "/home/khoa/Projects/KLTN/langfens-rq1-p-sup",
+      "branch": "prep/rq1-p-sup",
+      "commit_sha": "d6ef18443752b0add3f3dfcfff42f7fa7be967c1",
+      "parent_sha": "0d268ff8c444e16fd76aca2f4ad6ece966908edc",
+      "clean": true,
+      "contract_sha256": "4d99723e4b3f62f506165ced089eca82d4417279c76973b35470bd337cedfab2",
+      "57_shared_fingerprints_match": true,
+      "arm_only_changed_files": [
+        "docs/process-checkpoints/INDEX.md",
+        "manifests/RQ1-P-SUP/EXPERIMENT_SPEC.md",
+        "manifests/RQ1-P-SUP/KAGGLE_T4_DEPLOYMENT_DESIGN.md",
+        "manifests/RQ1-P-SUP/LABEL_COLLATOR_AND_OUTPUT_DESIGN.md",
+        "manifests/RQ1-P-SUP/PROCESS_CHECKPOINT.md",
+        "manifests/RQ1-P-SUP/PROVENANCE_MANIFEST.json"
+      ],
+      "new_registry_links_verified": 8,
+      "document_sha256": {
+        "docs/process-checkpoints/INDEX.md": "4a250b79e23bfb78ace92206c8598e806d3ee6aacbaa46336a927b4f118e0c8a",
+        "manifests/RQ1-P-SUP/EXPERIMENT_SPEC.md": "3bdd342f4769849277a884936f16790e5e4341fb48362f108036c388f0df0496",
+        "manifests/RQ1-P-SUP/KAGGLE_T4_DEPLOYMENT_DESIGN.md": "81bbe19c33a60a527f4008a5fa145bb0efa6adcb91965a708739172fa6a42808",
+        "manifests/RQ1-P-SUP/LABEL_COLLATOR_AND_OUTPUT_DESIGN.md": "b1d848ff2dab83df65999cb96333a9220b649e42a29f6ff1310b8f1bdaab3538",
+        "manifests/RQ1-P-SUP/PROCESS_CHECKPOINT.md": "668ce75b8b3234ebb6482d99c8d738a146db027d99bf50d2dcabe381eab62648",
+        "manifests/RQ1-P-SUP/PROVENANCE_MANIFEST.json": "0e035e86634b734af66958e12fc89faf0d9b4b88a97964b4adfd525793cc0af6"
+      }
+    }
+  },
+  "checks": {
+    "same_exact_merge_base": true,
+    "both_direct_children_of_frozen_base": true,
+    "identical_shared_contract_bytes_in_all_three_workspaces": true,
+    "source_input_archive_fingerprints_verified": 171,
+    "original_tracked_files_unchanged_except_additive_registry": 639,
+    "nested_status_and_binary_diff_unchanged": true,
+    "research_phase_and_recovery_refs_unchanged": true,
+    "historical_evaluator_semantics_not_edited": true,
+    "arm_documents_isolated": true,
+    "no_new_private_input_directories_in_arms": true,
+    "new_arm_files_regular_text_under_100000_bytes": true,
+    "both_arm_diff_checks_clean": true,
+    "checkpoint_weights_not_read_copied_or_modified_by_process": true
+  },
+  "limitations": [
+    "Latest distinct omission proposal missing; original-UIT design alignment only.",
+    "E0/E1 weight digests are archival metadata; no new local or remote weight readback.",
+    "DIAG-02B 9/80 parity failures remain; no tolerance/evaluator edits.",
+    "Inherited closure B/C/E reports have 12 trailing-space Markdown findings; preserved checksummed bytes.",
+    "One precommit audit predicate failed on newly staged files; corrected and rerun before either arm commit.",
+    "Inherited tracked prediction audit assets/dictionaries/papers retained; no publication/privacy clearance claimed.",
+    "Original nested checkout retains pre-existing mode/symlink dirt; original workspace not globally clean."
+  ],
+  "not_run": [
+    "scoring/model/training implementation",
+    "unit/regression/model tests",
+    "corpus audio or TextGrid loading",
+    "real-data inference",
+    "calibration/model fitting",
+    "backward/optimizer/training",
+    "GPU/remote APIs/staging/deployment",
+    "sealed TEST data access"
+  ],
+  "current_process": {
+    "training": "NOT_STARTED",
+    "successful_optimizer_updates": 0,
+    "skipped_updates": 0,
+    "new_model_artifact": null,
+    "scope": "Lightweight Git/filesystem/document audit only; hashes certify bytes, not scientific performance."
+  }
+}
