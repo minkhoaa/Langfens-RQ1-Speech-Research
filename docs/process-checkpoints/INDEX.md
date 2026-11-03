@@ -10,6 +10,10 @@
 
 ---
 
+## RQ1 — P-SCORE bridge portability independent verification (current)
+
+**P-SCORE_SYNTHETIC_INTEGRATION_GO; EXPERIMENTS_HOLD.** Independent run of source/test SHA `69d05e36c83b7ce10cb679730855ea440cf10e8e`: 269 P-SCORE tests, shared JSON 22, safe inherited synthetic 9 passed. Validator path proven inside score checkout; shared validator/V1 unchanged; 57 hashes per tree match. P-SUP prior 88 test evidence not rerun; bounded prototype GO only and no trainer. Exact report/checkpoint live in common implementation-readiness directory. Both experiments remain HOLD.
+
 ## RQ1-BENCH-01 — parallel inference benchmark infrastructure
 
 Status: **PARTIAL; SOURCE_INTEGRATED; REMOTE_READINESS_AND_PUBLICATION_BLOCKED**. Shared contract frozen from base `467c8233c3f19381c66f10d5fa64d1f44a1c6066` before three isolated worktree lanes; one timed-out lane recovered once. Integrated inference-safe tests pass; final-source CPU replay evidence is tracked in checkpoint. Kaggle dependency/private-staging readiness remains unverified and no remote execution is authorized. Public-origin inherited-data privacy blocks push. [Process checkpoint](../../manifests/RQ1-BENCH-01/PROCESS_CHECKPOINT.md), [contract](../../manifests/RQ1-BENCH-01/CONTRACT.md). No cross-platform parity established; DIAG-02B scientific disposition unchanged.
