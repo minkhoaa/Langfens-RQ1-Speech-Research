@@ -86,6 +86,12 @@ def main():
     parser.add_argument("--weight-decay", type=float, default=0.01)
     parser.add_argument("--gradient-clip", type=float, default=1.0)
     parser.add_argument("--max-epochs", type=int, default=25)
+    parser.add_argument("--train-partition", type=str, default="fit", help="Train partition (default: fit)")
+    parser.add_argument("--select-partition", type=str, default="selection", help="Select partition (default: selection)")
+    parser.add_argument("--cal-partition", type=str, default="calibration", help="Calibration partition (default: calibration)")
+    parser.add_argument("--val-partition", type=str, default="val", help="Validation partition (default: val)")
+    parser.add_argument("--remote-mirror-target", type=str, default=None, help="Remote persistent mirror target (e.g. minkhoaa/langfens-rq1-cross-fold-checkpoints)")
+    parser.add_argument("--remote-mirror-backend", type=str, default="huggingface", help="Remote mirror backend (default: huggingface)")
     args = parser.parse_args()
 
     repo_root = Path(__file__).resolve().parent.parent
@@ -162,11 +168,27 @@ def main():
 
     print("[PREFLIGHT] All partition sizes, memberships, disjointness, and sealed-test checks passed.")
 
+    # Optional remote mirror initialization
+    mirror = None
+    if args.remote_mirror_target:
+        try:
+            from audit_scripts.kaggle_checkpoint_sync import KaggleRemoteMirror
+            mirror = KaggleRemoteMirror(
+                backend=args.remote_mirror_backend,
+                remote_target=args.remote_mirror_target,
+                require_verification=True
+            )
+            ok, msg = mirror.verify_readiness()
+            print(f"[MIRROR] Initialized KaggleRemoteMirror ({args.remote_mirror_backend} -> {args.remote_mirror_target}): {msg}")
+        except Exception as e:
+            print(f"[MIRROR NOTE] Remote mirror initialization note: {e}")
+
     results = {}
     for obj in objectives:
         arm_name = "T-OP_treatment" if obj == "operation_ce" else "B-CONTROL_matched_binary"
         arm_out = base_out / arm_name
         arm_out.mkdir(parents=True, exist_ok=True)
+        arm_prefix = "psup/t_op" if obj == "operation_ce" else "psup/b_control"
 
         res = train_p_sup(
             objective=obj,
@@ -182,7 +204,13 @@ def main():
             lr=args.lr,
             weight_decay=args.weight_decay,
             gradient_clip=args.gradient_clip,
-            max_epochs=args.max_epochs
+            max_epochs=args.max_epochs,
+            train_partition=args.train_partition,
+            select_partition=args.select_partition,
+            cal_partition=args.cal_partition,
+            val_partition=args.val_partition,
+            remote_mirror=mirror,
+            remote_rel_prefix=arm_prefix
         )
         results[obj] = res
 

@@ -342,6 +342,10 @@ def train_p_sup(
     device: Optional[torch.device] = None,
     max_epochs: int = 25,
     early_stopping_patience: int = 5,
+    train_partition: str = "fit",
+    select_partition: str = "selection",
+    cal_partition: str = "calibration",
+    val_partition: str = "val",
     remote_mirror: Optional[Any] = None,
     remote_rel_prefix: Optional[str] = None
 ) -> Dict[str, Any]:
@@ -359,47 +363,53 @@ def train_p_sup(
     use_cuda_amp = (device.type == "cuda")
 
     # 1. Datasets & Loaders
-    # Training dataset: FIT only (1,799 utterances across 12 speakers:
+    # Training dataset: default FIT only (1,799 utterances across 12 speakers:
     # BWC, ERMS, HKK, HQTV, SKA, SVBI, TNI, TXHC, YBAA, YDCK, YKWK, ZHAA)
     train_dataset = PSupL2ArcticDataset(
         split_manifest_path=split_manifest_path,
         zip_path=zip_path,
-        partition="fit"
+        partition=train_partition
     )
-    if len(train_dataset) != 1799:
-        raise ValueError(
-            f"FAIL-CLOSED: FIT training dataset must have exactly 1,799 utterances, got {len(train_dataset)}"
-        )
-    train_speakers = frozenset(spk for spk, _ in train_dataset.entries)
-    if train_speakers != FIT_SPEAKERS:
-        raise ValueError(
-            f"FAIL-CLOSED: FIT training dataset speakers mismatch: {train_speakers} != {FIT_SPEAKERS}"
-        )
-    if train_speakers & SEALED_SPEAKERS:
-        raise SealedSpeakerContaminationError(
-            f"FAIL-CLOSED: Sealed test speaker found in FIT training dataset: {train_speakers & SEALED_SPEAKERS}"
-        )
+    if train_partition == "fit":
+        if len(train_dataset) != 1799:
+            raise ValueError(
+                f"FAIL-CLOSED: FIT training dataset must have exactly 1,799 utterances, got {len(train_dataset)}"
+            )
+        train_speakers = frozenset(spk for spk, _ in train_dataset.entries)
+        if train_speakers != FIT_SPEAKERS:
+            raise ValueError(
+                f"FAIL-CLOSED: FIT training dataset speakers mismatch: {train_speakers} != {FIT_SPEAKERS}"
+            )
+        if train_speakers & SEALED_SPEAKERS:
+            raise SealedSpeakerContaminationError(
+                f"FAIL-CLOSED: Sealed test speaker found in FIT training dataset: {train_speakers & SEALED_SPEAKERS}"
+            )
+    else:
+        train_speakers = frozenset(spk for spk, _ in train_dataset.entries)
 
-    # Selection dataset: SELECT (300 utterances across 2 speakers: MBMPS, TLV)
+    # Selection dataset: default SELECT (300 utterances across 2 speakers: MBMPS, TLV)
     # Used for validation loss, AP tracking, early stopping, and saving best.pt during training
     selection_dataset = PSupL2ArcticDataset(
         split_manifest_path=split_manifest_path,
         zip_path=zip_path,
-        partition="selection"
+        partition=select_partition
     )
-    if len(selection_dataset) != 300:
-        raise ValueError(
-            f"FAIL-CLOSED: SELECT dataset must have exactly 300 utterances, got {len(selection_dataset)}"
-        )
-    selection_speakers = frozenset(spk for spk, _ in selection_dataset.entries)
-    if selection_speakers != SELECT_SPEAKERS:
-        raise ValueError(
-            f"FAIL-CLOSED: SELECT dataset speakers mismatch: {selection_speakers} != {SELECT_SPEAKERS}"
-        )
-    if selection_speakers & SEALED_SPEAKERS:
-        raise SealedSpeakerContaminationError(
-            f"FAIL-CLOSED: Sealed test speaker found in SELECT dataset: {selection_speakers & SEALED_SPEAKERS}"
-        )
+    if select_partition in ("selection", "select"):
+        if len(selection_dataset) != 300:
+            raise ValueError(
+                f"FAIL-CLOSED: SELECT dataset must have exactly 300 utterances, got {len(selection_dataset)}"
+            )
+        selection_speakers = frozenset(spk for spk, _ in selection_dataset.entries)
+        if selection_speakers != SELECT_SPEAKERS:
+            raise ValueError(
+                f"FAIL-CLOSED: SELECT dataset speakers mismatch: {selection_speakers} != {SELECT_SPEAKERS}"
+            )
+        if selection_speakers & SEALED_SPEAKERS:
+            raise SealedSpeakerContaminationError(
+                f"FAIL-CLOSED: Sealed test speaker found in SELECT dataset: {selection_speakers & SEALED_SPEAKERS}"
+            )
+    else:
+        selection_speakers = frozenset(spk for spk, _ in selection_dataset.entries)
 
     # Fold-1 VAL (300 utterances across NJS, RRBI) MUST be preserved strictly unseen during training & selection
     if train_speakers & VAL_SPEAKERS:
@@ -587,8 +597,16 @@ def train_p_sup(
                         metadata=metadata,
                         is_fixed_budget_endpoint=True
                     )
+                    fb_alias = output_dir / "fixed_budget_checkpoint.pt"
+                    shutil.copyfile(str(fb_path), str(fb_alias))
                     fixed_budget_saved = True
                     print(f"[{objective.upper()}] Fixed-budget endpoint 3,600 reached and saved at epoch {epoch}!")
+                    if remote_mirror is not None and remote_rel_prefix is not None:
+                        try:
+                            remote_mirror.mirror_file(fb_path, f"{remote_rel_prefix}/fixed_budget_3600.pt")
+                            remote_mirror.mirror_file(fb_alias, f"{remote_rel_prefix}/fixed_budget_checkpoint.pt")
+                        except Exception as e:
+                            print(f"[{objective.upper()} MIRROR WARNING] Error mirroring fixed budget: {e}")
 
         # Epoch Validation on SELECT partition (MBMPS, TLV)
         val_metrics = evaluate_val_set(adapter, selection_loader, device, objective)
@@ -632,6 +650,11 @@ def train_p_sup(
             history=history,
             metadata=metadata
         )
+        if remote_mirror is not None and remote_rel_prefix is not None:
+            try:
+                remote_mirror.mirror_file(last_path, f"{remote_rel_prefix}/last.pt")
+            except Exception as e:
+                print(f"[{objective.upper()} MIRROR WARNING] Error mirroring last.pt: {e}")
 
         # Check best.pt selection (strict binary AP on SELECT with blank_fraction < 0.99)
         if blank_frac < 0.99 and val_ap > best_ap:
@@ -654,6 +677,11 @@ def train_p_sup(
                 metadata=metadata
             )
             print(f"[{objective.upper()}] -> New best selection AP: {best_ap:.4f} saved to best.pt")
+            if remote_mirror is not None and remote_rel_prefix is not None:
+                try:
+                    remote_mirror.mirror_file(best_path, f"{remote_rel_prefix}/best.pt")
+                except Exception as e:
+                    print(f"[{objective.upper()} MIRROR WARNING] Error mirroring best.pt: {e}")
         else:
             patience += 1
 
@@ -669,7 +697,19 @@ def train_p_sup(
         "history": history
     }
 
-    with open(output_dir / "training_summary.json", "w") as f:
+    summary_path = output_dir / "training_summary.json"
+    with open(summary_path, "w") as f:
         json.dump(summary, f, indent=2)
+
+    history_path = output_dir / "history.json"
+    with open(history_path, "w") as f:
+        json.dump(history, f, indent=2)
+
+    if remote_mirror is not None and remote_rel_prefix is not None:
+        try:
+            remote_mirror.mirror_file(summary_path, f"{remote_rel_prefix}/training_summary.json")
+            remote_mirror.mirror_file(history_path, f"{remote_rel_prefix}/history.json")
+        except Exception as e:
+            print(f"[{objective.upper()} MIRROR WARNING] Error mirroring summary/history: {e}")
 
     return summary
