@@ -1,0 +1,741 @@
+{
+  "status": "ARCHIVAL_METRIC_RECOMPUTATION_ONLY",
+  "source_sha256": "2caba17be1a6e41a163e7e7a5782f4b32f7de72a575933cefd3666c57df36522",
+  "source_hashes": {
+    "/home/khoa/Projects/KLTN/Dataset/manifests/RQ1-P-SUP/evaluation/t_op_fixed_budget_3600/offline_token_evaluation.jsonl": "46bcfdbe7e9c90cf9fcadbd93e6906d894685f56fc3d51f4e0aec0b7d6d2d6b1",
+    "/home/khoa/Projects/KLTN/langfens-rq1-p-score/manifests/RQ1-P-SCORE/evaluation/offline_token_evaluation_sf_s.jsonl.gz": "15ffac63b547fb38fd214c508f6bb7d08fb68c44f002adae780d0b2ce44bd8b3",
+    "/home/khoa/Projects/KLTN/langfens-rq1-p-score/manifests/RQ1-P-SCORE/evaluation/offline_token_evaluation_sf_sd.jsonl.gz": "12adcb908348874356b9ffc848e401a2619577ddf5066393cc8d9e6819d03179",
+    "/home/khoa/Projects/KLTN/langfens-rq1-p-score/manifests/RQ1-P-SCORE/evaluation/offline_token_evaluation_gop_sa.jsonl.gz": "4e0263bdd6a3b9c332c473077432cbc476d4f4ac130a2c6e3b3e3099f55ce557",
+    "/home/khoa/Projects/KLTN/langfens-rq1-p-score/manifests/RQ1-P-SCORE/evaluation/offline_token_evaluation_greedy_dp.jsonl.gz": "c3f718cf65685f1b27706bae7656da005d61ed3dfac9dfe40d05a963676fb73e",
+    "/home/khoa/Projects/KLTN/Dataset/manifests/RQ1-TRN-02A/evaluation_reconciliation/zero_oracle_verification/PROTOCOL_Z_PREDICTION_RECORDS.json": "57e31f14cf761f355c9816643d85802fc9b54f29859baddece82adf4f8bce4f1"
+  },
+  "results": {
+    "P-SCORE_sf_s": {
+      "evidence_status": "archival-only",
+      "protocol": "Z-PROMPT-V1",
+      "n": 9919,
+      "gold_key_sha256": "172a4eaed698056e6929b104c2f336fa39a5943c5c632fa3501b1b38331ba783",
+      "label_counts": {
+        "0": 8774,
+        "1": 1008,
+        "2": 137
+      },
+      "metrics": {
+        "binary": {
+          "n": 9919,
+          "positives": 1145,
+          "ap": 0.25909437677525904,
+          "retrospective_fpr_points": {
+            "0.05": {
+              "threshold": 1.953902135227679,
+              "TP": 199,
+              "FP": 438,
+              "TN": 8336,
+              "FN": 946,
+              "achieved_fpr": 0.04992021882835651,
+              "precision": 0.31240188383045525,
+              "recall": 0.1737991266375546,
+              "f1": 0.22334455667789002,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.1": {
+              "threshold": 1.3349518802743816,
+              "TP": 353,
+              "FP": 877,
+              "TN": 7897,
+              "FN": 792,
+              "achieved_fpr": 0.09995441075906086,
+              "precision": 0.2869918699186992,
+              "recall": 0.308296943231441,
+              "f1": 0.29726315789473684,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.15": {
+              "threshold": 0.9283468775730199,
+              "TP": 494,
+              "FP": 1316,
+              "TN": 7458,
+              "FN": 651,
+              "achieved_fpr": 0.14998860268976522,
+              "precision": 0.2729281767955801,
+              "recall": 0.4314410480349345,
+              "f1": 0.33434856175972927,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            }
+          },
+          "score": "s_error"
+        },
+        "omission_legacy": {
+          "n": 8911,
+          "positives": 137,
+          "ap": 0.029411119615985474,
+          "retrospective_fpr_points": {
+            "0.05": {
+              "threshold": 1.953902135227679,
+              "TP": 23,
+              "FP": 438,
+              "TN": 8336,
+              "FN": 114,
+              "achieved_fpr": 0.04992021882835651,
+              "precision": 0.049891540130151846,
+              "recall": 0.1678832116788321,
+              "f1": 0.07692307692307693,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.1": {
+              "threshold": 1.3349518802743816,
+              "TP": 28,
+              "FP": 877,
+              "TN": 7897,
+              "FN": 109,
+              "achieved_fpr": 0.09995441075906086,
+              "precision": 0.030939226519337018,
+              "recall": 0.20437956204379562,
+              "f1": 0.053742802303262956,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.15": {
+              "threshold": 0.9283468775730199,
+              "TP": 34,
+              "FP": 1316,
+              "TN": 7458,
+              "FN": 103,
+              "achieved_fpr": 0.14998860268976522,
+              "precision": 0.025185185185185185,
+              "recall": 0.24817518248175183,
+              "f1": 0.04572965702757229,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            }
+          },
+          "score": "s_error"
+        },
+        "substitution_legacy": {
+          "n": 9782,
+          "positives": 1008,
+          "ap": 0.2468004564051761,
+          "retrospective_fpr_points": {
+            "0.05": {
+              "threshold": 1.953902135227679,
+              "TP": 176,
+              "FP": 438,
+              "TN": 8336,
+              "FN": 832,
+              "achieved_fpr": 0.04992021882835651,
+              "precision": 0.28664495114006516,
+              "recall": 0.1746031746031746,
+              "f1": 0.21701602959309493,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.1": {
+              "threshold": 1.3349518802743816,
+              "TP": 325,
+              "FP": 877,
+              "TN": 7897,
+              "FN": 683,
+              "achieved_fpr": 0.09995441075906086,
+              "precision": 0.2703826955074875,
+              "recall": 0.32242063492063494,
+              "f1": 0.29411764705882354,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.15": {
+              "threshold": 0.9283468775730199,
+              "TP": 460,
+              "FP": 1316,
+              "TN": 7458,
+              "FN": 548,
+              "achieved_fpr": 0.14998860268976522,
+              "precision": 0.25900900900900903,
+              "recall": 0.45634920634920634,
+              "f1": 0.33045977011494254,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            }
+          },
+          "score": "s_error"
+        }
+      }
+    },
+    "P-SCORE_sf_sd": {
+      "evidence_status": "archival-only",
+      "protocol": "Z-PROMPT-V1",
+      "n": 9919,
+      "gold_key_sha256": "172a4eaed698056e6929b104c2f336fa39a5943c5c632fa3501b1b38331ba783",
+      "label_counts": {
+        "0": 8774,
+        "1": 1008,
+        "2": 137
+      },
+      "metrics": {
+        "binary": {
+          "n": 9919,
+          "positives": 1145,
+          "ap": 0.2500492244480349,
+          "retrospective_fpr_points": {
+            "0.05": {
+              "threshold": 2.2554626690536885,
+              "TP": 171,
+              "FP": 438,
+              "TN": 8336,
+              "FN": 974,
+              "achieved_fpr": 0.04992021882835651,
+              "precision": 0.28078817733990147,
+              "recall": 0.14934497816593886,
+              "f1": 0.1949828962371722,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.1": {
+              "threshold": 1.526001944178848,
+              "TP": 348,
+              "FP": 877,
+              "TN": 7897,
+              "FN": 797,
+              "achieved_fpr": 0.09995441075906086,
+              "precision": 0.28408163265306124,
+              "recall": 0.30393013100436683,
+              "f1": 0.2936708860759494,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.15": {
+              "threshold": 1.1092880378510372,
+              "TP": 481,
+              "FP": 1316,
+              "TN": 7458,
+              "FN": 664,
+              "achieved_fpr": 0.14998860268976522,
+              "precision": 0.2676683361157485,
+              "recall": 0.4200873362445415,
+              "f1": 0.32698844323589393,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            }
+          },
+          "score": "s_error"
+        },
+        "omission_legacy": {
+          "n": 8911,
+          "positives": 137,
+          "ap": 0.05102567555268103,
+          "retrospective_fpr_points": {
+            "0.05": {
+              "threshold": 2.2554626690536885,
+              "TP": 26,
+              "FP": 438,
+              "TN": 8336,
+              "FN": 111,
+              "achieved_fpr": 0.04992021882835651,
+              "precision": 0.05603448275862069,
+              "recall": 0.1897810218978102,
+              "f1": 0.08652246256239601,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.1": {
+              "threshold": 1.526001944178848,
+              "TP": 48,
+              "FP": 877,
+              "TN": 7897,
+              "FN": 89,
+              "achieved_fpr": 0.09995441075906086,
+              "precision": 0.05189189189189189,
+              "recall": 0.35036496350364965,
+              "f1": 0.0903954802259887,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.15": {
+              "threshold": 1.1092880378510372,
+              "TP": 59,
+              "FP": 1316,
+              "TN": 7458,
+              "FN": 78,
+              "achieved_fpr": 0.14998860268976522,
+              "precision": 0.04290909090909091,
+              "recall": 0.4306569343065693,
+              "f1": 0.07804232804232804,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            }
+          },
+          "score": "s_error"
+        },
+        "substitution_legacy": {
+          "n": 9782,
+          "positives": 1008,
+          "ap": 0.22254429212361065,
+          "retrospective_fpr_points": {
+            "0.05": {
+              "threshold": 2.2554626690536885,
+              "TP": 145,
+              "FP": 438,
+              "TN": 8336,
+              "FN": 863,
+              "achieved_fpr": 0.04992021882835651,
+              "precision": 0.24871355060034306,
+              "recall": 0.14384920634920634,
+              "f1": 0.18227529855436833,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.1": {
+              "threshold": 1.526001944178848,
+              "TP": 300,
+              "FP": 877,
+              "TN": 7897,
+              "FN": 708,
+              "achieved_fpr": 0.09995441075906086,
+              "precision": 0.2548853016142736,
+              "recall": 0.2976190476190476,
+              "f1": 0.2745995423340961,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.15": {
+              "threshold": 1.1092880378510372,
+              "TP": 422,
+              "FP": 1316,
+              "TN": 7458,
+              "FN": 586,
+              "achieved_fpr": 0.14998860268976522,
+              "precision": 0.2428078250863061,
+              "recall": 0.41865079365079366,
+              "f1": 0.30735615440640934,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            }
+          },
+          "score": "s_error"
+        }
+      }
+    },
+    "P-SCORE_gop_sa": {
+      "evidence_status": "archival-only",
+      "protocol": "Z-PROMPT-V1",
+      "n": 9919,
+      "gold_key_sha256": "172a4eaed698056e6929b104c2f336fa39a5943c5c632fa3501b1b38331ba783",
+      "label_counts": {
+        "0": 8774,
+        "1": 1008,
+        "2": 137
+      },
+      "metrics": {
+        "binary": {
+          "n": 9919,
+          "positives": 1145,
+          "ap": 0.25436988326625765,
+          "retrospective_fpr_points": {
+            "0.05": {
+              "threshold": 2.1321332454681396,
+              "TP": 182,
+              "FP": 438,
+              "TN": 8336,
+              "FN": 963,
+              "achieved_fpr": 0.04992021882835651,
+              "precision": 0.29354838709677417,
+              "recall": 0.1589519650655022,
+              "f1": 0.20623229461756373,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.1": {
+              "threshold": 1.4553349018096924,
+              "TP": 349,
+              "FP": 877,
+              "TN": 7897,
+              "FN": 796,
+              "achieved_fpr": 0.09995441075906086,
+              "precision": 0.28466557911908646,
+              "recall": 0.30480349344978164,
+              "f1": 0.29439055250948964,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.15": {
+              "threshold": 1.0598201751708984,
+              "TP": 490,
+              "FP": 1316,
+              "TN": 7458,
+              "FN": 655,
+              "achieved_fpr": 0.14998860268976522,
+              "precision": 0.2713178294573643,
+              "recall": 0.4279475982532751,
+              "f1": 0.3320908166723145,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            }
+          },
+          "score": "s_error"
+        },
+        "omission_legacy": {
+          "n": 8911,
+          "positives": 137,
+          "ap": 0.04984599518136074,
+          "retrospective_fpr_points": {
+            "0.05": {
+              "threshold": 2.1321332454681396,
+              "TP": 27,
+              "FP": 438,
+              "TN": 8336,
+              "FN": 110,
+              "achieved_fpr": 0.04992021882835651,
+              "precision": 0.05806451612903226,
+              "recall": 0.19708029197080293,
+              "f1": 0.08970099667774087,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.1": {
+              "threshold": 1.4563517570495605,
+              "TP": 46,
+              "FP": 877,
+              "TN": 7897,
+              "FN": 91,
+              "achieved_fpr": 0.09995441075906086,
+              "precision": 0.04983748645720477,
+              "recall": 0.3357664233576642,
+              "f1": 0.08679245283018867,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.15": {
+              "threshold": 1.0598201751708984,
+              "TP": 57,
+              "FP": 1316,
+              "TN": 7458,
+              "FN": 80,
+              "achieved_fpr": 0.14998860268976522,
+              "precision": 0.041514930808448654,
+              "recall": 0.41605839416058393,
+              "f1": 0.07549668874172186,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            }
+          },
+          "score": "s_error"
+        },
+        "substitution_legacy": {
+          "n": 9782,
+          "positives": 1008,
+          "ap": 0.22810410781421211,
+          "retrospective_fpr_points": {
+            "0.05": {
+              "threshold": 2.1321332454681396,
+              "TP": 155,
+              "FP": 438,
+              "TN": 8336,
+              "FN": 853,
+              "achieved_fpr": 0.04992021882835651,
+              "precision": 0.26138279932546377,
+              "recall": 0.15376984126984128,
+              "f1": 0.19362898188632105,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.1": {
+              "threshold": 1.4553349018096924,
+              "TP": 303,
+              "FP": 877,
+              "TN": 7897,
+              "FN": 705,
+              "achieved_fpr": 0.09995441075906086,
+              "precision": 0.25677966101694916,
+              "recall": 0.3005952380952381,
+              "f1": 0.27696526508226693,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.15": {
+              "threshold": 1.0598201751708984,
+              "TP": 433,
+              "FP": 1316,
+              "TN": 7458,
+              "FN": 575,
+              "achieved_fpr": 0.14998860268976522,
+              "precision": 0.24757004002287022,
+              "recall": 0.42956349206349204,
+              "f1": 0.3141095393543707,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            }
+          },
+          "score": "s_error"
+        }
+      }
+    },
+    "P-SCORE_greedy_dp": {
+      "evidence_status": "archival-only",
+      "protocol": "Z-PROMPT-V1",
+      "n": 4212,
+      "gold_key_sha256": "c08b8545a8176f4dae5b2c3c8196ffd09b5305e43b82da627d6da4b5c5b0ac7d",
+      "label_counts": {
+        "0": 3748,
+        "1": 422,
+        "2": 42
+      },
+      "metrics": {
+        "binary": {
+          "n": 4212,
+          "positives": 464,
+          "ap": 0.18667830483468717,
+          "retrospective_fpr_points": {
+            "0.05": {
+              "threshold": 1.0000000000000002,
+              "TP": 0,
+              "FP": 0,
+              "TN": 3748,
+              "FN": 464,
+              "achieved_fpr": 0.0,
+              "precision": null,
+              "recall": 0.0,
+              "f1": 0.0,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.1": {
+              "threshold": 1.0000000000000002,
+              "TP": 0,
+              "FP": 0,
+              "TN": 3748,
+              "FN": 464,
+              "achieved_fpr": 0.0,
+              "precision": null,
+              "recall": 0.0,
+              "f1": 0.0,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.15": {
+              "threshold": 1.0,
+              "TP": 198,
+              "FP": 486,
+              "TN": 3262,
+              "FN": 266,
+              "achieved_fpr": 0.12966915688367128,
+              "precision": 0.2894736842105263,
+              "recall": 0.4267241379310345,
+              "f1": 0.34494773519163763,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            }
+          },
+          "score": "s_error"
+        },
+        "omission_legacy": {
+          "n": 3790,
+          "positives": 42,
+          "ap": 0.019002066867596833,
+          "retrospective_fpr_points": {
+            "0.05": {
+              "threshold": 1.0000000000000002,
+              "TP": 0,
+              "FP": 0,
+              "TN": 3748,
+              "FN": 42,
+              "achieved_fpr": 0.0,
+              "precision": null,
+              "recall": 0.0,
+              "f1": 0.0,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.1": {
+              "threshold": 1.0000000000000002,
+              "TP": 0,
+              "FP": 0,
+              "TN": 3748,
+              "FN": 42,
+              "achieved_fpr": 0.0,
+              "precision": null,
+              "recall": 0.0,
+              "f1": 0.0,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.15": {
+              "threshold": 1.0,
+              "TP": 16,
+              "FP": 486,
+              "TN": 3262,
+              "FN": 26,
+              "achieved_fpr": 0.12966915688367128,
+              "precision": 0.03187250996015936,
+              "recall": 0.38095238095238093,
+              "f1": 0.058823529411764705,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            }
+          },
+          "score": "s_error"
+        },
+        "substitution_legacy": {
+          "n": 4170,
+          "positives": 422,
+          "ap": 0.17505828467174894,
+          "retrospective_fpr_points": {
+            "0.05": {
+              "threshold": 1.0000000000000002,
+              "TP": 0,
+              "FP": 0,
+              "TN": 3748,
+              "FN": 422,
+              "achieved_fpr": 0.0,
+              "precision": null,
+              "recall": 0.0,
+              "f1": 0.0,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.1": {
+              "threshold": 1.0000000000000002,
+              "TP": 0,
+              "FP": 0,
+              "TN": 3748,
+              "FN": 422,
+              "achieved_fpr": 0.0,
+              "precision": null,
+              "recall": 0.0,
+              "f1": 0.0,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.15": {
+              "threshold": 1.0,
+              "TP": 182,
+              "FP": 486,
+              "TN": 3262,
+              "FN": 240,
+              "achieved_fpr": 0.12966915688367128,
+              "precision": 0.27245508982035926,
+              "recall": 0.4312796208530806,
+              "f1": 0.3339449541284404,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            }
+          },
+          "score": "s_error"
+        }
+      }
+    },
+    "E0": {
+      "evidence_status": "archival-only",
+      "protocol": "Z-PROMPT-V1",
+      "n": 9919,
+      "gold_key_sha256": "172a4eaed698056e6929b104c2f336fa39a5943c5c632fa3501b1b38331ba783",
+      "label_counts": {
+        "0": 8774,
+        "1": 1008,
+        "2": 137
+      },
+      "metrics": {
+        "binary": {
+          "n": 9919,
+          "positives": 1145,
+          "ap": 0.31353033290986915,
+          "retrospective_fpr_points": {
+            "0.05": {
+              "threshold": 0.3418346345424652,
+              "TP": 359,
+              "FP": 437,
+              "TN": 8337,
+              "FN": 786,
+              "achieved_fpr": 0.04980624572600866,
+              "precision": 0.4510050251256281,
+              "recall": 0.31353711790393013,
+              "f1": 0.3699124162802679,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.1": {
+              "threshold": 0.24165154993534088,
+              "TP": 460,
+              "FP": 877,
+              "TN": 7897,
+              "FN": 685,
+              "achieved_fpr": 0.09995441075906086,
+              "precision": 0.34405385190725507,
+              "recall": 0.4017467248908297,
+              "f1": 0.370668815471394,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.15": {
+              "threshold": 0.21025124192237854,
+              "TP": 572,
+              "FP": 1314,
+              "TN": 7460,
+              "FN": 573,
+              "achieved_fpr": 0.14976065648506953,
+              "precision": 0.30328738069989397,
+              "recall": 0.4995633187772926,
+              "f1": 0.37743319036621575,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            }
+          },
+          "score": "s_error"
+        },
+        "omission_legacy": {
+          "n": 8911,
+          "positives": 137,
+          "ap": 0.0325640001759307,
+          "retrospective_fpr_points": {
+            "0.05": {
+              "threshold": 0.3418346345424652,
+              "TP": 7,
+              "FP": 437,
+              "TN": 8337,
+              "FN": 130,
+              "achieved_fpr": 0.04980624572600866,
+              "precision": 0.015765765765765764,
+              "recall": 0.051094890510948905,
+              "f1": 0.024096385542168676,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.1": {
+              "threshold": 0.2417135238647461,
+              "TP": 33,
+              "FP": 877,
+              "TN": 7897,
+              "FN": 104,
+              "achieved_fpr": 0.09995441075906086,
+              "precision": 0.03626373626373627,
+              "recall": 0.24087591240875914,
+              "f1": 0.06303724928366762,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.15": {
+              "threshold": 0.21025124192237854,
+              "TP": 54,
+              "FP": 1314,
+              "TN": 7460,
+              "FN": 83,
+              "achieved_fpr": 0.14976065648506953,
+              "precision": 0.039473684210526314,
+              "recall": 0.39416058394160586,
+              "f1": 0.07176079734219269,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            }
+          },
+          "score": "s_error"
+        },
+        "substitution_legacy": {
+          "n": 9782,
+          "positives": 1008,
+          "ap": 0.30481061058254133,
+          "retrospective_fpr_points": {
+            "0.05": {
+              "threshold": 0.3418346345424652,
+              "TP": 352,
+              "FP": 437,
+              "TN": 8337,
+              "FN": 656,
+              "achieved_fpr": 0.04980624572600866,
+              "precision": 0.4461343472750317,
+              "recall": 0.3492063492063492,
+              "f1": 0.39176405119643853,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.1": {
+              "threshold": 0.24165154993534088,
+              "TP": 427,
+              "FP": 877,
+              "TN": 7897,
+              "FN": 581,
+              "achieved_fpr": 0.09995441075906086,
+              "precision": 0.32745398773006135,
+              "recall": 0.4236111111111111,
+              "f1": 0.3693771626297578,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.15": {
+              "threshold": 0.21025124192237854,
+              "TP": 518,
+              "FP": 1314,
+              "TN": 7460,
+              "FN": 490,
+              "achieved_fpr": 0.14976065648506953,
+              "precision": 0.2827510917030568,
+              "recall": 0.5138888888888888,
+              "f1": 0.3647887323943662,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            }
+          },
+          "score": "s_error"
+        }
+      }
+    }
+  },
+  "precision_qualification": "Historical E0 CPU FP32 and P-SCORE frozen FP32 emissions; not a new contemporaneous E0 replay.",
+  "forbidden_comparison": "Do not rank these 9919-token Z scores directly against 9956-token P-SUP O scores."
+}

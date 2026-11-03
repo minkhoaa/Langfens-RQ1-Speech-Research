@@ -1,0 +1,163 @@
+{
+  "schema_version": "1.0.0",
+  "arm": "treatment",
+  "arm_identifier": "T-OP",
+  "objective": "operation_ce",
+  "recovery_status": "PASSED",
+  "recovery_timestamp_utc": "2026-11-03T18:15:00Z",
+  "operator_authorization": "Authorized recovery only; NO training/backward/optimizer, architecture changes, TEST audio/labels, literature review, remote settings changes or commits/push.",
+  "sources": {
+    "kaggle": {
+      "kernel_slug": "minkhoaa/langfens-rq1-psup-t-op-t4x2",
+      "status": "KernelWorkerStatus.COMPLETE",
+      "machine_shape": "NvidiaTeslaT4",
+      "gpu_hardware": "2x Tesla T4 (NVIDIA-SMI 580.178.04, CUDA 13.0)",
+      "pinned_training_commit": "dd2dd8953fc5d946c0b88d72e915be53e7cd0d9f",
+      "staging_dataset": "minkhoaa/langfens-rq1-fold1-staging",
+      "dataset_archive": "authorized_RQ1-TRN-02A_fold1_train_val_only.bin",
+      "dataset_archive_bytes": 761922918,
+      "dataset_archive_sha256": "b750eb3bf3971afccd9ab9058a64fa6b3f5781399b9ef0f1294d29bf580784a9"
+    },
+    "huggingface": {
+      "repo_id": "minkhoaa/langfens-rq1-cross-fold-checkpoints",
+      "repo_type": "model",
+      "is_private": true,
+      "pinned_revision": "4aa9f2a68f0709889eacacf170b6446d3c45c73d",
+      "direct_upload_commit": "c05b00e3e3c62be5225f1e17ca390f405364a096",
+      "prefix": "psup/t_op/"
+    }
+  },
+  "recovered_artifacts": {
+    "fixed_budget_3600.pt": {
+      "scratch_path": "/home/khoa/.cache/langfens/psup-benchmark-v1/t_op/canonical_recovery/fixed_budget_3600.pt",
+      "size_bytes": 3241295,
+      "sha256": "a8559b382ff6ec09f9c90ed4eccba59fa45ff41e20e10aae1cea9eff7697fbd9",
+      "hf_lfs_sha256": "a8559b382ff6ec09f9c90ed4eccba59fa45ff41e20e10aae1cea9eff7697fbd9",
+      "kaggle_reported_sha256": "a8559b382ff6ec09f9c90ed4eccba59fa45ff41e20e10aae1cea9eff7697fbd9",
+      "historical_candidate_sha256": "a8559b382ff6ec09f9c90ed4eccba59fa45ff41e20e10aae1cea9eff7697fbd9",
+      "epoch": 7,
+      "successful_updates": 3600,
+      "micro_steps": 7200,
+      "skipped_amp_attempts": 0,
+      "best_selection_ap": 0.46497542138006975,
+      "selection_ap_at_3600": 0.4642429960853022,
+      "patience": 1,
+      "is_fixed_budget_endpoint": true,
+      "head_parameters": 266667,
+      "all_tensors_finite": true,
+      "status": "PASSED"
+    },
+    "best.pt": {
+      "scratch_path": "/home/khoa/.cache/langfens/psup-benchmark-v1/t_op/canonical_recovery/best.pt",
+      "size_bytes": 3239578,
+      "sha256": "3b492049399608a1f0319accee0404de50fe4972340ff5cc3c930f58867a14e9",
+      "hf_lfs_sha256": "3b492049399608a1f0319accee0404de50fe4972340ff5cc3c930f58867a14e9",
+      "kaggle_reported_sha256": "3b492049399608a1f0319accee0404de50fe4972340ff5cc3c930f58867a14e9",
+      "historical_candidate_sha256": "3b492049399608a1f0319accee0404de50fe4972340ff5cc3c930f58867a14e9",
+      "epoch": 5,
+      "successful_updates": 2700,
+      "micro_steps": 5400,
+      "skipped_amp_attempts": 0,
+      "best_selection_ap": 0.46497542138006975,
+      "patience": 0,
+      "is_fixed_budget_endpoint": false,
+      "endpoint_semantics": "SELECT-best selected on MBMPS/TLV val AP at update 2700 (< 3600)",
+      "head_parameters": 266667,
+      "all_tensors_finite": true,
+      "status": "PASSED"
+    },
+    "last.pt": {
+      "scratch_path": "/home/khoa/.cache/langfens/psup-benchmark-v1/t_op/canonical_recovery/last.pt",
+      "size_bytes": 3239898,
+      "sha256": "93c65bc5ceef60c9d985492b9a1e8d9e4042cbf866a837815c705ac0e8237811",
+      "hf_lfs_sha256": "93c65bc5ceef60c9d985492b9a1e8d9e4042cbf866a837815c705ac0e8237811",
+      "kaggle_reported_sha256": "93c65bc5ceef60c9d985492b9a1e8d9e4042cbf866a837815c705ac0e8237811",
+      "historical_candidate_status": "RECOVERED_REMOTE_ONLY (absent from historical Dataset directory)",
+      "epoch": 7,
+      "successful_updates": 3600,
+      "micro_steps": 7200,
+      "skipped_amp_attempts": 0,
+      "is_fixed_budget_endpoint": false,
+      "head_parameters": 266667,
+      "all_tensors_finite": true,
+      "status": "PASSED"
+    },
+    "training_summary.json": {
+      "scratch_path": "/home/khoa/.cache/langfens/psup-benchmark-v1/t_op/canonical_recovery/training_summary.json",
+      "size_bytes": 3339,
+      "sha256": "096959938ddbb8b0ef3fd9cf8fee9452a41e88e029d865a6cd943c3a4f995c5c",
+      "hf_sha256": "096959938ddbb8b0ef3fd9cf8fee9452a41e88e029d865a6cd943c3a4f995c5c",
+      "kaggle_reported_sha256": "096959938ddbb8b0ef3fd9cf8fee9452a41e88e029d865a6cd943c3a4f995c5c",
+      "historical_candidate_sha256": "096959938ddbb8b0ef3fd9cf8fee9452a41e88e029d865a6cd943c3a4f995c5c",
+      "status": "PASSED"
+    },
+    "history.json": {
+      "scratch_path": "/home/khoa/.cache/langfens/psup-benchmark-v1/t_op/canonical_recovery/history.json",
+      "size_bytes": 2900,
+      "sha256": "6ef6ec6e3f553e94084d971115ba458833e7657676ff185b08c2b70a23e7b425",
+      "hf_sha256": "6ef6ec6e3f553e94084d971115ba458833e7657676ff185b08c2b70a23e7b425",
+      "kaggle_reported_sha256": "6ef6ec6e3f553e94084d971115ba458833e7657676ff185b08c2b70a23e7b425",
+      "historical_candidate_sha256": "6ef6ec6e3f553e94084d971115ba458833e7657676ff185b08c2b70a23e7b425",
+      "status": "PASSED"
+    },
+    "runtime_evidence": {
+      "kaggle_execution_log": {
+        "scratch_path": "/home/khoa/.cache/langfens/psup-benchmark-v1/t_op/canonical_recovery/kaggle_execution.log",
+        "size_bytes": 338333,
+        "sha256": "d7ba5ab250d4792abb7739e52ad9394fe5467959c3da55f348ab628bb3f892b6"
+      },
+      "kaggle_plain_execution_log": {
+        "scratch_path": "/home/khoa/.cache/langfens/psup-benchmark-v1/t_op/canonical_recovery/kaggle_plain_execution.log",
+        "size_bytes": 186251,
+        "sha256": "92f5ff522dec30a8d224ffc241ef32418b861e1f40d0811d8a1008783604df50"
+      },
+      "kaggle_notebook": {
+        "scratch_path": "/home/khoa/.cache/langfens/psup-benchmark-v1/t_op/canonical_recovery/langfens-rq1-psup-t-op-t4x2.ipynb",
+        "size_bytes": 13975,
+        "sha256": "f94d610f209c775bb049d9766f02cf95652c1fc58b553c375e165b915a326de4"
+      }
+    }
+  },
+  "payload_verification": {
+    "unpickler": "CPU safe_globals weights_only=True",
+    "finite_tensors": true,
+    "total_head_parameters": 266667,
+    "head_parameters_finite": true,
+    "optimizer_entries": 16,
+    "optimizer_tensors_finite": true,
+    "scheduler_lr": [0.0008699219550575954],
+    "scaler_scale": 8192.0,
+    "contract_sha256": "4d99723e4b3f62f506165ced089eca82d4417279c76973b35470bd337cedfab2",
+    "split_manifest_sha256": "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b",
+    "zip_sha256": "b750eb3bf3971afccd9ab9058a64fa6b3f5781399b9ef0f1294d29bf580784a9",
+    "source_git_sha": "dd2dd8953fc5d946c0b88d72e915be53e7cd0d9f",
+    "data_partitions": {
+      "fit_utterances": 1799,
+      "fit_speakers": ["BWC", "ERMS", "HKK", "HQTV", "SKA", "SVBI", "TNI", "TXHC", "YBAA", "YDCK", "YKWK", "ZHAA"],
+      "selection_utterances": 300,
+      "selection_speakers": ["MBMPS", "TLV"],
+      "calibration_utterances": 300,
+      "calibration_speakers": ["NCC", "THV"],
+      "evaluation_utterances": 300,
+      "evaluation_speakers": ["NJS", "RRBI"],
+      "sealed_test_speakers": ["ABA", "ASI", "EBVS", "HJK", "LXC", "PNV"]
+    }
+  },
+  "process_update_accounting": {
+    "this_process_successful_updates": 0,
+    "this_process_skipped_updates": 0,
+    "this_process_backward_passes": 0,
+    "this_process_optimizer_steps": 0,
+    "historical_training_successful_updates": 3600,
+    "historical_training_skipped_updates": 0,
+    "historical_training_micro_steps": 7200
+  },
+  "access_blockers_and_notes": {
+    "deja_cli": "UNAVAILABLE",
+    "kaggle_interrupted_download_note": "Unfiltered kaggle kernels output was interrupted by parent orchestrator SIGINT to cancel redundant git repository re-download. This was NOT a checkpoint failure; all required checkpoints (fixed_budget_3600.pt, best.pt, last.pt, training_summary.json, history.json) completed downloading prior to cancellation and were verified bit-identically against pinned Hugging Face Hub LFS readback. Future operations must use bounded --file-pattern or direct HF download with timeouts <= 90s.",
+    "huggingface_archival_upload_note": "Parent orchestrator uploaded subsequent archival benchmark output under new benchmarks/psup-v1 prefix in HF Hub (revisions d8806b9... and 6d1ec32...). Pinned revision 4aa9f2a68f0709889eacacf170b6446d3c45c73d and underlying psup/t_op files remain untouched and strictly valid.",
+    "kaggle_notebook_visibility_metadata": "is_private=false reported by Kaggle notebook API metadata, but Kaggle dataset minkhoaa/langfens-rq1-fold1-staging and Hugging Face checkpoint repository minkhoaa/langfens-rq1-cross-fold-checkpoints are verified private (is_private=true). No remote settings modified.",
+    "source_commit_reconciliation": "Executed training pinned and checked out dd2dd8953fc5d946c0b88d72e915be53e7cd0d9f. Historical documentation in INDEX.md mentioned commit 9ad1e5e (subsequent evaluator fix for PyTorch 2.6) and df55f12 (pre-fix staging commit).",
+    "historical_candidate_parity": "Local candidate directory /home/khoa/Projects/KLTN/Dataset/checkpoints/RQ1-P-SUP/t_op contained best.pt, fixed_budget_3600.pt, history.json, and training_summary.json (all matching 100% bit-identically). last.pt was missing locally and was successfully recovered from Hugging Face and Kaggle output."
+  }
+}

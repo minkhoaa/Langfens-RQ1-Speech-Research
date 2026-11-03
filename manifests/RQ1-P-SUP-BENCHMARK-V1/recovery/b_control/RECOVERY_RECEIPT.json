@@ -1,0 +1,169 @@
+{
+  "arm": "b_control",
+  "objective": "binary_collapsed",
+  "recovery_timestamp_utc": "2026-11-04T01:25:00Z",
+  "recovery_agent": "Agent B (P-SUP B-Control Recovery Subagent)",
+  "worktree": "/home/khoa/Projects/KLTN/psup-recover-b-control-v1",
+  "branch": "review/psup-recover-b-control-v1",
+  "base_commit": "40bc3770776ee1c99462d44101fdd145602b76f5",
+  "training_execution_in_this_process": {
+    "status": "NOT_STARTED",
+    "successful_updates": 0,
+    "skipped_updates": 0,
+    "backward_passes": 0,
+    "optimizer_steps": 0,
+    "model_mutation": false
+  },
+  "remote_sources": {
+    "huggingface": {
+      "repo_id": "minkhoaa/langfens-rq1-cross-fold-checkpoints",
+      "repo_type": "model",
+      "prefix": "psup/b_control/",
+      "is_private": true,
+      "pinned_b_control_commit_sha": "4aa9f2a68f0709889eacacf170b6446d3c45c73d",
+      "current_repo_head_sha": "6d1ec3217c94730cc590b935c45e523dc5259f39",
+      "head_evolution_note": "Repo HEAD advanced due to parent orchestrator mirroring archival predictions under benchmarks/psup-v1/; psup/b_control/ subtree is cryptographically bit-identical and unchanged from pinned revision 4aa9f2a68f0709889eacacf170b6446d3c45c73d",
+      "upload_commit_for_best": "4aa9f2a68f0709889eacacf170b6446d3c45c73d",
+      "upload_commit_for_fixed_budget_3600": "f4d8e33f997f7910b406c9689b33c6e23b9d5f1b",
+      "upload_commit_for_last": "9893c61ae10795a91590c208ed0493dddc0efca7",
+      "upload_commit_for_summary": "3bbf2c21db6c4f99605383fbc55d106bffaf5d62"
+    },
+    "kaggle": {
+      "kernel_slug": "minkhoaa/langfens-rq1-psup-b-control-t4x2",
+      "status": "KernelWorkerStatus.COMPLETE",
+      "hardware": "NvidiaTeslaT4 (Tesla T4 x 2)",
+      "pinned_git_head": "dd2dd8953fc5d946c0b88d72e915be53e7cd0d9f",
+      "download_operational_note": "Initial unfiltered kaggle output command began bulk downloading repo/ directory and was safely SIGINT-terminated by parent (PID 183900); followed by bounded retrieval (--file-pattern and pinned HF downloads). This is an operational download filter boundary, not an artifact integrity issue.",
+      "execution_log_recovered": true,
+      "source_notebook_recovered": true
+    }
+  },
+  "recovered_artifacts": {
+    "fixed_budget_3600.pt": {
+      "absolute_scratch_path": "/home/khoa/.cache/langfens/psup-benchmark-v1/b_control/recovered/fixed_budget_3600.pt",
+      "size_bytes": 3241295,
+      "sha256": "e121a7b965747b49608263f1e3ec447f2a631f09a36e326e20fe5f2cfe619201",
+      "hf_lfs_sha256_match": true,
+      "kaggle_output_sha256_match": true,
+      "local_candidate_sha256_match": true,
+      "endpoint_type": "fixed_budget_3600",
+      "actual_epoch": 7,
+      "actual_updates": 3600,
+      "actual_micro_steps": 7200,
+      "is_fixed_budget_endpoint_flag": true,
+      "selection_ap": 0.46411747113136137,
+      "best_selection_ap": 0.46760702566135065,
+      "patience": 2
+    },
+    "best.pt": {
+      "absolute_scratch_path": "/home/khoa/.cache/langfens/psup-benchmark-v1/b_control/recovered/best.pt",
+      "size_bytes": 3239450,
+      "sha256": "2dbad5a0160224f9d936e564a6c5d52dffe6a8efdbde8e409c50a8cc393be93f",
+      "hf_lfs_sha256_match": true,
+      "kaggle_output_sha256_match": true,
+      "local_candidate_sha256_match": true,
+      "endpoint_type": "best_selection",
+      "actual_epoch": 4,
+      "actual_updates": 2250,
+      "actual_micro_steps": 4500,
+      "is_fixed_budget_endpoint_flag": false,
+      "selection_ap": 0.46760702566135065,
+      "best_selection_ap": 0.46760702566135065,
+      "patience": 0
+    },
+    "last.pt": {
+      "absolute_scratch_path": "/home/khoa/.cache/langfens/psup-benchmark-v1/b_control/recovered/last.pt",
+      "size_bytes": 3239898,
+      "sha256": "aa35c14dbf6827050efa779b419b3c4887988fa073bc693c81dcb41275afa1b5",
+      "hf_lfs_sha256_match": true,
+      "kaggle_output_sha256_match": true,
+      "local_candidate_status": "WAS_MISSING_LOCALLY_NOW_RECOVERED",
+      "endpoint_type": "last_epoch",
+      "actual_epoch": 7,
+      "actual_updates": 3600,
+      "actual_micro_steps": 7200,
+      "is_fixed_budget_endpoint_flag": false
+    },
+    "fixed_budget_checkpoint.pt": {
+      "absolute_scratch_path": "/home/khoa/.cache/langfens/psup-benchmark-v1/b_control/recovered/fixed_budget_checkpoint.pt",
+      "size_bytes": 3241295,
+      "sha256": "e121a7b965747b49608263f1e3ec447f2a631f09a36e326e20fe5f2cfe619201",
+      "alias_of": "fixed_budget_3600.pt"
+    },
+    "history.json": {
+      "absolute_scratch_path": "/home/khoa/.cache/langfens/psup-benchmark-v1/b_control/recovered/history.json",
+      "size_bytes": 2896,
+      "sha256": "dc61bbff9b58f804712b49ba4e5c1998a2b137b58d53c544910e7fa31e0ce2c6",
+      "hf_sha256_match": true,
+      "kaggle_sha256_match": true,
+      "local_candidate_sha256_match": true,
+      "epoch_entries_count": 8
+    },
+    "training_summary.json": {
+      "absolute_scratch_path": "/home/khoa/.cache/langfens/psup-benchmark-v1/b_control/recovered/training_summary.json",
+      "size_bytes": 3339,
+      "sha256": "fb8917eda607e2cffdc3e276507a3924b68d418a01a3bd0302a296a24b174b4f",
+      "hf_sha256_match": true,
+      "kaggle_sha256_match": true,
+      "local_candidate_sha256_match": true,
+      "successful_updates": 3600,
+      "skipped_updates": 0,
+      "attempts": 3600,
+      "total_time_seconds": 561.1965203285217
+    },
+    "langfens-rq1-psup-b-control-t4x2.log": {
+      "absolute_scratch_path": "/home/khoa/.cache/langfens/psup-benchmark-v1/b_control/recovered/langfens-rq1-psup-b-control-t4x2.log",
+      "size_bytes": 380708,
+      "sha256": "24f1a2a30211b29d1590fba830a8c314c3a46657db57bef50cf333afc25d8936",
+      "source": "official_kaggle_kernels_output_api"
+    }
+  },
+  "pre_existing_local_candidates_status": {
+    "path": "/home/khoa/Projects/KLTN/Dataset/checkpoints/RQ1-P-SUP/b_control",
+    "action": "PRESERVED_WITHOUT_MODIFICATION",
+    "verified_checksums": {
+      "best.pt": "2dbad5a0160224f9d936e564a6c5d52dffe6a8efdbde8e409c50a8cc393be93f",
+      "fixed_budget_3600.pt": "e121a7b965747b49608263f1e3ec447f2a631f09a36e326e20fe5f2cfe619201",
+      "history.json": "dc61bbff9b58f804712b49ba4e5c1998a2b137b58d53c544910e7fa31e0ce2c6",
+      "training_summary.json": "fb8917eda607e2cffdc3e276507a3924b68d418a01a3bd0302a296a24b174b4f"
+    },
+    "missing_file_in_preexisting": "last.pt (successfully recovered from HF and Kaggle to scratch)"
+  },
+  "data_and_contract_identities": {
+    "split_manifest_path": "manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json",
+    "split_manifest_sha256": "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b",
+    "dataset_archive": "authorized_RQ1-TRN-02A_fold1_train_val_only.bin (or .zip)",
+    "dataset_archive_sha256": "b750eb3bf3971afccd9ab9058a64fa6b3f5781399b9ef0f1294d29bf580784a9",
+    "evaluation_contract_v1_sha256": "4d99723e4b3f62f506165ced089eca82d4417279c76973b35470bd337cedfab2",
+    "pretrained_backbone": "facebook/wav2vec2-base-960h",
+    "pretrained_backbone_revision": "22aad52d435eb6dbaf354bdad9b0da84ce7d6156",
+    "fit_speakers": ["BWC", "ERMS", "HKK", "HQTV", "SKA", "SVBI", "TNI", "TXHC", "YBAA", "YDCK", "YKWK", "ZHAA"],
+    "fit_utterances": 1799,
+    "select_speakers": ["MBMPS", "TLV"],
+    "select_utterances": 300,
+    "cal_speakers": ["NCC", "THV"],
+    "cal_utterances": 300,
+    "val_speakers": ["NJS", "RRBI"],
+    "val_utterances": 300,
+    "sealed_test_speakers": ["ABA", "ASI", "EBVS", "HJK", "LXC", "PNV"],
+    "sealed_test_utterances": 900,
+    "sealed_test_contamination": false
+  },
+  "semantic_disclosures_and_mismatches": {
+    "objective": "binary_collapsed",
+    "head_architecture": "CompactOperationHead (3 output classes: 0=correct, 1=substitution, 2=omission)",
+    "supervision_algebra": "Binary cross entropy with logits on collapsed logit: logsumexp(z1, z2) - z0 vs target (y != 0)",
+    "unsupported_subtype_probabilities": true,
+    "omission_probability_identifiable": false,
+    "substitution_probability_identifiable": false,
+    "dedicated_omission_ap": null,
+    "runtime_score_fields": {
+      "s_error": "p_sub + p_del (sigmoid of collapsed binary logit)",
+      "s_omit": null,
+      "s_sub": null,
+      "probabilities": null,
+      "score_semantics": "binary collapse of same three logits; subtype unidentified/null; not calibrated"
+    },
+    "note": "Under binary_collapsed, classes 1 and 2 receive identical gradient directions from binary supervision (y != 0). Consequently, z1 and z2 cannot identify separate substitution and omission probabilities. All reported omission AP metrics for B-Control are legacy AP evaluated on s_error over the deletion subset, identically to Baseline R E0."
+  }
+}

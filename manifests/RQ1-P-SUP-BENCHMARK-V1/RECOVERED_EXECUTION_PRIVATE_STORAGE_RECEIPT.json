@@ -1,0 +1,37 @@
+{
+  "status": "VERIFIED_PRIVATE_SHA256_READBACK",
+  "repository": "minkhoaa/langfens-rq1-cross-fold-checkpoints",
+  "private": true,
+  "revision_before": "0d50af15823b67b27766551545f284c6aa33d00a",
+  "revision": "1a02af670a19fa62bcf253207fd1458c0a8b0b87",
+  "prefix": "benchmarks/psup-v1/recovered-execution-evidence-20261104",
+  "files": [
+    {
+      "path": "b_control/langfens-rq1-psup-b-control-t4x2.log",
+      "sha256": "24f1a2a30211b29d1590fba830a8c314c3a46657db57bef50cf333afc25d8936",
+      "bytes": 380708
+    },
+    {
+      "path": "b_control/notebook_source.json",
+      "sha256": "100446f70d95d9ea608d108d58399fe79c7e8ddcb90611300c6c6090fb676138",
+      "bytes": 12161
+    },
+    {
+      "path": "t_op/kaggle_execution.log",
+      "sha256": "d7ba5ab250d4792abb7739e52ad9394fe5467959c3da55f348ab628bb3f892b6",
+      "bytes": 338333
+    },
+    {
+      "path": "t_op/kaggle_plain_execution.log",
+      "sha256": "92f5ff522dec30a8d224ffc241ef32418b861e1f40d0811d8a1008783604df50",
+      "bytes": 186251
+    },
+    {
+      "path": "t_op/notebook_source.json",
+      "sha256": "f94d610f209c775bb049d9766f02cf95652c1fc58b553c375e165b915a326de4",
+      "bytes": 13975
+    }
+  ],
+  "source_directory": "/home/khoa/.cache/langfens/psup-benchmark-v1/recovery-execution-evidence",
+  "source_script_sha256": "34356540e325e626eddd35440ad2f6a20b4683c16367b4b72373d37185943a3c"
+}

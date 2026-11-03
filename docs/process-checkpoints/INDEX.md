@@ -6,6 +6,10 @@
 **Registry Maintenance Lead:** Senior ML Research Engineer & Reproducibility Auditor  
 **Policy Authority:** `AGENTS.md` (Mandatory Process Checkpoint Policy)
 
+## P-SUP artifact recovery and reproducible benchmark V1 (2026-11-04)
+
+**PARTIAL; RECOVERY_VERIFIED; FOUR-CELL_O/Z_INFERENCE_EXECUTED; QA_REMEDIATION_ACTIVE.** Gemini independently recovered both arms; coordinator reverified all six checkpoint payloads and counters. Fixed endpoints3600/0skips; SELECT-best T-OP2700/B-Control2250. Fresh CPU FP32 O and genuine Z inference executed for all four cells, with independent token-metric recomputation and private SHA256-readback preservation. Initial runner reporting/provenance/coverage failed Luna/coordinator review; corrections and versioned reruns underway, no benchmark completion/PASS. Historical P-SUP rows were O incorrectly serialized asZ, and old full9956 versus aligned9919 rankings are invalid. Coordinator branch `review/psup-recovery-benchmark-v1` from `40bc377`; [process checkpoint](../../manifests/RQ1-P-SUP-BENCHMARK-V1/PROCESS_CHECKPOINT.md), [recovery](../../manifests/RQ1-P-SUP-BENCHMARK-V1/RECOVERY_MANIFEST.json), [checkpoint verification](../../manifests/RQ1-P-SUP-BENCHMARK-V1/CHECKPOINT_VERIFICATION.json). No training or TEST access; no privacy-setting changes.
+
 ## Full project ecosystem context reconstruction (2026-11-03; research only)
 
 **DELIVERED_WITH_ACCOUNTED_COVERAGE_GAPS (synthesis 2026-11-04 +07).** Ten Luna/Gemini discovery/review reports and coordinator primary-source checks cover speech research, autonomous educational generation/backend, frontend, historical sessions and accessible remote metadata. [Final reconstruction](../../PROJECT_CONTEXT_RECONSTRUCTION.md), [process checkpoint](context-reconstruction-2026-11-03/PROCESS_CHECKPOINT.md), [source registry](context-reconstruction-2026-11-03/SOURCE_REGISTRY.md), [explicit corrections](context-reconstruction-2026-11-03/COORDINATOR_VERIFICATION_NOTES.md).

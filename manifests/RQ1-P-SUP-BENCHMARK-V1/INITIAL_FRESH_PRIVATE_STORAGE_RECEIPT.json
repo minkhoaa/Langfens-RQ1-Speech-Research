@@ -1,0 +1,322 @@
+{
+  "status": "VERIFIED_PRIVATE_SHA256_READBACK",
+  "repository": "minkhoaa/langfens-rq1-cross-fold-checkpoints",
+  "private": true,
+  "revision_before": "6d1ec3217c94730cc590b935c45e523dc5259f39",
+  "revision": "0d50af15823b67b27766551545f284c6aa33d00a",
+  "prefix": "benchmarks/psup-v1/initial-fresh-inference-20261104",
+  "files": [
+    {
+      "path": "b_control_best/metrics.json",
+      "sha256": "3a9840f55115732c09045b9e1285170dae35db5c8e25bcccb68f5fda6fdbbb19",
+      "bytes": 3495
+    },
+    {
+      "path": "b_control_best/metrics_by_speaker.csv",
+      "sha256": "94d210f8eb8bad9ebe342b97628a2498526410c8a3697fceeccae83b7c7c0cea",
+      "bytes": 134
+    },
+    {
+      "path": "b_control_best/offline_token_evaluation.jsonl",
+      "sha256": "84ed1a3a4c414aaaca45cadddbe90a71a3e3de6db82640b4f7d9bae4799895ea",
+      "bytes": 2069622
+    },
+    {
+      "path": "b_control_best/operating_points.json",
+      "sha256": "2053330479d135407708fa0fe3dcf240a7243671bcba05ee44716128cbff3583",
+      "bytes": 851
+    },
+    {
+      "path": "b_control_best/protocol_o/metrics.json",
+      "sha256": "614f0a5732add5c0cf38fa973ee416bb2b6cba1416f6325a782c519b69b2eb41",
+      "bytes": 5010
+    },
+    {
+      "path": "b_control_best/protocol_o/offline_token_evaluation.jsonl",
+      "sha256": "84ed1a3a4c414aaaca45cadddbe90a71a3e3de6db82640b4f7d9bae4799895ea",
+      "bytes": 2069622
+    },
+    {
+      "path": "b_control_best/protocol_o/operating_points.json",
+      "sha256": "2053330479d135407708fa0fe3dcf240a7243671bcba05ee44716128cbff3583",
+      "bytes": 851
+    },
+    {
+      "path": "b_control_best/protocol_o/runtime_predictions.jsonl",
+      "sha256": "7b098a5a07064e011af132ab5cf8b8a403f14754f7600fe10ac047645bc7b631",
+      "bytes": 7430374
+    },
+    {
+      "path": "b_control_best/protocol_z/metrics.json",
+      "sha256": "11c2ae33ad4dcc92bf7a332bb1425f296f06b171b0512e7fbf5ffb780cd3af5b",
+      "bytes": 3546
+    },
+    {
+      "path": "b_control_best/protocol_z/offline_token_evaluation.jsonl",
+      "sha256": "190226e543035912767ccae7b60e454239d5635e5f4a8b43b0a27b42d294257f",
+      "bytes": 2260229
+    },
+    {
+      "path": "b_control_best/protocol_z/operating_points.json",
+      "sha256": "45f1db174bf22ab98fadf30982da8d28343c1ad99ddd7f656ee50569c48640ae",
+      "bytes": 869
+    },
+    {
+      "path": "b_control_best/protocol_z/runtime_predictions.jsonl",
+      "sha256": "53c0a60ea2ebe7d3d8b94bc0bc2f75b3c7feeeddc920e6bb45dc8fddea1f7ec6",
+      "bytes": 7450022
+    },
+    {
+      "path": "b_control_best/run_manifest.json",
+      "sha256": "251601ca775e72f7952cb4743f67a63397dd029e47e19c2e7b484027c6ff3a91",
+      "bytes": 2756
+    },
+    {
+      "path": "b_control_best/runtime_predictions.jsonl",
+      "sha256": "7b098a5a07064e011af132ab5cf8b8a403f14754f7600fe10ac047645bc7b631",
+      "bytes": 7430374
+    },
+    {
+      "path": "b_control_best/utterance_predictions.jsonl",
+      "sha256": "c74f74329a11649f0d263e0220a561a21fd39f8582505654fdf409194b83dc15",
+      "bytes": 65900
+    },
+    {
+      "path": "b_control_fixed_budget_3600/metrics.json",
+      "sha256": "3533868908dc9451ee1f109d5ec24b369313ed7b51ded1410bf2bfc60107b0ff",
+      "bytes": 3525
+    },
+    {
+      "path": "b_control_fixed_budget_3600/metrics_by_speaker.csv",
+      "sha256": "6adbd9cbe3d3322a485f0472abfbb6f00ec0faf2c32d973a17bd707a718e1c7f",
+      "bytes": 134
+    },
+    {
+      "path": "b_control_fixed_budget_3600/offline_token_evaluation.jsonl",
+      "sha256": "ffe027023824527710b6147d7d9fef8e8f12d1ff1fb177e0a58d7a651a3c48f1",
+      "bytes": 2069148
+    },
+    {
+      "path": "b_control_fixed_budget_3600/operating_points.json",
+      "sha256": "16a6cb75692abb2282671622981eed31b55c745968564a424532573e7406ec8f",
+      "bytes": 867
+    },
+    {
+      "path": "b_control_fixed_budget_3600/protocol_o/metrics.json",
+      "sha256": "f18867ee417a3eb717c726fbd603fd422548827004cbf4d2d8f14f4a79047f58",
+      "bytes": 5043
+    },
+    {
+      "path": "b_control_fixed_budget_3600/protocol_o/offline_token_evaluation.jsonl",
+      "sha256": "ffe027023824527710b6147d7d9fef8e8f12d1ff1fb177e0a58d7a651a3c48f1",
+      "bytes": 2069148
+    },
+    {
+      "path": "b_control_fixed_budget_3600/protocol_o/operating_points.json",
+      "sha256": "16a6cb75692abb2282671622981eed31b55c745968564a424532573e7406ec8f",
+      "bytes": 867
+    },
+    {
+      "path": "b_control_fixed_budget_3600/protocol_o/runtime_predictions.jsonl",
+      "sha256": "4ff84e34d984d1ee2fd2895954e113ff7fdda6a56a77374b1ee4f13cfd323386",
+      "bytes": 7561551
+    },
+    {
+      "path": "b_control_fixed_budget_3600/protocol_z/metrics.json",
+      "sha256": "95bbd63927dc9b7435b927fab46d62d57b35931d1dbb3d6bf87dc4c3689557f6",
+      "bytes": 3582
+    },
+    {
+      "path": "b_control_fixed_budget_3600/protocol_z/offline_token_evaluation.jsonl",
+      "sha256": "d9c202c2fb78c61f70c984f1663438f861485e0b740833e7d70a8f504d5fcf65",
+      "bytes": 2259814
+    },
+    {
+      "path": "b_control_fixed_budget_3600/protocol_z/operating_points.json",
+      "sha256": "7f93241ab96e3c1001b94e642c2dacb786b9dd80acb5025290c573418b123d9c",
+      "bytes": 871
+    },
+    {
+      "path": "b_control_fixed_budget_3600/protocol_z/runtime_predictions.jsonl",
+      "sha256": "e1bb6da623432c07ddd9ca693e89442360f527eca3e0a80c254b9d1bb94ee9aa",
+      "bytes": 7581481
+    },
+    {
+      "path": "b_control_fixed_budget_3600/run_manifest.json",
+      "sha256": "d9c30723cae2de967c34a2cba11af4cc9f69515140dab530edcc3eae29efb123",
+      "bytes": 2769
+    },
+    {
+      "path": "b_control_fixed_budget_3600/runtime_predictions.jsonl",
+      "sha256": "4ff84e34d984d1ee2fd2895954e113ff7fdda6a56a77374b1ee4f13cfd323386",
+      "bytes": 7561551
+    },
+    {
+      "path": "b_control_fixed_budget_3600/utterance_predictions.jsonl",
+      "sha256": "8bc11df3e9032af95c65f7561c0867d23b075f0956d939c4009f721589e75eec",
+      "bytes": 65887
+    },
+    {
+      "path": "master_summary.json",
+      "sha256": "5b9ed987fab362f26fa187883724e60aec87bf66c792e2180131a8f785c692c6",
+      "bytes": 15206
+    },
+    {
+      "path": "reconciliation_matrix.json",
+      "sha256": "00e0ad8abfacd991c48fdef8207787746438e71d9d66047b97bf1c7757144a1e",
+      "bytes": 7115
+    },
+    {
+      "path": "t_op_best/metrics.json",
+      "sha256": "23883bdf7d7b3e6a7a2e37546534a2f30da5fc83af91549251f6233f9eddd1bd",
+      "bytes": 3520
+    },
+    {
+      "path": "t_op_best/metrics_by_speaker.csv",
+      "sha256": "4753b7c5e8e787bc8cf946014970503cb49a9163000a7a69e9bfda37cf68e3d5",
+      "bytes": 134
+    },
+    {
+      "path": "t_op_best/offline_token_evaluation.jsonl",
+      "sha256": "353ff63afa77049161fe4b5e7dc026e256082e9acc8e6c63cc90aa098c4a4fbc",
+      "bytes": 2380260
+    },
+    {
+      "path": "t_op_best/operating_points.json",
+      "sha256": "db3e45a6a41922267e9930826360bea03db0e6d4ebb1c5c45a6e850790cd0d80",
+      "bytes": 862
+    },
+    {
+      "path": "t_op_best/protocol_o/metrics.json",
+      "sha256": "b7946ae057f77a7919ecf0566663c94022547669c32d54efac1e78935d655270",
+      "bytes": 5097
+    },
+    {
+      "path": "t_op_best/protocol_o/offline_token_evaluation.jsonl",
+      "sha256": "353ff63afa77049161fe4b5e7dc026e256082e9acc8e6c63cc90aa098c4a4fbc",
+      "bytes": 2380260
+    },
+    {
+      "path": "t_op_best/protocol_o/operating_points.json",
+      "sha256": "db3e45a6a41922267e9930826360bea03db0e6d4ebb1c5c45a6e850790cd0d80",
+      "bytes": 862
+    },
+    {
+      "path": "t_op_best/protocol_o/runtime_predictions.jsonl",
+      "sha256": "c3d231a3de3fec34d8fc6238ae5ddb915ba246f57623ba55367083ae9848bbee",
+      "bytes": 8431919
+    },
+    {
+      "path": "t_op_best/protocol_z/metrics.json",
+      "sha256": "916aaec74abfe4e0bca801c02400c09e59fea6f3e6d003557c0f8648025d3ad1",
+      "bytes": 3569
+    },
+    {
+      "path": "t_op_best/protocol_z/offline_token_evaluation.jsonl",
+      "sha256": "101d902370be2a5a194881a87f3ef49997066928a512d9211a220f644f4587c2",
+      "bytes": 2569942
+    },
+    {
+      "path": "t_op_best/protocol_z/operating_points.json",
+      "sha256": "46b9aaf99339ce01afd0a9763c12049ecb6331ccc329bc8406b21099e41d4088",
+      "bytes": 866
+    },
+    {
+      "path": "t_op_best/protocol_z/runtime_predictions.jsonl",
+      "sha256": "00409e8f05ab312d2b543e30decd79480b27b95ab884136a2b30e69d27e2eccb",
+      "bytes": 8451682
+    },
+    {
+      "path": "t_op_best/run_manifest.json",
+      "sha256": "5e7fb9beb567cf20131f923af6dc342ee16a5f442c54901c2d959219228231ee",
+      "bytes": 2755
+    },
+    {
+      "path": "t_op_best/runtime_predictions.jsonl",
+      "sha256": "c3d231a3de3fec34d8fc6238ae5ddb915ba246f57623ba55367083ae9848bbee",
+      "bytes": 8431919
+    },
+    {
+      "path": "t_op_best/utterance_predictions.jsonl",
+      "sha256": "945fe82931cf9ae0f4c8b614353018cb412955fd87155e5c5701cdc69c4e9c49",
+      "bytes": 65895
+    },
+    {
+      "path": "t_op_fixed_budget_3600/metrics.json",
+      "sha256": "2fd485b0ed3cbc19aae529d19ec82d846166bd12e74cd33c05e5664bf996390a",
+      "bytes": 3544
+    },
+    {
+      "path": "t_op_fixed_budget_3600/metrics_by_speaker.csv",
+      "sha256": "57132f64ad7debcab8d578a51ad94635b7a818f160179c4629c918c3f946907c",
+      "bytes": 134
+    },
+    {
+      "path": "t_op_fixed_budget_3600/offline_token_evaluation.jsonl",
+      "sha256": "46bcfdbe7e9c90cf9fcadbd93e6906d894685f56fc3d51f4e0aec0b7d6d2d6b1",
+      "bytes": 2377384
+    },
+    {
+      "path": "t_op_fixed_budget_3600/operating_points.json",
+      "sha256": "7512e84e491e89fc98717b9ea0176c25b8f201bf9f56be3e3b5ca009c60d2e69",
+      "bytes": 864
+    },
+    {
+      "path": "t_op_fixed_budget_3600/protocol_o/metrics.json",
+      "sha256": "5607eabf6fc38dcbd85c683e284936863ec8566da151a03c601afc334c84d73b",
+      "bytes": 5120
+    },
+    {
+      "path": "t_op_fixed_budget_3600/protocol_o/offline_token_evaluation.jsonl",
+      "sha256": "46bcfdbe7e9c90cf9fcadbd93e6906d894685f56fc3d51f4e0aec0b7d6d2d6b1",
+      "bytes": 2377384
+    },
+    {
+      "path": "t_op_fixed_budget_3600/protocol_o/operating_points.json",
+      "sha256": "7512e84e491e89fc98717b9ea0176c25b8f201bf9f56be3e3b5ca009c60d2e69",
+      "bytes": 864
+    },
+    {
+      "path": "t_op_fixed_budget_3600/protocol_o/runtime_predictions.jsonl",
+      "sha256": "0115ee884bd4d0d4467cce4eb5e9d803a438f00151ebbd80a32d01f0ec6cc9d1",
+      "bytes": 8557992
+    },
+    {
+      "path": "t_op_fixed_budget_3600/protocol_z/metrics.json",
+      "sha256": "ae7e1191be2fd1f05bbdc1b34c2526321b3cce11cb478fe8ffa9c7b0630fe184",
+      "bytes": 3577
+    },
+    {
+      "path": "t_op_fixed_budget_3600/protocol_z/offline_token_evaluation.jsonl",
+      "sha256": "d370ac6b53951e2f94913393b15bf64710ae2b4b0a54c54f52c52c498f2cef90",
+      "bytes": 2567051
+    },
+    {
+      "path": "t_op_fixed_budget_3600/protocol_z/operating_points.json",
+      "sha256": "7db1f299451235667c74370e03fd6827ce787a6686d267c98f3c375f34125f79",
+      "bytes": 864
+    },
+    {
+      "path": "t_op_fixed_budget_3600/protocol_z/runtime_predictions.jsonl",
+      "sha256": "de2a5f42361d3f833246afef0ddccb3a3d52b70f7f665a53d6a17f0a7e3c416a",
+      "bytes": 8578020
+    },
+    {
+      "path": "t_op_fixed_budget_3600/run_manifest.json",
+      "sha256": "6dc79a2d18c4236b4c4232b0ee092429c8db696ee7a51ef6f4c82788e8a8ce27",
+      "bytes": 2768
+    },
+    {
+      "path": "t_op_fixed_budget_3600/runtime_predictions.jsonl",
+      "sha256": "0115ee884bd4d0d4467cce4eb5e9d803a438f00151ebbd80a32d01f0ec6cc9d1",
+      "bytes": 8557992
+    },
+    {
+      "path": "t_op_fixed_budget_3600/utterance_predictions.jsonl",
+      "sha256": "e2ddd71d0a837adef4d6189511674b356ee483c7932ad74440a5479ac4044a7f",
+      "bytes": 65892
+    }
+  ],
+  "source_directory": "/home/khoa/.cache/langfens/psup-benchmark-v1/benchmark-initial-evidence",
+  "source_script_sha256": "34356540e325e626eddd35440ad2f6a20b4683c16367b4b72373d37185943a3c"
+}

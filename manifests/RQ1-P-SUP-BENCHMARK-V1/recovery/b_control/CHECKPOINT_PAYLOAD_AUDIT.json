@@ -1,0 +1,201 @@
+{
+  "audit_name": "P-SUP B-CONTROL Checkpoint Payload Safe CPU Tensor Inspection",
+  "audit_timestamp_utc": "2026-11-04T01:16:00Z",
+  "inspection_method": "torch.load(..., map_location='cpu', weights_only=True) with numpy safe_globals allowlist",
+  "safe_globals_used": [
+    "numpy._core.multiarray._reconstruct",
+    "numpy.ndarray",
+    "numpy.dtype",
+    "dtype(int64)",
+    "dtype(float32)",
+    "dtype(uint32)"
+  ],
+  "checkpoints_audited": {
+    "fixed_budget_3600.pt": {
+      "path": "/home/khoa/.cache/langfens/psup-benchmark-v1/b_control/recovered/fixed_budget_3600.pt",
+      "size": 3241295,
+      "sha256": "e121a7b965747b49608263f1e3ec447f2a631f09a36e326e20fe5f2cfe619201",
+      "epoch": 7,
+      "successful_updates": 3600,
+      "micro_steps": 7200,
+      "best_ap": 0.46760702566135065,
+      "patience": 2,
+      "skipped_amp_attempts_total": 0,
+      "is_fixed_budget_endpoint": true,
+      "head_architecture": {
+        "total_tensors": 16,
+        "total_parameters": 266667,
+        "all_tensors_finite": true,
+        "tensor_shapes": {
+          "acoustic_projection.weight": [128, 768],
+          "acoustic_projection.bias": [128],
+          "phone_embedding.weight": [40, 128],
+          "position_embedding.weight": [256, 128],
+          "attention.in_proj_weight": [384, 128],
+          "attention.in_proj_bias": [384],
+          "attention.out_proj.weight": [128, 128],
+          "attention.out_proj.bias": [128],
+          "acoustic_norm.weight": [128],
+          "acoustic_norm.bias": [128],
+          "operation_head.0.weight": [128, 256],
+          "operation_head.0.bias": [128],
+          "operation_head.3.weight": [3, 128],
+          "operation_head.3.bias": [3],
+          "ctc_head.weight": [40, 768],
+          "ctc_head.bias": [40]
+        }
+      },
+      "model_dict": {
+        "present": true,
+        "keys_count": 16,
+        "total_parameters": 266667,
+        "all_finite": true
+      },
+      "optimizer_state": {
+        "type": "AdamW",
+        "param_groups_count": 1,
+        "tracked_parameter_states": 16,
+        "current_lr": 0.0008699219550575954
+      },
+      "scheduler_state": {
+        "type": "CosineAnnealingWithWarmup",
+        "last_epoch": 3600,
+        "step_count": 3601,
+        "base_lrs": [0.001]
+      },
+      "scaler_state": {
+        "type": "GradScaler",
+        "scale": 8192.0,
+        "growth_factor": 2.0,
+        "backoff_factor": 0.5,
+        "growth_interval": 2000,
+        "growth_tracker": 1600
+      },
+      "rng_state": {
+        "python_rng_complete": true,
+        "numpy_rng_complete": true,
+        "torch_cpu_rng_complete": true,
+        "torch_cuda_rng_complete": true,
+        "cuda_devices_tracked": 2
+      }
+    },
+    "best.pt": {
+      "path": "/home/khoa/.cache/langfens/psup-benchmark-v1/b_control/recovered/best.pt",
+      "size": 3239450,
+      "sha256": "2dbad5a0160224f9d936e564a6c5d52dffe6a8efdbde8e409c50a8cc393be93f",
+      "epoch": 4,
+      "successful_updates": 2250,
+      "micro_steps": 4500,
+      "best_ap": 0.46760702566135065,
+      "patience": 0,
+      "skipped_amp_attempts_total": 0,
+      "is_fixed_budget_endpoint": false,
+      "head_architecture": {
+        "total_tensors": 16,
+        "total_parameters": 266667,
+        "all_tensors_finite": true,
+        "tensor_shapes": {
+          "acoustic_projection.weight": [128, 768],
+          "acoustic_projection.bias": [128],
+          "phone_embedding.weight": [40, 128],
+          "position_embedding.weight": [256, 128],
+          "attention.in_proj_weight": [384, 128],
+          "attention.in_proj_bias": [384],
+          "attention.out_proj.weight": [128, 128],
+          "attention.out_proj.bias": [128],
+          "acoustic_norm.weight": [128],
+          "acoustic_norm.bias": [128],
+          "operation_head.0.weight": [128, 256],
+          "operation_head.0.bias": [128],
+          "operation_head.3.weight": [3, 128],
+          "operation_head.3.bias": [3],
+          "ctc_head.weight": [40, 768],
+          "ctc_head.bias": [40]
+        }
+      },
+      "model_dict": {
+        "present": true,
+        "keys_count": 16,
+        "total_parameters": 266667,
+        "all_finite": true
+      },
+      "optimizer_state": {
+        "type": "AdamW",
+        "param_groups_count": 1,
+        "tracked_parameter_states": 16,
+        "current_lr": 0.0009494996720699363
+      },
+      "scheduler_state": {
+        "type": "CosineAnnealingWithWarmup",
+        "last_epoch": 2250,
+        "step_count": 2251,
+        "base_lrs": [0.001]
+      },
+      "scaler_state": {
+        "type": "GradScaler",
+        "scale": 8192.0,
+        "growth_factor": 2.0,
+        "backoff_factor": 0.5,
+        "growth_interval": 2000,
+        "growth_tracker": 250
+      },
+      "rng_state": {
+        "python_rng_complete": true,
+        "numpy_rng_complete": true,
+        "torch_cpu_rng_complete": true,
+        "torch_cuda_rng_complete": true,
+        "cuda_devices_tracked": 2
+      }
+    },
+    "last.pt": {
+      "path": "/home/khoa/.cache/langfens/psup-benchmark-v1/b_control/recovered/last.pt",
+      "size": 3239898,
+      "sha256": "aa35c14dbf6827050efa779b419b3c4887988fa073bc693c81dcb41275afa1b5",
+      "epoch": 7,
+      "successful_updates": 3600,
+      "micro_steps": 7200,
+      "best_ap": 0.46760702566135065,
+      "patience": 2,
+      "skipped_amp_attempts_total": 0,
+      "is_fixed_budget_endpoint": false,
+      "head_architecture": {
+        "total_tensors": 16,
+        "total_parameters": 266667,
+        "all_tensors_finite": true
+      },
+      "model_dict": {
+        "present": true,
+        "keys_count": 16,
+        "total_parameters": 266667,
+        "all_finite": true
+      },
+      "optimizer_state": {
+        "type": "AdamW",
+        "param_groups_count": 1,
+        "tracked_parameter_states": 16,
+        "current_lr": 0.0008699219550575954
+      },
+      "scheduler_state": {
+        "type": "CosineAnnealingWithWarmup",
+        "last_epoch": 3600,
+        "step_count": 3601,
+        "base_lrs": [0.001]
+      },
+      "scaler_state": {
+        "type": "GradScaler",
+        "scale": 8192.0,
+        "growth_factor": 2.0,
+        "backoff_factor": 0.5,
+        "growth_interval": 2000,
+        "growth_tracker": 1600
+      },
+      "rng_state": {
+        "python_rng_complete": true,
+        "numpy_rng_complete": true,
+        "torch_cpu_rng_complete": true,
+        "torch_cuda_rng_complete": true,
+        "cuda_devices_tracked": 2
+      }
+    }
+  }
+}

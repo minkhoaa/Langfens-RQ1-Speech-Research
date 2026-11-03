@@ -1,0 +1,874 @@
+{
+  "source_sha256": "978b448be224f7cd4d662ee3c1b7d26c6a6975699bde526aa82de0015026027b",
+  "split_manifest_sha256": "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b",
+  "configurations": {
+    "t_op_fixed_budget_3600": {
+      "evidence_status": "archival-only",
+      "metric_recomputation": "reproduced from archival full-precision predictions; no fresh inference",
+      "actual_protocol": "O-ARCHIVE (annotation-derived canonical positions)",
+      "serialized_protocols": [
+        "Z-PROMPT-V1"
+      ],
+      "protocol_mismatch": "Historical serializer hardcoded Z-PROMPT-V1; evaluator dataset builds prompt from gold canonical labels, so NOT genuine prompt-only inference.",
+      "token_count": 9956,
+      "label_counts": {
+        "0": 8799,
+        "1": 1012,
+        "2": 145
+      },
+      "speaker_counts": {
+        "NJS": 5011,
+        "RRBI": 4945
+      },
+      "utterance_count": 300,
+      "ordered_utterance_id_sha256": "6d34642b15bbf80cbd5bd102b5574ab36f5adac74be6d6d0ae7218b002eff065",
+      "artifact_hashes": {
+        "runtime_predictions.jsonl": "dc53d74f5b346ba257499ff7453d5d287c8976d8da8efb92218ad9444c4ae488",
+        "offline_token_evaluation.jsonl": "46bcfdbe7e9c90cf9fcadbd93e6906d894685f56fc3d51f4e0aec0b7d6d2d6b1",
+        "metrics.json": "5cd638807b1661dbb4968770750141878c70c94be9e7c1b690d6f1d733dda095"
+      },
+      "metrics": {
+        "binary": {
+          "evidence_status": "archival-only",
+          "score": "s_error",
+          "n": 9956,
+          "positives": 1157,
+          "negatives": 8799,
+          "ap": 0.324080844531,
+          "retrospective_fpr_points": {
+            "0.05": {
+              "threshold": 0.3239915370941162,
+              "TP": 354,
+              "FP": 439,
+              "TN": 8360,
+              "FN": 803,
+              "achieved_fpr": 0.04989203318558927,
+              "precision": 0.44640605296343,
+              "recall": 0.3059636992221262,
+              "f1": 0.3630769230769231,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.1": {
+              "threshold": 0.25492924451828003,
+              "TP": 485,
+              "FP": 879,
+              "TN": 7920,
+              "FN": 672,
+              "achieved_fpr": 0.09989771564950563,
+              "precision": 0.3555718475073314,
+              "recall": 0.4191875540190147,
+              "f1": 0.38476794922649743,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.15": {
+              "threshold": 0.2119575364049524,
+              "TP": 592,
+              "FP": 1319,
+              "TN": 7480,
+              "FN": 565,
+              "achieved_fpr": 0.149903398113422,
+              "precision": 0.3097854526425955,
+              "recall": 0.5116681071737251,
+              "f1": 0.3859191655801825,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            }
+          }
+        },
+        "omission_legacy": {
+          "evidence_status": "archival-only",
+          "score": "s_error",
+          "n": 8944,
+          "positives": 145,
+          "negatives": 8799,
+          "ap": 0.03761022963678566,
+          "retrospective_fpr_points": {
+            "0.05": {
+              "threshold": 0.3239915370941162,
+              "TP": 14,
+              "FP": 439,
+              "TN": 8360,
+              "FN": 131,
+              "achieved_fpr": 0.04989203318558927,
+              "precision": 0.03090507726269316,
+              "recall": 0.09655172413793103,
+              "f1": 0.046822742474916385,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.1": {
+              "threshold": 0.25492924451828003,
+              "TP": 36,
+              "FP": 879,
+              "TN": 7920,
+              "FN": 109,
+              "achieved_fpr": 0.09989771564950563,
+              "precision": 0.03934426229508197,
+              "recall": 0.2482758620689655,
+              "f1": 0.06792452830188679,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.15": {
+              "threshold": 0.2119575364049524,
+              "TP": 62,
+              "FP": 1319,
+              "TN": 7480,
+              "FN": 83,
+              "achieved_fpr": 0.149903398113422,
+              "precision": 0.04489500362056481,
+              "recall": 0.42758620689655175,
+              "f1": 0.08125819134993446,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            }
+          }
+        },
+        "substitution_legacy": {
+          "evidence_status": "archival-only",
+          "score": "s_error",
+          "n": 9811,
+          "positives": 1012,
+          "negatives": 8799,
+          "ap": 0.3127669187768875,
+          "retrospective_fpr_points": {
+            "0.05": {
+              "threshold": 0.3239915370941162,
+              "TP": 340,
+              "FP": 439,
+              "TN": 8360,
+              "FN": 672,
+              "achieved_fpr": 0.04989203318558927,
+              "precision": 0.43645699614890887,
+              "recall": 0.3359683794466403,
+              "f1": 0.3796761585706309,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.1": {
+              "threshold": 0.25492924451828003,
+              "TP": 449,
+              "FP": 879,
+              "TN": 7920,
+              "FN": 563,
+              "achieved_fpr": 0.09989771564950563,
+              "precision": 0.3381024096385542,
+              "recall": 0.44367588932806323,
+              "f1": 0.3837606837606838,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.15": {
+              "threshold": 0.2119575364049524,
+              "TP": 530,
+              "FP": 1319,
+              "TN": 7480,
+              "FN": 482,
+              "achieved_fpr": 0.149903398113422,
+              "precision": 0.2866414277988102,
+              "recall": 0.5237154150197628,
+              "f1": 0.3704998252359315,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            }
+          }
+        },
+        "omission_dedicated": {
+          "evidence_status": "archival-only",
+          "score": "s_omit",
+          "n": 8944,
+          "positives": 145,
+          "negatives": 8799,
+          "ap": 0.10772420319860555,
+          "retrospective_fpr_points": {
+            "0.05": {
+              "threshold": 0.10778692364692688,
+              "TP": 54,
+              "FP": 439,
+              "TN": 8360,
+              "FN": 91,
+              "achieved_fpr": 0.04989203318558927,
+              "precision": 0.10953346855983773,
+              "recall": 0.3724137931034483,
+              "f1": 0.16927899686520376,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.1": {
+              "threshold": 0.07738730311393738,
+              "TP": 84,
+              "FP": 879,
+              "TN": 7920,
+              "FN": 61,
+              "achieved_fpr": 0.09989771564950563,
+              "precision": 0.08722741433021806,
+              "recall": 0.5793103448275863,
+              "f1": 0.15162454873646208,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.15": {
+              "threshold": 0.05458279326558113,
+              "TP": 106,
+              "FP": 1319,
+              "TN": 7480,
+              "FN": 39,
+              "achieved_fpr": 0.149903398113422,
+              "precision": 0.07438596491228071,
+              "recall": 0.7310344827586207,
+              "f1": 0.13503184713375796,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            }
+          }
+        },
+        "substitution_dedicated": {
+          "evidence_status": "archival-only",
+          "score": "s_sub",
+          "n": 9811,
+          "positives": 1012,
+          "negatives": 8799,
+          "ap": 0.33896198016541973,
+          "retrospective_fpr_points": {
+            "0.05": {
+              "threshold": 0.2818017601966858,
+              "TP": 365,
+              "FP": 439,
+              "TN": 8360,
+              "FN": 647,
+              "achieved_fpr": 0.04989203318558927,
+              "precision": 0.4539800995024876,
+              "recall": 0.3606719367588933,
+              "f1": 0.40198237885462557,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.1": {
+              "threshold": 0.19213217496871948,
+              "TP": 527,
+              "FP": 879,
+              "TN": 7920,
+              "FN": 485,
+              "achieved_fpr": 0.09989771564950563,
+              "precision": 0.3748221906116643,
+              "recall": 0.5207509881422925,
+              "f1": 0.4358974358974359,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.15": {
+              "threshold": 0.1589779406785965,
+              "TP": 594,
+              "FP": 1319,
+              "TN": 7480,
+              "FN": 418,
+              "achieved_fpr": 0.149903398113422,
+              "precision": 0.3105070569785677,
+              "recall": 0.5869565217391305,
+              "f1": 0.40615384615384614,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            }
+          }
+        }
+      }
+    },
+    "t_op_best": {
+      "evidence_status": "archival-only",
+      "metric_recomputation": "reproduced from archival full-precision predictions; no fresh inference",
+      "actual_protocol": "O-ARCHIVE (annotation-derived canonical positions)",
+      "serialized_protocols": [
+        "Z-PROMPT-V1"
+      ],
+      "protocol_mismatch": "Historical serializer hardcoded Z-PROMPT-V1; evaluator dataset builds prompt from gold canonical labels, so NOT genuine prompt-only inference.",
+      "token_count": 9956,
+      "label_counts": {
+        "0": 8799,
+        "1": 1012,
+        "2": 145
+      },
+      "speaker_counts": {
+        "NJS": 5011,
+        "RRBI": 4945
+      },
+      "utterance_count": 300,
+      "ordered_utterance_id_sha256": "6d34642b15bbf80cbd5bd102b5574ab36f5adac74be6d6d0ae7218b002eff065",
+      "artifact_hashes": {
+        "runtime_predictions.jsonl": "8a84707c43649d1405b4b86a9a0e8cbd379238c2cbfb28c25e6c918303e9f67f",
+        "offline_token_evaluation.jsonl": "353ff63afa77049161fe4b5e7dc026e256082e9acc8e6c63cc90aa098c4a4fbc",
+        "metrics.json": "02ed428f153f1746180054b8ef6853e42c8e9d3e34d13d49877d299361689989"
+      },
+      "metrics": {
+        "binary": {
+          "evidence_status": "archival-only",
+          "score": "s_error",
+          "n": 9956,
+          "positives": 1157,
+          "negatives": 8799,
+          "ap": 0.3217066868035043,
+          "retrospective_fpr_points": {
+            "0.05": {
+              "threshold": 0.34374234080314636,
+              "TP": 334,
+              "FP": 439,
+              "TN": 8360,
+              "FN": 823,
+              "achieved_fpr": 0.04989203318558927,
+              "precision": 0.4320827943078913,
+              "recall": 0.28867761452031115,
+              "f1": 0.3461139896373057,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.1": {
+              "threshold": 0.25303638499462977,
+              "TP": 483,
+              "FP": 879,
+              "TN": 7920,
+              "FN": 674,
+              "achieved_fpr": 0.09989771564950563,
+              "precision": 0.35462555066079293,
+              "recall": 0.41745894554883317,
+              "f1": 0.3834855101230647,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.15": {
+              "threshold": 0.19153348333202302,
+              "TP": 603,
+              "FP": 1319,
+              "TN": 7480,
+              "FN": 554,
+              "achieved_fpr": 0.149903398113422,
+              "precision": 0.313735691987513,
+              "recall": 0.5211754537597234,
+              "f1": 0.3916856122117571,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            }
+          }
+        },
+        "omission_legacy": {
+          "evidence_status": "archival-only",
+          "score": "s_error",
+          "n": 8944,
+          "positives": 145,
+          "negatives": 8799,
+          "ap": 0.0353791891653923,
+          "retrospective_fpr_points": {
+            "0.05": {
+              "threshold": 0.34374234080314636,
+              "TP": 10,
+              "FP": 439,
+              "TN": 8360,
+              "FN": 135,
+              "achieved_fpr": 0.04989203318558927,
+              "precision": 0.022271714922048998,
+              "recall": 0.06896551724137931,
+              "f1": 0.03367003367003367,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.1": {
+              "threshold": 0.25303638499462977,
+              "TP": 35,
+              "FP": 879,
+              "TN": 7920,
+              "FN": 110,
+              "achieved_fpr": 0.09989771564950563,
+              "precision": 0.038293216630196934,
+              "recall": 0.2413793103448276,
+              "f1": 0.06610009442870633,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.15": {
+              "threshold": 0.19153348333202302,
+              "TP": 63,
+              "FP": 1319,
+              "TN": 7480,
+              "FN": 82,
+              "achieved_fpr": 0.149903398113422,
+              "precision": 0.045586107091172216,
+              "recall": 0.43448275862068964,
+              "f1": 0.0825147347740668,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            }
+          }
+        },
+        "substitution_legacy": {
+          "evidence_status": "archival-only",
+          "score": "s_error",
+          "n": 9811,
+          "positives": 1012,
+          "negatives": 8799,
+          "ap": 0.3118446594534967,
+          "retrospective_fpr_points": {
+            "0.05": {
+              "threshold": 0.34374234080314636,
+              "TP": 324,
+              "FP": 439,
+              "TN": 8360,
+              "FN": 688,
+              "achieved_fpr": 0.04989203318558927,
+              "precision": 0.42463958060288337,
+              "recall": 0.3201581027667984,
+              "f1": 0.36507042253521127,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.1": {
+              "threshold": 0.25303638499462977,
+              "TP": 448,
+              "FP": 879,
+              "TN": 7920,
+              "FN": 564,
+              "achieved_fpr": 0.09989771564950563,
+              "precision": 0.33760361718161264,
+              "recall": 0.4426877470355731,
+              "f1": 0.3830696879008123,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.15": {
+              "threshold": 0.19153348333202302,
+              "TP": 540,
+              "FP": 1319,
+              "TN": 7480,
+              "FN": 472,
+              "achieved_fpr": 0.149903398113422,
+              "precision": 0.29047875201721357,
+              "recall": 0.5335968379446641,
+              "f1": 0.3761755485893417,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            }
+          }
+        },
+        "omission_dedicated": {
+          "evidence_status": "archival-only",
+          "score": "s_omit",
+          "n": 8944,
+          "positives": 145,
+          "negatives": 8799,
+          "ap": 0.09901759497992352,
+          "retrospective_fpr_points": {
+            "0.05": {
+              "threshold": 0.09985111653804779,
+              "TP": 48,
+              "FP": 439,
+              "TN": 8360,
+              "FN": 97,
+              "achieved_fpr": 0.04989203318558927,
+              "precision": 0.09856262833675565,
+              "recall": 0.3310344827586207,
+              "f1": 0.1518987341772152,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.1": {
+              "threshold": 0.06542283296585083,
+              "TP": 76,
+              "FP": 879,
+              "TN": 7920,
+              "FN": 69,
+              "achieved_fpr": 0.09989771564950563,
+              "precision": 0.07958115183246073,
+              "recall": 0.5241379310344828,
+              "f1": 0.13818181818181818,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.15": {
+              "threshold": 0.03816749528050423,
+              "TP": 97,
+              "FP": 1319,
+              "TN": 7480,
+              "FN": 48,
+              "achieved_fpr": 0.149903398113422,
+              "precision": 0.06850282485875706,
+              "recall": 0.6689655172413793,
+              "f1": 0.12427930813581038,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            }
+          }
+        },
+        "substitution_dedicated": {
+          "evidence_status": "archival-only",
+          "score": "s_sub",
+          "n": 9811,
+          "positives": 1012,
+          "negatives": 8799,
+          "ap": 0.33135770073549686,
+          "retrospective_fpr_points": {
+            "0.05": {
+              "threshold": 0.2911984920501709,
+              "TP": 361,
+              "FP": 439,
+              "TN": 8360,
+              "FN": 651,
+              "achieved_fpr": 0.04989203318558927,
+              "precision": 0.45125,
+              "recall": 0.3567193675889328,
+              "f1": 0.3984547461368653,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.1": {
+              "threshold": 0.18713663518428802,
+              "TP": 511,
+              "FP": 879,
+              "TN": 7920,
+              "FN": 501,
+              "achieved_fpr": 0.09989771564950563,
+              "precision": 0.36762589928057554,
+              "recall": 0.5049407114624506,
+              "f1": 0.42547876769358867,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.15": {
+              "threshold": 0.1478254348039627,
+              "TP": 584,
+              "FP": 1319,
+              "TN": 7480,
+              "FN": 428,
+              "achieved_fpr": 0.149903398113422,
+              "precision": 0.3068838675775092,
+              "recall": 0.5770750988142292,
+              "f1": 0.4006861063464837,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            }
+          }
+        }
+      }
+    },
+    "b_control_fixed_budget_3600": {
+      "evidence_status": "archival-only",
+      "metric_recomputation": "reproduced from archival full-precision predictions; no fresh inference",
+      "actual_protocol": "O-ARCHIVE (annotation-derived canonical positions)",
+      "serialized_protocols": [
+        "Z-PROMPT-V1"
+      ],
+      "protocol_mismatch": "Historical serializer hardcoded Z-PROMPT-V1; evaluator dataset builds prompt from gold canonical labels, so NOT genuine prompt-only inference.",
+      "token_count": 9956,
+      "label_counts": {
+        "0": 8799,
+        "1": 1012,
+        "2": 145
+      },
+      "speaker_counts": {
+        "NJS": 5011,
+        "RRBI": 4945
+      },
+      "utterance_count": 300,
+      "ordered_utterance_id_sha256": "6d34642b15bbf80cbd5bd102b5574ab36f5adac74be6d6d0ae7218b002eff065",
+      "artifact_hashes": {
+        "runtime_predictions.jsonl": "c91191c700cd4222d3eb2a05c2a1d19fc50cba5bfec845927c47b3fca1aaec24",
+        "offline_token_evaluation.jsonl": "ffe027023824527710b6147d7d9fef8e8f12d1ff1fb177e0a58d7a651a3c48f1",
+        "metrics.json": "3bcc3f6a444738171db0e5827a592a57eea81288457ae93416542790b7211c05"
+      },
+      "metrics": {
+        "binary": {
+          "evidence_status": "archival-only",
+          "score": "s_error",
+          "n": 9956,
+          "positives": 1157,
+          "negatives": 8799,
+          "ap": 0.32263271313468933,
+          "retrospective_fpr_points": {
+            "0.05": {
+              "threshold": 0.32770543545484543,
+              "TP": 350,
+              "FP": 439,
+              "TN": 8360,
+              "FN": 807,
+              "achieved_fpr": 0.04989203318558927,
+              "precision": 0.4435994930291508,
+              "recall": 0.3025064822817632,
+              "f1": 0.3597122302158273,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.1": {
+              "threshold": 0.24287999421358109,
+              "TP": 474,
+              "FP": 879,
+              "TN": 7920,
+              "FN": 683,
+              "achieved_fpr": 0.09989771564950563,
+              "precision": 0.35033259423503327,
+              "recall": 0.4096802074330164,
+              "f1": 0.3776892430278884,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.15": {
+              "threshold": 0.2000366672873497,
+              "TP": 593,
+              "FP": 1319,
+              "TN": 7480,
+              "FN": 564,
+              "achieved_fpr": 0.149903398113422,
+              "precision": 0.3101464435146444,
+              "recall": 0.5125324114088159,
+              "f1": 0.3864450961225155,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            }
+          }
+        },
+        "omission_legacy": {
+          "evidence_status": "archival-only",
+          "score": "s_error",
+          "n": 8944,
+          "positives": 145,
+          "negatives": 8799,
+          "ap": 0.038032892434679756,
+          "retrospective_fpr_points": {
+            "0.05": {
+              "threshold": 0.32770543545484543,
+              "TP": 8,
+              "FP": 439,
+              "TN": 8360,
+              "FN": 137,
+              "achieved_fpr": 0.04989203318558927,
+              "precision": 0.017897091722595078,
+              "recall": 0.05517241379310345,
+              "f1": 0.02702702702702703,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.1": {
+              "threshold": 0.24287999421358109,
+              "TP": 32,
+              "FP": 879,
+              "TN": 7920,
+              "FN": 113,
+              "achieved_fpr": 0.09989771564950563,
+              "precision": 0.03512623490669594,
+              "recall": 0.2206896551724138,
+              "f1": 0.06060606060606061,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.15": {
+              "threshold": 0.2000366672873497,
+              "TP": 67,
+              "FP": 1319,
+              "TN": 7480,
+              "FN": 78,
+              "achieved_fpr": 0.149903398113422,
+              "precision": 0.048340548340548344,
+              "recall": 0.46206896551724136,
+              "f1": 0.08752449379490529,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            }
+          }
+        },
+        "substitution_legacy": {
+          "evidence_status": "archival-only",
+          "score": "s_error",
+          "n": 9811,
+          "positives": 1012,
+          "negatives": 8799,
+          "ap": 0.3112319148328412,
+          "retrospective_fpr_points": {
+            "0.05": {
+              "threshold": 0.32806403934955597,
+              "TP": 342,
+              "FP": 439,
+              "TN": 8360,
+              "FN": 670,
+              "achieved_fpr": 0.04989203318558927,
+              "precision": 0.4379001280409731,
+              "recall": 0.33794466403162055,
+              "f1": 0.3814835471277189,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.1": {
+              "threshold": 0.24287999421358109,
+              "TP": 442,
+              "FP": 879,
+              "TN": 7920,
+              "FN": 570,
+              "achieved_fpr": 0.09989771564950563,
+              "precision": 0.33459500378501134,
+              "recall": 0.4367588932806324,
+              "f1": 0.37891127303900557,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.15": {
+              "threshold": 0.2000366672873497,
+              "TP": 526,
+              "FP": 1319,
+              "TN": 7480,
+              "FN": 486,
+              "achieved_fpr": 0.149903398113422,
+              "precision": 0.2850948509485095,
+              "recall": 0.5197628458498024,
+              "f1": 0.368218410920546,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            }
+          }
+        },
+        "omission_dedicated": {
+          "evidence_status": "unavailable",
+          "reason": "binary_collapsed subtype probabilities unidentified",
+          "ap": null
+        },
+        "substitution_dedicated": {
+          "evidence_status": "unavailable",
+          "reason": "binary_collapsed subtype probabilities unidentified",
+          "ap": null
+        }
+      }
+    },
+    "b_control_best": {
+      "evidence_status": "archival-only",
+      "metric_recomputation": "reproduced from archival full-precision predictions; no fresh inference",
+      "actual_protocol": "O-ARCHIVE (annotation-derived canonical positions)",
+      "serialized_protocols": [
+        "Z-PROMPT-V1"
+      ],
+      "protocol_mismatch": "Historical serializer hardcoded Z-PROMPT-V1; evaluator dataset builds prompt from gold canonical labels, so NOT genuine prompt-only inference.",
+      "token_count": 9956,
+      "label_counts": {
+        "0": 8799,
+        "1": 1012,
+        "2": 145
+      },
+      "speaker_counts": {
+        "NJS": 5011,
+        "RRBI": 4945
+      },
+      "utterance_count": 300,
+      "ordered_utterance_id_sha256": "6d34642b15bbf80cbd5bd102b5574ab36f5adac74be6d6d0ae7218b002eff065",
+      "artifact_hashes": {
+        "runtime_predictions.jsonl": "4fd82da70cb665ef8b8ad10a7d63afa9185cdb5e48b379d0c0b2f89822491d46",
+        "offline_token_evaluation.jsonl": "84ed1a3a4c414aaaca45cadddbe90a71a3e3de6db82640b4f7d9bae4799895ea",
+        "metrics.json": "5f26e74972c019f88001307b458e834673b7affee4791ed3893acebe330b8b21"
+      },
+      "metrics": {
+        "binary": {
+          "evidence_status": "archival-only",
+          "score": "s_error",
+          "n": 9956,
+          "positives": 1157,
+          "negatives": 8799,
+          "ap": 0.32727171629002344,
+          "retrospective_fpr_points": {
+            "0.05": {
+              "threshold": 0.3369271755218506,
+              "TP": 364,
+              "FP": 439,
+              "TN": 8360,
+              "FN": 793,
+              "achieved_fpr": 0.04989203318558927,
+              "precision": 0.4533001245330012,
+              "recall": 0.3146067415730337,
+              "f1": 0.37142857142857144,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.1": {
+              "threshold": 0.22057288140058517,
+              "TP": 496,
+              "FP": 879,
+              "TN": 7920,
+              "FN": 661,
+              "achieved_fpr": 0.09989771564950563,
+              "precision": 0.36072727272727273,
+              "recall": 0.428694900605013,
+              "f1": 0.39178515007898895,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.15": {
+              "threshold": 0.18020524829626083,
+              "TP": 580,
+              "FP": 1319,
+              "TN": 7480,
+              "FN": 577,
+              "achieved_fpr": 0.149903398113422,
+              "precision": 0.3054239073196419,
+              "recall": 0.5012964563526361,
+              "f1": 0.3795811518324607,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            }
+          }
+        },
+        "omission_legacy": {
+          "evidence_status": "archival-only",
+          "score": "s_error",
+          "n": 8944,
+          "positives": 145,
+          "negatives": 8799,
+          "ap": 0.03469198378893695,
+          "retrospective_fpr_points": {
+            "0.05": {
+              "threshold": 0.33731237053871155,
+              "TP": 5,
+              "FP": 439,
+              "TN": 8360,
+              "FN": 140,
+              "achieved_fpr": 0.04989203318558927,
+              "precision": 0.01126126126126126,
+              "recall": 0.034482758620689655,
+              "f1": 0.01697792869269949,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.1": {
+              "threshold": 0.22057288140058517,
+              "TP": 29,
+              "FP": 879,
+              "TN": 7920,
+              "FN": 116,
+              "achieved_fpr": 0.09989771564950563,
+              "precision": 0.031938325991189426,
+              "recall": 0.2,
+              "f1": 0.055080721747388414,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.15": {
+              "threshold": 0.18031270802021027,
+              "TP": 57,
+              "FP": 1319,
+              "TN": 7480,
+              "FN": 88,
+              "achieved_fpr": 0.149903398113422,
+              "precision": 0.04142441860465116,
+              "recall": 0.3931034482758621,
+              "f1": 0.07495069033530571,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            }
+          }
+        },
+        "substitution_legacy": {
+          "evidence_status": "archival-only",
+          "score": "s_error",
+          "n": 9811,
+          "positives": 1012,
+          "negatives": 8799,
+          "ap": 0.3197348819757848,
+          "retrospective_fpr_points": {
+            "0.05": {
+              "threshold": 0.3369271755218506,
+              "TP": 359,
+              "FP": 439,
+              "TN": 8360,
+              "FN": 653,
+              "achieved_fpr": 0.04989203318558927,
+              "precision": 0.449874686716792,
+              "recall": 0.3547430830039526,
+              "f1": 0.3966850828729282,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.1": {
+              "threshold": 0.22057288140058517,
+              "TP": 467,
+              "FP": 879,
+              "TN": 7920,
+              "FN": 545,
+              "achieved_fpr": 0.09989771564950563,
+              "precision": 0.34695393759286774,
+              "recall": 0.4614624505928854,
+              "f1": 0.39609838846480067,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            },
+            "0.15": {
+              "threshold": 0.18020524829626083,
+              "TP": 523,
+              "FP": 1319,
+              "TN": 7480,
+              "FN": 489,
+              "achieved_fpr": 0.149903398113422,
+              "precision": 0.28393051031487515,
+              "recall": 0.516798418972332,
+              "f1": 0.3665031534688157,
+              "threshold_status": "VAL-derived retrospective diagnostic; not calibrated"
+            }
+          }
+        },
+        "omission_dedicated": {
+          "evidence_status": "unavailable",
+          "reason": "binary_collapsed subtype probabilities unidentified",
+          "ap": null
+        },
+        "substitution_dedicated": {
+          "evidence_status": "unavailable",
+          "reason": "binary_collapsed subtype probabilities unidentified",
+          "ap": null
+        }
+      }
+    }
+  }
+}

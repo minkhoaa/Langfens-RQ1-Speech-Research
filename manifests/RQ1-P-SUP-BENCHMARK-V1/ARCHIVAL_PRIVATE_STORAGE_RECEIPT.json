@@ -1,0 +1,77 @@
+{
+  "status": "VERIFIED_PRIVATE_SHA256_READBACK",
+  "repository": "minkhoaa/langfens-rq1-cross-fold-checkpoints",
+  "private": true,
+  "revision_before": "4aa9f2a68f0709889eacacf170b6446d3c45c73d",
+  "revision": "d8806b9e69573aca4c1048ce57b43a28a11aba12",
+  "prefix": "benchmarks/psup-v1/archival-original-20261104",
+  "files": [
+    {
+      "path": "FINAL_EVALUATION_SUMMARY.json",
+      "sha256": "efad688b44a94290a333806b75caefb6451a4a83f68a1eccc858ba75925ffa8b",
+      "bytes": 4229
+    },
+    {
+      "path": "b_control_best/metrics.json",
+      "sha256": "5f26e74972c019f88001307b458e834673b7affee4791ed3893acebe330b8b21",
+      "bytes": 942
+    },
+    {
+      "path": "b_control_best/offline_token_evaluation.jsonl",
+      "sha256": "84ed1a3a4c414aaaca45cadddbe90a71a3e3de6db82640b4f7d9bae4799895ea",
+      "bytes": 2069622
+    },
+    {
+      "path": "b_control_best/runtime_predictions.jsonl",
+      "sha256": "4fd82da70cb665ef8b8ad10a7d63afa9185cdb5e48b379d0c0b2f89822491d46",
+      "bytes": 7320858
+    },
+    {
+      "path": "b_control_fixed_budget_3600/metrics.json",
+      "sha256": "3bcc3f6a444738171db0e5827a592a57eea81288457ae93416542790b7211c05",
+      "bytes": 970
+    },
+    {
+      "path": "b_control_fixed_budget_3600/offline_token_evaluation.jsonl",
+      "sha256": "ffe027023824527710b6147d7d9fef8e8f12d1ff1fb177e0a58d7a651a3c48f1",
+      "bytes": 2069148
+    },
+    {
+      "path": "b_control_fixed_budget_3600/runtime_predictions.jsonl",
+      "sha256": "c91191c700cd4222d3eb2a05c2a1d19fc50cba5bfec845927c47b3fca1aaec24",
+      "bytes": 7452035
+    },
+    {
+      "path": "t_op_best/metrics.json",
+      "sha256": "02ed428f153f1746180054b8ef6853e42c8e9d3e34d13d49877d299361689989",
+      "bytes": 952
+    },
+    {
+      "path": "t_op_best/offline_token_evaluation.jsonl",
+      "sha256": "353ff63afa77049161fe4b5e7dc026e256082e9acc8e6c63cc90aa098c4a4fbc",
+      "bytes": 2380260
+    },
+    {
+      "path": "t_op_best/runtime_predictions.jsonl",
+      "sha256": "8a84707c43649d1405b4b86a9a0e8cbd379238c2cbfb28c25e6c918303e9f67f",
+      "bytes": 8372183
+    },
+    {
+      "path": "t_op_fixed_budget_3600/metrics.json",
+      "sha256": "5cd638807b1661dbb4968770750141878c70c94be9e7c1b690d6f1d733dda095",
+      "bytes": 975
+    },
+    {
+      "path": "t_op_fixed_budget_3600/offline_token_evaluation.jsonl",
+      "sha256": "46bcfdbe7e9c90cf9fcadbd93e6906d894685f56fc3d51f4e0aec0b7d6d2d6b1",
+      "bytes": 2377384
+    },
+    {
+      "path": "t_op_fixed_budget_3600/runtime_predictions.jsonl",
+      "sha256": "dc53d74f5b346ba257499ff7453d5d287c8976d8da8efb92218ad9444c4ae488",
+      "bytes": 8498256
+    }
+  ],
+  "source_directory": "/home/khoa/Projects/KLTN/Dataset/manifests/RQ1-P-SUP/evaluation",
+  "source_script_sha256": "63841a89838af0b29687292b43d336a8194660eff7706f2d609d21d3ce1ec348"
+}
