@@ -16,7 +16,7 @@ import torch
 
 from langfens_prep.trn04.features import ACOUSTIC_FEATURE_DIM, extract_frame_acoustic_features
 from langfens_prep.trn04.model import CompactFactorialOperationHead, FactorialHeadConfig
-from langfens_prep.phoneme_normalizer import PHONE_TO_CTC_INDEX
+from langfens_prep.phoneme_normalizer import PHONE_TO_CTC_INDEX, CTC_INDEX_TO_PHONE
 
 ARMS = {"C0", "T1", "T2", "T3"}
 ENDPOINTS = {"fixed_budget_3600", "best"}
@@ -147,7 +147,8 @@ def runtime_rows(*, logits: torch.Tensor, ctc_logits: torch.Tensor, prompt_phone
         "arm": arm, "endpoint": endpoint, "speaker_id": speaker_id,
         "utterance_id": utterance_id, "audio_source_id": audio_source_id,
         "frame_argmax_ids": [int(x) for x in ctc_ids],
-        "hypothesis_phone_ids": decoded, "frame_count": len(ctc_ids),
+        "hypothesis_phone_ids": decoded,
+        "hyp_phones": [CTC_INDEX_TO_PHONE[i] for i in decoded], "frame_count": len(ctc_ids),
         "blank_frames": sum(x == 0 for x in ctc_ids),
         "ctc_logits_sha256": hashlib.sha256(ctc.numpy().tobytes()).hexdigest(),
     }

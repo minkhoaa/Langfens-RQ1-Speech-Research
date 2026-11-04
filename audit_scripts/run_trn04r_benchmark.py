@@ -124,6 +124,7 @@ def main() -> None:
     start = time.time()
     torch.set_num_threads(args.threads)
     torch.manual_seed(1337)
+    torch.use_deterministic_algorithms(True)
     np.random.seed(1337)
     split_path = args.split.resolve()
     archive = args.archive.resolve()
@@ -362,6 +363,10 @@ def main() -> None:
         "command": sys.argv, "interpreter": sys.executable, "python_version": platform.python_version(),
         "hardware": {"platform": platform.platform(), "processor": platform.processor(), "cpu_count": os.cpu_count()},
         "dependencies": {name: importlib.metadata.version(name) for name in ("torch", "transformers", "numpy", "soundfile", "scipy", "huggingface-hub")},
+        "parameter_fingerprints_before": {"backbone": backbone_before, **model_before},
+        "parameter_fingerprints_after": {"backbone": fingerprint(frozen_encoder),
+            **{f"{a}:{e}": fingerprint(h) for (a, e), h in heads.items()}},
+        "determinism": {"seed": 1337, "torch_deterministic_algorithms": torch.are_deterministic_algorithms_enabled()},
         "backward_passes": 0, "optimizer_updates": 0, "gold_free_z_frozen_before_annotation": True,
         "outputs": {str(path.relative_to(output_root)): file_digest(path) for path in sorted(output_root.rglob("*")) if path.is_file()}}
     (output_root / "RUN_MANIFEST.json").write_text(json.dumps(manifest, indent=2, sort_keys=True, allow_nan=False) + "\n")
