@@ -1,0 +1,22 @@
+# RQ1-TRN-04R independent scientific audit — Workstream D
+
+## Evidence boundary
+
+Inspected frozen V1 contract (SHA-256 `4d99723e4b3f62f506165ced089eca82d4417279c76973b35470bd337cedfab2`), historical `audit_scripts/evaluate_protocol_z.py`, its legacy alignment/scoring tests, and recovered P-SUP `runtime.py`, `dataset.py`, `evaluator.py` in a sibling worktree. No checkpoint, corpus archive, raw waveform, TextGrid, private benchmark payload, or TEST record was opened. New A/B implementation files were unavailable in this isolated checkout; their API integration is a pending review gate.
+
+## Protocol and leakage findings
+
+- Legacy zero-oracle runner has a `ZeroOracleL2ArcticDataset` inference pathway fed prompt text/G2P and audio, distinct from the oracle dataset. Its offline postprocessing also loads annotation-derived canonical phones/labels for joins. The join is necessary for evaluation but must remain after frozen runtime predictions. Code structure/source comments alone do not establish that all future integrated call paths avoid annotation access.
+- The recovered runtime row schema has no gold/annotation fields, recursively rejects annotation-like keys, enforces allowed speaker denylist, nulls subtype scores for collapsed binary objective, and provides complete-run coverage validation. These are implementation-level controls in the recovered P-SUP API, not evidence that the absent new runtime is integrated correctly.
+- Historical legacy evaluator computes/serializes rounded AP and includes validation-prevalence imputation paths for unmatched gold positions. Those historical scores cannot be reinterpreted as V1 primary full-population AP. V1 requires abstention/no fabricated score; preserve and label legacy rows separately.
+- V1's historical 9,956 token census implies 145 deletions and omission denominator 8,944 (correct plus deletion, excluding substitution). Newly added test asserts arithmetic only; it does not inspect evaluation payloads.
+- Prompt/gold DP deletion is a mapping edit, not a learner omission. CTC reference deletion is recognition error, not human label. T-OP operation probabilities identify subtype; B-Control's collapsed binary output cannot support subtype inference. Thresholds must derive from CAL correct-token scores, not VAL.
+- Stable manifest order, one row per prompt position, every gold position retained offline, extras separately typed, and mismatch audio pairing with unchanged text prompt require integrated source/output verification. Synthetic regression tests cover the contracts but not produced benchmark files.
+
+## Scientific interpretation constraints
+
+No real benchmark was run or reviewed here; no architecture winner, efficacy, acoustic causal effect, or deployment readiness is claimed. Horvitz–Thompson/event-horizon estimates are not independently recomputed or validated in this lane; any such estimate must include its sampling design, inclusion probabilities, variance/uncertainty and target population. G=2 evaluation speakers are insufficient to establish population-level significance. A single seed cannot establish robustness or support inflated inferential claims. Report speaker-level results and paired deltas descriptively; no token-independent significance. Do not promote a candidate based on exploratory/retrospective VAL analyses or absent FIT-only control.
+
+## Status and gate
+
+Audit status: **PARTIAL — synthetic test source authored; execution/integration pending**. No leak was detected in the inspected runtime API definition, but the integrated production path is unavailable, so end-to-end leak absence is not certified. Coordinator must rerun scoped tests against frozen integrated source and inspect prediction/offline artifacts, hashes, coverage, CAL provenance, stable ordering, speaker isolation, and TEST denylist before any benchmark conclusion. Never mark real benchmark PASS until frozen source and outputs are available.
