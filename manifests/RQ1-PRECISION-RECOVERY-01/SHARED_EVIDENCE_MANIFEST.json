@@ -1,0 +1,37 @@
+{
+  "schema_version": "rq1-precision-recovery-v1",
+  "experiment_id": "LANGFENS-RQ1-PRECISION-RECOVERY-01",
+  "timestamp": "2026-11-04T12:00:00Z",
+  "registered_baseline": {
+    "configuration": "t_op_fixed_budget_3600",
+    "protocol": "protocol_z",
+    "dedicated_omission_ap": 0.09856,
+    "deployed_omission_precision": 0.067825,
+    "all_gold_omission_recall": 0.565517,
+    "binary_ap": 0.318619,
+    "legacy_substitution_ap": 0.308974,
+    "greedy_per": 0.24198,
+    "cal_15pct_operating_point": {
+      "threshold": 0.066045,
+      "tp": 82,
+      "fp_cor": 1068,
+      "fp_sub": 59,
+      "total_alarms": 1209
+    }
+  },
+  "file_digests": {
+    "datasets/L2-ARCTIC/authorized_RQ1-TRN-02A_fold1_train_val_only.zip": "b750eb3bf3971afccd9ab9058a64fa6b3f5781399b9ef0f1294d29bf580784a9",
+    "manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json": "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b",
+    "CASE_MANIFEST.json": "778b004869dad1c2aea441883e2d1e4bdcbc6fc116b5673214feb75b0324b366",
+    "ANNOTATION_REVIEW_LEDGER.jsonl": "c89cffeab305173f2717c9b8654d6d3add4cb260a2e43863e5632b62ab54a265",
+    "checkpoints/RQ1-P-SUP/t_op/fixed_budget_3600.pt": "a8559b382ff6ec09f9c90ed4eccba59fa45ff41e20e10aae1cea9eff7697fbd9",
+    "checkpoints/RQ1-P-SUP/t_op/best.pt": "3b492049399608a1f0319accee0404de50fe4972340ff5cc3c930f58867a14e9",
+    "checkpoints/RQ1-P-SUP/b_control/fixed_budget_3600.pt": "e121a7b965747b49608263f1e3ec447f2a631f09a36e326e20fe5f2cfe619201",
+    "checkpoints/RQ1-P-SUP/b_control/best.pt": "2dbad5a0160224f9d936e564a6c5d52dffe6a8efdbde8e409c50a8cc393be93f",
+    "/home/khoa/.cache/langfens/psup-benchmark-v1/recovered-final-v2-20261104/t_op_fixed_budget_3600/protocol_z/offline_token_evaluation.jsonl": "260b851d9324235cddf93eff29cd734c97f31ddc13de06165a0cb103d5afb74d",
+    "/home/khoa/.cache/langfens/psup-benchmark-v1/recovered-final-v2-20261104/t_op_fixed_budget_3600/protocol_z/runtime_predictions.jsonl": "5a67f36289f176df57093bd1e7b458c2009b553907a32b5a250636549128bec5",
+    "/home/khoa/.cache/langfens/psup-benchmark-v1/recovered-final-v2-20261104/t_op_fixed_budget_3600/protocol_z/calibration/offline_token_evaluation.jsonl": "3ff1a9d3c1cd61d40815e7849ecf7ce538d54877f8db0b288752c3a8790a1df1",
+    "/home/khoa/.cache/langfens/psup-benchmark-v1/recovered-final-v2-20261104/t_op_fixed_budget_3600/protocol_z/calibration/runtime_predictions.jsonl": "c8542624624dd9f5f7e63a96c62741bbb0b0954df1c7a2467b69677e2f5fec56",
+    "/home/khoa/.cache/langfens/psup-benchmark-v1/recovered-final-v2-20261104/AUDIO_MISMATCH_MAPPING.json": "ec05eef6f342ee43196fdc80a4e2d1c64dcec123d743134c92e3ea1129e61909"
+  }
+}

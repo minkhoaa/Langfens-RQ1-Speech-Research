@@ -1,0 +1,3290 @@
+{
+  "summary_by_category": {
+    "confirmed_tp": {
+      "count": 40,
+      "mean_duration_ms": 46.7,
+      "median_duration_ms": 37.5,
+      "mean_rel_energy_db": -3.5,
+      "mean_spectral_centroid_hz": 564.9,
+      "mean_zcr": 0.0239
+    },
+    "confirmed_tn": {
+      "count": 30,
+      "mean_duration_ms": 87.7,
+      "median_duration_ms": 75.0,
+      "mean_rel_energy_db": -1.3,
+      "mean_spectral_centroid_hz": 360.5,
+      "mean_zcr": 0.0229
+    },
+    "confirmed_model_fp": {
+      "count": 53,
+      "mean_duration_ms": 86.8,
+      "median_duration_ms": 80.0,
+      "mean_rel_energy_db": -2.4,
+      "mean_spectral_centroid_hz": 557.9,
+      "mean_zcr": 0.0243
+    },
+    "insufficient_evidence": {
+      "count": 33,
+      "mean_duration_ms": 52.3,
+      "median_duration_ms": 40.0,
+      "mean_rel_energy_db": -3.6,
+      "mean_spectral_centroid_hz": 638.5,
+      "mean_zcr": 0.0402
+    },
+    "confirmed_annotation_disagreement": {
+      "count": 44,
+      "mean_duration_ms": 81.3,
+      "median_duration_ms": 75.0,
+      "mean_rel_energy_db": -6.2,
+      "mean_spectral_centroid_hz": 390.0,
+      "mean_zcr": 0.019
+    },
+    "confirmed_model_fp_sub": {
+      "count": 15,
+      "mean_duration_ms": 85.4,
+      "median_duration_ms": 70.0,
+      "mean_rel_energy_db": -1.8,
+      "mean_spectral_centroid_hz": 1123.5,
+      "mean_zcr": 0.0395
+    },
+    "unmapped_abstention_reviewed": {
+      "count": 12,
+      "mean_duration_ms": 80.6,
+      "median_duration_ms": 68.0,
+      "mean_rel_energy_db": 0.2,
+      "mean_spectral_centroid_hz": 334.2,
+      "mean_zcr": 0.016
+    },
+    "confirmed_fn": {
+      "count": 3,
+      "mean_duration_ms": 13.9,
+      "median_duration_ms": 14.8,
+      "mean_rel_energy_db": -0.6,
+      "mean_spectral_centroid_hz": 230.4,
+      "mean_zcr": 0.0136
+    }
+  },
+  "case_measurements": [
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0006-P002-G002-D",
+      "category": "confirmed_tp",
+      "canonical_phone": "D",
+      "duration_ms": 70.0,
+      "matched_acoustic": {
+        "rms_db": -18.57,
+        "spectral_centroid_hz": 436.9,
+        "zcr": 0.0217,
+        "relative_energy_db": 0.12
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.1542244404554367
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0008-P002-G002-D",
+      "category": "confirmed_tp",
+      "canonical_phone": "D",
+      "duration_ms": 50.0,
+      "matched_acoustic": {
+        "rms_db": -24.22,
+        "spectral_centroid_hz": 1085.6,
+        "zcr": 0.0299,
+        "relative_energy_db": -6.6
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.1951369047164917
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0013-P034-G034-OW",
+      "category": "confirmed_tn",
+      "canonical_phone": "OW",
+      "duration_ms": 60.0,
+      "matched_acoustic": {
+        "rms_db": -15.79,
+        "spectral_centroid_hz": 276.0,
+        "zcr": 0.0132,
+        "relative_energy_db": 3.3
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.0006389329209923744
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0013-P047-G047-IY",
+      "category": "confirmed_tn",
+      "canonical_phone": "IY",
+      "duration_ms": 70.0,
+      "matched_acoustic": {
+        "rms_db": -28.3,
+        "spectral_centroid_hz": 521.7,
+        "zcr": 0.0178,
+        "relative_energy_db": -9.21
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.0026879149954766035
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0019-P021-G021-D",
+      "category": "confirmed_tp",
+      "canonical_phone": "D",
+      "duration_ms": 26.8,
+      "matched_acoustic": {
+        "rms_db": -19.59,
+        "spectral_centroid_hz": 255.2,
+        "zcr": 0.0135,
+        "relative_energy_db": -0.24
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.1272827535867691
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0021-P004-G004-R",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "R",
+      "duration_ms": 70.0,
+      "matched_acoustic": {
+        "rms_db": -11.58,
+        "spectral_centroid_hz": 546.9,
+        "zcr": 0.0227,
+        "relative_energy_db": 7.27
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.13326095044612885
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0021-P014-G014-IH",
+      "category": "confirmed_tn",
+      "canonical_phone": "IH",
+      "duration_ms": 150.0,
+      "matched_acoustic": {
+        "rms_db": -18.58,
+        "spectral_centroid_hz": 344.7,
+        "zcr": 0.0262,
+        "relative_energy_db": 0.27
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.0033575224224478006
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0022-P003-G003-D",
+      "category": "insufficient_evidence",
+      "canonical_phone": "D",
+      "duration_ms": 40.0,
+      "matched_acoustic": {
+        "rms_db": -15.38,
+        "spectral_centroid_hz": 262.2,
+        "zcr": 0.0147,
+        "relative_energy_db": 4.1
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.05679025128483772
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0022-P028-G028-R",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "R",
+      "duration_ms": 70.0,
+      "matched_acoustic": {
+        "rms_db": -14.96,
+        "spectral_centroid_hz": 378.3,
+        "zcr": 0.0165,
+        "relative_energy_db": 4.52
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.06895865499973297
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0022-P046-G046-AH",
+      "category": "confirmed_tn",
+      "canonical_phone": "AH",
+      "duration_ms": 40.0,
+      "matched_acoustic": {
+        "rms_db": -21.01,
+        "spectral_centroid_hz": 238.7,
+        "zcr": 0.0102,
+        "relative_energy_db": -1.53
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.008237176574766636
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0025-P007-G007-T",
+      "category": "confirmed_tp",
+      "canonical_phone": "T",
+      "duration_ms": 56.1,
+      "matched_acoustic": {
+        "rms_db": -39.65,
+        "spectral_centroid_hz": 344.5,
+        "zcr": 0.0154,
+        "relative_energy_db": -20.91
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.0958280861377716
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0026-P012-G012-T",
+      "category": "insufficient_evidence",
+      "canonical_phone": "T",
+      "duration_ms": 30.0,
+      "matched_acoustic": {
+        "rms_db": -23.16,
+        "spectral_centroid_hz": 196.7,
+        "zcr": 0.0083,
+        "relative_energy_db": -5.21
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.06192624941468239
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0028-P006-G006-R",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "R",
+      "duration_ms": 61.8,
+      "matched_acoustic": {
+        "rms_db": -13.23,
+        "spectral_centroid_hz": 460.2,
+        "zcr": 0.022,
+        "relative_energy_db": 6.06
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.12002202123403549
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0028-P010-G010-IY",
+      "category": "confirmed_tn",
+      "canonical_phone": "IY",
+      "duration_ms": 170.0,
+      "matched_acoustic": {
+        "rms_db": -22.6,
+        "spectral_centroid_hz": 330.4,
+        "zcr": 0.014,
+        "relative_energy_db": -3.31
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.007474614307284355
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0028-P012-G012-R",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "R",
+      "duration_ms": 70.0,
+      "matched_acoustic": {
+        "rms_db": -20.35,
+        "spectral_centroid_hz": 523.8,
+        "zcr": 0.0253,
+        "relative_energy_db": -1.06
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.13597646355628967
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0029-P011-G011-AO",
+      "category": "confirmed_tn",
+      "canonical_phone": "AO",
+      "duration_ms": 60.0,
+      "matched_acoustic": {
+        "rms_db": -14.7,
+        "spectral_centroid_hz": 388.6,
+        "zcr": 0.02,
+        "relative_energy_db": 2.78
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.0013934847665950656
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0029-P036-G036-R",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "R",
+      "duration_ms": 50.0,
+      "matched_acoustic": {
+        "rms_db": -30.14,
+        "spectral_centroid_hz": 417.9,
+        "zcr": 0.0354,
+        "relative_energy_db": -12.66
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.08763759583234787
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0040-P011-G011-D",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "D",
+      "duration_ms": 70.0,
+      "matched_acoustic": {
+        "rms_db": -19.77,
+        "spectral_centroid_hz": 215.3,
+        "zcr": 0.0156,
+        "relative_energy_db": -0.12
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.12144932895898819
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0040-P028-G028-R",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "R",
+      "duration_ms": 280.0,
+      "matched_acoustic": {
+        "rms_db": -34.35,
+        "spectral_centroid_hz": 651.0,
+        "zcr": 0.0235,
+        "relative_energy_db": -14.7
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.10163156688213348
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0041-P005-G005-L",
+      "category": "insufficient_evidence",
+      "canonical_phone": "L",
+      "duration_ms": 50.0,
+      "matched_acoustic": {
+        "rms_db": -24.68,
+        "spectral_centroid_hz": 531.9,
+        "zcr": 0.0195,
+        "relative_energy_db": -6.84
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.023616401478648186
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0042-P004-G004-D",
+      "category": "insufficient_evidence",
+      "canonical_phone": "D",
+      "duration_ms": 60.0,
+      "matched_acoustic": {
+        "rms_db": -22.54,
+        "spectral_centroid_hz": 432.1,
+        "zcr": 0.0476,
+        "relative_energy_db": -2.18
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.11855433881282806
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0045-P024-G024-D",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "D",
+      "duration_ms": 100.0,
+      "matched_acoustic": {
+        "rms_db": -34.66,
+        "spectral_centroid_hz": 789.3,
+        "zcr": 0.0147,
+        "relative_energy_db": -15.8
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.0848393514752388
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0046-P026-G026-D",
+      "category": "insufficient_evidence",
+      "canonical_phone": "D",
+      "duration_ms": 30.0,
+      "matched_acoustic": {
+        "rms_db": -19.89,
+        "spectral_centroid_hz": 486.7,
+        "zcr": 0.031,
+        "relative_energy_db": -0.71
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.058716751635074615
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0047-P034-G034-D",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "D",
+      "duration_ms": 100.0,
+      "matched_acoustic": {
+        "rms_db": -31.13,
+        "spectral_centroid_hz": 724.1,
+        "zcr": 0.0222,
+        "relative_energy_db": -11.1
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.12825241684913635
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0048-P007-G007-T",
+      "category": "insufficient_evidence",
+      "canonical_phone": "T",
+      "duration_ms": 30.0,
+      "matched_acoustic": {
+        "rms_db": -17.56,
+        "spectral_centroid_hz": 292.9,
+        "zcr": 0.0167,
+        "relative_energy_db": 2.78
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.054583821445703506
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0048-P020-G020-R",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "R",
+      "duration_ms": 140.0,
+      "matched_acoustic": {
+        "rms_db": -28.61,
+        "spectral_centroid_hz": 405.0,
+        "zcr": 0.0167,
+        "relative_energy_db": -8.27
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.06647251546382904
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0052-P011-G011-AH",
+      "category": "insufficient_evidence",
+      "canonical_phone": "AH",
+      "duration_ms": 26.2,
+      "matched_acoustic": {
+        "rms_db": -20.35,
+        "spectral_centroid_hz": 396.4,
+        "zcr": 0.103,
+        "relative_energy_db": -1.51
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.009075876325368881
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0053-P020-G020-D",
+      "category": "confirmed_tp",
+      "canonical_phone": "D",
+      "duration_ms": 53.0,
+      "matched_acoustic": {
+        "rms_db": -40.94,
+        "spectral_centroid_hz": 680.9,
+        "zcr": 0.0325,
+        "relative_energy_db": -21.0
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.07877189666032791
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0058-P018-G018-R",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "R",
+      "duration_ms": 110.0,
+      "matched_acoustic": {
+        "rms_db": -18.81,
+        "spectral_centroid_hz": 426.9,
+        "zcr": 0.0295,
+        "relative_energy_db": -0.21
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.10290279984474182
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0058-P038-G038-IY",
+      "category": "confirmed_tn",
+      "canonical_phone": "IY",
+      "duration_ms": 50.0,
+      "matched_acoustic": {
+        "rms_db": -19.12,
+        "spectral_centroid_hz": 218.8,
+        "zcr": 0.0118,
+        "relative_energy_db": -0.52
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.0028753795195370913
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0059-P004-G004-M",
+      "category": "confirmed_tn",
+      "canonical_phone": "M",
+      "duration_ms": 120.0,
+      "matched_acoustic": {
+        "rms_db": -12.35,
+        "spectral_centroid_hz": 209.1,
+        "zcr": 0.0115,
+        "relative_energy_db": 6.51
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.0011584596941247582
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0064-P004-G004-R",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "R",
+      "duration_ms": 100.0,
+      "matched_acoustic": {
+        "rms_db": -14.26,
+        "spectral_centroid_hz": 479.7,
+        "zcr": 0.0304,
+        "relative_energy_db": 5.11
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.12474598735570908
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0064-P024-G024-T",
+      "category": "confirmed_tp",
+      "canonical_phone": "T",
+      "duration_ms": 60.0,
+      "matched_acoustic": {
+        "rms_db": -33.05,
+        "spectral_centroid_hz": 763.8,
+        "zcr": 0.0223,
+        "relative_energy_db": -13.68
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.08302366733551025
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0064-P034-G034-P",
+      "category": "insufficient_evidence",
+      "canonical_phone": "P",
+      "duration_ms": 30.0,
+      "matched_acoustic": {
+        "rms_db": -24.87,
+        "spectral_centroid_hz": 207.6,
+        "zcr": 0.0061,
+        "relative_energy_db": -5.5
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.01290811225771904
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0065-P027-G027-K",
+      "category": "insufficient_evidence",
+      "canonical_phone": "K",
+      "duration_ms": 100.0,
+      "matched_acoustic": {
+        "rms_db": -34.77,
+        "spectral_centroid_hz": 325.6,
+        "zcr": 0.0188,
+        "relative_energy_db": -15.64
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.02070736512541771
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0067-P021-G021-R",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "R",
+      "duration_ms": 80.0,
+      "matched_acoustic": {
+        "rms_db": -24.19,
+        "spectral_centroid_hz": 554.8,
+        "zcr": 0.0181,
+        "relative_energy_db": -1.79
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.09564128518104553
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0075-P024-G024-D",
+      "category": "confirmed_annotation_disagreement",
+      "canonical_phone": "D",
+      "duration_ms": 40.0,
+      "matched_acoustic": {
+        "rms_db": -31.41,
+        "spectral_centroid_hz": 334.9,
+        "zcr": 0.0346,
+        "relative_energy_db": -11.12
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.12192083150148392
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0076-P024-G024-D",
+      "category": "insufficient_evidence",
+      "canonical_phone": "D",
+      "duration_ms": 84.2,
+      "matched_acoustic": {
+        "rms_db": -33.06,
+        "spectral_centroid_hz": 1550.2,
+        "zcr": 0.0563,
+        "relative_energy_db": -11.77
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.11267291754484177
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0078-P024-G024-M",
+      "category": "confirmed_tn",
+      "canonical_phone": "M",
+      "duration_ms": 190.0,
+      "matched_acoustic": {
+        "rms_db": -26.96,
+        "spectral_centroid_hz": 211.3,
+        "zcr": 0.0118,
+        "relative_energy_db": -6.02
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.0014905203133821487
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0085-P002-G002-R",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "R",
+      "duration_ms": 50.0,
+      "matched_acoustic": {
+        "rms_db": -15.15,
+        "spectral_centroid_hz": 442.7,
+        "zcr": 0.0753,
+        "relative_energy_db": 5.18
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.1296524703502655
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0086-P000-G000-D",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "D",
+      "duration_ms": 240.0,
+      "matched_acoustic": {
+        "rms_db": -19.1,
+        "spectral_centroid_hz": 379.7,
+        "zcr": 0.0136,
+        "relative_energy_db": 0.54
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.13085900247097015
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0086-P021-G021-D",
+      "category": "confirmed_annotation_disagreement",
+      "canonical_phone": "D",
+      "duration_ms": 80.0,
+      "matched_acoustic": {
+        "rms_db": -34.61,
+        "spectral_centroid_hz": 453.0,
+        "zcr": 0.0275,
+        "relative_energy_db": -14.97
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.1849614530801773
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0086-P022-G022-AH",
+      "category": "insufficient_evidence",
+      "canonical_phone": "AH",
+      "duration_ms": 30.0,
+      "matched_acoustic": {
+        "rms_db": -25.6,
+        "spectral_centroid_hz": 217.5,
+        "zcr": 0.0265,
+        "relative_energy_db": -5.96
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.014111597090959549
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0092-P006-G006-D",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "D",
+      "duration_ms": 119.0,
+      "matched_acoustic": {
+        "rms_db": -21.12,
+        "spectral_centroid_hz": 486.2,
+        "zcr": 0.0221,
+        "relative_energy_db": -0.58
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.07699058949947357
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0093-P027-G027-D",
+      "category": "confirmed_model_fp_sub",
+      "canonical_phone": "D",
+      "duration_ms": 140.0,
+      "matched_acoustic": {
+        "rms_db": -33.45,
+        "spectral_centroid_hz": 752.8,
+        "zcr": 0.0318,
+        "relative_energy_db": -14.39
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.084102563560009
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0099-P022-G022-R",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "R",
+      "duration_ms": 150.0,
+      "matched_acoustic": {
+        "rms_db": -23.12,
+        "spectral_centroid_hz": 424.5,
+        "zcr": 0.0201,
+        "relative_energy_db": -7.19
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.09359624981880188
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0104-P013-G013-D",
+      "category": "confirmed_model_fp_sub",
+      "canonical_phone": "D",
+      "duration_ms": 60.0,
+      "matched_acoustic": {
+        "rms_db": -17.63,
+        "spectral_centroid_hz": 244.2,
+        "zcr": 0.0174,
+        "relative_energy_db": 3.73
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.1296200156211853
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0105-P005-G005-T",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "T",
+      "duration_ms": 50.0,
+      "matched_acoustic": {
+        "rms_db": -21.92,
+        "spectral_centroid_hz": 384.1,
+        "zcr": 0.0263,
+        "relative_energy_db": -1.6
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.07285739481449127
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0106-PNA-G008-HH",
+      "category": "unmapped_abstention_reviewed",
+      "canonical_phone": "HH",
+      "duration_ms": 100.0,
+      "matched_acoustic": {
+        "rms_db": -27.47,
+        "spectral_centroid_hz": 238.2,
+        "zcr": 0.0073,
+        "relative_energy_db": -8.07
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": null
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0106-PNA-G026-R",
+      "category": "unmapped_abstention_reviewed",
+      "canonical_phone": "R",
+      "duration_ms": 13.7,
+      "matched_acoustic": {
+        "rms_db": -18.89,
+        "spectral_centroid_hz": 231.6,
+        "zcr": 0.0132,
+        "relative_energy_db": 0.51
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": null
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0106-P026-G028-T",
+      "category": "insufficient_evidence",
+      "canonical_phone": "T",
+      "duration_ms": 50.0,
+      "matched_acoustic": {
+        "rms_db": -27.42,
+        "spectral_centroid_hz": 6029.4,
+        "zcr": 0.2849,
+        "relative_energy_db": -8.02
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.052188463509082794
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0106-P029-G031-R",
+      "category": "confirmed_model_fp_sub",
+      "canonical_phone": "R",
+      "duration_ms": 70.0,
+      "matched_acoustic": {
+        "rms_db": -21.55,
+        "spectral_centroid_hz": 389.3,
+        "zcr": 0.0162,
+        "relative_energy_db": -2.15
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.11310607194900513
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0111-P024-G024-T",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "T",
+      "duration_ms": 90.0,
+      "matched_acoustic": {
+        "rms_db": -29.09,
+        "spectral_centroid_hz": 5700.0,
+        "zcr": 0.1235,
+        "relative_energy_db": -8.26
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.0679982528090477
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0113-P017-G017-NG",
+      "category": "confirmed_tn",
+      "canonical_phone": "NG",
+      "duration_ms": 90.0,
+      "matched_acoustic": {
+        "rms_db": -17.82,
+        "spectral_centroid_hz": 219.2,
+        "zcr": 0.0108,
+        "relative_energy_db": 3.15
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.004520877730101347
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0113-P023-G023-M",
+      "category": "confirmed_tn",
+      "canonical_phone": "M",
+      "duration_ms": 80.0,
+      "matched_acoustic": {
+        "rms_db": -19.17,
+        "spectral_centroid_hz": 198.9,
+        "zcr": 0.0077,
+        "relative_energy_db": 1.8
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.0015063225291669369
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0115-P023-G023-NG",
+      "category": "insufficient_evidence",
+      "canonical_phone": "NG",
+      "duration_ms": 60.0,
+      "matched_acoustic": {
+        "rms_db": -22.27,
+        "spectral_centroid_hz": 467.9,
+        "zcr": 0.0234,
+        "relative_energy_db": -1.58
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.010617662221193314
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0120-P007-G007-T",
+      "category": "confirmed_annotation_disagreement",
+      "canonical_phone": "T",
+      "duration_ms": 140.0,
+      "matched_acoustic": {
+        "rms_db": -36.88,
+        "spectral_centroid_hz": 482.2,
+        "zcr": 0.0194,
+        "relative_energy_db": -15.12
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.10009654611349106
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0121-P024-G023-D",
+      "category": "confirmed_annotation_disagreement",
+      "canonical_phone": "D",
+      "duration_ms": 60.0,
+      "matched_acoustic": {
+        "rms_db": -32.37,
+        "spectral_centroid_hz": 1144.1,
+        "zcr": 0.0726,
+        "relative_energy_db": -10.57
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.2036551684141159
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0121-P027-G026-ER",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "ER",
+      "duration_ms": 100.0,
+      "matched_acoustic": {
+        "rms_db": -23.49,
+        "spectral_centroid_hz": 436.3,
+        "zcr": 0.0143,
+        "relative_energy_db": -1.69
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.142857626080513
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0123-P006-G006-AY",
+      "category": "confirmed_tn",
+      "canonical_phone": "AY",
+      "duration_ms": 190.0,
+      "matched_acoustic": {
+        "rms_db": -18.02,
+        "spectral_centroid_hz": 844.2,
+        "zcr": 0.0383,
+        "relative_energy_db": 4.29
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.00045700446935370564
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0123-P018-G017-D",
+      "category": "confirmed_tp",
+      "canonical_phone": "D",
+      "duration_ms": 21.1,
+      "matched_acoustic": {
+        "rms_db": -21.12,
+        "spectral_centroid_hz": 166.9,
+        "zcr": 0.0075,
+        "relative_energy_db": 1.19
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.09900865703821182
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0125-P012-G012-D",
+      "category": "confirmed_tp",
+      "canonical_phone": "D",
+      "duration_ms": 30.7,
+      "matched_acoustic": {
+        "rms_db": -18.99,
+        "spectral_centroid_hz": 196.8,
+        "zcr": 0.0074,
+        "relative_energy_db": 2.78
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.09158292412757874
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0126-P014-G014-R",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "R",
+      "duration_ms": 90.0,
+      "matched_acoustic": {
+        "rms_db": -16.88,
+        "spectral_centroid_hz": 357.3,
+        "zcr": 0.0219,
+        "relative_energy_db": 3.86
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.12137787789106369
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0127-P014-G014-B",
+      "category": "confirmed_tn",
+      "canonical_phone": "B",
+      "duration_ms": 60.0,
+      "matched_acoustic": {
+        "rms_db": -39.96,
+        "spectral_centroid_hz": 308.9,
+        "zcr": 0.0095,
+        "relative_energy_db": -19.13
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.0025686451699584723
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0131-P023-G023-R",
+      "category": "confirmed_model_fp_sub",
+      "canonical_phone": "R",
+      "duration_ms": 70.0,
+      "matched_acoustic": {
+        "rms_db": -20.27,
+        "spectral_centroid_hz": 323.2,
+        "zcr": 0.0292,
+        "relative_energy_db": -0.01
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.14567303657531738
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0131-P028-G028-EY",
+      "category": "confirmed_tn",
+      "canonical_phone": "EY",
+      "duration_ms": 110.0,
+      "matched_acoustic": {
+        "rms_db": -24.36,
+        "spectral_centroid_hz": 361.7,
+        "zcr": 0.0177,
+        "relative_energy_db": -4.1
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.0053464327938854694
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0131-P032-G032-R",
+      "category": "confirmed_annotation_disagreement",
+      "canonical_phone": "R",
+      "duration_ms": 30.0,
+      "matched_acoustic": {
+        "rms_db": -35.99,
+        "spectral_centroid_hz": 1234.9,
+        "zcr": 0.0378,
+        "relative_energy_db": -15.73
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.13176459074020386
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0137-P008-G008-P",
+      "category": "insufficient_evidence",
+      "canonical_phone": "P",
+      "duration_ms": 60.0,
+      "matched_acoustic": {
+        "rms_db": -32.63,
+        "spectral_centroid_hz": 817.3,
+        "zcr": 0.0189,
+        "relative_energy_db": -10.78
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.006110738962888718
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0154-P016-G016-D",
+      "category": "confirmed_tp",
+      "canonical_phone": "D",
+      "duration_ms": 34.5,
+      "matched_acoustic": {
+        "rms_db": -24.59,
+        "spectral_centroid_hz": 247.2,
+        "zcr": 0.0388,
+        "relative_energy_db": -3.57
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.21203269064426422
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0154-P021-G021-EH",
+      "category": "insufficient_evidence",
+      "canonical_phone": "EH",
+      "duration_ms": 30.0,
+      "matched_acoustic": {
+        "rms_db": -18.17,
+        "spectral_centroid_hz": 520.6,
+        "zcr": 0.0219,
+        "relative_energy_db": 2.85
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.002864313777536154
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0176-P008-G008-T",
+      "category": "insufficient_evidence",
+      "canonical_phone": "T",
+      "duration_ms": 40.0,
+      "matched_acoustic": {
+        "rms_db": -43.68,
+        "spectral_centroid_hz": 2021.5,
+        "zcr": 0.1015,
+        "relative_energy_db": -20.74
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.05224670469760895
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0176-P015-G015-IH",
+      "category": "confirmed_tn",
+      "canonical_phone": "IH",
+      "duration_ms": 40.0,
+      "matched_acoustic": {
+        "rms_db": -20.24,
+        "spectral_centroid_hz": 219.0,
+        "zcr": 0.0142,
+        "relative_energy_db": 2.7
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.0013146894052624702
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0191-P001-G001-R",
+      "category": "insufficient_evidence",
+      "canonical_phone": "R",
+      "duration_ms": 40.0,
+      "matched_acoustic": {
+        "rms_db": -19.28,
+        "spectral_centroid_hz": 456.8,
+        "zcr": 0.0448,
+        "relative_energy_db": 3.13
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.00041477190097793937
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0210-P030-G030-D",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "D",
+      "duration_ms": 70.0,
+      "matched_acoustic": {
+        "rms_db": -38.03,
+        "spectral_centroid_hz": 351.8,
+        "zcr": 0.0253,
+        "relative_energy_db": -14.03
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.09056717157363892
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0212-P028-G028-T",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "T",
+      "duration_ms": 100.0,
+      "matched_acoustic": {
+        "rms_db": -27.03,
+        "spectral_centroid_hz": 1176.3,
+        "zcr": 0.083,
+        "relative_energy_db": -1.64
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.08119591325521469
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0227-P027-G027-D",
+      "category": "confirmed_tp",
+      "canonical_phone": "D",
+      "duration_ms": 23.4,
+      "matched_acoustic": {
+        "rms_db": -25.05,
+        "spectral_centroid_hz": 201.6,
+        "zcr": 0.0107,
+        "relative_energy_db": -2.25
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.10860342532396317
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0233-P021-G021-D",
+      "category": "confirmed_tp",
+      "canonical_phone": "D",
+      "duration_ms": 70.0,
+      "matched_acoustic": {
+        "rms_db": -37.35,
+        "spectral_centroid_hz": 4878.1,
+        "zcr": 0.0943,
+        "relative_energy_db": -14.71
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.12360286712646484
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0254-P014-G014-EH",
+      "category": "insufficient_evidence",
+      "canonical_phone": "EH",
+      "duration_ms": 30.0,
+      "matched_acoustic": {
+        "rms_db": -21.68,
+        "spectral_centroid_hz": 449.9,
+        "zcr": 0.0303,
+        "relative_energy_db": 0.57
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.0036846522707492113
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0254-P015-G015-R",
+      "category": "confirmed_model_fp_sub",
+      "canonical_phone": "R",
+      "duration_ms": 60.0,
+      "matched_acoustic": {
+        "rms_db": -22.28,
+        "spectral_centroid_hz": 516.9,
+        "zcr": 0.0234,
+        "relative_energy_db": -0.03
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.0992671325802803
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0260-P004-G004-D",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "D",
+      "duration_ms": 40.0,
+      "matched_acoustic": {
+        "rms_db": -19.18,
+        "spectral_centroid_hz": 336.0,
+        "zcr": 0.017,
+        "relative_energy_db": 1.05
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.1127014011144638
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0260-PNA-G007-Y",
+      "category": "unmapped_abstention_reviewed",
+      "canonical_phone": "Y",
+      "duration_ms": 80.0,
+      "matched_acoustic": {
+        "rms_db": -14.51,
+        "spectral_centroid_hz": 278.1,
+        "zcr": 0.0233,
+        "relative_energy_db": 5.72
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": null
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0265-P018-G018-V",
+      "category": "insufficient_evidence",
+      "canonical_phone": "V",
+      "duration_ms": 40.4,
+      "matched_acoustic": {
+        "rms_db": -25.82,
+        "spectral_centroid_hz": 167.3,
+        "zcr": 0.0079,
+        "relative_energy_db": -3.32
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.01918940059840679
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0269-P011-G011-T",
+      "category": "insufficient_evidence",
+      "canonical_phone": "T",
+      "duration_ms": 60.0,
+      "matched_acoustic": {
+        "rms_db": -19.77,
+        "spectral_centroid_hz": 369.3,
+        "zcr": 0.0268,
+        "relative_energy_db": 3.33
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.13880842924118042
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0269-P032-G032-D",
+      "category": "confirmed_annotation_disagreement",
+      "canonical_phone": "D",
+      "duration_ms": 140.0,
+      "matched_acoustic": {
+        "rms_db": -29.54,
+        "spectral_centroid_hz": 895.4,
+        "zcr": 0.0285,
+        "relative_energy_db": -6.44
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.24428030848503113
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0269-P039-G039-Z",
+      "category": "confirmed_model_fp_sub",
+      "canonical_phone": "Z",
+      "duration_ms": 181.6,
+      "matched_acoustic": {
+        "rms_db": -36.15,
+        "spectral_centroid_hz": 6277.9,
+        "zcr": 0.1752,
+        "relative_energy_db": -13.05
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.07895326614379883
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0295-P018-G018-D",
+      "category": "confirmed_annotation_disagreement",
+      "canonical_phone": "D",
+      "duration_ms": 97.5,
+      "matched_acoustic": {
+        "rms_db": -33.17,
+        "spectral_centroid_hz": 690.0,
+        "zcr": 0.0172,
+        "relative_energy_db": -10.57
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.12181931734085083
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0299-P022-G021-IH",
+      "category": "confirmed_tn",
+      "canonical_phone": "IH",
+      "duration_ms": 60.0,
+      "matched_acoustic": {
+        "rms_db": -19.53,
+        "spectral_centroid_hz": 354.9,
+        "zcr": 0.0268,
+        "relative_energy_db": 4.17
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.004719845950603485
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0299-P041-G040-D",
+      "category": "confirmed_tp",
+      "canonical_phone": "D",
+      "duration_ms": 56.0,
+      "matched_acoustic": {
+        "rms_db": -21.98,
+        "spectral_centroid_hz": 211.8,
+        "zcr": 0.013,
+        "relative_energy_db": 1.72
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.1381155550479889
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0300-P012-G012-R",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "R",
+      "duration_ms": 70.0,
+      "matched_acoustic": {
+        "rms_db": -20.3,
+        "spectral_centroid_hz": 524.9,
+        "zcr": 0.024,
+        "relative_energy_db": 1.42
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.07779551297426224
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0300-P035-G035-IY",
+      "category": "confirmed_fn",
+      "canonical_phone": "IY",
+      "duration_ms": 8.0,
+      "matched_acoustic": {
+        "rms_db": -20.12,
+        "spectral_centroid_hz": 294.3,
+        "zcr": 0.0199,
+        "relative_energy_db": 1.6
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.0016548975836485624
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0369-P004-G004-R",
+      "category": "confirmed_annotation_disagreement",
+      "canonical_phone": "R",
+      "duration_ms": 40.0,
+      "matched_acoustic": {
+        "rms_db": -14.04,
+        "spectral_centroid_hz": 660.1,
+        "zcr": 0.0312,
+        "relative_energy_db": 7.05
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.15009810030460358
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0369-P014-G014-D",
+      "category": "confirmed_annotation_disagreement",
+      "canonical_phone": "D",
+      "duration_ms": 60.0,
+      "matched_acoustic": {
+        "rms_db": -20.53,
+        "spectral_centroid_hz": 549.9,
+        "zcr": 0.0329,
+        "relative_energy_db": 0.56
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.18458300828933716
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0369-P028-G028-D",
+      "category": "confirmed_annotation_disagreement",
+      "canonical_phone": "D",
+      "duration_ms": 110.0,
+      "matched_acoustic": {
+        "rms_db": -34.94,
+        "spectral_centroid_hz": 314.8,
+        "zcr": 0.0148,
+        "relative_energy_db": -13.85
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.21132686734199524
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0401-P020-G020-R",
+      "category": "confirmed_model_fp_sub",
+      "canonical_phone": "R",
+      "duration_ms": 70.0,
+      "matched_acoustic": {
+        "rms_db": -18.26,
+        "spectral_centroid_hz": 423.0,
+        "zcr": 0.0204,
+        "relative_energy_db": 0.96
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.08108219504356384
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0416-P011-G011-D",
+      "category": "confirmed_annotation_disagreement",
+      "canonical_phone": "D",
+      "duration_ms": 50.0,
+      "matched_acoustic": {
+        "rms_db": -24.42,
+        "spectral_centroid_hz": 248.6,
+        "zcr": 0.0163,
+        "relative_energy_db": -2.78
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.15137647092342377
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0416-P025-G025-F",
+      "category": "confirmed_tn",
+      "canonical_phone": "F",
+      "duration_ms": 90.0,
+      "matched_acoustic": {
+        "rms_db": -33.55,
+        "spectral_centroid_hz": 1166.7,
+        "zcr": 0.0592,
+        "relative_energy_db": -11.91
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.0022298626136034727
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0441-P006-G006-T",
+      "category": "confirmed_tp",
+      "canonical_phone": "T",
+      "duration_ms": 30.0,
+      "matched_acoustic": {
+        "rms_db": -14.47,
+        "spectral_centroid_hz": 219.6,
+        "zcr": 0.0106,
+        "relative_energy_db": 5.29
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.10826591402292252
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0441-P023-G023-R",
+      "category": "confirmed_annotation_disagreement",
+      "canonical_phone": "R",
+      "duration_ms": 80.0,
+      "matched_acoustic": {
+        "rms_db": -19.28,
+        "spectral_centroid_hz": 458.7,
+        "zcr": 0.021,
+        "relative_energy_db": 0.48
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.151327982544899
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0441-P037-G037-D",
+      "category": "confirmed_annotation_disagreement",
+      "canonical_phone": "D",
+      "duration_ms": 40.0,
+      "matched_acoustic": {
+        "rms_db": -32.36,
+        "spectral_centroid_hz": 305.2,
+        "zcr": 0.0102,
+        "relative_energy_db": -12.6
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.16195282340049744
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0441-P038-G038-T",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "T",
+      "duration_ms": 120.0,
+      "matched_acoustic": {
+        "rms_db": -30.14,
+        "spectral_centroid_hz": 3873.1,
+        "zcr": 0.0421,
+        "relative_energy_db": -10.38
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.09377690404653549
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0500-P027-G027-D",
+      "category": "confirmed_annotation_disagreement",
+      "canonical_phone": "D",
+      "duration_ms": 50.0,
+      "matched_acoustic": {
+        "rms_db": -23.86,
+        "spectral_centroid_hz": 181.2,
+        "zcr": 0.0064,
+        "relative_energy_db": -2.63
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.1993645280599594
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_a0556-PNA-G000-HH",
+      "category": "unmapped_abstention_reviewed",
+      "canonical_phone": "HH",
+      "duration_ms": 70.0,
+      "matched_acoustic": {
+        "rms_db": -37.14,
+        "spectral_centroid_hz": 429.6,
+        "zcr": 0.0107,
+        "relative_energy_db": -13.66
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": null
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_b0150-P011-G011-D",
+      "category": "confirmed_annotation_disagreement",
+      "canonical_phone": "D",
+      "duration_ms": 100.0,
+      "matched_acoustic": {
+        "rms_db": -29.4,
+        "spectral_centroid_hz": 605.5,
+        "zcr": 0.039,
+        "relative_energy_db": -7.84
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.13122598826885223
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_b0269-P013-G014-L",
+      "category": "confirmed_tp",
+      "canonical_phone": "L",
+      "duration_ms": 30.0,
+      "matched_acoustic": {
+        "rms_db": -23.32,
+        "spectral_centroid_hz": 319.2,
+        "zcr": 0.022,
+        "relative_energy_db": 0.37
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.07890919595956802
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_b0269-P016-G017-D",
+      "category": "confirmed_tp",
+      "canonical_phone": "D",
+      "duration_ms": 35.1,
+      "matched_acoustic": {
+        "rms_db": -33.46,
+        "spectral_centroid_hz": 346.1,
+        "zcr": 0.022,
+        "relative_energy_db": -9.77
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.18839192390441895
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_b0279-P019-G018-D",
+      "category": "confirmed_tp",
+      "canonical_phone": "D",
+      "duration_ms": 13.4,
+      "matched_acoustic": {
+        "rms_db": -23.33,
+        "spectral_centroid_hz": 159.0,
+        "zcr": 0.0085,
+        "relative_energy_db": -0.24
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.08393260836601257
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_b0279-P023-G022-D",
+      "category": "confirmed_annotation_disagreement",
+      "canonical_phone": "D",
+      "duration_ms": 80.0,
+      "matched_acoustic": {
+        "rms_db": -34.81,
+        "spectral_centroid_hz": 453.2,
+        "zcr": 0.0479,
+        "relative_energy_db": -11.72
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.1296813040971756
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_b0298-P011-G011-T",
+      "category": "confirmed_annotation_disagreement",
+      "canonical_phone": "T",
+      "duration_ms": 100.0,
+      "matched_acoustic": {
+        "rms_db": -34.13,
+        "spectral_centroid_hz": 1037.7,
+        "zcr": 0.022,
+        "relative_energy_db": -10.48
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.10288260132074356
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_b0298-P024-G024-AH",
+      "category": "insufficient_evidence",
+      "canonical_phone": "AH",
+      "duration_ms": 30.0,
+      "matched_acoustic": {
+        "rms_db": -39.2,
+        "spectral_centroid_hz": 626.3,
+        "zcr": 0.0197,
+        "relative_energy_db": -15.55
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.013755225576460361
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_b0304-P012-G012-V",
+      "category": "insufficient_evidence",
+      "canonical_phone": "V",
+      "duration_ms": 60.0,
+      "matched_acoustic": {
+        "rms_db": -29.26,
+        "spectral_centroid_hz": 325.1,
+        "zcr": 0.031,
+        "relative_energy_db": -5.86
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.010023265145719051
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_b0304-P016-G016-D",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "D",
+      "duration_ms": 100.0,
+      "matched_acoustic": {
+        "rms_db": -34.77,
+        "spectral_centroid_hz": 290.3,
+        "zcr": 0.0191,
+        "relative_energy_db": -11.37
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.06799054145812988
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_b0413-P004-G004-D",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "D",
+      "duration_ms": 90.0,
+      "matched_acoustic": {
+        "rms_db": -19.2,
+        "spectral_centroid_hz": 844.5,
+        "zcr": 0.0285,
+        "relative_energy_db": -0.96
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.07126428186893463
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_b0434-P019-G019-D",
+      "category": "confirmed_tp",
+      "canonical_phone": "D",
+      "duration_ms": 30.0,
+      "matched_acoustic": {
+        "rms_db": -18.13,
+        "spectral_centroid_hz": 265.3,
+        "zcr": 0.0121,
+        "relative_energy_db": -0.22
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.0767519623041153
+    },
+    {
+      "case_id": "CASE-Z-NJS-arctic_b0461-PNA-G004-R",
+      "category": "unmapped_abstention_reviewed",
+      "canonical_phone": "R",
+      "duration_ms": 62.8,
+      "matched_acoustic": {
+        "rms_db": -15.61,
+        "spectral_centroid_hz": 454.3,
+        "zcr": 0.0224,
+        "relative_energy_db": 2.27
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": null
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0003-P002-G002-ER",
+      "category": "confirmed_tp",
+      "canonical_phone": "ER",
+      "duration_ms": 23.3,
+      "matched_acoustic": {
+        "rms_db": -16.11,
+        "spectral_centroid_hz": 271.6,
+        "zcr": 0.0166,
+        "relative_energy_db": 3.74
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.12426933646202087
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0003-P011-G011-AH",
+      "category": "confirmed_fn",
+      "canonical_phone": "AH",
+      "duration_ms": 18.9,
+      "matched_acoustic": {
+        "rms_db": -22.57,
+        "spectral_centroid_hz": 193.0,
+        "zcr": 0.0072,
+        "relative_energy_db": -2.72
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.010209704749286175
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0007-P033-G032-D",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "D",
+      "duration_ms": 40.0,
+      "matched_acoustic": {
+        "rms_db": -19.3,
+        "spectral_centroid_hz": 189.8,
+        "zcr": 0.0085,
+        "relative_energy_db": -0.69
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.14624978601932526
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0019-P004-G004-OW",
+      "category": "confirmed_tn",
+      "canonical_phone": "OW",
+      "duration_ms": 50.0,
+      "matched_acoustic": {
+        "rms_db": -16.96,
+        "spectral_centroid_hz": 327.6,
+        "zcr": 0.0136,
+        "relative_energy_db": 1.83
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.0004998463555239141
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0019-P035-G035-R",
+      "category": "confirmed_tp",
+      "canonical_phone": "R",
+      "duration_ms": 17.3,
+      "matched_acoustic": {
+        "rms_db": -16.42,
+        "spectral_centroid_hz": 324.9,
+        "zcr": 0.0144,
+        "relative_energy_db": 2.37
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.09919045865535736
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0020-P004-G004-Z",
+      "category": "confirmed_model_fp_sub",
+      "canonical_phone": "Z",
+      "duration_ms": 219.9,
+      "matched_acoustic": {
+        "rms_db": -38.01,
+        "spectral_centroid_hz": 5605.1,
+        "zcr": 0.1781,
+        "relative_energy_db": -19.37
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.08597525954246521
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0020-P007-G007-D",
+      "category": "confirmed_tp",
+      "canonical_phone": "D",
+      "duration_ms": 42.1,
+      "matched_acoustic": {
+        "rms_db": -18.57,
+        "spectral_centroid_hz": 176.1,
+        "zcr": 0.0065,
+        "relative_energy_db": 0.07
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.16307522356510162
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0020-P025-G025-B",
+      "category": "confirmed_tn",
+      "canonical_phone": "B",
+      "duration_ms": 70.0,
+      "matched_acoustic": {
+        "rms_db": -20.52,
+        "spectral_centroid_hz": 170.1,
+        "zcr": 0.0065,
+        "relative_energy_db": -1.88
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.0033189202658832073
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0023-P026-G026-AH",
+      "category": "confirmed_tn",
+      "canonical_phone": "AH",
+      "duration_ms": 100.0,
+      "matched_acoustic": {
+        "rms_db": -15.62,
+        "spectral_centroid_hz": 245.5,
+        "zcr": 0.012,
+        "relative_energy_db": 1.21
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.00773411151021719
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0024-P045-G045-B",
+      "category": "confirmed_tn",
+      "canonical_phone": "B",
+      "duration_ms": 80.0,
+      "matched_acoustic": {
+        "rms_db": -15.88,
+        "spectral_centroid_hz": 369.8,
+        "zcr": 0.0128,
+        "relative_energy_db": -1.29
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.007591241504997015
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0025-P007-G007-T",
+      "category": "confirmed_annotation_disagreement",
+      "canonical_phone": "T",
+      "duration_ms": 80.0,
+      "matched_acoustic": {
+        "rms_db": -24.58,
+        "spectral_centroid_hz": 243.9,
+        "zcr": 0.0145,
+        "relative_energy_db": -9.19
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.1207892969250679
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0027-P007-G007-R",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "R",
+      "duration_ms": 60.0,
+      "matched_acoustic": {
+        "rms_db": -17.21,
+        "spectral_centroid_hz": 370.0,
+        "zcr": 0.0144,
+        "relative_energy_db": 0.04
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.08947618305683136
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0029-P024-G024-T",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "T",
+      "duration_ms": 50.0,
+      "matched_acoustic": {
+        "rms_db": -21.76,
+        "spectral_centroid_hz": 253.2,
+        "zcr": 0.0113,
+        "relative_energy_db": -5.23
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.07216925173997879
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0031-PNA-G002-R",
+      "category": "unmapped_abstention_reviewed",
+      "canonical_phone": "R",
+      "duration_ms": 35.2,
+      "matched_acoustic": {
+        "rms_db": -14.44,
+        "spectral_centroid_hz": 258.1,
+        "zcr": 0.0135,
+        "relative_energy_db": 3.59
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": null
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0031-PNA-G004-ER",
+      "category": "unmapped_abstention_reviewed",
+      "canonical_phone": "ER",
+      "duration_ms": 66.1,
+      "matched_acoustic": {
+        "rms_db": -12.62,
+        "spectral_centroid_hz": 395.9,
+        "zcr": 0.0213,
+        "relative_energy_db": 5.41
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": null
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0031-P022-G023-R",
+      "category": "confirmed_tp",
+      "canonical_phone": "R",
+      "duration_ms": 19.6,
+      "matched_acoustic": {
+        "rms_db": -25.54,
+        "spectral_centroid_hz": 300.0,
+        "zcr": 0.0104,
+        "relative_energy_db": -7.51
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.10441672056913376
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0036-P009-G009-T",
+      "category": "confirmed_tp",
+      "canonical_phone": "T",
+      "duration_ms": 48.1,
+      "matched_acoustic": {
+        "rms_db": -19.24,
+        "spectral_centroid_hz": 181.4,
+        "zcr": 0.0066,
+        "relative_energy_db": -0.79
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.06634567677974701
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0037-P015-G015-R",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "R",
+      "duration_ms": 60.0,
+      "matched_acoustic": {
+        "rms_db": -17.17,
+        "spectral_centroid_hz": 217.8,
+        "zcr": 0.0083,
+        "relative_energy_db": -0.17
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.07454055547714233
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0038-PNA-G002-W",
+      "category": "unmapped_abstention_reviewed",
+      "canonical_phone": "W",
+      "duration_ms": 60.0,
+      "matched_acoustic": {
+        "rms_db": -16.28,
+        "spectral_centroid_hz": 256.8,
+        "zcr": 0.0129,
+        "relative_energy_db": 0.37
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": null
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0038-PNA-G003-IH",
+      "category": "unmapped_abstention_reviewed",
+      "canonical_phone": "IH",
+      "duration_ms": 50.0,
+      "matched_acoustic": {
+        "rms_db": -14.17,
+        "spectral_centroid_hz": 282.2,
+        "zcr": 0.0136,
+        "relative_energy_db": 2.48
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": null
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0039-P022-G022-R",
+      "category": "confirmed_annotation_disagreement",
+      "canonical_phone": "R",
+      "duration_ms": 80.0,
+      "matched_acoustic": {
+        "rms_db": -19.78,
+        "spectral_centroid_hz": 281.8,
+        "zcr": 0.0125,
+        "relative_energy_db": -1.25
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.16699230670928955
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0045-P024-G024-D",
+      "category": "confirmed_annotation_disagreement",
+      "canonical_phone": "D",
+      "duration_ms": 100.0,
+      "matched_acoustic": {
+        "rms_db": -28.8,
+        "spectral_centroid_hz": 208.2,
+        "zcr": 0.0156,
+        "relative_energy_db": -11.53
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.17009314894676208
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0046-P026-G025-D",
+      "category": "confirmed_annotation_disagreement",
+      "canonical_phone": "D",
+      "duration_ms": 50.0,
+      "matched_acoustic": {
+        "rms_db": -19.72,
+        "spectral_centroid_hz": 209.4,
+        "zcr": 0.0068,
+        "relative_energy_db": -2.27
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.18014219403266907
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0047-P016-G016-D",
+      "category": "confirmed_tp",
+      "canonical_phone": "D",
+      "duration_ms": 30.0,
+      "matched_acoustic": {
+        "rms_db": -15.3,
+        "spectral_centroid_hz": 179.7,
+        "zcr": 0.0061,
+        "relative_energy_db": 0.77
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.10442519932985306
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0052-P019-G019-D",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "D",
+      "duration_ms": 40.0,
+      "matched_acoustic": {
+        "rms_db": -24.48,
+        "spectral_centroid_hz": 176.4,
+        "zcr": 0.0091,
+        "relative_energy_db": -4.41
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.11740576475858688
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0053-P020-G020-D",
+      "category": "confirmed_tp",
+      "canonical_phone": "D",
+      "duration_ms": 30.0,
+      "matched_acoustic": {
+        "rms_db": -40.4,
+        "spectral_centroid_hz": 311.0,
+        "zcr": 0.0197,
+        "relative_energy_db": -21.43
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.10526347160339355
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0054-P015-G015-R",
+      "category": "confirmed_model_fp_sub",
+      "canonical_phone": "R",
+      "duration_ms": 60.0,
+      "matched_acoustic": {
+        "rms_db": -16.9,
+        "spectral_centroid_hz": 297.7,
+        "zcr": 0.0129,
+        "relative_energy_db": 0.2
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.08485887944698334
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0058-P015-G016-N",
+      "category": "confirmed_tn",
+      "canonical_phone": "N",
+      "duration_ms": 70.0,
+      "matched_acoustic": {
+        "rms_db": -15.22,
+        "spectral_centroid_hz": 194.0,
+        "zcr": 0.0071,
+        "relative_energy_db": 1.26
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.006649306509643793
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0059-P015-G015-R",
+      "category": "confirmed_model_fp_sub",
+      "canonical_phone": "R",
+      "duration_ms": 30.0,
+      "matched_acoustic": {
+        "rms_db": -16.25,
+        "spectral_centroid_hz": 247.7,
+        "zcr": 0.0121,
+        "relative_energy_db": 2.95
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.07943803071975708
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0064-P004-G004-R",
+      "category": "confirmed_model_fp_sub",
+      "canonical_phone": "R",
+      "duration_ms": 70.0,
+      "matched_acoustic": {
+        "rms_db": -13.7,
+        "spectral_centroid_hz": 387.3,
+        "zcr": 0.0185,
+        "relative_energy_db": 4.45
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.14423468708992004
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0071-P021-G022-T",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "T",
+      "duration_ms": 80.0,
+      "matched_acoustic": {
+        "rms_db": -26.03,
+        "spectral_centroid_hz": 911.6,
+        "zcr": 0.0975,
+        "relative_energy_db": -9.09
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.13856151700019836
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0075-P002-G002-R",
+      "category": "confirmed_model_fp_sub",
+      "canonical_phone": "R",
+      "duration_ms": 90.0,
+      "matched_acoustic": {
+        "rms_db": -13.14,
+        "spectral_centroid_hz": 395.9,
+        "zcr": 0.0176,
+        "relative_energy_db": 4.77
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.1185711920261383
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0076-P003-G003-R",
+      "category": "confirmed_model_fp_sub",
+      "canonical_phone": "R",
+      "duration_ms": 30.0,
+      "matched_acoustic": {
+        "rms_db": -13.17,
+        "spectral_centroid_hz": 242.5,
+        "zcr": 0.0083,
+        "relative_energy_db": 4.6
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.08107656985521317
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0077-P001-G001-T",
+      "category": "confirmed_annotation_disagreement",
+      "canonical_phone": "T",
+      "duration_ms": 50.0,
+      "matched_acoustic": {
+        "rms_db": -17.89,
+        "spectral_centroid_hz": 185.2,
+        "zcr": 0.0091,
+        "relative_energy_db": -2.82
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.1093074306845665
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0077-P019-G019-D",
+      "category": "confirmed_annotation_disagreement",
+      "canonical_phone": "D",
+      "duration_ms": 200.0,
+      "matched_acoustic": {
+        "rms_db": -33.58,
+        "spectral_centroid_hz": 250.1,
+        "zcr": 0.0119,
+        "relative_energy_db": -18.51
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.21577094495296478
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0081-P020-G021-R",
+      "category": "confirmed_model_fp_sub",
+      "canonical_phone": "R",
+      "duration_ms": 70.0,
+      "matched_acoustic": {
+        "rms_db": -13.73,
+        "spectral_centroid_hz": 372.9,
+        "zcr": 0.0143,
+        "relative_energy_db": 1.13
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.09900426119565964
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0082-P022-G022-D",
+      "category": "confirmed_annotation_disagreement",
+      "canonical_phone": "D",
+      "duration_ms": 140.0,
+      "matched_acoustic": {
+        "rms_db": -24.38,
+        "spectral_centroid_hz": 229.8,
+        "zcr": 0.0115,
+        "relative_energy_db": -9.42
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.14039155840873718
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0086-P005-G005-D",
+      "category": "insufficient_evidence",
+      "canonical_phone": "D",
+      "duration_ms": 140.0,
+      "matched_acoustic": {
+        "rms_db": -23.12,
+        "spectral_centroid_hz": 898.7,
+        "zcr": 0.1579,
+        "relative_energy_db": -3.89
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.10870827734470367
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0086-P014-G014-R",
+      "category": "insufficient_evidence",
+      "canonical_phone": "R",
+      "duration_ms": 30.0,
+      "matched_acoustic": {
+        "rms_db": -16.71,
+        "spectral_centroid_hz": 273.7,
+        "zcr": 0.0121,
+        "relative_energy_db": 2.52
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.12576889991760254
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0089-P022-G022-T",
+      "category": "confirmed_annotation_disagreement",
+      "canonical_phone": "T",
+      "duration_ms": 30.0,
+      "matched_acoustic": {
+        "rms_db": -18.02,
+        "spectral_centroid_hz": 193.9,
+        "zcr": 0.0061,
+        "relative_energy_db": -1.6
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.1709858924150467
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0095-P013-G013-T",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "T",
+      "duration_ms": 130.0,
+      "matched_acoustic": {
+        "rms_db": -29.78,
+        "spectral_centroid_hz": 264.3,
+        "zcr": 0.0119,
+        "relative_energy_db": -12.81
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.07703197002410889
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0096-P041-G041-R",
+      "category": "confirmed_model_fp_sub",
+      "canonical_phone": "R",
+      "duration_ms": 60.0,
+      "matched_acoustic": {
+        "rms_db": -19.05,
+        "spectral_centroid_hz": 376.1,
+        "zcr": 0.017,
+        "relative_energy_db": -0.49
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.11481747776269913
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0100-P005-G005-T",
+      "category": "confirmed_tp",
+      "canonical_phone": "T",
+      "duration_ms": 30.0,
+      "matched_acoustic": {
+        "rms_db": -33.25,
+        "spectral_centroid_hz": 6180.2,
+        "zcr": 0.2837,
+        "relative_energy_db": -13.14
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.11688224226236343
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0103-P000-G000-B",
+      "category": "confirmed_tn",
+      "canonical_phone": "B",
+      "duration_ms": 70.0,
+      "matched_acoustic": {
+        "rms_db": -21.88,
+        "spectral_centroid_hz": 163.1,
+        "zcr": 0.0123,
+        "relative_energy_db": -3.05
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.0015611648559570312
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0103-P002-G002-T",
+      "category": "confirmed_annotation_disagreement",
+      "canonical_phone": "T",
+      "duration_ms": 126.5,
+      "matched_acoustic": {
+        "rms_db": -34.06,
+        "spectral_centroid_hz": 373.0,
+        "zcr": 0.0178,
+        "relative_energy_db": -15.23
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.10267067700624466
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0103-P018-G018-R",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "R",
+      "duration_ms": 40.0,
+      "matched_acoustic": {
+        "rms_db": -19.08,
+        "spectral_centroid_hz": 320.6,
+        "zcr": 0.0108,
+        "relative_energy_db": -0.25
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.09281226247549057
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0111-P011-G011-D",
+      "category": "confirmed_annotation_disagreement",
+      "canonical_phone": "D",
+      "duration_ms": 50.0,
+      "matched_acoustic": {
+        "rms_db": -23.04,
+        "spectral_centroid_hz": 173.9,
+        "zcr": 0.0086,
+        "relative_energy_db": -2.9
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.10807598382234573
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0111-P035-G035-D",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "D",
+      "duration_ms": 60.0,
+      "matched_acoustic": {
+        "rms_db": -26.44,
+        "spectral_centroid_hz": 215.4,
+        "zcr": 0.011,
+        "relative_energy_db": -6.3
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.10213897377252579
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0113-P001-G001-S",
+      "category": "confirmed_tn",
+      "canonical_phone": "S",
+      "duration_ms": 150.0,
+      "matched_acoustic": {
+        "rms_db": -26.96,
+        "spectral_centroid_hz": 1457.1,
+        "zcr": 0.2111,
+        "relative_energy_db": -5.73
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.005273770075291395
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0115-P008-G008-K",
+      "category": "insufficient_evidence",
+      "canonical_phone": "K",
+      "duration_ms": 40.0,
+      "matched_acoustic": {
+        "rms_db": -19.74,
+        "spectral_centroid_hz": 228.9,
+        "zcr": 0.0323,
+        "relative_energy_db": 1.27
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.015348048880696297
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0115-P033-G033-D",
+      "category": "confirmed_annotation_disagreement",
+      "canonical_phone": "D",
+      "duration_ms": 120.0,
+      "matched_acoustic": {
+        "rms_db": -34.83,
+        "spectral_centroid_hz": 969.9,
+        "zcr": 0.0624,
+        "relative_energy_db": -13.82
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.1502801775932312
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0116-P038-G039-R",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "R",
+      "duration_ms": 90.0,
+      "matched_acoustic": {
+        "rms_db": -18.73,
+        "spectral_centroid_hz": 190.5,
+        "zcr": 0.0106,
+        "relative_energy_db": 1.01
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.11508889496326447
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0120-P002-G002-R",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "R",
+      "duration_ms": 80.0,
+      "matched_acoustic": {
+        "rms_db": -19.56,
+        "spectral_centroid_hz": 278.4,
+        "zcr": 0.0105,
+        "relative_energy_db": 1.55
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.13040974736213684
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0121-P018-G018-D",
+      "category": "confirmed_annotation_disagreement",
+      "canonical_phone": "D",
+      "duration_ms": 60.0,
+      "matched_acoustic": {
+        "rms_db": -23.14,
+        "spectral_centroid_hz": 202.9,
+        "zcr": 0.0095,
+        "relative_energy_db": -3.87
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.1761530339717865
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0122-P004-G003-ER",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "ER",
+      "duration_ms": 80.0,
+      "matched_acoustic": {
+        "rms_db": -13.49,
+        "spectral_centroid_hz": 297.9,
+        "zcr": 0.0164,
+        "relative_energy_db": 4.15
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.14740800857543945
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0122-P021-G020-Z",
+      "category": "insufficient_evidence",
+      "canonical_phone": "Z",
+      "duration_ms": 30.0,
+      "matched_acoustic": {
+        "rms_db": -17.45,
+        "spectral_centroid_hz": 278.7,
+        "zcr": 0.0144,
+        "relative_energy_db": 0.19
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.03993978723883629
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0123-P022-G022-R",
+      "category": "confirmed_tp",
+      "canonical_phone": "R",
+      "duration_ms": 30.0,
+      "matched_acoustic": {
+        "rms_db": -19.44,
+        "spectral_centroid_hz": 364.9,
+        "zcr": 0.0159,
+        "relative_energy_db": -0.4
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.16228386759757996
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0125-P001-G001-IY",
+      "category": "confirmed_tn",
+      "canonical_phone": "IY",
+      "duration_ms": 50.0,
+      "matched_acoustic": {
+        "rms_db": -15.29,
+        "spectral_centroid_hz": 187.1,
+        "zcr": 0.0073,
+        "relative_energy_db": 2.13
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.0019432567059993744
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0131-P011-G011-D",
+      "category": "confirmed_annotation_disagreement",
+      "canonical_phone": "D",
+      "duration_ms": 120.0,
+      "matched_acoustic": {
+        "rms_db": -19.29,
+        "spectral_centroid_hz": 187.6,
+        "zcr": 0.006,
+        "relative_energy_db": -1.37
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.1544961929321289
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0134-P005-G005-D",
+      "category": "confirmed_annotation_disagreement",
+      "canonical_phone": "D",
+      "duration_ms": 50.0,
+      "matched_acoustic": {
+        "rms_db": -19.51,
+        "spectral_centroid_hz": 181.7,
+        "zcr": 0.0064,
+        "relative_energy_db": -0.42
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.13373465836048126
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0136-P009-G009-R",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "R",
+      "duration_ms": 50.0,
+      "matched_acoustic": {
+        "rms_db": -16.56,
+        "spectral_centroid_hz": 194.1,
+        "zcr": 0.0077,
+        "relative_energy_db": 4.49
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.10335517674684525
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0139-P007-G007-IH",
+      "category": "confirmed_tn",
+      "canonical_phone": "IH",
+      "duration_ms": 50.0,
+      "matched_acoustic": {
+        "rms_db": -15.01,
+        "spectral_centroid_hz": 192.6,
+        "zcr": 0.0073,
+        "relative_energy_db": 2.6
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.00430296128615737
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0144-P002-G002-T",
+      "category": "confirmed_tp",
+      "canonical_phone": "T",
+      "duration_ms": 32.1,
+      "matched_acoustic": {
+        "rms_db": -19.53,
+        "spectral_centroid_hz": 172.8,
+        "zcr": 0.0064,
+        "relative_energy_db": 0.07
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.08696084469556808
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0144-P011-G011-M",
+      "category": "confirmed_tn",
+      "canonical_phone": "M",
+      "duration_ms": 80.0,
+      "matched_acoustic": {
+        "rms_db": -18.83,
+        "spectral_centroid_hz": 166.7,
+        "zcr": 0.0079,
+        "relative_energy_db": 0.77
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.0024535416159778833
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0144-P021-G021-R",
+      "category": "confirmed_tp",
+      "canonical_phone": "R",
+      "duration_ms": 100.0,
+      "matched_acoustic": {
+        "rms_db": -18.36,
+        "spectral_centroid_hz": 272.6,
+        "zcr": 0.0458,
+        "relative_energy_db": 1.24
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.10293132066726685
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0144-P025-G025-R",
+      "category": "insufficient_evidence",
+      "canonical_phone": "R",
+      "duration_ms": 60.0,
+      "matched_acoustic": {
+        "rms_db": -18.96,
+        "spectral_centroid_hz": 445.9,
+        "zcr": 0.0189,
+        "relative_energy_db": 0.64
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.06543561816215515
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0159-P036-G036-F",
+      "category": "confirmed_tn",
+      "canonical_phone": "F",
+      "duration_ms": 90.0,
+      "matched_acoustic": {
+        "rms_db": -36.64,
+        "spectral_centroid_hz": 475.5,
+        "zcr": 0.0502,
+        "relative_energy_db": -17.43
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.001629746868275106
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0199-P008-G008-R",
+      "category": "confirmed_annotation_disagreement",
+      "canonical_phone": "R",
+      "duration_ms": 80.0,
+      "matched_acoustic": {
+        "rms_db": -15.3,
+        "spectral_centroid_hz": 345.1,
+        "zcr": 0.0133,
+        "relative_energy_db": 1.11
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.15139985084533691
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0199-P019-G019-R",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "R",
+      "duration_ms": 40.0,
+      "matched_acoustic": {
+        "rms_db": -18.07,
+        "spectral_centroid_hz": 195.2,
+        "zcr": 0.0074,
+        "relative_energy_db": -1.66
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.10150808840990067
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0199-P023-G023-R",
+      "category": "confirmed_tp",
+      "canonical_phone": "R",
+      "duration_ms": 50.0,
+      "matched_acoustic": {
+        "rms_db": -13.38,
+        "spectral_centroid_hz": 382.4,
+        "zcr": 0.024,
+        "relative_energy_db": 3.03
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.1577318161725998
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0199-P024-G024-D",
+      "category": "confirmed_annotation_disagreement",
+      "canonical_phone": "D",
+      "duration_ms": 50.0,
+      "matched_acoustic": {
+        "rms_db": -23.93,
+        "spectral_centroid_hz": 390.5,
+        "zcr": 0.0109,
+        "relative_energy_db": -7.52
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.24824969470500946
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0199-P030-G030-R",
+      "category": "confirmed_tp",
+      "canonical_phone": "R",
+      "duration_ms": 90.0,
+      "matched_acoustic": {
+        "rms_db": -16.6,
+        "spectral_centroid_hz": 351.4,
+        "zcr": 0.0146,
+        "relative_energy_db": -0.19
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.12193763256072998
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0199-P034-G034-D",
+      "category": "confirmed_annotation_disagreement",
+      "canonical_phone": "D",
+      "duration_ms": 70.0,
+      "matched_acoustic": {
+        "rms_db": -21.28,
+        "spectral_centroid_hz": 201.5,
+        "zcr": 0.0123,
+        "relative_energy_db": -4.87
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.1540984809398651
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0208-P005-G005-D",
+      "category": "confirmed_annotation_disagreement",
+      "canonical_phone": "D",
+      "duration_ms": 70.0,
+      "matched_acoustic": {
+        "rms_db": -27.69,
+        "spectral_centroid_hz": 243.2,
+        "zcr": 0.0162,
+        "relative_energy_db": -5.01
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.12509506940841675
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0214-P004-G004-D",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "D",
+      "duration_ms": 90.0,
+      "matched_acoustic": {
+        "rms_db": -20.85,
+        "spectral_centroid_hz": 218.4,
+        "zcr": 0.0494,
+        "relative_energy_db": 0.14
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.12192945927381516
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0255-P005-G005-T",
+      "category": "confirmed_tp",
+      "canonical_phone": "T",
+      "duration_ms": 30.0,
+      "matched_acoustic": {
+        "rms_db": -14.87,
+        "spectral_centroid_hz": 177.2,
+        "zcr": 0.0068,
+        "relative_energy_db": 3.03
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.11076376587152481
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0266-P008-G008-D",
+      "category": "confirmed_tp",
+      "canonical_phone": "D",
+      "duration_ms": 89.2,
+      "matched_acoustic": {
+        "rms_db": -31.05,
+        "spectral_centroid_hz": 296.5,
+        "zcr": 0.0186,
+        "relative_energy_db": -12.08
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.19979707896709442
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0269-P019-G019-T",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "T",
+      "duration_ms": 130.0,
+      "matched_acoustic": {
+        "rms_db": -27.05,
+        "spectral_centroid_hz": 260.5,
+        "zcr": 0.0204,
+        "relative_energy_db": -7.1
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.08183299005031586
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0269-P032-G032-D",
+      "category": "confirmed_annotation_disagreement",
+      "canonical_phone": "D",
+      "duration_ms": 84.2,
+      "matched_acoustic": {
+        "rms_db": -16.98,
+        "spectral_centroid_hz": 225.1,
+        "zcr": 0.0094,
+        "relative_energy_db": 2.97
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.20806461572647095
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0272-P005-G005-T",
+      "category": "confirmed_annotation_disagreement",
+      "canonical_phone": "T",
+      "duration_ms": 30.0,
+      "matched_acoustic": {
+        "rms_db": -15.19,
+        "spectral_centroid_hz": 208.6,
+        "zcr": 0.0106,
+        "relative_energy_db": 0.94
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.22035068273544312
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0272-P017-G017-N",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "N",
+      "duration_ms": 110.0,
+      "matched_acoustic": {
+        "rms_db": -17.77,
+        "spectral_centroid_hz": 185.9,
+        "zcr": 0.0054,
+        "relative_energy_db": -1.64
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.07431153953075409
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0292-P002-G002-R",
+      "category": "insufficient_evidence",
+      "canonical_phone": "R",
+      "duration_ms": 188.9,
+      "matched_acoustic": {
+        "rms_db": -9.47,
+        "spectral_centroid_hz": 428.7,
+        "zcr": 0.0208,
+        "relative_energy_db": 3.57
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.15294265747070312
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0292-P009-G009-D",
+      "category": "confirmed_annotation_disagreement",
+      "canonical_phone": "D",
+      "duration_ms": 70.0,
+      "matched_acoustic": {
+        "rms_db": -14.31,
+        "spectral_centroid_hz": 169.6,
+        "zcr": 0.0068,
+        "relative_energy_db": -1.27
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.1691272109746933
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0292-P012-G012-R",
+      "category": "confirmed_tp",
+      "canonical_phone": "R",
+      "duration_ms": 100.0,
+      "matched_acoustic": {
+        "rms_db": -10.63,
+        "spectral_centroid_hz": 519.4,
+        "zcr": 0.0211,
+        "relative_energy_db": 2.41
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.1300089806318283
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0301-P019-G019-D",
+      "category": "confirmed_annotation_disagreement",
+      "canonical_phone": "D",
+      "duration_ms": 190.0,
+      "matched_acoustic": {
+        "rms_db": -29.43,
+        "spectral_centroid_hz": 276.0,
+        "zcr": 0.0152,
+        "relative_energy_db": -11.97
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.1709894835948944
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0303-P002-G002-T",
+      "category": "confirmed_tp",
+      "canonical_phone": "T",
+      "duration_ms": 54.9,
+      "matched_acoustic": {
+        "rms_db": -16.78,
+        "spectral_centroid_hz": 170.4,
+        "zcr": 0.0066,
+        "relative_energy_db": -0.4
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.1252782791852951
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0365-P015-G015-IH",
+      "category": "confirmed_tn",
+      "canonical_phone": "IH",
+      "duration_ms": 100.0,
+      "matched_acoustic": {
+        "rms_db": -10.38,
+        "spectral_centroid_hz": 219.0,
+        "zcr": 0.0077,
+        "relative_energy_db": 3.02
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.0036411278415471315
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0384-P004-G004-R",
+      "category": "confirmed_tp",
+      "canonical_phone": "R",
+      "duration_ms": 60.0,
+      "matched_acoustic": {
+        "rms_db": -6.53,
+        "spectral_centroid_hz": 290.2,
+        "zcr": 0.0132,
+        "relative_energy_db": 3.03
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.17622104287147522
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0384-P018-G018-D",
+      "category": "confirmed_tp",
+      "canonical_phone": "D",
+      "duration_ms": 40.0,
+      "matched_acoustic": {
+        "rms_db": -12.89,
+        "spectral_centroid_hz": 174.6,
+        "zcr": 0.0068,
+        "relative_energy_db": -3.33
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.25278523564338684
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0384-P022-G022-D",
+      "category": "confirmed_annotation_disagreement",
+      "canonical_phone": "D",
+      "duration_ms": 70.0,
+      "matched_acoustic": {
+        "rms_db": -9.64,
+        "spectral_centroid_hz": 220.0,
+        "zcr": 0.0075,
+        "relative_energy_db": -0.08
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.2901739776134491
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0405-P005-G005-D",
+      "category": "confirmed_tp",
+      "canonical_phone": "D",
+      "duration_ms": 30.0,
+      "matched_acoustic": {
+        "rms_db": -15.69,
+        "spectral_centroid_hz": 187.0,
+        "zcr": 0.0091,
+        "relative_energy_db": 3.16
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.13389994204044342
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0411-P013-G013-R",
+      "category": "confirmed_annotation_disagreement",
+      "canonical_phone": "R",
+      "duration_ms": 90.0,
+      "matched_acoustic": {
+        "rms_db": -17.1,
+        "spectral_centroid_hz": 314.0,
+        "zcr": 0.0134,
+        "relative_energy_db": 2.67
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.1577335000038147
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0411-P040-G040-D",
+      "category": "confirmed_annotation_disagreement",
+      "canonical_phone": "D",
+      "duration_ms": 110.0,
+      "matched_acoustic": {
+        "rms_db": -32.82,
+        "spectral_centroid_hz": 248.4,
+        "zcr": 0.0221,
+        "relative_energy_db": -13.05
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.15174494683742523
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0424-P002-G002-V",
+      "category": "insufficient_evidence",
+      "canonical_phone": "V",
+      "duration_ms": 40.0,
+      "matched_acoustic": {
+        "rms_db": -17.84,
+        "spectral_centroid_hz": 185.3,
+        "zcr": 0.0085,
+        "relative_energy_db": 1.39
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.011304320767521858
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_a0424-P008-G008-IH",
+      "category": "confirmed_tn",
+      "canonical_phone": "IH",
+      "duration_ms": 40.0,
+      "matched_acoustic": {
+        "rms_db": -15.24,
+        "spectral_centroid_hz": 234.0,
+        "zcr": 0.0102,
+        "relative_energy_db": 3.99
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.0014092446072027087
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_b0057-P023-G023-T",
+      "category": "confirmed_tp",
+      "canonical_phone": "T",
+      "duration_ms": 120.0,
+      "matched_acoustic": {
+        "rms_db": -31.93,
+        "spectral_centroid_hz": 181.3,
+        "zcr": 0.0066,
+        "relative_energy_db": -12.83
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.08729684352874756
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_b0073-P007-G007-R",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "R",
+      "duration_ms": 70.0,
+      "matched_acoustic": {
+        "rms_db": -16.46,
+        "spectral_centroid_hz": 297.8,
+        "zcr": 0.0136,
+        "relative_energy_db": 4.81
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.08367759734392166
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_b0081-PNA-G020-AO",
+      "category": "unmapped_abstention_reviewed",
+      "canonical_phone": "AO",
+      "duration_ms": 168.3,
+      "matched_acoustic": {
+        "rms_db": -16.01,
+        "spectral_centroid_hz": 490.0,
+        "zcr": 0.0229,
+        "relative_energy_db": 1.61
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": null
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_b0081-PNA-G022-N",
+      "category": "unmapped_abstention_reviewed",
+      "canonical_phone": "N",
+      "duration_ms": 170.0,
+      "matched_acoustic": {
+        "rms_db": -23.78,
+        "spectral_centroid_hz": 184.2,
+        "zcr": 0.0064,
+        "relative_energy_db": -6.16
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": null
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_b0118-P015-G015-T",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "T",
+      "duration_ms": 110.0,
+      "matched_acoustic": {
+        "rms_db": -26.2,
+        "spectral_centroid_hz": 333.8,
+        "zcr": 0.019,
+        "relative_energy_db": -4.15
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.07631989568471909
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_b0118-P020-G020-D",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "D",
+      "duration_ms": 30.0,
+      "matched_acoustic": {
+        "rms_db": -19.01,
+        "spectral_centroid_hz": 243.8,
+        "zcr": 0.0121,
+        "relative_energy_db": 3.04
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.14382530748844147
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_b0118-P027-G027-D",
+      "category": "confirmed_annotation_disagreement",
+      "canonical_phone": "D",
+      "duration_ms": 40.0,
+      "matched_acoustic": {
+        "rms_db": -24.78,
+        "spectral_centroid_hz": 187.3,
+        "zcr": 0.0068,
+        "relative_energy_db": -2.73
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.14258414506912231
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_b0158-P015-G015-K",
+      "category": "insufficient_evidence",
+      "canonical_phone": "K",
+      "duration_ms": 50.0,
+      "matched_acoustic": {
+        "rms_db": -36.38,
+        "spectral_centroid_hz": 321.0,
+        "zcr": 0.0154,
+        "relative_energy_db": -14.81
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.010792696848511696
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_b0197-P015-G015-D",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "D",
+      "duration_ms": 70.0,
+      "matched_acoustic": {
+        "rms_db": -22.33,
+        "spectral_centroid_hz": 236.1,
+        "zcr": 0.0113,
+        "relative_energy_db": 0.87
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.08669371157884598
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_b0215-P007-G007-D",
+      "category": "confirmed_annotation_disagreement",
+      "canonical_phone": "D",
+      "duration_ms": 70.0,
+      "matched_acoustic": {
+        "rms_db": -24.79,
+        "spectral_centroid_hz": 189.2,
+        "zcr": 0.0123,
+        "relative_energy_db": -2.7
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.1494549810886383
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_b0215-P017-G017-D",
+      "category": "confirmed_tp",
+      "canonical_phone": "D",
+      "duration_ms": 42.6,
+      "matched_acoustic": {
+        "rms_db": -24.11,
+        "spectral_centroid_hz": 178.3,
+        "zcr": 0.0053,
+        "relative_energy_db": -2.02
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.11282364279031754
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_b0315-P029-G029-T",
+      "category": "insufficient_evidence",
+      "canonical_phone": "T",
+      "duration_ms": 67.7,
+      "matched_acoustic": {
+        "rms_db": -25.83,
+        "spectral_centroid_hz": 186.3,
+        "zcr": 0.0087,
+        "relative_energy_db": -2.62
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.06377295404672623
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_b0317-P002-G002-D",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "D",
+      "duration_ms": 70.0,
+      "matched_acoustic": {
+        "rms_db": -20.65,
+        "spectral_centroid_hz": 176.0,
+        "zcr": 0.0081,
+        "relative_energy_db": 0.32
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.11572805047035217
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_b0317-P030-G030-R",
+      "category": "insufficient_evidence",
+      "canonical_phone": "R",
+      "duration_ms": 30.0,
+      "matched_acoustic": {
+        "rms_db": -21.17,
+        "spectral_centroid_hz": 228.0,
+        "zcr": 0.0068,
+        "relative_energy_db": -0.2
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.0005735131562687457
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_b0371-PNA-G005-AO",
+      "category": "unmapped_abstention_reviewed",
+      "canonical_phone": "AO",
+      "duration_ms": 90.9,
+      "matched_acoustic": {
+        "rms_db": -13.49,
+        "spectral_centroid_hz": 510.9,
+        "zcr": 0.024,
+        "relative_energy_db": 7.83
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": null
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_b0371-P005-G006-R",
+      "category": "insufficient_evidence",
+      "canonical_phone": "R",
+      "duration_ms": 39.1,
+      "matched_acoustic": {
+        "rms_db": -23.98,
+        "spectral_centroid_hz": 443.0,
+        "zcr": 0.0708,
+        "relative_energy_db": -2.66
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.007740077096968889
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_b0371-P021-G022-T",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "T",
+      "duration_ms": 60.0,
+      "matched_acoustic": {
+        "rms_db": -27.39,
+        "spectral_centroid_hz": 291.9,
+        "zcr": 0.0189,
+        "relative_energy_db": -6.07
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.09731433540582657
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_b0371-P023-G024-R",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "R",
+      "duration_ms": 120.0,
+      "matched_acoustic": {
+        "rms_db": -23.5,
+        "spectral_centroid_hz": 334.1,
+        "zcr": 0.0106,
+        "relative_energy_db": -2.18
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.13331621885299683
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_b0371-P031-G032-D",
+      "category": "confirmed_tp",
+      "canonical_phone": "D",
+      "duration_ms": 70.0,
+      "matched_acoustic": {
+        "rms_db": -27.75,
+        "spectral_centroid_hz": 175.4,
+        "zcr": 0.0078,
+        "relative_energy_db": -6.43
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.14805790781974792
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_b0396-P006-G006-R",
+      "category": "confirmed_model_fp",
+      "canonical_phone": "R",
+      "duration_ms": 60.0,
+      "matched_acoustic": {
+        "rms_db": -16.81,
+        "spectral_centroid_hz": 335.6,
+        "zcr": 0.0336,
+        "relative_energy_db": 3.42
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.12442807108163834
+    },
+    {
+      "case_id": "CASE-Z-RRBI-arctic_b0411-P028-G028-V",
+      "category": "confirmed_fn",
+      "canonical_phone": "V",
+      "duration_ms": 14.8,
+      "matched_acoustic": {
+        "rms_db": -21.95,
+        "spectral_centroid_hz": 203.8,
+        "zcr": 0.0138,
+        "relative_energy_db": -0.73
+      },
+      "mismatched_acoustic": null,
+      "model_s_omit": 0.00837140716612339
+    }
+  ]
+}

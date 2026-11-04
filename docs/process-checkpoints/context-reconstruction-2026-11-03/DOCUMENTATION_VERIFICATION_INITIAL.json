@@ -1,0 +1,25 @@
+{
+  "observed_at": "2026-11-04T00:15:32.362608+07:00",
+  "status": "DOCUMENTATION_CHECKED_NO_FUNCTIONAL_TESTS_EXECUTED",
+  "scope": "Local documentation, metadata inventories, exact copied-report identity, bounded preservation and limited known-prefix credential screen only; not proof of experimental truth or absence of all sensitive material",
+  "checks": {
+    "required_numbered_sections": true,
+    "confidence_vocabulary_present": true,
+    "root_report_local_links_exist": true,
+    "root_report_local_link_count": 2,
+    "json_receipts_parse": true,
+    "invalid_json": [],
+    "source_inventory_rows": 5196,
+    "session_header_rows": 260,
+    "workflow_state": "complete",
+    "workflow_child_entries": 10,
+    "retained_reports_count": 10,
+    "retained_reports_equal_returned_outputs": true,
+    "limited_credential_pattern_hits": [],
+    "primary_heads_unchanged": true,
+    "backend_frontend_status_unchanged": false,
+    "backend_frontend_inventoried_size_mtime_unchanged": true,
+    "report_sha256": "dde15c19432296e48b0cc60aab87e8e2847ee183ce7c8f8faff6adb6a434016f",
+    "report_bytes": 68631
+  }
+}

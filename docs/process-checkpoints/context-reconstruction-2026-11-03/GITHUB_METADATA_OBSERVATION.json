@@ -1,0 +1,897 @@
+{
+  "observed_at": "2026-11-03T23:47:09.305308+07:00",
+  "method": "read-only gh api GET; existing authentication, no fetch or remote mutation",
+  "repositories": {
+    "minkhoaa/Langfens-RQ1-Speech-Research": {
+      "repository": {
+        "full_name": "minkhoaa/Langfens-RQ1-Speech-Research",
+        "html_url": "https://github.com/minkhoaa/Langfens-RQ1-Speech-Research",
+        "visibility": "public",
+        "default_branch": "main",
+        "created_at": "2026-10-23T15:41:00Z",
+        "updated_at": "2026-10-26T04:38:26Z",
+        "pushed_at": "2026-11-03T15:31:56Z",
+        "archived": false,
+        "open_issues_count": 1
+      },
+      "branches": [
+        {
+          "name": "design/rq1-trn-02b-acoustic-conditioning",
+          "sha": "c4a658ffbd5a2afd2ebdce172e47af43ed9bb63e"
+        },
+        {
+          "name": "docs/colab-first-agents-policy",
+          "sha": "1e72d9d6b3ef16de5589aa3c1f1eb8991bc7033e"
+        },
+        {
+          "name": "docs/langfens-status-2026-10-27",
+          "sha": "126ea2c9db491254cd8312aaa5ab80d9fa7b68c5"
+        },
+        {
+          "name": "docs/process-checkpoints-backfill",
+          "sha": "aa6415a8d3a073a3550f209a53e1baa44461ce97"
+        },
+        {
+          "name": "docs/rq1-artifact-01-baseline-release",
+          "sha": "a200b73b90a137316817bc42df0ba6e0db2c24c5"
+        },
+        {
+          "name": "docs/rq1-trn-02b-acoustic-conditioning-design",
+          "sha": "428061de9d0b18ac292e0c31008047e757de6ef0"
+        },
+        {
+          "name": "docs/session-handoff-2026-10-28-cpu-decision",
+          "sha": "2caa2bfc4208a16a63fe8f1d5a4d72effccb7ba6"
+        },
+        {
+          "name": "feat/rq1-bench-01-parallel-benchmark-setup",
+          "sha": "bd141bda8b24ea9cecaaa8ae051763f4db29314d"
+        },
+        {
+          "name": "feat/rq1-diag-01-omission-fn-root-cause",
+          "sha": "b0ef9632c4c89ec5001c84b71fd80f9f843e4aca"
+        },
+        {
+          "name": "feat/rq1-diag-02-temporal-alignment-validation",
+          "sha": "dd2dee9a2063284d2a0f9fbf1c18315f3a7cd774"
+        },
+        {
+          "name": "feat/rq1-trn-01a-training-smoke-test",
+          "sha": "59423385464f92700f38e9e5898812e367b48900"
+        },
+        {
+          "name": "feat/rq1-trn-01b0-r-evidence-reconciliation",
+          "sha": "d63f25fa2d1e242e85b64cfe0b6e796fbab35a32"
+        },
+        {
+          "name": "feat/rq1-trn-01b0-training-sanity-gate",
+          "sha": "1c5dc61c0afb9510b7041984f5170576473a4ab6"
+        },
+        {
+          "name": "feat/rq1-trn-01b1-ctc-stabilization",
+          "sha": "25ffb0857f6ea0388134ef3a156c5cfa71e52ab4"
+        },
+        {
+          "name": "feat/rq1-trn-01b1-r2-acoustic-gate",
+          "sha": "73eae7ecfe8ce8ff5f91068c2c938b08426ed077"
+        },
+        {
+          "name": "feat/rq1-trn-01b1-r-generalization-reconciliation",
+          "sha": "493b7ab875174c7a6dd9812e3526a50717ecb5dc"
+        },
+        {
+          "name": "feat/rq1-trn-02a-colab-restart",
+          "sha": "a6e8035644ba0adeab347a350658e27d86ef17c5"
+        },
+        {
+          "name": "feat/rq1-trn-02a-eval-r1",
+          "sha": "9ac869e798af8cd8862b15f29e3f9e76bd0a8e23"
+        },
+        {
+          "name": "feat/rq1-trn-02a-eval-r2-corr",
+          "sha": "613dc728b06cd50604c9fb902923b223671545b3"
+        },
+        {
+          "name": "feat/rq1-trn-02a-eval-r2",
+          "sha": "3e2bc1d4bdb912805e18dd3aa3f22764a786f439"
+        },
+        {
+          "name": "feat/rq1-trn-02a-fold1",
+          "sha": "9b32800bde2c9fbcfd9814aeb651eab57d4ce486"
+        },
+        {
+          "name": "feat/rq1-trn-02a-zero-oracle-verify",
+          "sha": "03854dca2dce81fbfcf1e2715eaf399af477dd62"
+        },
+        {
+          "name": "feat/rq1-trn-02b-cpu-execution",
+          "sha": "e46474121fa68bc1f5920955f5f51b831439919a"
+        },
+        {
+          "name": "feat/rq1-trn-02b-implementation-preflight",
+          "sha": "2f6345e426279dd541cc830d4e31dd2d7823a7e7"
+        },
+        {
+          "name": "feat/rq1-trn-02b-kaggle-t4x2-migration",
+          "sha": "96f7997b85e2fc96c612ef62b8d813e5599ef572"
+        },
+        {
+          "name": "feat/rq-model-01-dataset-sufficiency-and-e1",
+          "sha": "baa4989243d5ff46b8b3bf5a3c280cdf2857382b"
+        },
+        {
+          "name": "fix/protocol-z-numerical-closure",
+          "sha": "c4a658ffbd5a2afd2ebdce172e47af43ed9bb63e"
+        },
+        {
+          "name": "fix/rq1-trn-02a-zero-oracle-final-errata",
+          "sha": "9b23d8238343d7ceeb4e0c837dfe02b7c3236602"
+        },
+        {
+          "name": "fix/rq1-trn-02b-colab-auth-r1",
+          "sha": "a497ec3f0b6dd4c760c4e40296481f61b6426d8d"
+        },
+        {
+          "name": "fix/rq1-trn-02b-colab-auth-r2-hotfix",
+          "sha": "4b5baccbb40d7e00bb710b42979196eaef4ce4d3"
+        },
+        {
+          "name": "fix/rq1-trn-02b-colab-auth-r2",
+          "sha": "ea8762079735cfb5520de49eaca4528a458a1f38"
+        },
+        {
+          "name": "fix/rq1-trn-02b-colab-auth-r3",
+          "sha": "ba93aaea759710ac796ed75b182f495d3cc17e67"
+        },
+        {
+          "name": "fix/rq1-trn-02b-preflight-r1",
+          "sha": "9fe993b6af0346a0d8170e328b5416cab30bdbdd"
+        },
+        {
+          "name": "fix/rq1-trn-02b-preflight-r2",
+          "sha": "8486cbb3596a0f5d2603dcdf46fd891b5c849840"
+        },
+        {
+          "name": "main",
+          "sha": "36c6c7707e00b438270460fc9014ca55672c8d25"
+        },
+        {
+          "name": "prep/rq1-p-score",
+          "sha": "a9f4947985651253cee980086a346056885b51c6"
+        },
+        {
+          "name": "prep/rq1-p-sup",
+          "sha": "dd2dd8953fc5d946c0b88d72e915be53e7cd0d9f"
+        },
+        {
+          "name": "prep/rq1-shared-base",
+          "sha": "1fa4a5b8de206bbf0bd7cb7856f721d2b1d0adb6"
+        },
+        {
+          "name": "research/rq1-trn-02b-cpu-fp32-feasibility-gate",
+          "sha": "72e38bb1c4b9d66311aec43cf9cfeabed5b96bbd"
+        },
+        {
+          "name": "research/rq1-trn-02b-kaggle-t4x2-feasibility",
+          "sha": "c91aad8c1f61c2fc962553b8f595658d7ef421de"
+        },
+        {
+          "name": "research-phase",
+          "sha": "b25a7595360294798d8d06b37592dd65dd4c9c33"
+        },
+        {
+          "name": "review/rq1-trn-02b-kaggle-direct-run-gate",
+          "sha": "00af593321ca1277abe8a459ffdc0030cd5cbb9d"
+        },
+        {
+          "name": "review/rq1-trn-02b-kaggle-official-runs",
+          "sha": "7a3b9ecf5e9efedc480b477f531ebe9318ae3415"
+        },
+        {
+          "name": "review/rq1-trn-03a-cross-fold-planning",
+          "sha": "1ac7c5ea8554f36380d8e651f06dda588181ba54"
+        }
+      ],
+      "pulls": [
+        {
+          "number": 3,
+          "title": "Feat/rq1 trn 02a eval r1",
+          "state": "closed",
+          "html_url": "https://github.com/minkhoaa/Langfens-RQ1-Speech-Research/pull/3",
+          "created_at": "2026-10-26T04:38:07Z",
+          "closed_at": "2026-10-26T04:38:21Z",
+          "merged_at": "2026-10-26T04:38:21Z",
+          "merge_commit_sha": "36c6c7707e00b438270460fc9014ca55672c8d25"
+        },
+        {
+          "number": 2,
+          "title": "Feat/rq1 trn 02a fold1",
+          "state": "closed",
+          "html_url": "https://github.com/minkhoaa/Langfens-RQ1-Speech-Research/pull/2",
+          "created_at": "2026-10-25T14:11:24Z",
+          "closed_at": "2026-10-25T14:11:36Z",
+          "merged_at": "2026-10-25T14:11:36Z",
+          "merge_commit_sha": "385098cd4687c25d568ccf679342c45efe14edcf"
+        },
+        {
+          "number": 1,
+          "title": "docs: adopt Colab-first training and reusable fold dataset staging",
+          "state": "open",
+          "html_url": "https://github.com/minkhoaa/Langfens-RQ1-Speech-Research/pull/1",
+          "created_at": "2026-10-25T13:52:40Z",
+          "closed_at": null,
+          "merged_at": null,
+          "merge_commit_sha": "da09a0da72fc361aaff00056f335cc68e52a4706"
+        }
+      ],
+      "issues": [],
+      "releases": []
+    },
+    "minkhoaa/Project_Langfens_Microservice": {
+      "repository": {
+        "full_name": "minkhoaa/Project_Langfens_Microservice",
+        "html_url": "https://github.com/minkhoaa/Project_Langfens_Microservice",
+        "visibility": "public",
+        "default_branch": "master",
+        "created_at": "2025-09-14T19:55:22Z",
+        "updated_at": "2026-10-24T09:10:54Z",
+        "pushed_at": "2026-10-31T11:14:11Z",
+        "archived": false,
+        "open_issues_count": 0
+      },
+      "branches": [
+        {
+          "name": "autonomous-generation",
+          "sha": "029978f3dacc10eb4ce87953cc941f770ace02ed"
+        },
+        {
+          "name": "generation-harness",
+          "sha": "2ba12e5488ec81dfbee97cf74fdf31dd9609eb48"
+        },
+        {
+          "name": "master",
+          "sha": "2a41286e623d3c23c07c9620a3335361b7ae5c68"
+        },
+        {
+          "name": "refactor/phase15-v2rate-recovery",
+          "sha": "f255b8b14afbbf7e5856899165c318139e48a797"
+        },
+        {
+          "name": "refactor/recovery-integrate-g15",
+          "sha": "641721df523b76fbe659cf26e078f4494519a8f3"
+        },
+        {
+          "name": "refactor/sync-dotest-admin-renderer",
+          "sha": "04fdbd714eb4d9c71b6cf2d0a7985dea83286e4d"
+        }
+      ],
+      "pulls": [
+        {
+          "number": 14,
+          "title": "Autonomous generation",
+          "state": "closed",
+          "html_url": "https://github.com/minkhoaa/Project_Langfens_Microservice/pull/14",
+          "created_at": "2026-10-24T09:10:05Z",
+          "closed_at": "2026-10-24T09:10:28Z",
+          "merged_at": "2026-10-24T09:10:28Z",
+          "merge_commit_sha": "2a41286e623d3c23c07c9620a3335361b7ae5c68"
+        },
+        {
+          "number": 13,
+          "title": "feat(reading-generation): autonomous exam generation loop engine v2 & admin dotest synchronization",
+          "state": "closed",
+          "html_url": "https://github.com/minkhoaa/Project_Langfens_Microservice/pull/13",
+          "created_at": "2026-10-14T09:55:03Z",
+          "closed_at": "2026-10-14T10:14:37Z",
+          "merged_at": "2026-10-14T10:14:37Z",
+          "merge_commit_sha": "fc3c9fe81873eaa2ceffa607e47039551876b133"
+        },
+        {
+          "number": 12,
+          "title": "fix bug",
+          "state": "closed",
+          "html_url": "https://github.com/minkhoaa/Project_Langfens_Microservice/pull/12",
+          "created_at": "2026-06-04T08:41:17Z",
+          "closed_at": "2026-06-04T08:41:23Z",
+          "merged_at": "2026-06-04T08:41:23Z",
+          "merge_commit_sha": "45d3448506e215da3fb8a9b9e1198be4ca826c75"
+        },
+        {
+          "number": 11,
+          "title": "change local LLm",
+          "state": "closed",
+          "html_url": "https://github.com/minkhoaa/Project_Langfens_Microservice/pull/11",
+          "created_at": "2026-06-01T08:17:58Z",
+          "closed_at": "2026-06-01T08:18:05Z",
+          "merged_at": "2026-06-01T08:18:05Z",
+          "merge_commit_sha": "3c1acf403a788750eaeb7093b85e302c8a71b916"
+        },
+        {
+          "number": 10,
+          "title": "ai improve",
+          "state": "closed",
+          "html_url": "https://github.com/minkhoaa/Project_Langfens_Microservice/pull/10",
+          "created_at": "2026-05-31T06:45:25Z",
+          "closed_at": "2026-05-31T06:45:32Z",
+          "merged_at": "2026-05-31T06:45:32Z",
+          "merge_commit_sha": "e9d4cb6242d154df1e28c4d44c9dd6317d118fce"
+        },
+        {
+          "number": 9,
+          "title": "Unify Writing flow: sync grade + async compare for both flows",
+          "state": "closed",
+          "html_url": "https://github.com/minkhoaa/Project_Langfens_Microservice/pull/9",
+          "created_at": "2026-04-28T04:09:57Z",
+          "closed_at": "2026-04-28T06:23:09Z",
+          "merged_at": "2026-04-28T06:23:09Z",
+          "merge_commit_sha": "d182983c5fe14100913c1b4271721a43ca3dd3d4"
+        },
+        {
+          "number": 8,
+          "title": "chore: auth IOptions registration + email-service logging/DI cleanup",
+          "state": "closed",
+          "html_url": "https://github.com/minkhoaa/Project_Langfens_Microservice/pull/8",
+          "created_at": "2026-04-28T02:34:16Z",
+          "closed_at": "2026-04-28T02:36:09Z",
+          "merged_at": "2026-04-28T02:36:09Z",
+          "merge_commit_sha": "017ef9e8f5eaeda3a4e811c2aa3338a19ced8dfb"
+        },
+        {
+          "number": 7,
+          "title": "fix: writing E2E sprint — Wave 1+2+3 defect fixes",
+          "state": "closed",
+          "html_url": "https://github.com/minkhoaa/Project_Langfens_Microservice/pull/7",
+          "created_at": "2026-04-27T14:06:48Z",
+          "closed_at": "2026-04-28T02:24:30Z",
+          "merged_at": "2026-04-28T02:24:30Z",
+          "merge_commit_sha": "5afe739ff5dcc2d28f7ad2b2a7bef44c313c4bf7"
+        },
+        {
+          "number": 6,
+          "title": "ai speaking flow",
+          "state": "closed",
+          "html_url": "https://github.com/minkhoaa/Project_Langfens_Microservice/pull/6",
+          "created_at": "2026-04-21T08:51:02Z",
+          "closed_at": "2026-04-21T08:51:10Z",
+          "merged_at": "2026-04-21T08:51:10Z",
+          "merge_commit_sha": "8fafb6653c18e1eeb177b9e8a1323057514c633b"
+        },
+        {
+          "number": 5,
+          "title": "update week 4",
+          "state": "closed",
+          "html_url": "https://github.com/minkhoaa/Project_Langfens_Microservice/pull/5",
+          "created_at": "2026-04-06T07:00:06Z",
+          "closed_at": "2026-04-06T07:00:21Z",
+          "merged_at": "2026-04-06T07:00:21Z",
+          "merge_commit_sha": "e7adfaabda4b25e363af6d89869ba1a714c5e33b"
+        },
+        {
+          "number": 4,
+          "title": "api for role play",
+          "state": "closed",
+          "html_url": "https://github.com/minkhoaa/Project_Langfens_Microservice/pull/4",
+          "created_at": "2026-03-23T07:03:33Z",
+          "closed_at": "2026-03-23T16:01:30Z",
+          "merged_at": "2026-03-23T16:01:30Z",
+          "merge_commit_sha": "a38fb8d962fd70761b40b2d125fbc14200c1abf6"
+        },
+        {
+          "number": 3,
+          "title": "Dev",
+          "state": "closed",
+          "html_url": "https://github.com/minkhoaa/Project_Langfens_Microservice/pull/3",
+          "created_at": "2025-12-14T16:02:28Z",
+          "closed_at": "2025-12-14T16:04:05Z",
+          "merged_at": "2025-12-14T16:04:04Z",
+          "merge_commit_sha": "a2dd167c47cc0edfe1c11670dbf7487d8d8c6329"
+        },
+        {
+          "number": 2,
+          "title": "Deploy",
+          "state": "closed",
+          "html_url": "https://github.com/minkhoaa/Project_Langfens_Microservice/pull/2",
+          "created_at": "2025-12-14T16:02:03Z",
+          "closed_at": "2025-12-14T16:04:04Z",
+          "merged_at": "2025-12-14T16:04:04Z",
+          "merge_commit_sha": "4e1cb91840d2aa3733bf2340966dbab7acdab5ca"
+        },
+        {
+          "number": 1,
+          "title": "Dev",
+          "state": "closed",
+          "html_url": "https://github.com/minkhoaa/Project_Langfens_Microservice/pull/1",
+          "created_at": "2025-11-26T19:08:36Z",
+          "closed_at": "2025-11-26T19:08:47Z",
+          "merged_at": "2025-11-26T19:08:47Z",
+          "merge_commit_sha": "43f6aed8dad49580039134b8a2b0a21c2d23d779"
+        }
+      ],
+      "issues": [],
+      "releases": []
+    },
+    "julynguyen247/langfens-fe-app": {
+      "repository": {
+        "full_name": "julynguyen247/langfens-fe-app",
+        "html_url": "https://github.com/julynguyen247/langfens-fe-app",
+        "visibility": "public",
+        "default_branch": "master",
+        "created_at": "2025-09-16T06:22:20Z",
+        "updated_at": "2026-10-20T04:00:11Z",
+        "pushed_at": "2026-10-29T11:26:30Z",
+        "archived": false,
+        "open_issues_count": 0
+      },
+      "branches": [
+        {
+          "name": "autonomous-generation",
+          "sha": "2d9fe94a54e65680eca56aafbe40e691018113da"
+        },
+        {
+          "name": "master",
+          "sha": "42f77bf113290d8fba331b0553834c83c9328632"
+        },
+        {
+          "name": "new-landing-page",
+          "sha": "50c600555671ac853a9b88bab5f518da4028fd53"
+        },
+        {
+          "name": "refactor/application-structure-and-audit",
+          "sha": "850f5c7ac5bb8f9a78e0c18d0ce66bf1ff25dfc9"
+        },
+        {
+          "name": "refactor/standard-schema-wireup",
+          "sha": "94a8c279d6280700afcee196b00099b8abb8bf06"
+        },
+        {
+          "name": "refactor/sync-dotest-admin-renderer",
+          "sha": "f3cc4e33b892718618e0d73ec8ff57da65c6d629"
+        }
+      ],
+      "pulls": [
+        {
+          "number": 44,
+          "title": "Autonomous generation",
+          "state": "closed",
+          "html_url": "https://github.com/julynguyen247/langfens-fe-app/pull/44",
+          "created_at": "2026-10-20T03:59:47Z",
+          "closed_at": "2026-10-20T04:00:03Z",
+          "merged_at": "2026-10-20T04:00:02Z",
+          "merge_commit_sha": "42f77bf113290d8fba331b0553834c83c9328632"
+        },
+        {
+          "number": 43,
+          "title": "feat(landing): integrate 3D interactive study lounge landing page (Option A)",
+          "state": "closed",
+          "html_url": "https://github.com/julynguyen247/langfens-fe-app/pull/43",
+          "created_at": "2026-10-20T03:57:11Z",
+          "closed_at": "2026-10-20T03:58:48Z",
+          "merged_at": "2026-10-20T03:58:48Z",
+          "merge_commit_sha": "a7052c4c6dce74f07b1b360a89f3d8f96a8b2238"
+        },
+        {
+          "number": 42,
+          "title": "feat(admin-reading-paper): reading paper generation UI, feedback modal, and exam v3 synchronization",
+          "state": "closed",
+          "html_url": "https://github.com/julynguyen247/langfens-fe-app/pull/42",
+          "created_at": "2026-10-14T09:55:14Z",
+          "closed_at": "2026-10-14T10:22:22Z",
+          "merged_at": "2026-10-14T10:22:22Z",
+          "merge_commit_sha": "94b073d424ee7ac65c42f74cd1f80f740ec6f552"
+        },
+        {
+          "number": 41,
+          "title": "Refactor application structure and add audit coverage",
+          "state": "closed",
+          "html_url": "https://github.com/julynguyen247/langfens-fe-app/pull/41",
+          "created_at": "2026-09-21T05:49:28Z",
+          "closed_at": "2026-09-21T05:51:26Z",
+          "merged_at": "2026-09-21T05:51:26Z",
+          "merge_commit_sha": "121fca41c994c80aa81fac9dcf6d44bebeb88ee7"
+        },
+        {
+          "number": 40,
+          "title": "landing page improve",
+          "state": "closed",
+          "html_url": "https://github.com/julynguyen247/langfens-fe-app/pull/40",
+          "created_at": "2026-06-04T08:40:04Z",
+          "closed_at": "2026-06-04T08:41:07Z",
+          "merged_at": "2026-06-04T08:41:07Z",
+          "merge_commit_sha": "8c87321283d4256c806864430af03f375ffee5de"
+        },
+        {
+          "number": 39,
+          "title": "improve UI",
+          "state": "closed",
+          "html_url": "https://github.com/julynguyen247/langfens-fe-app/pull/39",
+          "created_at": "2026-06-01T08:13:04Z",
+          "closed_at": "2026-06-01T08:13:35Z",
+          "merged_at": "2026-06-01T08:13:35Z",
+          "merge_commit_sha": "d539c707c1991b945e9a3182f546b2230614fda2"
+        },
+        {
+          "number": 38,
+          "title": "Writing Comparative tab: auto-poll + BFF auth forwarding",
+          "state": "closed",
+          "html_url": "https://github.com/julynguyen247/langfens-fe-app/pull/38",
+          "created_at": "2026-04-28T04:10:31Z",
+          "closed_at": "2026-04-28T06:22:58Z",
+          "merged_at": "2026-04-28T06:22:57Z",
+          "merge_commit_sha": "8e5c0ecf2f0ee3f7e63ca6c0aed66aa857ec0214"
+        },
+        {
+          "number": 37,
+          "title": "fix(auth): persist token from API envelope + dev-mode cookie compat",
+          "state": "closed",
+          "html_url": "https://github.com/julynguyen247/langfens-fe-app/pull/37",
+          "created_at": "2026-04-28T02:35:20Z",
+          "closed_at": "2026-04-28T02:36:30Z",
+          "merged_at": "2026-04-28T02:36:30Z",
+          "merge_commit_sha": "c7002659fb2b1e5a1dbc55fd1e9215bb42a461d8"
+        },
+        {
+          "number": 36,
+          "title": "feat(fe): writing comparative tab + Playwright E2E + chatbot cleanup",
+          "state": "closed",
+          "html_url": "https://github.com/julynguyen247/langfens-fe-app/pull/36",
+          "created_at": "2026-04-28T02:29:00Z",
+          "closed_at": "2026-04-28T02:29:10Z",
+          "merged_at": "2026-04-28T02:29:10Z",
+          "merge_commit_sha": "25fa262da9edc41784b2f0302e6d8b25ac2875a1"
+        },
+        {
+          "number": 35,
+          "title": "test(fe): Playwright E2E + writing/grammar data-testid attributes",
+          "state": "closed",
+          "html_url": "https://github.com/julynguyen247/langfens-fe-app/pull/35",
+          "created_at": "2026-04-27T14:08:02Z",
+          "closed_at": "2026-04-28T02:28:58Z",
+          "merged_at": null,
+          "merge_commit_sha": null
+        },
+        {
+          "number": 34,
+          "title": "Feat/selenis migration",
+          "state": "closed",
+          "html_url": "https://github.com/julynguyen247/langfens-fe-app/pull/34",
+          "created_at": "2026-03-18T08:53:41Z",
+          "closed_at": "2026-03-18T08:54:04Z",
+          "merged_at": "2026-03-18T08:54:04Z",
+          "merge_commit_sha": "ab4c87665e99d3e83e6eb6536e16f0f91c3fb3ed"
+        },
+        {
+          "number": 33,
+          "title": "feat: add GradientText, ScrollIndicator, SectionHeading, and StepCard…",
+          "state": "closed",
+          "html_url": "https://github.com/julynguyen247/langfens-fe-app/pull/33",
+          "created_at": "2026-03-16T18:47:53Z",
+          "closed_at": "2026-03-16T18:48:05Z",
+          "merged_at": "2026-03-16T18:48:05Z",
+          "merge_commit_sha": "db047f04c4f3128619f1df4793a12e81fcefaac1"
+        },
+        {
+          "number": 32,
+          "title": "fix ci cd",
+          "state": "closed",
+          "html_url": "https://github.com/julynguyen247/langfens-fe-app/pull/32",
+          "created_at": "2025-12-29T04:07:44Z",
+          "closed_at": "2025-12-29T04:07:52Z",
+          "merged_at": "2025-12-29T04:07:52Z",
+          "merge_commit_sha": "a651d1059e25b50d53469ff08fbcdd1b5b5d8b2e"
+        },
+        {
+          "number": 31,
+          "title": "fix ci cd",
+          "state": "closed",
+          "html_url": "https://github.com/julynguyen247/langfens-fe-app/pull/31",
+          "created_at": "2025-12-29T03:53:53Z",
+          "closed_at": "2025-12-29T03:54:00Z",
+          "merged_at": "2025-12-29T03:54:00Z",
+          "merge_commit_sha": "63250ae9bd88a1ed971d77b94066da1b121e4808"
+        },
+        {
+          "number": 30,
+          "title": "update login google",
+          "state": "closed",
+          "html_url": "https://github.com/julynguyen247/langfens-fe-app/pull/30",
+          "created_at": "2025-12-29T03:34:43Z",
+          "closed_at": "2025-12-29T03:35:23Z",
+          "merged_at": "2025-12-29T03:35:23Z",
+          "merge_commit_sha": "e667d3dfdb067fd5b494f427b23506df796e62dc"
+        },
+        {
+          "number": 29,
+          "title": "deploy",
+          "state": "closed",
+          "html_url": "https://github.com/julynguyen247/langfens-fe-app/pull/29",
+          "created_at": "2025-12-28T18:36:25Z",
+          "closed_at": "2025-12-28T18:36:32Z",
+          "merged_at": "2025-12-28T18:36:32Z",
+          "merge_commit_sha": "ffdf237d4a187f00eae1a12fdd51a956ebf6fb9a"
+        },
+        {
+          "number": 28,
+          "title": "Demo",
+          "state": "closed",
+          "html_url": "https://github.com/julynguyen247/langfens-fe-app/pull/28",
+          "created_at": "2025-12-28T18:35:57Z",
+          "closed_at": "2025-12-28T18:36:07Z",
+          "merged_at": "2025-12-28T18:36:07Z",
+          "merge_commit_sha": "77c6ef1f2cc47c7a9a5834d4749a5023be56f6fa"
+        },
+        {
+          "number": 27,
+          "title": "Dev",
+          "state": "closed",
+          "html_url": "https://github.com/julynguyen247/langfens-fe-app/pull/27",
+          "created_at": "2025-12-26T12:01:02Z",
+          "closed_at": "2025-12-26T12:01:14Z",
+          "merged_at": "2025-12-26T12:01:14Z",
+          "merge_commit_sha": "27c1129cb529f2c3d8c8bf59fd177a80cd86d222"
+        },
+        {
+          "number": 26,
+          "title": "Khoa",
+          "state": "closed",
+          "html_url": "https://github.com/julynguyen247/langfens-fe-app/pull/26",
+          "created_at": "2025-12-26T08:38:44Z",
+          "closed_at": "2025-12-26T08:40:00Z",
+          "merged_at": "2025-12-26T08:40:00Z",
+          "merge_commit_sha": "f7fd8c9a3c139a35005ea6b8179e104e7f902625"
+        },
+        {
+          "number": 25,
+          "title": "panels",
+          "state": "closed",
+          "html_url": "https://github.com/julynguyen247/langfens-fe-app/pull/25",
+          "created_at": "2025-12-25T14:19:32Z",
+          "closed_at": "2025-12-25T14:19:40Z",
+          "merged_at": "2025-12-25T14:19:40Z",
+          "merge_commit_sha": "aafa82947ac210a837f1da8f408eb41d2288d0e0"
+        },
+        {
+          "number": 24,
+          "title": "Khoa",
+          "state": "closed",
+          "html_url": "https://github.com/julynguyen247/langfens-fe-app/pull/24",
+          "created_at": "2025-12-25T07:53:11Z",
+          "closed_at": "2025-12-25T07:53:17Z",
+          "merged_at": "2025-12-25T07:53:17Z",
+          "merge_commit_sha": "9a1c573848e9bb621dec7f0e68be6ed39077e2fe"
+        },
+        {
+          "number": 23,
+          "title": "add ytb video",
+          "state": "closed",
+          "html_url": "https://github.com/julynguyen247/langfens-fe-app/pull/23",
+          "created_at": "2025-12-21T10:20:28Z",
+          "closed_at": "2025-12-21T10:20:33Z",
+          "merged_at": "2025-12-21T10:20:33Z",
+          "merge_commit_sha": "ea48c662b5cc7cc4c1a6eb34307aa4293578852e"
+        },
+        {
+          "number": 22,
+          "title": "add matching information",
+          "state": "closed",
+          "html_url": "https://github.com/julynguyen247/langfens-fe-app/pull/22",
+          "created_at": "2025-12-19T15:08:52Z",
+          "closed_at": "2025-12-19T15:08:58Z",
+          "merged_at": "2025-12-19T15:08:58Z",
+          "merge_commit_sha": "2d5410b1ad8f309325f180614e82eba890cce616"
+        },
+        {
+          "number": 21,
+          "title": "completition",
+          "state": "closed",
+          "html_url": "https://github.com/julynguyen247/langfens-fe-app/pull/21",
+          "created_at": "2025-12-19T07:45:37Z",
+          "closed_at": "2025-12-19T07:59:00Z",
+          "merged_at": "2025-12-19T07:59:00Z",
+          "merge_commit_sha": "1c94be7c847c66564b7308729faa96ee08e59ac6"
+        },
+        {
+          "number": 20,
+          "title": "fix reload",
+          "state": "closed",
+          "html_url": "https://github.com/julynguyen247/langfens-fe-app/pull/20",
+          "created_at": "2025-12-19T02:43:16Z",
+          "closed_at": "2025-12-19T02:44:22Z",
+          "merged_at": "2025-12-19T02:44:21Z",
+          "merge_commit_sha": "439e8c78eff0e5c381a13cf6ced3ddff78bec880"
+        },
+        {
+          "number": 19,
+          "title": "update: render exam",
+          "state": "closed",
+          "html_url": "https://github.com/julynguyen247/langfens-fe-app/pull/19",
+          "created_at": "2025-12-18T18:24:27Z",
+          "closed_at": "2025-12-18T18:24:33Z",
+          "merged_at": "2025-12-18T18:24:33Z",
+          "merge_commit_sha": "37229de9848ab887d892fa032e8f367f1f522a02"
+        },
+        {
+          "number": 18,
+          "title": "add after reviewing flashcard page",
+          "state": "closed",
+          "html_url": "https://github.com/julynguyen247/langfens-fe-app/pull/18",
+          "created_at": "2025-12-15T19:31:52Z",
+          "closed_at": "2025-12-15T19:31:57Z",
+          "merged_at": "2025-12-15T19:31:57Z",
+          "merge_commit_sha": "3871ac564739a7586149eebcb0b579eb4b1ab11b"
+        },
+        {
+          "number": 17,
+          "title": "deck card",
+          "state": "closed",
+          "html_url": "https://github.com/julynguyen247/langfens-fe-app/pull/17",
+          "created_at": "2025-12-15T19:07:28Z",
+          "closed_at": "2025-12-15T19:07:59Z",
+          "merged_at": "2025-12-15T19:07:59Z",
+          "merge_commit_sha": "a4a3ac37e25f271f80709b30a2561ef5b64d04e0"
+        },
+        {
+          "number": 16,
+          "title": "order question",
+          "state": "closed",
+          "html_url": "https://github.com/julynguyen247/langfens-fe-app/pull/16",
+          "created_at": "2025-12-15T17:27:21Z",
+          "closed_at": "2025-12-15T17:49:08Z",
+          "merged_at": "2025-12-15T17:49:08Z",
+          "merge_commit_sha": "ca5b4b1f0d465bd5238e52ef7189669238e967cd"
+        },
+        {
+          "number": 15,
+          "title": "fix bugs",
+          "state": "closed",
+          "html_url": "https://github.com/julynguyen247/langfens-fe-app/pull/15",
+          "created_at": "2025-12-15T16:45:03Z",
+          "closed_at": "2025-12-15T16:45:10Z",
+          "merged_at": "2025-12-15T16:45:10Z",
+          "merge_commit_sha": "9da28270210ac258132e96fee44651042e4fcf12"
+        },
+        {
+          "number": 14,
+          "title": "pages",
+          "state": "closed",
+          "html_url": "https://github.com/julynguyen247/langfens-fe-app/pull/14",
+          "created_at": "2025-12-15T16:18:46Z",
+          "closed_at": "2025-12-15T16:19:12Z",
+          "merged_at": "2025-12-15T16:19:12Z",
+          "merge_commit_sha": "2754e011f6b6b45e693310663d115d7d5483fb64"
+        },
+        {
+          "number": 13,
+          "title": "add upload button",
+          "state": "closed",
+          "html_url": "https://github.com/julynguyen247/langfens-fe-app/pull/13",
+          "created_at": "2025-12-15T14:57:16Z",
+          "closed_at": "2025-12-15T14:57:23Z",
+          "merged_at": "2025-12-15T14:57:23Z",
+          "merge_commit_sha": "7ae88944e7b64a67fa667ee2613725f5ed6f1acc"
+        },
+        {
+          "number": 12,
+          "title": "change layout placement",
+          "state": "closed",
+          "html_url": "https://github.com/julynguyen247/langfens-fe-app/pull/12",
+          "created_at": "2025-12-15T11:39:15Z",
+          "closed_at": "2025-12-15T11:39:44Z",
+          "merged_at": "2025-12-15T11:39:44Z",
+          "merge_commit_sha": "8f196558cf473130701969594e09ba8705f524eb"
+        },
+        {
+          "number": 11,
+          "title": "add loading",
+          "state": "closed",
+          "html_url": "https://github.com/julynguyen247/langfens-fe-app/pull/11",
+          "created_at": "2025-12-15T09:36:58Z",
+          "closed_at": "2025-12-15T09:37:16Z",
+          "merged_at": "2025-12-15T09:37:16Z",
+          "merge_commit_sha": "bb4a717b6df2dc457cefe749388160758c03aea1"
+        },
+        {
+          "number": 10,
+          "title": "bug for placement",
+          "state": "closed",
+          "html_url": "https://github.com/julynguyen247/langfens-fe-app/pull/10",
+          "created_at": "2025-12-15T09:10:37Z",
+          "closed_at": "2025-12-15T09:10:54Z",
+          "merged_at": "2025-12-15T09:10:54Z",
+          "merge_commit_sha": "511007776a0e82485fa259ef4c7b960931689312"
+        },
+        {
+          "number": 9,
+          "title": "fix env",
+          "state": "closed",
+          "html_url": "https://github.com/julynguyen247/langfens-fe-app/pull/9",
+          "created_at": "2025-12-15T09:02:10Z",
+          "closed_at": "2025-12-15T09:02:16Z",
+          "merged_at": "2025-12-15T09:02:16Z",
+          "merge_commit_sha": "00414ceef567d9ae8ffea8a9133be0efa6ad602b"
+        },
+        {
+          "number": 8,
+          "title": "Dev",
+          "state": "closed",
+          "html_url": "https://github.com/julynguyen247/langfens-fe-app/pull/8",
+          "created_at": "2025-12-15T08:25:57Z",
+          "closed_at": "2025-12-15T08:26:04Z",
+          "merged_at": "2025-12-15T08:26:04Z",
+          "merge_commit_sha": "fc8c91f7eafbf4c0e0a76163f237cfb2baa1c5b7"
+        },
+        {
+          "number": 7,
+          "title": "auth wrapper and chatbot",
+          "state": "closed",
+          "html_url": "https://github.com/julynguyen247/langfens-fe-app/pull/7",
+          "created_at": "2025-12-15T07:57:28Z",
+          "closed_at": "2025-12-15T07:57:34Z",
+          "merged_at": "2025-12-15T07:57:34Z",
+          "merge_commit_sha": "cbe34fc668789b94910a57a7978bd408a4581bfa"
+        },
+        {
+          "number": 6,
+          "title": "middleware",
+          "state": "closed",
+          "html_url": "https://github.com/julynguyen247/langfens-fe-app/pull/6",
+          "created_at": "2025-12-15T07:22:01Z",
+          "closed_at": "2025-12-15T07:22:06Z",
+          "merged_at": "2025-12-15T07:22:06Z",
+          "merge_commit_sha": "05a698c9e360ebac1b86ea2863f008a97ff8387a"
+        },
+        {
+          "number": 5,
+          "title": "Deploy",
+          "state": "closed",
+          "html_url": "https://github.com/julynguyen247/langfens-fe-app/pull/5",
+          "created_at": "2025-11-16T02:13:44Z",
+          "closed_at": "2025-11-16T02:13:50Z",
+          "merged_at": "2025-11-16T02:13:50Z",
+          "merge_commit_sha": "9941f98d7f9f2178ab9df59eee56dcdd594fba66"
+        },
+        {
+          "number": 4,
+          "title": "render question",
+          "state": "closed",
+          "html_url": "https://github.com/julynguyen247/langfens-fe-app/pull/4",
+          "created_at": "2025-11-15T08:44:07Z",
+          "closed_at": "2025-11-16T02:13:52Z",
+          "merged_at": "2025-11-16T02:13:52Z",
+          "merge_commit_sha": "87b79418af2337e1b20a5ecd5f293b722dbd9233"
+        },
+        {
+          "number": 3,
+          "title": "Dev",
+          "state": "closed",
+          "html_url": "https://github.com/julynguyen247/langfens-fe-app/pull/3",
+          "created_at": "2025-11-05T05:33:31Z",
+          "closed_at": "2025-11-05T05:33:43Z",
+          "merged_at": "2025-11-05T05:33:43Z",
+          "merge_commit_sha": "274b469e37464f22e69c8b65ae24331e5783ba59"
+        },
+        {
+          "number": 2,
+          "title": "Deploy",
+          "state": "closed",
+          "html_url": "https://github.com/julynguyen247/langfens-fe-app/pull/2",
+          "created_at": "2025-11-05T02:53:19Z",
+          "closed_at": "2025-11-05T02:53:37Z",
+          "merged_at": "2025-11-05T02:53:37Z",
+          "merge_commit_sha": "54b8723816281e8001c0391de37cb3a47ce14105"
+        },
+        {
+          "number": 1,
+          "title": "Dev",
+          "state": "closed",
+          "html_url": "https://github.com/julynguyen247/langfens-fe-app/pull/1",
+          "created_at": "2025-10-20T04:01:00Z",
+          "closed_at": "2025-10-20T04:01:12Z",
+          "merged_at": "2025-10-20T04:01:12Z",
+          "merge_commit_sha": "65d2d255b5ab5f0523ff719baf70ad48eecfe81f"
+        }
+      ],
+      "issues": [],
+      "releases": []
+    }
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "total_alarms": 82,
+  "original_tp": 82,
+  "original_deployed_precision_pct": 6.78,
+  "tripartite_breakdown": {
+    "confirmed_model_fp": {
+      "count": 0.0,
+      "pct": 0.0,
+      "std_error": 0.0
+    },
+    "confirmed_annotation_disagreement": {
+      "count": 0.0,
+      "pct": 0.0,
+      "std_error": 0.0
+    },
+    "confirmed_tp": {
+      "count": 82.0,
+      "pct": 100.0,
+      "std_error": 0.0
+    },
+    "insufficient_evidence": {
+      "count": 0.0,
+      "pct": 0.0,
+      "std_error": 0.0
+    }
+  },
+  "broad_pronunciation_event_horizon": {
+    "total_event_detections": 82.0,
+    "deployed_precision_pct": 100.0,
+    "std_error_pct": 0.0,
+    "ci_95_pct": [
+      100.0,
+      100.0
+    ]
+  }
+}

@@ -1,0 +1,516 @@
+{
+  "observed_at": "2026-11-03T23:45:26.208192+07:00",
+  "method": "HfApi.model_info files_metadata=True using existing implicit authentication; no payload download or mutation",
+  "models": [
+    {
+      "id": "minkhoaa/langfens-rq1-fold1-baseline-r",
+      "sha": "6c31f7196c2e03a6766c5525833de465a1a9345d",
+      "private": false,
+      "last_modified": "2026-10-27 10:26:31+00:00",
+      "files": [
+        {
+          "path": ".gitattributes",
+          "size": 1519,
+          "blob_id": "a6344aac8c09253b3b630fb776ae94478aa0275b",
+          "lfs_sha256": null
+        },
+        {
+          "path": "ARTIFACT_MANIFEST.json",
+          "size": 1468,
+          "blob_id": "cafbdf7c0e87ec0baa3c6bfa50fb5d485f5a4f06",
+          "lfs_sha256": null
+        },
+        {
+          "path": "README.md",
+          "size": 9630,
+          "blob_id": "9ad08ec7e6c9bdd8dc4a5c817e9e921bfae4576a",
+          "lfs_sha256": null
+        },
+        {
+          "path": "config.json",
+          "size": 1395,
+          "blob_id": "43d4a0b8be9b6245fed98f4915f513a79bb9ad82",
+          "lfs_sha256": null
+        },
+        {
+          "path": "evaluation_results.json",
+          "size": 2246,
+          "blob_id": "9172b7d1f90fd6f06ea415a717a5097c3e7f903a",
+          "lfs_sha256": null
+        },
+        {
+          "path": "example_inference.py",
+          "size": 5703,
+          "blob_id": "5334fa457d076ea72b06b12b8a37f0d1d458eaeb",
+          "lfs_sha256": null
+        },
+        {
+          "path": "model.safetensors",
+          "size": 389650424,
+          "blob_id": "665f44e1fe2b6f4472234a5fa7b7f3f0cd96898b",
+          "lfs_sha256": "a5b9d41f1431ad7a8b9718b4d84a7886e39fe5aff45fe742fbe572819f8babc1"
+        },
+        {
+          "path": "phone_inventory.json",
+          "size": 3629,
+          "blob_id": "8f0d662a5b6558a03f5f6af5018b4dfc40d5a16d",
+          "lfs_sha256": null
+        },
+        {
+          "path": "training_metadata.json",
+          "size": 2099,
+          "blob_id": "8b638f7338d105410ac87f66e4df496ef6dc96a0",
+          "lfs_sha256": null
+        }
+      ]
+    },
+    {
+      "id": "minkhoaa/langfens-rq1-trn-02b-checkpoints",
+      "sha": "56c9c419ef2bb5698e25dc71390b27681b7efe65",
+      "private": true,
+      "last_modified": "2026-11-03 10:44:42+00:00",
+      "files": [
+        {
+          "path": ".gitattributes",
+          "size": 1519,
+          "blob_id": "a6344aac8c09253b3b630fb776ae94478aa0275b",
+          "lfs_sha256": null
+        },
+        {
+          "path": "C0/best.pt",
+          "size": 412376647,
+          "blob_id": "7ba54ef0aeb0fa8de0a85633c032130341d1777f",
+          "lfs_sha256": "4689170265de6fd6d9e06608afc3b307f62fe0f62939e657a6a68bc28f2ab4ba"
+        },
+        {
+          "path": "C0/fixed_budget_checkpoint.pt",
+          "size": 412383309,
+          "blob_id": "a778148de412739cfb922062312499337813d539",
+          "lfs_sha256": "0dc1d4fbc9a107d4c6bccc92c32b028ebe2ed70647b89520a15dcd80be29e24e"
+        },
+        {
+          "path": "C0/history.json",
+          "size": 4972,
+          "blob_id": "74a8a63a61138a44c2da3fc89198dfdb9835c00b",
+          "lfs_sha256": null
+        },
+        {
+          "path": "C0/last.pt",
+          "size": 412377159,
+          "blob_id": "39aba650a2cd20bbe63d71813e575598733ef95b",
+          "lfs_sha256": "bddce015f18a2eedd3b6e0c1d2b9ec13530c9644b4380d32309d87f32b21338f"
+        },
+        {
+          "path": "C1/best.pt",
+          "size": 412375943,
+          "blob_id": "d504e1537a3375e03a1d569c2c650375fc1a4bfb",
+          "lfs_sha256": "1d643b489fc7e0c1ef39fa1d35dbe25c3898749ee3b858b990ec01f46396b89a"
+        },
+        {
+          "path": "C1/fixed_budget_checkpoint.pt",
+          "size": 412383309,
+          "blob_id": "1c5226c64c2a35bf27105489f0a3a4db4a0079fa",
+          "lfs_sha256": "52b0e6c46e46439cbdbd5b977dd9fe42e90db35a14437f210f2b173c40151ea4"
+        },
+        {
+          "path": "C1/history.json",
+          "size": 4974,
+          "blob_id": "7a1cca748140f559f1955982bdf5e0aeb6a81f40",
+          "lfs_sha256": null
+        },
+        {
+          "path": "C1/last.pt",
+          "size": 412377159,
+          "blob_id": "c583a24bda01a644122ff2b95f3170fbb7bd2004",
+          "lfs_sha256": "ce583d8851078504687c5dd38f5f17e43fe2c1fa6b746f1ed2d031516de67e9b"
+        }
+      ]
+    },
+    {
+      "id": "minkhoaa/langfens-rq1-cross-fold-checkpoints",
+      "sha": "4aa9f2a68f0709889eacacf170b6446d3c45c73d",
+      "private": true,
+      "last_modified": "2026-11-03 16:08:03+00:00",
+      "files": [
+        {
+          "path": ".gitattributes",
+          "size": 1519,
+          "blob_id": "a6344aac8c09253b3b630fb776ae94478aa0275b",
+          "lfs_sha256": null
+        },
+        {
+          "path": "evaluation/FOUR_FOLD_PAIRED_PREDICTION_RECORDS.json.gz",
+          "size": 697900,
+          "blob_id": "d0d914c6deea27cedcc2351b40c20a083a7e994b",
+          "lfs_sha256": "355b6e23bcb172d20b99ba3f9f4e07dc15453846ac312eca847471ad476e5892"
+        },
+        {
+          "path": "fold1/e1_fold1_alignment_aware/best.pt",
+          "size": 412377667,
+          "blob_id": "3cbb91b728b8c9c16ab3faed2ad910f97281f90e",
+          "lfs_sha256": "31208100a1e48582791f1f8f3efb72b3819514e128d6575f6cf00f416aab44ba"
+        },
+        {
+          "path": "fold1/e1_fold1_alignment_aware/fixed_budget_checkpoint.pt",
+          "size": 412385071,
+          "blob_id": "cba8616041d724c9fde2ba76974e008d6b376f61",
+          "lfs_sha256": "3b686730cc0a1101a1bbc96b59dc7bd38a9fc3cc7da7effe26b2d9498f079d24"
+        },
+        {
+          "path": "fold1/e1_fold1_alignment_aware/history.json",
+          "size": 4807,
+          "blob_id": "dbf74d28efc75177280dcc3de1ae1e4d2dcff22b",
+          "lfs_sha256": null
+        },
+        {
+          "path": "fold1/e1_fold1_alignment_aware/last.pt",
+          "size": 412378883,
+          "blob_id": "497c5b0ace9954a61a163ee0ee34b3d58c1fafa4",
+          "lfs_sha256": "9efa67b700b9bbe6cf8a96ee2503e42acb1fa1ffa0db8b05bf0b00f252630527"
+        },
+        {
+          "path": "fold1/e1_fold1_alignment_aware/training_endpoint_report.json",
+          "size": 567,
+          "blob_id": "6c61b2a2a4a3fd3524dcf9a43c0dfd9e4808aad3",
+          "lfs_sha256": null
+        },
+        {
+          "path": "fold2/baseline_r_fold2/best.pt",
+          "size": 412364235,
+          "blob_id": "1017687778daa87eda82c61dec6856269a6236ba",
+          "lfs_sha256": "b9032ee9ba8d5f8f03c8ce164237a49c9524442281b183d9ee522eb8d2b759ff"
+        },
+        {
+          "path": "fold2/baseline_r_fold2/fixed_budget_checkpoint.pt",
+          "size": 412371371,
+          "blob_id": "cddb07571f8d2275972793c4fbe91830f393cc8d",
+          "lfs_sha256": "ab4c589445feac42636296cd36d7cf2ae7eba7360445f0084454c87fa2fef508"
+        },
+        {
+          "path": "fold2/baseline_r_fold2/history.json",
+          "size": 5612,
+          "blob_id": "f41bbd0d4df5bdcab117108e10366998335b980e",
+          "lfs_sha256": null
+        },
+        {
+          "path": "fold2/baseline_r_fold2/last.pt",
+          "size": 412365451,
+          "blob_id": "346f146fbdaf3d1c7d58260b098564dcd87644ad",
+          "lfs_sha256": "bfe0eea14232101c7acc00f7e461993fac3f7b8d8fc3d0883326767f2282cd77"
+        },
+        {
+          "path": "fold2/baseline_r_fold2/training_endpoint_report.json",
+          "size": 561,
+          "blob_id": "0885c34828fd49667587e941c07282cc15731aa0",
+          "lfs_sha256": null
+        },
+        {
+          "path": "fold2/fold2_smoke_1epoch/best.pt",
+          "size": 412364043,
+          "blob_id": "417dda2243294a6be3744b79d9302eec3c6a71d3",
+          "lfs_sha256": "1f0297732ffec4ecfda808bb8e685c35ed0699c4e830eeb417487afe921a9f35"
+        },
+        {
+          "path": "fold2/fold2_smoke_1epoch/history.json",
+          "size": 804,
+          "blob_id": "e8ca9479c8d2b9c748c024dd92b8208368d36a1b",
+          "lfs_sha256": null
+        },
+        {
+          "path": "fold2/fold2_smoke_1epoch/last.pt",
+          "size": 412364043,
+          "blob_id": "17836c3a5c8100bd8da6c98ad43895f3c96eccf7",
+          "lfs_sha256": "8f46ac3122be4955ea77accb891e89d0d68b76a817f38aa8ac6ce49fc76a251b"
+        },
+        {
+          "path": "fold2/fold2_smoke_1epoch/training_endpoint_report.json",
+          "size": 150,
+          "blob_id": "87816c282cc5780ddf6296bf1408817f6c317b7e",
+          "lfs_sha256": null
+        },
+        {
+          "path": "fold3/baseline_r_fold3/best.pt",
+          "size": 412365195,
+          "blob_id": "5173dde09a4d248182ddd38332380c63aa54e056",
+          "lfs_sha256": "679f15c545384b90d003d9184d42ab945c7c7adcc67029dfdef7f79c93f25eea"
+        },
+        {
+          "path": "fold3/baseline_r_fold3/fixed_budget_checkpoint.pt",
+          "size": 412371371,
+          "blob_id": "bb96768602ce3effdb31a2b94480d1f1b4c115ee",
+          "lfs_sha256": "bbee9dd392806fc81c88e41018edc7adb270d71b5047930f5ce78a69c538a441"
+        },
+        {
+          "path": "fold3/baseline_r_fold3/history.json",
+          "size": 8014,
+          "blob_id": "7713949c96c8154b11320c643801c7de13f4077a",
+          "lfs_sha256": null
+        },
+        {
+          "path": "fold3/baseline_r_fold3/last.pt",
+          "size": 412366155,
+          "blob_id": "b74dc5461705cd6ed9f6f932bffddbe23dbfa6e0",
+          "lfs_sha256": "804cbfa0d03280fa8b988400b254dbfe79e08c7a6b23449379acdb63490b866e"
+        },
+        {
+          "path": "fold3/baseline_r_fold3/training_endpoint_report.json",
+          "size": 561,
+          "blob_id": "9a0afc7809a3b340d9c08999c9e31f0dff2da107",
+          "lfs_sha256": null
+        },
+        {
+          "path": "fold3/fold3_smoke_1epoch/best.pt",
+          "size": 412364043,
+          "blob_id": "7a8d1e9c2ec694ef923c09dbe9e476f6d26ee30f",
+          "lfs_sha256": "6b23299f8cab2a6ddeb80f11420fd21bf17febfa47ba1b37ece75a005b8dcde7"
+        },
+        {
+          "path": "fold3/fold3_smoke_1epoch/history.json",
+          "size": 805,
+          "blob_id": "59bc14d81ae759899d6d400303bbaff2727ee876",
+          "lfs_sha256": null
+        },
+        {
+          "path": "fold3/fold3_smoke_1epoch/last.pt",
+          "size": 412364043,
+          "blob_id": "0107c3b00b91301d7a3189e014582ebb17eda0ad",
+          "lfs_sha256": "fcddeb198e5203e9e519e216a14b796c6e8786874ec4630a52f3775d4826cb05"
+        },
+        {
+          "path": "fold3/fold3_smoke_1epoch/training_endpoint_report.json",
+          "size": 150,
+          "blob_id": "8cc62a0b154eea6a8ed00db320b783467c0cfac8",
+          "lfs_sha256": null
+        },
+        {
+          "path": "fold4/baseline_r_fold4/best.pt",
+          "size": 412364491,
+          "blob_id": "5894f32626bb997d242b6fb945a88b14c202e433",
+          "lfs_sha256": "3daa8ca0db8a632050e3f965c705df2d271d07a450cb7110a9780537d623274d"
+        },
+        {
+          "path": "fold4/baseline_r_fold4/fixed_budget_checkpoint.pt",
+          "size": 412371371,
+          "blob_id": "f261bf9426f1ee8bec0938685a56ade0c1e8c336",
+          "lfs_sha256": "c502271feba097781a6b0bdfe413085271d3a03647353f272dccd29bbb1499f6"
+        },
+        {
+          "path": "fold4/baseline_r_fold4/history.json",
+          "size": 6414,
+          "blob_id": "adeb2f93ef1ae7ea2cfd1c38ce1fd1b04afb0fcc",
+          "lfs_sha256": null
+        },
+        {
+          "path": "fold4/baseline_r_fold4/last.pt",
+          "size": 412365707,
+          "blob_id": "04252924b620f2300f7d30b7665b6964a98bdd7c",
+          "lfs_sha256": "894a12487c6d2c43bcbf154fa3617e66bca739f23fdee855b13b720606f9c47f"
+        },
+        {
+          "path": "fold4/baseline_r_fold4/training_endpoint_report.json",
+          "size": 560,
+          "blob_id": "a10dbb3d700b8b88d1dba9b339385acc95f349c4",
+          "lfs_sha256": null
+        },
+        {
+          "path": "fold4/fold4_smoke_1epoch/best.pt",
+          "size": 412364043,
+          "blob_id": "15fcd9429118b95eb1e119edc78b8b281dca0adb",
+          "lfs_sha256": "5374c794f5dbc9db4b37f6ff85f185f34978529ee9bf2962d22534ff339eef24"
+        },
+        {
+          "path": "fold4/fold4_smoke_1epoch/history.json",
+          "size": 804,
+          "blob_id": "66cdee9f0e87fd498678016043ab300fecf10485",
+          "lfs_sha256": null
+        },
+        {
+          "path": "fold4/fold4_smoke_1epoch/last.pt",
+          "size": 412364043,
+          "blob_id": "e1ec9c6f49a5a025d18dd2e535fa74d6c1547be8",
+          "lfs_sha256": "577ef91ad116e725b6aa5652b7e345ea0ceb1d543f54f9badbf5914e69ae9013"
+        },
+        {
+          "path": "fold4/fold4_smoke_1epoch/training_endpoint_report.json",
+          "size": 150,
+          "blob_id": "17d7fe81593a8cb58af01e445b5ca655c571cf77",
+          "lfs_sha256": null
+        },
+        {
+          "path": "pilot/pilot_arm2a_focal/best.pt",
+          "size": 412364427,
+          "blob_id": "605239700c35b8393250cf265141c12d4aa28185",
+          "lfs_sha256": "e39813bbb3cab9fdfab303167f66e215640d6024970fba919eecdeac281ab175"
+        },
+        {
+          "path": "pilot/pilot_arm2a_focal/fixed_budget_checkpoint.pt",
+          "size": 412371499,
+          "blob_id": "b3d0b48f56a93e6c89a3046a34f44e5952dfa9a4",
+          "lfs_sha256": "46c78486ea41c13e45ef4654604acfbe58f8cf4a0e237b65f60abfebac506f93"
+        },
+        {
+          "path": "pilot/pilot_arm2a_focal/history.json",
+          "size": 5606,
+          "blob_id": "7edf92cfa07d402701324993f5a7fe8132b93164",
+          "lfs_sha256": null
+        },
+        {
+          "path": "pilot/pilot_arm2a_focal/last.pt",
+          "size": 412365579,
+          "blob_id": "c616b075b71a686ee81f54da1c14f883ebae4076",
+          "lfs_sha256": "f633a45d9d17fa7a62279b88b06612d957d3c54297836cb82db7c5d90acde6e9"
+        },
+        {
+          "path": "pilot/pilot_arm2a_focal/training_endpoint_report.json",
+          "size": 568,
+          "blob_id": "98e235ae44318d0f3bd958980220e6616ffaea6e",
+          "lfs_sha256": null
+        },
+        {
+          "path": "pilot/pilot_arm2a_focal_smoke_1epoch/best.pt",
+          "size": 412364171,
+          "blob_id": "43c761abffa0d09a246f65c09a796a879985623a",
+          "lfs_sha256": "af31ee84da1e42cdf22e6940a091875a09c8905952ee23c4774703e124b2bbfa"
+        },
+        {
+          "path": "pilot/pilot_arm2a_focal_smoke_1epoch/history.json",
+          "size": 803,
+          "blob_id": "008470b537b48df3eaf42bcc128536bb81b35c3b",
+          "lfs_sha256": null
+        },
+        {
+          "path": "pilot/pilot_arm2a_focal_smoke_1epoch/last.pt",
+          "size": 412364171,
+          "blob_id": "e38f30d76229ce79fc6f7770ae2e55684635f4a9",
+          "lfs_sha256": "12a632a3c1248a2ff171c5bf4581679b0285f9cdec8e1c63aa7e56aed87c9b7a"
+        },
+        {
+          "path": "pilot/pilot_arm2a_focal_smoke_1epoch/training_endpoint_report.json",
+          "size": 168,
+          "blob_id": "ee359ed57f6f16242fe6d766115d6769d9e3f174",
+          "lfs_sha256": null
+        },
+        {
+          "path": "pilot/pilot_arm2b_weighted/best.pt",
+          "size": 412364425,
+          "blob_id": "e215e9b22df7dc3e691d4ffb264459b070d70e48",
+          "lfs_sha256": "a94434ca31308d29853bf28b020101820dc47353d598620a50a2a65fea12608a"
+        },
+        {
+          "path": "pilot/pilot_arm2b_weighted/history.json",
+          "size": 4810,
+          "blob_id": "3bcebf4f7d8521e7555bea5db7309eb056ba78eb",
+          "lfs_sha256": null
+        },
+        {
+          "path": "pilot/pilot_arm2b_weighted/last.pt",
+          "size": 412365641,
+          "blob_id": "005f77dfa3fba498a53813ca69051e026e6dec85",
+          "lfs_sha256": "3e886a4fbd64414c60b0993b92419c66007b5cd34085c25978069fac5d3310ac"
+        },
+        {
+          "path": "pilot/pilot_arm2b_weighted/training_endpoint_report.json",
+          "size": 158,
+          "blob_id": "7d88ede299ea6ce5462ebd57d5779ebce86711a5",
+          "lfs_sha256": null
+        },
+        {
+          "path": "pilot/pilot_arm2b_weighted_smoke_1epoch/best.pt",
+          "size": 412364425,
+          "blob_id": "4f7cd47ba1f61394d0545563c6c4906f98f9b2f7",
+          "lfs_sha256": "867b636573117e457761e36ad08ab716773970c0dc41b55c4bfff12871ae5b05"
+        },
+        {
+          "path": "pilot/pilot_arm2b_weighted_smoke_1epoch/history.json",
+          "size": 803,
+          "blob_id": "aadabd53b0ed1453f100a1b7cb24468fd2936cd7",
+          "lfs_sha256": null
+        },
+        {
+          "path": "pilot/pilot_arm2b_weighted_smoke_1epoch/last.pt",
+          "size": 412364425,
+          "blob_id": "61b70c2fe75591f897f5ef0f9b0a9430ca277e47",
+          "lfs_sha256": "b46c25947882304d7b437cb2eadfc5790b8b37a0816549dc4c55dd2948871f7f"
+        },
+        {
+          "path": "pilot/pilot_arm2b_weighted_smoke_1epoch/training_endpoint_report.json",
+          "size": 171,
+          "blob_id": "89036944134e31723165fdfc5a99f10b695f6cfb",
+          "lfs_sha256": null
+        },
+        {
+          "path": "psup/b_control/best.pt",
+          "size": 3239450,
+          "blob_id": "d0938749978620564deda7a792f1993dfded6dee",
+          "lfs_sha256": "2dbad5a0160224f9d936e564a6c5d52dffe6a8efdbde8e409c50a8cc393be93f"
+        },
+        {
+          "path": "psup/b_control/fixed_budget_3600.pt",
+          "size": 3241295,
+          "blob_id": "722279c78d7a54b255290c3cd02552717a5e3fc2",
+          "lfs_sha256": "e121a7b965747b49608263f1e3ec447f2a631f09a36e326e20fe5f2cfe619201"
+        },
+        {
+          "path": "psup/b_control/fixed_budget_checkpoint.pt",
+          "size": 3241295,
+          "blob_id": "722279c78d7a54b255290c3cd02552717a5e3fc2",
+          "lfs_sha256": "e121a7b965747b49608263f1e3ec447f2a631f09a36e326e20fe5f2cfe619201"
+        },
+        {
+          "path": "psup/b_control/history.json",
+          "size": 2896,
+          "blob_id": "18c72cc0d65a8762c4308be499fb383d81205cca",
+          "lfs_sha256": null
+        },
+        {
+          "path": "psup/b_control/last.pt",
+          "size": 3239898,
+          "blob_id": "7e43a98e74cebc9dc7e8dd26bbdcad8937c69a9c",
+          "lfs_sha256": "aa35c14dbf6827050efa779b419b3c4887988fa073bc693c81dcb41275afa1b5"
+        },
+        {
+          "path": "psup/b_control/training_summary.json",
+          "size": 3339,
+          "blob_id": "a8b65af1094190581b9a1e233280becf15e3605e",
+          "lfs_sha256": null
+        },
+        {
+          "path": "psup/t_op/best.pt",
+          "size": 3239578,
+          "blob_id": "ed9b467e9722dbe7c88277960f63ce60d4c7cd4d",
+          "lfs_sha256": "3b492049399608a1f0319accee0404de50fe4972340ff5cc3c930f58867a14e9"
+        },
+        {
+          "path": "psup/t_op/fixed_budget_3600.pt",
+          "size": 3241295,
+          "blob_id": "620e64aff42522928484fe591fd9505ff709052f",
+          "lfs_sha256": "a8559b382ff6ec09f9c90ed4eccba59fa45ff41e20e10aae1cea9eff7697fbd9"
+        },
+        {
+          "path": "psup/t_op/fixed_budget_checkpoint.pt",
+          "size": 3241295,
+          "blob_id": "620e64aff42522928484fe591fd9505ff709052f",
+          "lfs_sha256": "a8559b382ff6ec09f9c90ed4eccba59fa45ff41e20e10aae1cea9eff7697fbd9"
+        },
+        {
+          "path": "psup/t_op/history.json",
+          "size": 2900,
+          "blob_id": "fa91cac0de361e62fdcd6059638d804abec6ac88",
+          "lfs_sha256": null
+        },
+        {
+          "path": "psup/t_op/last.pt",
+          "size": 3239898,
+          "blob_id": "035751c2802975a4260ae59162ec26a0bc27071a",
+          "lfs_sha256": "93c65bc5ceef60c9d985492b9a1e8d9e4042cbf866a837815c705ac0e8237811"
+        },
+        {
+          "path": "psup/t_op/training_summary.json",
+          "size": 3339,
+          "blob_id": "0d62964a8aae3d9e3726b1012dcee903e7e46aae",
+          "lfs_sha256": null
+        }
+      ]
+    }
+  ]
+}

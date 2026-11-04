@@ -1,0 +1,28 @@
+{
+  "observed_at": "2026-11-04T00:19:28.706297+07:00",
+  "status": "DOCUMENTATION_CHECKED_WITH_ACCOUNTED_CONCURRENT_DOCUMENT_DRIFT",
+  "functional_tests_executed": 0,
+  "scope": "Documentation/inventory/copy identity and bounded preservation checks only, not scientific outcome validation. Strict unchanged-status false is retained and explicitly accounted, not reported PASS.",
+  "initial_failure_receipt": "DOCUMENTATION_VERIFICATION_INITIAL.json",
+  "checks": {
+    "required_numbered_sections": true,
+    "confidence_vocabulary_present": true,
+    "root_report_local_links_exist": true,
+    "json_receipts_parse": true,
+    "source_inventory_rows": 5196,
+    "session_header_rows": 260,
+    "workflow_state": "complete",
+    "workflow_child_entries": 10,
+    "ten_reports_retained": true,
+    "retained_reports_equal_returned_outputs": true,
+    "limited_credential_pattern_hits": [],
+    "primary_heads_unchanged": true,
+    "backend_frontend_original_inventoried_size_mtime_unchanged": true,
+    "backend_frontend_strict_status_unchanged": false,
+    "known_concurrent_backend_report_only": true,
+    "coordinator_changed_inventoried_paths_only": true,
+    "report_sha256": "c7daeebcdb49c26aacf2b99a734d83dba4efa929268e756913186ba45d6d78a7",
+    "report_bytes": 71854
+  },
+  "accounted_profile_checks_satisfied": true
+}

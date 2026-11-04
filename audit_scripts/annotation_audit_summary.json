@@ -1,0 +1,31 @@
+{
+  "total_reviewed_cases": 230,
+  "inter_rater_agreement_rate": 0.4304,
+  "category_counts": {
+    "confirmed_tp": 40,
+    "confirmed_tn": 30,
+    "confirmed_model_fp": 53,
+    "insufficient_evidence": 33,
+    "confirmed_annotation_disagreement": 44,
+    "confirmed_model_fp_sub": 15,
+    "unmapped_abstention_reviewed": 12,
+    "confirmed_fn": 3
+  },
+  "verdict_matrix": {
+    "reduction_ambiguity": {
+      "omission": 24,
+      "substitution": 5,
+      "correct": 40,
+      "reduction_ambiguity": 4
+    },
+    "correct": {
+      "correct": 91,
+      "omission": 43,
+      "substitution": 18,
+      "reduction_ambiguity": 1
+    },
+    "omission": {
+      "omission": 4
+    }
+  }
+}

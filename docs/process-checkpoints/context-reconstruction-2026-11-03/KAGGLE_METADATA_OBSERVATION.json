@@ -1,0 +1,82 @@
+{
+  "method": "official KaggleApi read-only status and pull notebook code/metadata, no execution, mutation or output/weight/dataset downloads; small source copies held in temporary research directory",
+  "local_temporary_source_dir": "/tmp/langfens-context-notebooks-0ug8ci3_",
+  "records": [
+    {
+      "slug": "minkhoaa/langfens-rq1-psup-t-op-t4x2",
+      "observation": "2026-11-03T23:49:30.943035+07:00",
+      "status": "{\"status\": \"COMPLETE\", \"failureMessage\": null}",
+      "metadata": {
+        "id": "minkhoaa/langfens-rq1-psup-t-op-t4x2",
+        "title": "LANGFENS RQ1 PSUP T-Op T4x2",
+        "code_file": "langfens-rq1-psup-t-op-t4x2.ipynb",
+        "language": "python",
+        "kernel_type": "notebook",
+        "is_private": false,
+        "enable_gpu": true,
+        "enable_internet": true,
+        "dataset_sources": [
+          "minkhoaa/langfens-rq1-fold1-staging"
+        ],
+        "model_sources": [],
+        "machine_shape": "NvidiaTeslaT4"
+      },
+      "notebook_sha256": "f94d610f209c775bb049d9766f02cf95652c1fc58b553c375e165b915a326de4",
+      "notebook_code_pins": [
+        "dd2dd8953fc5d946c0b88d72e915be53e7cd0d9f"
+      ],
+      "remote_execution_flag_present": true,
+      "cell_count": 6,
+      "output_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "notebook_metadata_keys": [
+        "kernelspec",
+        "language_info"
+      ]
+    },
+    {
+      "slug": "minkhoaa/langfens-rq1-psup-b-control-t4x2",
+      "observation": "2026-11-03T23:49:32.700588+07:00",
+      "status": "{\"status\": \"COMPLETE\", \"failureMessage\": null}",
+      "metadata": {
+        "id": "minkhoaa/langfens-rq1-psup-b-control-t4x2",
+        "title": "LANGFENS RQ1 PSUP B-Control T4x2",
+        "code_file": "langfens-rq1-psup-b-control-t4x2.ipynb",
+        "language": "python",
+        "kernel_type": "notebook",
+        "is_private": false,
+        "enable_gpu": true,
+        "enable_internet": true,
+        "dataset_sources": [
+          "minkhoaa/langfens-rq1-fold1-staging"
+        ],
+        "model_sources": [],
+        "machine_shape": "NvidiaTeslaT4"
+      },
+      "notebook_sha256": "100446f70d95d9ea608d108d58399fe79c7e8ddcb90611300c6c6090fb676138",
+      "notebook_code_pins": [
+        "dd2dd8953fc5d946c0b88d72e915be53e7cd0d9f"
+      ],
+      "remote_execution_flag_present": true,
+      "cell_count": 6,
+      "output_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "notebook_metadata_keys": [
+        "kernelspec",
+        "language_info"
+      ]
+    }
+  ]
+}

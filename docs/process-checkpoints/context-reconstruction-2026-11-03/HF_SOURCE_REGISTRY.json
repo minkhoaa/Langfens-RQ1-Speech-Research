@@ -1,0 +1,134 @@
+{
+  "observed_at": "2026-11-03T23:50:08.661333+07:00",
+  "method": "Existing authenticated read-only author model/dataset listing and cross-fold repository commit metadata",
+  "models": [
+    {
+      "id": "minkhoaa/langfens-rq1-fold1-baseline-r",
+      "private": false,
+      "sha": null
+    },
+    {
+      "id": "minkhoaa/langfens-rq1-trn-02b-checkpoints",
+      "private": true,
+      "sha": null
+    },
+    {
+      "id": "minkhoaa/langfens-rq1-cross-fold-checkpoints",
+      "private": true,
+      "sha": null
+    }
+  ],
+  "datasets": [],
+  "cross_fold_commits": [
+    {
+      "commit_id": "4aa9f2a68f0709889eacacf170b6446d3c45c73d",
+      "created_at": "2026-11-03 16:08:03+00:00",
+      "title": "Upload psup/b_control/best.pt with huggingface_hub"
+    },
+    {
+      "commit_id": "3bbf2c21db6c4f99605383fbc55d106bffaf5d62",
+      "created_at": "2026-11-03 16:07:53+00:00",
+      "title": "Upload psup/b_control/training_summary.json with huggingface_hub"
+    },
+    {
+      "commit_id": "9893c61ae10795a91590c208ed0493dddc0efca7",
+      "created_at": "2026-11-03 16:07:51+00:00",
+      "title": "Upload psup/b_control/last.pt with huggingface_hub"
+    },
+    {
+      "commit_id": "0ddee4a3b65adeffea2fc10d4c988ef65200ad05",
+      "created_at": "2026-11-03 16:07:35+00:00",
+      "title": "Upload psup/b_control/fixed_budget_checkpoint.pt with huggingface_hub"
+    },
+    {
+      "commit_id": "f4d8e33f997f7910b406c9689b33c6e23b9d5f1b",
+      "created_at": "2026-11-03 16:07:33+00:00",
+      "title": "Upload psup/b_control/fixed_budget_3600.pt with huggingface_hub"
+    },
+    {
+      "commit_id": "2a8494cd53e9600ca732ee76afae5101b294b249",
+      "created_at": "2026-11-03 16:07:11+00:00",
+      "title": "Upload psup/b_control/training_summary.json with huggingface_hub"
+    },
+    {
+      "commit_id": "38ae52013babf5b7b77c99d066c19682157cfbe5",
+      "created_at": "2026-11-03 16:07:10+00:00",
+      "title": "Upload psup/b_control/last.pt with huggingface_hub"
+    },
+    {
+      "commit_id": "3de6e3efa624965aee1e3408130e6b049948c237",
+      "created_at": "2026-11-03 16:07:10+00:00",
+      "title": "Upload psup/b_control/best.pt with huggingface_hub"
+    },
+    {
+      "commit_id": "6b1f7a5d30eb9c16642dfab6ce740a4a794732da",
+      "created_at": "2026-11-03 16:07:09+00:00",
+      "title": "Upload psup/b_control/best.pt with huggingface_hub"
+    },
+    {
+      "commit_id": "f9c8a26f96de7a5773021f5e41f17ab5ba66c941",
+      "created_at": "2026-11-03 16:07:09+00:00",
+      "title": "Upload psup/b_control/fixed_budget_checkpoint.pt with huggingface_hub"
+    },
+    {
+      "commit_id": "eb2f2d05c55b13c6deb01db997aea51921d66ff0",
+      "created_at": "2026-11-03 16:07:08+00:00",
+      "title": "Upload psup/b_control/fixed_budget_checkpoint.pt with huggingface_hub"
+    },
+    {
+      "commit_id": "7682000802abf5e8788d69043fa76db431674b0d",
+      "created_at": "2026-11-03 16:07:08+00:00",
+      "title": "Upload psup/b_control/fixed_budget_3600.pt with huggingface_hub"
+    },
+    {
+      "commit_id": "110d7b442df4ce76cdbd7db592f2c743c295a971",
+      "created_at": "2026-11-03 16:07:07+00:00",
+      "title": "Upload psup/b_control/fixed_budget_3600.pt with huggingface_hub"
+    },
+    {
+      "commit_id": "9ade1bb33c1697bc006d62173de7fb0f7873c8d9",
+      "created_at": "2026-11-03 16:07:00+00:00",
+      "title": "Upload psup/b_control/training_summary.json with huggingface_hub"
+    },
+    {
+      "commit_id": "ccace2a3ca77a5c405e8d9d52db923ff43fb8ede",
+      "created_at": "2026-11-03 16:06:58+00:00",
+      "title": "Upload psup/b_control/last.pt with huggingface_hub"
+    },
+    {
+      "commit_id": "0ba9369b4f56ce7d08972b0af4454a4ec6877535",
+      "created_at": "2026-11-03 16:06:54+00:00",
+      "title": "Upload psup/b_control/history.json with huggingface_hub"
+    },
+    {
+      "commit_id": "faa70b76738ecd8fc38c7c86b16d4c2a41e54ede",
+      "created_at": "2026-11-03 16:06:54+00:00",
+      "title": "Upload psup/b_control/training_summary.json with huggingface_hub"
+    },
+    {
+      "commit_id": "b58bf356c69ff87e94b3f972b7fd7cf471a9fc5f",
+      "created_at": "2026-11-03 16:06:43+00:00",
+      "title": "Upload psup/b_control/fixed_budget_checkpoint.pt with huggingface_hub"
+    },
+    {
+      "commit_id": "37eef76ca4ad5f0414b68bb24592455cd6fbe78e",
+      "created_at": "2026-11-03 16:06:42+00:00",
+      "title": "Upload psup/b_control/last.pt with huggingface_hub"
+    },
+    {
+      "commit_id": "bc3697cf3419aaeed50a254ada70add14ffc27a7",
+      "created_at": "2026-11-03 16:06:39+00:00",
+      "title": "Upload psup/b_control/last.pt with huggingface_hub"
+    },
+    {
+      "commit_id": "2400f79c9b677fe45aa7d6a6512388fac3f13d2f",
+      "created_at": "2026-11-03 16:06:31+00:00",
+      "title": "Upload psup/b_control/fixed_budget_3600.pt with huggingface_hub"
+    },
+    {
+      "commit_id": "dee1bace8acdce47cc16b8606436206841f9777f",
+      "created_at": "2026-11-03 16:06:26+00:00",
+      "title": "Upload psup/b_control/fixed_budget_checkpoint.pt with huggingface_hub"
+    }
+  ]
+}

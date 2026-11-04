@@ -1,0 +1,170 @@
+{
+  "total_false_alarms": 1127,
+  "fp_correct_count": 1068,
+  "fp_substitution_count": 59,
+  "primary_tau": 0.0660453885793686,
+  "phone_breakdown": {
+    "all_alarms": {
+      "R": 362,
+      "T": 302,
+      "D": 389,
+      "L": 34,
+      "ER": 15,
+      "HH": 2,
+      "Z": 13,
+      "K": 5,
+      "Y": 1,
+      "N": 3,
+      "G": 1
+    },
+    "fp_correct": {
+      "R": 331,
+      "T": 298,
+      "D": 375,
+      "L": 34,
+      "ER": 14,
+      "HH": 2,
+      "Z": 4,
+      "K": 5,
+      "Y": 1,
+      "N": 3,
+      "G": 1
+    },
+    "fp_substitution": {
+      "D": 14,
+      "Z": 9,
+      "R": 31,
+      "T": 4,
+      "ER": 1
+    }
+  },
+  "manner_breakdown": {
+    "Liquid": 396,
+    "Coronal Stop": 691,
+    "Vowel": 15,
+    "Glide": 3,
+    "Fricative": 13,
+    "Non-Coronal Stop": 6,
+    "Nasal": 3
+  },
+  "speaker_breakdown": {
+    "fp_correct": {
+      "NJS": 520,
+      "RRBI": 548
+    },
+    "fp_substitution": {
+      "NJS": 29,
+      "RRBI": 30
+    }
+  },
+  "wfc_breakdown": {
+    "fp_correct": {
+      "true": 438,
+      "false": 630
+    },
+    "fp_substitution": {
+      "true": 32,
+      "false": 27
+    }
+  },
+  "score_bands": {
+    "Extreme (>= 0.20)": 8,
+    "High (0.15 - 0.20)": 94,
+    "Medium (0.10 - 0.15)": 456,
+    "Near Threshold (tau - 0.10)": 569
+  },
+  "clusters": {
+    "cluster_1_wfc_coronal_stops": {
+      "name": "Word-Final Coronal Stops (/D/, /T/)",
+      "count": 373,
+      "share_of_total_alarms": 0.331,
+      "sample_case_ids": [
+        "CASE-Z-NJS-arctic_a0008-P016-G016-T",
+        "CASE-Z-NJS-arctic_a0010-P017-G017-D",
+        "CASE-Z-NJS-arctic_a0010-P022-G022-T",
+        "CASE-Z-NJS-arctic_a0011-P010-G010-D",
+        "CASE-Z-NJS-arctic_a0011-P026-G026-D",
+        "CASE-Z-NJS-arctic_a0013-P008-G008-D",
+        "CASE-Z-NJS-arctic_a0021-P001-G001-T",
+        "CASE-Z-NJS-arctic_a0021-P011-G011-D",
+        "CASE-Z-NJS-arctic_a0022-P017-G017-D",
+        "CASE-Z-NJS-arctic_a0023-P041-G041-D"
+      ]
+    },
+    "cluster_2_function_words": {
+      "name": "Weak Function Word Reductions",
+      "count": 138,
+      "share_of_total_alarms": 0.1224,
+      "top_words": {
+        "and": 33,
+        "to": 27,
+        "it": 26,
+        "for": 18,
+        "from": 10
+      },
+      "sample_case_ids": [
+        "CASE-Z-NJS-arctic_a0003-P002-G002-R",
+        "CASE-Z-NJS-arctic_a0019-P035-G034-ER",
+        "CASE-Z-NJS-arctic_a0020-P023-G023-T",
+        "CASE-Z-NJS-arctic_a0021-P001-G001-T",
+        "CASE-Z-NJS-arctic_a0023-P055-G055-ER",
+        "CASE-Z-NJS-arctic_a0026-P001-G001-T",
+        "CASE-Z-NJS-arctic_a0058-P006-G006-ER",
+        "CASE-Z-NJS-arctic_a0063-P004-G004-T",
+        "CASE-Z-NJS-arctic_a0077-P001-G001-T",
+        "CASE-Z-NJS-arctic_a0078-P005-G005-D"
+      ]
+    },
+    "cluster_3_rhotic": {
+      "name": "Rhotic Approximant / Trill / Tap (/R/)",
+      "count": 362,
+      "share_of_total_alarms": 0.3212,
+      "sample_case_ids": [
+        "CASE-Z-NJS-arctic_a0003-P002-G002-R",
+        "CASE-Z-NJS-arctic_a0007-P036-G036-R",
+        "CASE-Z-NJS-arctic_a0008-P005-G005-R",
+        "CASE-Z-NJS-arctic_a0013-P011-G011-R",
+        "CASE-Z-NJS-arctic_a0018-P002-G002-R",
+        "CASE-Z-NJS-arctic_a0019-P016-G016-R",
+        "CASE-Z-NJS-arctic_a0019-P022-G022-R",
+        "CASE-Z-NJS-arctic_a0019-P025-G025-R",
+        "CASE-Z-NJS-arctic_a0020-P021-G021-R",
+        "CASE-Z-NJS-arctic_a0021-P004-G004-R"
+      ]
+    },
+    "cluster_4_remaining": {
+      "name": "All Other Consonants & Vowels",
+      "count": 74,
+      "share_of_total_alarms": 0.0657,
+      "sample_case_ids": [
+        "CASE-Z-NJS-arctic_a0008-P006-G006-L",
+        "CASE-Z-NJS-arctic_a0019-P035-G034-ER",
+        "CASE-Z-NJS-arctic_a0023-P055-G055-ER",
+        "CASE-Z-NJS-arctic_a0058-P006-G006-ER",
+        "CASE-Z-NJS-arctic_a0089-P006-G006-L",
+        "CASE-Z-NJS-arctic_a0091-P004-G004-L",
+        "CASE-Z-NJS-arctic_a0093-P002-G002-ER",
+        "CASE-Z-NJS-arctic_a0100-P007-G007-L",
+        "CASE-Z-NJS-arctic_a0109-P012-G011-ER",
+        "CASE-Z-NJS-arctic_a0121-P027-G026-ER"
+      ]
+    },
+    "cluster_5_substitutions": {
+      "name": "Omission Alarms on True Substitutions",
+      "count": 59,
+      "share_of_total_alarms": 0.0524,
+      "sample_case_ids": [
+        "CASE-Z-NJS-arctic_a0019-P027-G027-D",
+        "CASE-Z-NJS-arctic_a0020-P004-G004-Z",
+        "CASE-Z-NJS-arctic_a0020-P011-G011-Z",
+        "CASE-Z-NJS-arctic_a0023-P052-G052-D",
+        "CASE-Z-NJS-arctic_a0042-P004-G004-D",
+        "CASE-Z-NJS-arctic_a0047-P008-G008-D",
+        "CASE-Z-NJS-arctic_a0065-P006-G006-D",
+        "CASE-Z-NJS-arctic_a0065-P031-G031-D",
+        "CASE-Z-NJS-arctic_a0076-P024-G024-D",
+        "CASE-Z-NJS-arctic_a0091-P002-G002-Z"
+      ]
+    }
+  }
+}

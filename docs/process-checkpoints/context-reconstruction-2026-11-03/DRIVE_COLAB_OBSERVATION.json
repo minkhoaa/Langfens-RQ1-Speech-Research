@@ -1,0 +1,45 @@
+{
+  "observed_at": "2026-11-03T23:55:28.495886+07:00",
+  "notice": "Read-only command receipts; no Colab runtime allocation/stopping/mount/auth, no Drive payload download",
+  "observations": {
+    "colab_usage": {
+      "command": [
+        "colab",
+        "usage"
+      ],
+      "exit": 0,
+      "stdout": "Current balance: 0.00 compute units\nUsage rate: 0.00/hr\nActive assignments: 0\n",
+      "stderr": ""
+    },
+    "colab_sessions": {
+      "command": [
+        "colab",
+        "sessions"
+      ],
+      "exit": 0,
+      "stdout": "[colab] No active sessions found on server.\n",
+      "stderr": ""
+    },
+    "drive_project_backup_directories": {
+      "command": [
+        "rclone",
+        "lsf",
+        "kltn_gdrive:langfens-projects-2026-08-20",
+        "--dirs-only",
+        "--max-depth",
+        "2",
+        "--contimeout",
+        "5s",
+        "--timeout",
+        "10s",
+        "--retries",
+        "1",
+        "--low-level-retries",
+        "1"
+      ],
+      "exit": 0,
+      "stdout": "Project_Langfens_Microservice/\nlangfens-fe/\nlangfens-fe-app/\nProject_Langfens_Microservice/.claude/\nProject_Langfens_Microservice/.git/\nProject_Langfens_Microservice/.github/\nProject_Langfens_Microservice/AppHost/\nProject_Langfens_Microservice/deploy/\nProject_Langfens_Microservice/docs/\nProject_Langfens_Microservice/gateway/\nProject_Langfens_Microservice/models/\nProject_Langfens_Microservice/scripts/\nProject_Langfens_Microservice/services/\nProject_Langfens_Microservice/templates/\nlangfens-fe-app/.agents/\nlangfens-fe-app/.git/\nlangfens-fe-app/docs/\nlangfens-fe-app/public/\nlangfens-fe/.ai-migration/\nlangfens-fe/.claude/\nlangfens-fe/.git/\nlangfens-fe/opendesign/\nlangfens-fe/public/\nlangfens-fe/src/\n",
+      "stderr": "2026/11/03 23:55:31 NOTICE: kltn_gdrive: This remote uses rclone's shared Google Drive client_id, which is being retired and will stop working during 2026. Create your own client_id to avoid interruption: https://rclone.org/drive/#making-your-own-client-id\n"
+    }
+  }
+}

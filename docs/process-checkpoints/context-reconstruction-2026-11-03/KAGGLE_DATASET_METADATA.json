@@ -1,0 +1,42 @@
+{
+  "observed_at": "2026-11-03T23:54:06.302847+07:00",
+  "method": "official SDK get_dataset metadata GET; no data files downloaded, listed or opened",
+  "datasets": [
+    {
+      "ref": "minkhoaa/langfens-rq1-fold1-staging",
+      "id": 12920188,
+      "title": "LANGFENS RQ1 Fold 1 Train/Val and Baseline R",
+      "is_private": true,
+      "current_version_number": 3,
+      "total_bytes": 1174289772,
+      "license_name": "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
+    },
+    {
+      "ref": "minkhoaa/langfens-rq1-fold2-staging",
+      "id": 12959242,
+      "title": "LANGFENS RQ1 Fold 2 Train/Val Staging Package",
+      "is_private": true,
+      "current_version_number": 2,
+      "total_bytes": 767978303,
+      "license_name": "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
+    },
+    {
+      "ref": "minkhoaa/langfens-rq1-fold3-staging",
+      "id": 12965419,
+      "title": "LANGFENS RQ1 Fold 3 Train/Val Staging Package",
+      "is_private": true,
+      "current_version_number": 1,
+      "total_bytes": 759803411,
+      "license_name": "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
+    },
+    {
+      "ref": "minkhoaa/langfens-rq1-fold4-staging",
+      "id": 12989905,
+      "title": "LANGFENS RQ1 Fold 4 Train/Val Staging Package",
+      "is_private": true,
+      "current_version_number": 1,
+      "total_bytes": 783006402,
+      "license_name": "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
+    }
+  ]
+}

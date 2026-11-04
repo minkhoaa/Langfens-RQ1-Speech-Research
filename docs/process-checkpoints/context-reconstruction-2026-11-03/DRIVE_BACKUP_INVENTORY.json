@@ -1,0 +1,57 @@
+{
+  "observed_at": "2026-11-03T23:55:48.820104+07:00",
+  "method": "Directory/path-only Drive backup inventory; no datasets, weights, credential files, .git objects or archived source content opened",
+  "paths": {
+    "Project_Langfens_Microservice/docs": {
+      "exit": 0,
+      "entries": [
+        "superpowers/",
+        "superpowers/plans/"
+      ],
+      "returned_count": 2
+    },
+    "Project_Langfens_Microservice/.claude": {
+      "exit": 0,
+      "entries": [
+        "agents/",
+        "agents/general-purpose.md",
+        "agents/langfens-ai-python.md",
+        "agents/langfens-ai-service.md",
+        "agents/langfens-aspire.md",
+        "agents/langfens-attempt.md",
+        "agents/langfens-auth.md",
+        "agents/langfens-course.md",
+        "agents/langfens-dictionary.md",
+        "agents/langfens-dotnet-backend.md",
+        "agents/langfens-email.md",
+        "agents/langfens-exam.md",
+        "agents/langfens-gamification.md",
+        "agents/langfens-ielts-data-engineer.md",
+        "agents/langfens-listening-data.md",
+        "agents/langfens-mono-repo.md",
+        "agents/langfens-reading-data.md",
+        "agents/langfens-speaking-data.md",
+        "agents/langfens-speaking.md",
+        "agents/langfens-vocabulary.md",
+        "agents/langfens-writing-data.md",
+        "agents/langfens-writing.md"
+      ],
+      "returned_count": 22
+    },
+    "Project_Langfens_Microservice/models": {
+      "exit": 1,
+      "entries": [],
+      "returned_count": 0
+    },
+    "langfens-fe": {
+      "exit": 1,
+      "entries": [],
+      "returned_count": 0
+    },
+    "langfens-fe-app": {
+      "exit": 1,
+      "entries": [],
+      "returned_count": 0
+    }
+  }
+}

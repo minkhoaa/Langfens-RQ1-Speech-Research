@@ -1,0 +1,248 @@
+{
+  "version": 1,
+  "workflowRunId": "ea49dbe6-c72f-494d-b433-77701f7d9e45",
+  "state": "complete",
+  "createdAt": 1793725322554,
+  "entries": {
+    "sessions": {
+      "key": "sessions",
+      "agent": "researcher",
+      "resolvedContext": "fresh",
+      "outputReference": "/home/khoa/.pi/agent/sessions/--home-khoa-Projects-KLTN-Dataset--/subagent-artifacts/outputs/ea49dbe6-c72f-494d-b433-77701f7d9e45/evidence/01-sessions.md",
+      "continuation": {
+        "runIds": [
+          "8d082acb-b530-446a-89ae-a0bfda72768f"
+        ]
+      },
+      "latestRunId": "8d082acb-b530-446a-89ae-a0bfda72768f",
+      "resumability": {
+        "state": "resumable"
+      }
+    },
+    "backend-git": {
+      "key": "backend-git",
+      "agent": "researcher",
+      "resolvedContext": "fresh",
+      "outputReference": "/home/khoa/.pi/agent/sessions/--home-khoa-Projects-KLTN-Dataset--/subagent-artifacts/outputs/ea49dbe6-c72f-494d-b433-77701f7d9e45/evidence/02-backend-git.md",
+      "continuation": {
+        "runIds": [
+          "90e84a15-a1b3-486c-80ce-968117a6f8ed"
+        ]
+      },
+      "latestRunId": "90e84a15-a1b3-486c-80ce-968117a6f8ed",
+      "resumability": {
+        "state": "resumable"
+      }
+    },
+    "backend-docs": {
+      "key": "backend-docs",
+      "agent": "researcher",
+      "resolvedContext": "fresh",
+      "outputReference": "/home/khoa/.pi/agent/sessions/--home-khoa-Projects-KLTN-Dataset--/subagent-artifacts/outputs/ea49dbe6-c72f-494d-b433-77701f7d9e45/evidence/03-backend-goals.md",
+      "continuation": {
+        "runIds": [
+          "d346c962-4638-4c8a-b521-494d8d7fa099"
+        ]
+      },
+      "latestRunId": "d346c962-4638-4c8a-b521-494d8d7fa099",
+      "resumability": {
+        "state": "resumable"
+      }
+    },
+    "drive-colab": {
+      "key": "drive-colab",
+      "agent": "researcher",
+      "resolvedContext": "fresh",
+      "outputReference": "/home/khoa/.pi/agent/sessions/--home-khoa-Projects-KLTN-Dataset--/subagent-artifacts/outputs/ea49dbe6-c72f-494d-b433-77701f7d9e45/evidence/04-drive-colab.md",
+      "continuation": {
+        "runIds": [
+          "ab1fc8ad-6c19-40a2-ba35-e57dfced9b39"
+        ]
+      },
+      "latestRunId": "ab1fc8ad-6c19-40a2-ba35-e57dfced9b39",
+      "resumability": {
+        "state": "resumable"
+      }
+    },
+    "experiments": {
+      "key": "experiments",
+      "agent": "researcher",
+      "resolvedContext": "fresh",
+      "outputReference": "/home/khoa/.pi/agent/sessions/--home-khoa-Projects-KLTN-Dataset--/subagent-artifacts/outputs/ea49dbe6-c72f-494d-b433-77701f7d9e45/evidence/05-experiments.md",
+      "continuation": {
+        "runIds": [
+          "790ace38-1628-47c9-9fce-df671d0a9f97"
+        ]
+      },
+      "latestRunId": "790ace38-1628-47c9-9fce-df671d0a9f97",
+      "resumability": {
+        "state": "resumable"
+      }
+    },
+    "literature": {
+      "key": "literature",
+      "agent": "researcher",
+      "resolvedContext": "fresh",
+      "outputReference": "/home/khoa/.pi/agent/sessions/--home-khoa-Projects-KLTN-Dataset--/subagent-artifacts/outputs/ea49dbe6-c72f-494d-b433-77701f7d9e45/evidence/06-methodology.md",
+      "continuation": {
+        "runIds": [
+          "aa219c66-b900-4370-8420-4750e8cf6354"
+        ]
+      },
+      "latestRunId": "aa219c66-b900-4370-8420-4750e8cf6354",
+      "resumability": {
+        "state": "resumable"
+      }
+    },
+    "integration": {
+      "key": "integration",
+      "agent": "researcher",
+      "resolvedContext": "fresh",
+      "outputReference": "/home/khoa/.pi/agent/sessions/--home-khoa-Projects-KLTN-Dataset--/subagent-artifacts/outputs/ea49dbe6-c72f-494d-b433-77701f7d9e45/evidence/07-integration.md",
+      "continuation": {
+        "runIds": [
+          "83df997b-a41b-4fa6-8e13-7084cc7865a8"
+        ]
+      },
+      "latestRunId": "83df997b-a41b-4fa6-8e13-7084cc7865a8",
+      "resumability": {
+        "state": "resumable"
+      }
+    },
+    "speech-forensics": {
+      "key": "speech-forensics",
+      "agent": "researcher",
+      "resolvedContext": "fresh",
+      "outputReference": "/home/khoa/.pi/agent/sessions/--home-khoa-Projects-KLTN-Dataset--/subagent-artifacts/outputs/ea49dbe6-c72f-494d-b433-77701f7d9e45/evidence/08-speech-forensics.md",
+      "continuation": {
+        "runIds": [
+          "616bad65-ad7a-4d34-98cf-25a430367b53"
+        ]
+      },
+      "latestRunId": "616bad65-ad7a-4d34-98cf-25a430367b53",
+      "resumability": {
+        "state": "resumable"
+      }
+    },
+    "verify-backend": {
+      "key": "verify-backend",
+      "agent": "reviewer",
+      "resolvedContext": "fresh",
+      "outputReference": "/home/khoa/.pi/agent/sessions/--home-khoa-Projects-KLTN-Dataset--/subagent-artifacts/outputs/ea49dbe6-c72f-494d-b433-77701f7d9e45/evidence/09-verify-platform.md",
+      "continuation": {
+        "runIds": [
+          "ccbe5581-da83-4c22-8f82-24bb47b9ac0e"
+        ]
+      },
+      "latestRunId": "ccbe5581-da83-4c22-8f82-24bb47b9ac0e",
+      "resumability": {
+        "state": "resumable"
+      }
+    },
+    "verify-speech": {
+      "key": "verify-speech",
+      "agent": "reviewer",
+      "resolvedContext": "fresh",
+      "outputReference": "/home/khoa/.pi/agent/sessions/--home-khoa-Projects-KLTN-Dataset--/subagent-artifacts/outputs/ea49dbe6-c72f-494d-b433-77701f7d9e45/evidence/10-verify-speech.md",
+      "continuation": {
+        "runIds": [
+          "c4924484-4d76-483b-992a-10b86e3f79aa"
+        ]
+      },
+      "latestRunId": "c4924484-4d76-483b-992a-10b86e3f79aa",
+      "resumability": {
+        "state": "resumable"
+      }
+    }
+  },
+  "argsDigest": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+  "workflowChildren": {
+    "version": 1,
+    "parentToolCallId": "call_48201eb60992478092305c852e032fb9|fc_0802f2b2c0347ad5016aea0efdf0588191b6a46d57b5aa8501",
+    "workflowRunId": "ea49dbe6-c72f-494d-b433-77701f7d9e45",
+    "inventoryComplete": true,
+    "workflowState": "completed",
+    "children": [
+      {
+        "childId": "sessions",
+        "state": "completed",
+        "runId": "8d082acb-b530-446a-89ae-a0bfda72768f",
+        "agent": "researcher",
+        "sessionName": "researcher: MISSION: forensic reconstruction of LANGFENS ecosystem, N...",
+        "model": "openai-codex/gpt-6-luna"
+      },
+      {
+        "childId": "backend-git",
+        "state": "completed",
+        "runId": "90e84a15-a1b3-486c-80ce-968117a6f8ed",
+        "agent": "researcher",
+        "sessionName": "researcher: MISSION: forensic reconstruction of LANGFENS ecosystem, N...",
+        "model": "openai-codex/gpt-6-luna"
+      },
+      {
+        "childId": "backend-docs",
+        "state": "completed",
+        "runId": "d346c962-4638-4c8a-b521-494d8d7fa099",
+        "agent": "researcher",
+        "sessionName": "researcher: MISSION: forensic reconstruction of LANGFENS ecosystem, N...",
+        "model": "antigravity/gemini-3.8-flash"
+      },
+      {
+        "childId": "drive-colab",
+        "state": "completed",
+        "runId": "ab1fc8ad-6c19-40a2-ba35-e57dfced9b39",
+        "agent": "researcher",
+        "sessionName": "researcher: MISSION: forensic reconstruction of LANGFENS ecosystem, N...",
+        "model": "antigravity/gemini-3.8-flash"
+      },
+      {
+        "childId": "experiments",
+        "state": "completed",
+        "runId": "790ace38-1628-47c9-9fce-df671d0a9f97",
+        "agent": "researcher",
+        "sessionName": "researcher: MISSION: forensic reconstruction of LANGFENS ecosystem, N...",
+        "model": "openai-codex/gpt-6-luna"
+      },
+      {
+        "childId": "literature",
+        "state": "completed",
+        "runId": "aa219c66-b900-4370-8420-4750e8cf6354",
+        "agent": "researcher",
+        "sessionName": "researcher: MISSION: forensic reconstruction of LANGFENS ecosystem, N...",
+        "model": "antigravity/gemini-3.8-flash"
+      },
+      {
+        "childId": "integration",
+        "state": "completed",
+        "runId": "83df997b-a41b-4fa6-8e13-7084cc7865a8",
+        "agent": "researcher",
+        "sessionName": "researcher: MISSION: forensic reconstruction of LANGFENS ecosystem, N...",
+        "model": "openai-codex/gpt-6-luna"
+      },
+      {
+        "childId": "speech-forensics",
+        "state": "completed",
+        "runId": "616bad65-ad7a-4d34-98cf-25a430367b53",
+        "agent": "researcher",
+        "sessionName": "researcher: MISSION: forensic reconstruction of LANGFENS ecosystem, N...",
+        "model": "openai-codex/gpt-6-luna"
+      },
+      {
+        "childId": "verify-backend",
+        "state": "completed",
+        "runId": "ccbe5581-da83-4c22-8f82-24bb47b9ac0e",
+        "agent": "reviewer",
+        "sessionName": "reviewer: MISSION: forensic reconstruction of LANGFENS ecosystem, N...",
+        "model": "openai-codex/gpt-6-luna:high"
+      },
+      {
+        "childId": "verify-speech",
+        "state": "completed",
+        "runId": "c4924484-4d76-483b-992a-10b86e3f79aa",
+        "agent": "reviewer",
+        "sessionName": "reviewer: MISSION: forensic reconstruction of LANGFENS ecosystem, N...",
+        "model": "antigravity/gemini-3.8-flash:high"
+      }
+    ]
+  }
+}

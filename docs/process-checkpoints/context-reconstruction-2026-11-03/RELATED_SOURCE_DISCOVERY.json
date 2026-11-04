@@ -1,0 +1,255 @@
+{
+  "observed_at": "2026-11-03T23:51:38.778195+07:00",
+  "notice": "Related-source discovery only; no dataset/weight payload or experiment execution",
+  "github_ielts_dataset": {
+    "metadata": {
+      "full_name": "minkhoaa/langfens-ielts-dataset",
+      "html_url": "https://github.com/minkhoaa/langfens-ielts-dataset",
+      "visibility": "public",
+      "created_at": "2026-03-16T06:29:31Z",
+      "pushed_at": "2026-03-16T06:30:18Z",
+      "default_branch": "main",
+      "size": 96981,
+      "description": "IELTS Phase 2 dataset: processed essays, grammar pairs, speaking conversations, and RAG/fine-tuning exports for Langfens AI Tutor"
+    },
+    "readme": {
+      "path": null,
+      "sha": null,
+      "html_url": null,
+      "text": ""
+    },
+    "root_inventory": [
+      {
+        "name": ".gitignore",
+        "path": ".gitignore",
+        "type": "file",
+        "size": 335,
+        "sha": "9d108738325ef84cf82808e99b7ca4855598df39",
+        "html_url": "https://github.com/minkhoaa/langfens-ielts-dataset/blob/main/.gitignore"
+      },
+      {
+        "name": "essays_clean",
+        "path": "essays_clean",
+        "type": "dir",
+        "size": 0,
+        "sha": "f9a8f356b4c798846e16a2aed1699e924c7f91a6",
+        "html_url": "https://github.com/minkhoaa/langfens-ielts-dataset/tree/main/essays_clean"
+      },
+      {
+        "name": "export",
+        "path": "export",
+        "type": "dir",
+        "size": 0,
+        "sha": "07927fb28c8da896e3e0e2482cb9aa7409f37cdf",
+        "html_url": "https://github.com/minkhoaa/langfens-ielts-dataset/tree/main/export"
+      },
+      {
+        "name": "grammar_pairs",
+        "path": "grammar_pairs",
+        "type": "dir",
+        "size": 0,
+        "sha": "2b3238d0e36a18d71ca253193681085fa983e931",
+        "html_url": "https://github.com/minkhoaa/langfens-ielts-dataset/tree/main/grammar_pairs"
+      },
+      {
+        "name": "schema",
+        "path": "schema",
+        "type": "dir",
+        "size": 0,
+        "sha": "9c18e91629906b18bd8afe19496c531afe25e734",
+        "html_url": "https://github.com/minkhoaa/langfens-ielts-dataset/tree/main/schema"
+      },
+      {
+        "name": "scripts",
+        "path": "scripts",
+        "type": "dir",
+        "size": 0,
+        "sha": "69b70186f2fbba07fac6c5a5b3112d49f8010cc9",
+        "html_url": "https://github.com/minkhoaa/langfens-ielts-dataset/tree/main/scripts"
+      },
+      {
+        "name": "speaking_conversations",
+        "path": "speaking_conversations",
+        "type": "dir",
+        "size": 0,
+        "sha": "cf9efa520bb2c89c133fb261279220219e76cc9d",
+        "html_url": "https://github.com/minkhoaa/langfens-ielts-dataset/tree/main/speaking_conversations"
+      }
+    ],
+    "branches": [
+      {
+        "name": "main",
+        "sha": "fcc18c97eee4b93a25ff464fe912399ce1c98e99"
+      }
+    ]
+  },
+  "kaggle_kernels": [
+    {
+      "ref": "minkhoaa/langfens-rq1-fold-3-baseline-r-t4x2-preflight",
+      "title": "LANGFENS RQ1 Fold 3 Baseline R T4x2 (Preflight)",
+      "lastRunTime": "2026-10-30T09:09:35.887000"
+    },
+    {
+      "ref": "minkhoaa/langfens-gpu-probe-v2",
+      "title": "LANGFENS GPU Probe v2",
+      "lastRunTime": "2026-10-28T17:58:39.750000"
+    },
+    {
+      "ref": "minkhoaa/langfens-rq1-psup-b-control-t4x2",
+      "title": "LANGFENS RQ1 PSUP B-Control T4x2",
+      "lastRunTime": "2026-11-03T15:56:51.740000"
+    },
+    {
+      "ref": "minkhoaa/langfens-rq1-psup-t-op-t4x2",
+      "title": "LANGFENS RQ1 PSUP T-Op T4x2",
+      "lastRunTime": "2026-11-03T15:42:15.607000"
+    },
+    {
+      "ref": "minkhoaa/langfens-rq1-p-sup-t-op-t4x2",
+      "title": "LANGFENS RQ1 P-SUP T-Op T4x2",
+      "lastRunTime": "2026-11-03T10:44:53.863000"
+    },
+    {
+      "ref": "minkhoaa/langfens-rq1-p-sup-t4-training",
+      "title": "LANGFENS RQ1 P-SUP T4 Training",
+      "lastRunTime": "2026-11-03T09:13:26.533000"
+    },
+    {
+      "ref": "minkhoaa/langfens-e1-fold1-validation-benchmark",
+      "title": "Langfens E1 Fold1 Validation Benchmark",
+      "lastRunTime": "2026-11-03T02:48:08.297000"
+    },
+    {
+      "ref": "minkhoaa/langfens-rq-model-01-e1-fold1-train",
+      "title": "Langfens Rq Model 01 E1 Fold1 Train",
+      "lastRunTime": "2026-11-02T10:31:11.543000"
+    },
+    {
+      "ref": "minkhoaa/langfens-rq-model-01-e1-fold1-preflight",
+      "title": "Langfens Rq Model 01 E1 Fold1 Preflight",
+      "lastRunTime": "2026-11-02T10:30:39.773000"
+    },
+    {
+      "ref": "minkhoaa/langfens-rq1-pilot-arm2b-weighted-t4x2",
+      "title": "LANGFENS RQ1 Pilot Arm2B Weighted T4x2",
+      "lastRunTime": "2026-11-01T04:31:13.460000"
+    },
+    {
+      "ref": "minkhoaa/langfens-rq1-pilot-arm2a-focal-t4x2",
+      "title": "LANGFENS RQ1 Pilot Arm2A Focal T4x2",
+      "lastRunTime": "2026-11-01T04:13:21.090000"
+    },
+    {
+      "ref": "minkhoaa/langfens-rq1-pilot-arm2b-weighted-t4x2-smoke",
+      "title": "LANGFENS RQ1 Pilot Arm2B Weighted T4x2 Smoke",
+      "lastRunTime": "2026-11-01T03:35:35.770000"
+    },
+    {
+      "ref": "minkhoaa/langfens-rq1-pilot-arm2a-focal-t4x2-smoke",
+      "title": "LANGFENS RQ1 Pilot Arm2A Focal T4x2 Smoke",
+      "lastRunTime": "2026-11-01T03:36:15.837000"
+    },
+    {
+      "ref": "minkhoaa/langfens-rq1-pilot-arm2b-weighted-t4x2-preflight",
+      "title": "LANGFENS RQ1 Pilot Arm2B Weighted T4x2 Preflight",
+      "lastRunTime": "2026-11-01T03:32:22.240000"
+    },
+    {
+      "ref": "minkhoaa/langfens-rq1-pilot-arm2a-focal-t4x2-preflight",
+      "title": "LANGFENS RQ1 Pilot Arm2A Focal T4x2 Preflight",
+      "lastRunTime": "2026-11-01T03:17:37.067000"
+    },
+    {
+      "ref": "minkhoaa/langfens-rq1-pilot-arm-2a-focal-t4x2-preflight",
+      "title": "LANGFENS RQ1 Pilot Arm 2A Focal T4x2 (Preflight)",
+      "lastRunTime": "2026-11-01T03:14:35.607000"
+    },
+    {
+      "ref": "minkhoaa/langfens-rq1-fold-4-baseline-r-t4x2",
+      "title": "LANGFENS RQ1 Fold 4 Baseline R T4x2",
+      "lastRunTime": "2026-10-31T14:53:41.323000"
+    },
+    {
+      "ref": "minkhoaa/langfens-rq1-fold-4-baseline-r-t4x2-smoke",
+      "title": "LANGFENS RQ1 Fold 4 Baseline R T4x2 (Smoke)",
+      "lastRunTime": "2026-10-31T14:52:25.050000"
+    },
+    {
+      "ref": "minkhoaa/langfens-rq1-fold-4-baseline-r-t4x2-preflight",
+      "title": "LANGFENS RQ1 Fold 4 Baseline R T4x2 (Preflight)",
+      "lastRunTime": "2026-10-31T11:39:36.403000"
+    },
+    {
+      "ref": "minkhoaa/langfens-rq1-fold-3-baseline-r-t4x2",
+      "title": "LANGFENS RQ1 Fold 3 Baseline R T4x2",
+      "lastRunTime": "2026-10-30T19:14:11.237000"
+    },
+    {
+      "ref": "minkhoaa/langfens-rq1-fold-3-baseline-r-t4x2-smoke",
+      "title": "LANGFENS RQ1 Fold 3 Baseline R T4x2 (Smoke)",
+      "lastRunTime": "2026-10-30T10:09:42.210000"
+    },
+    {
+      "ref": "minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2-smoke",
+      "title": "LANGFENS RQ1 Fold 2 Baseline R T4x2 (Smoke)",
+      "lastRunTime": "2026-10-30T07:57:55.270000"
+    },
+    {
+      "ref": "minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2",
+      "title": "LANGFENS RQ1 Fold 2 Baseline R T4x2",
+      "lastRunTime": "2026-10-30T08:03:37.827000"
+    },
+    {
+      "ref": "minkhoaa/langfens-rq1-fold-2-baseline-r-t4x2-preflight",
+      "title": "LANGFENS RQ1 Fold 2 Baseline R T4x2 (Preflight)",
+      "lastRunTime": "2026-10-30T07:02:32.783000"
+    },
+    {
+      "ref": "minkhoaa/langfens-rq1-c1-t4x2",
+      "title": "LANGFENS RQ1 C1 T4x2",
+      "lastRunTime": "2026-10-28T18:56:06.037000"
+    },
+    {
+      "ref": "minkhoaa/langfens-gpu-test-v1",
+      "title": "LANGFENS GPU Test v1",
+      "lastRunTime": "2026-10-28T17:15:12.307000"
+    },
+    {
+      "ref": "minkhoaa/langfens-rq1-trn-02b-c0-gpu",
+      "title": "LANGFENS RQ1 TRN 02B C0 GPU",
+      "lastRunTime": "2026-10-28T17:09:31.513000"
+    },
+    {
+      "ref": "minkhoaa/langfens-rq1-c0-t4x2",
+      "title": "LANGFENS RQ1 C0 T4x2",
+      "lastRunTime": "2026-10-28T18:25:18.970000"
+    },
+    {
+      "ref": "minkhoaa/langfens-rq1-trn-02b-t4x2",
+      "title": "LANGFENS RQ1-TRN-02B T4x2",
+      "lastRunTime": "2026-10-28T10:22:59.967000"
+    }
+  ],
+  "kaggle_datasets": [
+    {
+      "ref": "minkhoaa/langfens-rq1-fold1-staging",
+      "title": "LANGFENS RQ1 Fold 1 Train/Val and Baseline R",
+      "lastUpdated": "2026-10-28T18:16:36.617000"
+    },
+    {
+      "ref": "minkhoaa/langfens-rq1-fold4-staging",
+      "title": "LANGFENS RQ1 Fold 4 Train/Val Staging Package",
+      "lastUpdated": "2026-10-31T11:24:34.710000"
+    },
+    {
+      "ref": "minkhoaa/langfens-rq1-fold3-staging",
+      "title": "LANGFENS RQ1 Fold 3 Train/Val Staging Package",
+      "lastUpdated": "2026-10-30T09:03:14.370000"
+    },
+    {
+      "ref": "minkhoaa/langfens-rq1-fold2-staging",
+      "title": "LANGFENS RQ1 Fold 2 Train/Val Staging Package",
+      "lastUpdated": "2026-10-30T03:08:00.947000"
+    }
+  ]
+}

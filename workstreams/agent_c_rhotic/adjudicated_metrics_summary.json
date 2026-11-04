@@ -1,0 +1,40 @@
+{
+  "total_deployed_alarms": 1209,
+  "original_tp": 82,
+  "original_deployed_precision_pct": 6.78,
+  "tripartite_decomposition": {
+    "confirmed_model_false_positives": {
+      "count": 820.9,
+      "pct": 67.9,
+      "std_error": 43.8
+    },
+    "confirmed_annotation_disagreements": {
+      "count": 285.5,
+      "pct": 23.62,
+      "std_error": 43.7
+    },
+    "confirmed_true_omissions": {
+      "count": 82.0,
+      "pct": 6.78,
+      "std_error": 0.0,
+      "ci_95_pct": [
+        6.78,
+        6.78
+      ]
+    },
+    "acoustic_ambiguity": {
+      "count": 20.6,
+      "pct": 1.7,
+      "std_error": 7.2
+    }
+  },
+  "broad_pronunciation_event_horizon": {
+    "total_event_detections": 382.3,
+    "deployed_precision_pct": 31.62,
+    "std_error_pct": 3.63,
+    "ci_95_pct": [
+      24.5,
+      38.74
+    ]
+  }
+}
