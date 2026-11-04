@@ -14,7 +14,8 @@
     "extra_prompt_positions_separate": 37
   },
   "recomputation_entrypoint": "audit_scripts/recompute_trn04r_metrics.py",
-  "input_layout": "<private-input-root>/{C0,T1,T2,T3}/{runtime_Z.jsonl,tokens_Z.jsonl,cal_runtime_Z.jsonl,cal_tokens_Z.jsonl,mismatched_runtime_Z.jsonl,mismatched_tokens_Z.jsonl,recognition_Z.jsonl}",
+  "input_layout": "<private-input-root>/{C0,T1,T2,T3}_{fixed_budget_3600|best}/{runtime_Z.jsonl,tokens_Z.jsonl,cal_runtime_Z.jsonl,cal_tokens_Z.jsonl,mismatched_runtime_Z.jsonl,mismatched_tokens_Z.jsonl,recognition_Z.jsonl,recognition_runtime_Z.jsonl}",
+  "endpoint_choices": ["fixed_budget_3600", "best"],
   "acceptance_invariants": [
     "Counts must be recomputed from actual saved gold rows, not substituted constants",
     "For each available omission operating point FN=145-TP and TP<=137",
@@ -22,13 +23,18 @@
     "C0/T2 operation_ce also retain dedicated three-way channels",
     "Only an explicitly binary_collapsed B-Control has unavailable/null dedicated subtype metrics",
     "Prompt extras are excluded from canonical metrics and separately alarm-audited",
+    "CAL speakers are exactly NCC/THV and VAL speakers exactly NJS/RRBI; sealed TEST speakers are rejected",
     "CAL is used for threshold selection; VAL threshold diagnostics are not CAL guarantees",
+    "Primary omission threshold/operating metrics use dedicated s_omit at CAL 15%",
+    "Recognition runtime and offline rows have unique matching utterance keys and equal hypotheses",
+    "Recognition PER by speaker uses the integer total edit count, not the sum of substitution/deletion/insertion subcounts",
     "Unknown labels, duplicate keys, nonfinite values, missing key records, and runtime/offline score mismatches fail explicitly"
   ],
   "contrast_plan": {
     "matched": ["T1-C0", "T2-C0", "T3-C0"],
     "interaction": "T3-T2-T1+C0",
-    "registration_gates": "separate; pending frozen protocol margins and external reference",
-    "noninferiority": "separate; pending frozen margin and comparator"
+    "endpoints": ["binary AP", "dedicated omission AP", "omission precision", "all-gold omission recall", "FA/1000", "legacy substitution AP", "dedicated substitution AP", "PER", "matched-minus-mismatched binary AP acoustic gap"],
+    "registration_gates": "frozen Protocol Z Level A/Level B absolute gates, fixed_budget_3600 only and separate from matched contrasts; best endpoint gates are not applicable",
+    "noninferiority": "binary AP >= 0.313619; legacy substitution AP >= 0.303974; PER <= 0.246980, evaluated separately per cell"
   }
 }

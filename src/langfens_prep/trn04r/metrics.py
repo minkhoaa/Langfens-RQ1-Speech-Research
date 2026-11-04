@@ -5,6 +5,25 @@ import math
 from collections import Counter, defaultdict
 from typing import Any, Iterable, Mapping, Sequence
 
+SEALED_SPEAKERS = frozenset({"ABA", "ASI", "EBVS", "HJK", "LXC", "PNV"})
+VAL_SPEAKERS = frozenset({"NJS", "RRBI"})
+CAL_SPEAKERS = frozenset({"NCC", "THV"})
+
+
+def validate_speaker_census(rows: Iterable[Mapping[str, Any]], expected: Iterable[str], partition: str) -> None:
+    expected_set = set(expected)
+    seen = set()
+    for row in rows:
+        speaker = row.get("speaker_id")
+        if not isinstance(speaker, str) or not speaker:
+            raise ValueError(f"{partition}: missing speaker_id")
+        if speaker in SEALED_SPEAKERS:
+            raise ValueError(f"{partition}: sealed TEST speaker forbidden: {speaker}")
+        seen.add(speaker)
+    if seen != expected_set:
+        raise ValueError(f"{partition}: expected speakers {sorted(expected_set)}, got {sorted(seen)}")
+
+
 OBJECTIVE_SCORE_SUPPORT = {
     "operation_ce": True,
     "class_focal": True,
@@ -121,15 +140,22 @@ def _confusion(gold: Sequence[Mapping[str, Any]], score_name: str, positive_op: 
     alarmed = lambda r: r.get(score_name) is not None and r[score_name] >= threshold
     tp = sum(is_positive(r) and alarmed(r) for r in eligible)
     fp_correct = sum(r["operation_target"] == 0 and alarmed(r) for r in eligible)
-    fp_sub = sum(r["operation_target"] == 1 and alarmed(r) for r in eligible)
+    fp_sub = sum(positive_op == 2 and r["operation_target"] == 1 and alarmed(r) for r in eligible)
+    fp_omission = sum(positive_op == 1 and r["operation_target"] == 2 and alarmed(r) for r in eligible)
     positives = sum(is_positive(r) for r in eligible)
     correct = sum(r["operation_target"] == 0 for r in eligible)
+    other_subtype = sum(r["operation_target"] in (1, 2) and not is_positive(r) for r in eligible)
     abstained_error = sum(is_positive(r) and r.get(score_name) is None for r in eligible)
     abstained_correct = sum(r["operation_target"] == 0 and r.get(score_name) is None for r in eligible)
     fn = positives - tp
-    fp = fp_correct + fp_sub
+    fp = fp_correct + fp_sub + fp_omission
+    fp_other = fp_sub + fp_omission
+    tn_correct = sum(r["operation_target"] == 0 and not alarmed(r) for r in eligible)
+    tn_other = sum(r["operation_target"] in (1, 2) and not is_positive(r) and not alarmed(r) for r in eligible)
     return {"threshold": threshold, "TP": tp, "FP": fp, "FP_correct": fp_correct,
-            "FP_sub": fp_sub, "FN": fn, "TN_correct": correct - fp_correct,
+            "FP_sub": fp_sub, "FP_omission": fp_omission, "FP_other_subtype": fp_other,
+            "FN": fn, "TN": tn_correct + tn_other, "TN_correct": tn_correct,
+            "TN_other_subtype": tn_other,
             "false_alarms_per_1000_full_gold": 1000 * fp / len(gold) if gold else None,
             "correct_false_alarms_per_1000_full_gold": 1000 * fp_correct / len(gold) if gold else None,
             "positive_gold": positives, "correct_gold": correct,
@@ -194,6 +220,8 @@ def recognition_summary(records: Iterable[Mapping[str, Any]]) -> dict[str, Any]:
     by_speaker: dict[str, list[int]] = defaultdict(lambda: [0, 0])
     for row in records:
         if "ref_phones" in row and "hyp_phones" in row:
+            if not isinstance(row["ref_phones"], (list, tuple)) or not isinstance(row["hyp_phones"], (list, tuple)):
+                raise ValueError("Recognition references/hypotheses must be phone sequences")
             counts = _edit_distance(row["ref_phones"], row["hyp_phones"])
             if row.get("edit_counts") is not None and list(counts) != list(row["edit_counts"]):
                 raise ValueError("Saved CTC edit counts disagree with saved reference/hypothesis")
@@ -203,11 +231,15 @@ def recognition_summary(records: Iterable[Mapping[str, Any]]) -> dict[str, Any]:
             ref_n = row.get("reference_phone_count", row.get("n_reference"))
             if len(counts) != 4 or any(isinstance(x, bool) or not isinstance(x, int) or x < 0 for x in counts):
                 raise ValueError("Invalid saved CTC edit_counts")
+            if counts[0] != sum(counts[1:]):
+                raise ValueError("Saved CTC edits must equal substitutions+deletions+insertions")
+            if isinstance(ref_n, bool) or not isinstance(ref_n, int) or ref_n < 0:
+                raise ValueError("Invalid saved CTC reference_phone_count")
         else:
             raise ValueError("Recognition rows need ref_phones/hyp_phones or edit_counts/reference_phone_count")
         total = [a+b for a, b in zip(total, counts)]
         references += ref_n
-        by_speaker[row.get("speaker_id", "unknown")][0] += sum(counts)
+        by_speaker[row.get("speaker_id", "unknown")][0] += counts[0]
         by_speaker[row.get("speaker_id", "unknown")][1] += ref_n
     return {"status": "computed", "edits": total[0], "substitutions": total[1],
             "deletions": total[2], "insertions": total[3], "reference_phones": references,
@@ -234,11 +266,21 @@ def summarize_cell(runtime: Iterable[Mapping[str, Any]], tokens: Iterable[Mappin
             scores = row.get("scores", row)
             error = scores.get("s_error")
             omission, substitution = scores.get("s_omit"), scores.get("s_sub")
-            if subtype_supported and error is not None and (omission is None or substitution is None):
-                raise ValueError(f"{partition}: {objective} requires three-way s_omit and s_sub with s_error")
+            if subtype_supported and ((error is None and (omission is not None or substitution is not None)) or
+                                      (error is not None and (omission is None or substitution is None))):
+                raise ValueError(f"{partition}: {objective} requires all three scores or all-null abstention")
             if not subtype_supported and (omission is not None or substitution is not None):
                 raise ValueError(f"{partition}: binary_collapsed must leave dedicated subtype scores null")
     extra_rows = [r for r in token_rows if r.get("gold_canonical_index") is None]
+    for partition, records in (("VAL", token_rows), ("CAL", cal_rows)):
+        prompt_keys = [(r.get("speaker_id"), r.get("utterance_id"), r.get("prompt_index"))
+                       for r in records if r.get("prompt_index") is not None]
+        if len(prompt_keys) != len(set(prompt_keys)):
+            raise ValueError(f"{partition}: duplicate utterance/prompt_index row")
+        for row in records:
+            for field, _, _ in SCORE_FAMILIES.values():
+                if field in row:
+                    _finite(row[field], f"{partition} {field}", nullable=True)
     by_key = {}
     for row in runtime_rows:
         key = (row.get("speaker_id"), row.get("utterance_id"), row.get("prompt_index"))
@@ -302,12 +344,23 @@ def summarize_cell(runtime: Iterable[Mapping[str, Any]], tokens: Iterable[Mappin
 def factorial_contrasts(cells: Mapping[str, Mapping[str, Any]]) -> dict[str, Any]:
     """Contrasts on a named scalar endpoint; accepts no implicit endpoint selection."""
     result = {}
-    for endpoint in ("binary_ap", "omission_dedicated_ap", "omission_recall_all_gold", "correct_fpr_all_gold"):
+    endpoints = {
+        "binary_ap": "higher_is_better",
+        "omission_dedicated_ap": "higher_is_better",
+        "omission_precision_cal15": "higher_is_better",
+        "omission_recall_all_gold_cal15": "higher_is_better",
+        "omission_fa_per_1000_cal15": "lower_is_better",
+        "substitution_legacy_ap": "higher_is_better",
+        "substitution_dedicated_ap": "higher_is_better",
+        "PER": "lower_is_better",
+        "acoustic_gap_binary_ap": "higher_is_better",
+    }
+    for endpoint, direction in endpoints.items():
         vals = {key: cells[key].get(endpoint) for key in ("C0", "T1", "T2", "T3")}
         if any(v is None or not math.isfinite(v) for v in vals.values()):
             result[endpoint] = {"status": "unavailable", "reason": "missing/nonfinite registered cell endpoint", "values": vals}
             continue
-        result[endpoint] = {"status": "computed", "values": vals,
+        result[endpoint] = {"status": "computed", "direction": direction, "values": vals,
                             "matched_contrasts": {"T1_minus_C0": vals["T1"]-vals["C0"],
                                                   "T2_minus_C0": vals["T2"]-vals["C0"],
                                                   "T3_minus_C0": vals["T3"]-vals["C0"]},

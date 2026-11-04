@@ -10,13 +10,15 @@ The primary matched cell contrasts are **T1−C0, T2−C0, T3−C0**. The factor
 
 ## Gates (reported separately from contrasts)
 
-1. **Registration gate:** pending the frozen numeric criterion and valid comparator. It will not be inferred from a positive contrast.
-2. **Noninferiority vs external reference:** pending the named external reference and frozen margin.
-3. **Noninferiority vs matched C0:** pending the named endpoint and frozen margin; a matched difference is not itself a noninferiority test.
-4. **Coverage/accounting gate:** actual row counts, label census, runtime/offline alignment, unmapped abstentions, extras, finite score validity, and `FN=145−TP`, `TP<=137` invariants must pass before interpreting endpoint values.
+Frozen Protocol Z absolute gates are evaluated for each cell after row accounting passes:
+
+- **Level A:** dedicated `s_omit` precision >= .25; all-gold recall >= .30; false alarms/1,000 full gold <= 30; binary AP >= .313619; legacy substitution AP >= .303974; PER <= .246980.
+- **Level B:** dedicated `s_omit` precision >= .30; all-gold recall >= .40; false alarms/1,000 full gold <= 15; the same binary AP, legacy substitution AP and PER noninferiority thresholds; matched-minus-mismatched binary AP >= .010.
+
+These absolute external-reference gates are separate from T1-C0/T2-C0/T3-C0 contrasts. Missing required metrics make a gate unavailable, not passed. Coverage/accounting checks (actual row counts, label census, strict CAL/VAL speaker IDs, runtime/offline join identity, abstentions, extras, finite scores, and `FN=145−TP`, `TP<=137`) precede gate interpretation.
 
 No CAL/VAL role changes or threshold tuning are permitted. Saved CTC recognition edits/PER remain separate from the human operation labels. Speaker/phone results are disaggregated evidence and do not convert a two-speaker validation partition into population-level generalization.
 
 ## Required coordinator resumption
 
-Verify the frozen exchange manifest and hashes; preserve originals and private-only record storage; run `audit_scripts/recompute_trn04r_metrics.py --input-root <immutable-private-root> --output <new-private-output>`; its frozen cell map requires C0/T2 `operation_ce` and T1/T3 `class_focal`, so `class_focal` cannot be treated as `binary_collapsed`; review output invariants and compare independently before preparing a final synthesized result. Until this is done results are **pending**, not executed.
+Verify the frozen exchange manifest and hashes; preserve originals and private-only record storage; run `audit_scripts/recompute_trn04r_metrics.py --input-root <immutable-private-root> --endpoint fixed_budget_3600|best --output <new-private-output>`; its frozen cell map requires C0/T2 `operation_ce` and T1/T3 `class_focal`, so `class_focal` cannot be treated as `binary_collapsed`; review output invariants and compare independently before preparing a final synthesized result. Until this is done results are **pending**, not executed.

@@ -1,7 +1,10 @@
 import pytest
 
 from langfens_prep.trn04r.metrics import (average_precision, summarize_cell, factorial_contrasts,
-                                            objective_supports_subtypes)
+                                            objective_supports_subtypes, _confusion, recognition_summary,
+                                            validate_speaker_census, VAL_SPEAKERS, CAL_SPEAKERS)
+from audit_scripts.recompute_trn04r_metrics import (primary_scalar_values, evaluate_registered_gates,
+                                                   validate_recognition_pair)
 
 
 def token(i, op, score, *, phone="AA", prompt=None, dedicated=None):
@@ -87,7 +90,7 @@ def test_class_focal_has_dedicated_three_way_scores_while_binary_collapsed_does_
                             cal_runtime=cal_runtime)
     assert result["metrics"]["omission_dedicated"]["ap"] == 1.0
     rows[1]["s_omit"] = None
-    with pytest.raises(ValueError, match="requires three-way"):
+    with pytest.raises(ValueError, match="requires all three scores"):
         summarize_cell(runtime, rows, cal, [], objective="class_focal", cell_id="T1",
                        cal_runtime=cal_runtime)
 
@@ -100,6 +103,83 @@ def test_nonfinite_and_inconsistent_labels_fail_explicitly():
     bad_label[0]["binary_target"] = 0
     with pytest.raises(ValueError, match="disagrees"):
         summarize_cell([], bad_label, [], [], objective="operation_ce", cell_id="bad-label")
+
+
+def test_confusions_do_not_count_positive_subtypes_again_as_false_positives():
+    rows = [token(0, 0, .7), token(1, 1, .8), token(2, 2, .9)]
+    binary = _confusion(rows, "s_error", None, .75)
+    assert (binary["TP"], binary["FP"], binary["FN"], binary["TN"]) == (2, 0, 0, 1)
+    assert binary["FP_sub"] == binary["FP_omission"] == binary["FP_other_subtype"] == 0
+    omission = _confusion(rows, "s_error", 2, .75)
+    assert (omission["TP"], omission["FP"], omission["FP_correct"], omission["FP_sub"]) == (1, 1, 0, 1)
+    assert omission["FP_other_subtype"] == 1 and omission["FN"] == 0
+    substitution = _confusion(rows, "s_error", 1, .75)
+    assert (substitution["TP"], substitution["FP"], substitution["FP_correct"],
+            substitution["FP_omission"]) == (1, 1, 0, 1)
+    assert substitution["FP_other_subtype"] == 1 and substitution["FN"] == 0
+
+
+def test_recognition_per_by_speaker_uses_edit_count_not_subedit_sum():
+    summary = recognition_summary([
+        {"speaker_id": "NJS", "ref_phones": ["AA", "B"], "hyp_phones": ["AA", "B"]},
+        {"speaker_id": "RRBI", "ref_phones": ["AA", "B"], "hyp_phones": ["D"]},
+    ])
+    assert summary["edits"] == 2
+    assert summary["by_speaker"]["RRBI"]["edits"] == 2
+    assert summary["by_speaker"]["RRBI"]["PER"] == 1.0
+
+
+def test_speaker_censuses_distinguish_cal_val_and_reject_sealed():
+    validate_speaker_census([{"speaker_id": "NJS"}, {"speaker_id": "RRBI"}], VAL_SPEAKERS, "VAL")
+    validate_speaker_census([{"speaker_id": "NCC"}, {"speaker_id": "THV"}], CAL_SPEAKERS, "CAL")
+    with pytest.raises(ValueError, match="expected speakers"):
+        validate_speaker_census([{"speaker_id": "NJS"}, {"speaker_id": "RRBI"}], CAL_SPEAKERS, "CAL")
+    with pytest.raises(ValueError, match="sealed TEST"):
+        validate_speaker_census([{"speaker_id": "ABA"}], VAL_SPEAKERS, "VAL")
+
+
+def test_primary_scalar_uses_dedicated_omission_at_cal_15():
+    result = {"metrics": {
+        "binary": {"ap": .4},
+        "omission_legacy": {"ap": .2, "cal_operating_points": {"0.1": {"counts": {"precision": .1}}}},
+        "omission_dedicated": {"ap": .3, "cal_operating_points": {
+            "0.1": {"counts": {"precision": .11, "recall_all_gold": .12, "false_alarms_per_1000_full_gold": 11}},
+            "0.15": {"counts": {"precision": .45, "recall_all_gold": .55, "false_alarms_per_1000_full_gold": 15}}}},
+        "substitution_legacy": {"ap": .25}, "substitution_dedicated": {"ap": .26}},
+        "recognition": {"PER": .24},
+        "mismatched_acoustic_control": {"metrics": {"binary": {"ap": .35}}}}
+    values = primary_scalar_values(result)
+    assert values["omission_precision_cal15"] == .45
+    assert values["omission_recall_all_gold_cal15"] == .55
+    assert values["omission_fa_per_1000_cal15"] == 15
+    assert values["acoustic_gap_binary_ap"] == pytest.approx(.05)
+
+
+def test_recognition_runtime_and_offline_rows_preserve_hypotheses_separately():
+    runtime = [{"speaker_id": "NJS", "utterance_id": "u1", "hyp_phones": ["AA", "B"]}]
+    offline = [{"speaker_id": "NJS", "utterance_id": "u1", "ref_phones": ["AA"],
+                "hyp_phones": ["AA", "B"], "edit_counts": [1, 0, 0, 1]}]
+    validate_recognition_pair(runtime, offline)
+    runtime[0]["hyp_phones"] = ["D"]
+    with pytest.raises(ValueError, match="hypothesis changed"):
+        validate_recognition_pair(runtime, offline)
+
+
+def test_registered_gates_use_frozen_levels_and_fixed_budget_only():
+    scalar = {cell: {"omission_precision_cal15": .30,
+                     "omission_recall_all_gold_cal15": .40,
+                     "omission_fa_per_1000_cal15": 15,
+                     "binary_ap": .313619,
+                     "substitution_legacy_ap": .303974,
+                     "PER": .246980,
+                     "acoustic_gap_binary_ap": .010}
+              for cell in ("C0", "T1", "T2", "T3")}
+    gates = evaluate_registered_gates(scalar, "fixed_budget_3600")
+    assert gates["T1"]["Level_A"]["status"] == "pass"
+    assert gates["T1"]["Level_B"]["status"] == "pass"
+    assert evaluate_registered_gates(scalar, "best")["T1"]["Level_A"]["status"] == "not_applicable"
+    scalar["T3"]["PER"] = None
+    assert evaluate_registered_gates(scalar, "fixed_budget_3600")["T3"]["Level_A"]["status"] == "unavailable"
 
 
 def test_factorial_contrasts_use_registered_directions():
