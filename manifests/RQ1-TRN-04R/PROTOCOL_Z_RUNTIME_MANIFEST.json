@@ -41,6 +41,7 @@
     "endpoints": ["fixed_budget_3600", "best"],
     "precision": "CPU FP32",
     "batch_size": 1,
+    "score_semantics": "All four arms retain three-class operation softmax semantics, including class_focal T1/T3: s_error=p_substitution+p_deletion; s_omit=p_deletion; s_sub=p_substitution; probabilities are raw and uncalibrated.",
     "feature_cache": "trn04r-fp32-batch1-v1; per-utterance encoder and acoustic-feature hashes in private run receipt",
     "mismatch": "within-speaker cyclic shift; prompt fixed; both encoder features and 4D features derive from shifted waveform"
   },

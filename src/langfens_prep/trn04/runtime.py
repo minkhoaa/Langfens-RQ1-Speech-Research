@@ -103,11 +103,14 @@ def runtime_rows(*, logits: torch.Tensor, ctc_logits: torch.Tensor, prompt_phone
         p = probs[index]
         rows.append({
             "run_id": run_id, "protocol": "Z-PROMPT-V1", "condition": condition,
-            "arm": arm, "endpoint": endpoint, "speaker_id": speaker_id,
+            "arm": arm, "endpoint": endpoint, "objective": OBJECTIVES[arm],
+            "score_semantics": "three_class_operation_softmax; s_error=p_substitution+p_deletion; s_omit=p_deletion; s_sub=p_substitution; uncalibrated",
+            "speaker_id": speaker_id,
             "utterance_id": utterance_id, "prompt_index": index,
             "prompt_phone_id": phone, "operation_target": None, "binary_target": None,
             "canonical_phone": canonical_phones[index], "gold_canonical_index": None,
             "scores": {"s_error": float(p[1] + p[2]), "s_omit": float(p[2]), "s_sub": float(p[1])},
+            "probabilities": {"correct": float(p[0]), "substitution": float(p[1]), "deletion": float(p[2])},
             "logits": [float(x) for x in logits[index]],
             "audio_source_id": audio_source_id, "status": "ok",
         })
@@ -139,7 +142,7 @@ def join_gold_rows(*, gold_positions: list[dict[str, Any]], prompt_phones: list[
         raise ValueError("no runtime rows to join")
     aligned = align([p["canonical_phone"] for p in gold_positions], prompt_phones, tie_break="sub_first")
     prompt_for_gold = {gold: prompt for gold, prompt, _ in aligned["aligned_pairs"]}
-    identity = {k: runtime[0][k] for k in ("run_id", "protocol", "condition", "arm", "endpoint", "speaker_id", "utterance_id", "audio_source_id")}
+    identity = {k: runtime[0][k] for k in ("run_id", "protocol", "condition", "arm", "endpoint", "objective", "score_semantics", "speaker_id", "utterance_id", "audio_source_id")}
     by_prompt = {row["prompt_index"]: row for row in runtime}
     result = []
     for gold_index, position in enumerate(gold_positions):
@@ -151,6 +154,7 @@ def join_gold_rows(*, gold_positions: list[dict[str, Any]], prompt_phones: list[
             "binary_target": position["binary_target"], "canonical_phone": position["canonical_phone"],
             "gold_canonical_index": gold_index, "prompt_index": prompt_index,
             **score_values, "scores": score_values,
+            "probabilities": source["probabilities"] if source else None,
             "logits": source["logits"] if source else None,
             "mapping_status": "aligned" if source else "unmapped_gold_abstention",
             "word_final_consonant": position.get("word_final_consonant", False),
@@ -160,6 +164,6 @@ def join_gold_rows(*, gold_positions: list[dict[str, Any]], prompt_phones: list[
         result.append({**identity, "operation_target": None, "binary_target": None,
                        "canonical_phone": source["canonical_phone"], "gold_canonical_index": None,
                        "prompt_index": prompt_index, **source["scores"], "scores": source["scores"],
-                       "logits": source["logits"], "mapping_status": "prompt_extra",
+                       "probabilities": source["probabilities"], "logits": source["logits"], "mapping_status": "prompt_extra",
                        "word_final_consonant": False})
     return result

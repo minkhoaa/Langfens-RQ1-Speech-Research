@@ -33,6 +33,12 @@ Real inference remains **not executed** and must only be launched by the coordin
 
 Before execution, independently review the integrated runner and ensure checkpoint bytes match allowlisted hashes. After execution, verify private run output hashes and source hashes, then coordinator populates actual raw prediction index. No execution is licensed by this checkpoint itself.
 
+## Follow-up: preserve class-focal three-way score semantics
+
+Coordinator guidance identified a P-SUP-specific ambiguity: its runtime conditionally nulls dedicated subtype scores outside `operation_ce`. The TRN-04R serializer does not use or edit that old runtime. It serializes **all four TRN-04 arms** from the unchanged three-logit operation head as three-way softmax outputs. Runtime/offline rows now explicitly carry objective (`operation_ce` or `class_focal`), `score_semantics`, all three class probabilities, logits, and the derived `s_error`, `s_omit`, `s_sub`. Thus T1/T3 retain dedicated scores; no B-Control semantics or null subtype behavior is applied. The protocol manifest records this rule.
+
+Follow-up synthetic regression command exercised T1 and T3 runtime serialization from finite three-class logits and checked non-null dedicated scores, probabilities summing to one, and explicit focal objective/semantics. It uses no checkpoint/audio/gold and performs no backward/update. D remains responsible for its independent regression coverage.
+
 ## Process registry
 
 The global checkpoint index is coordinator-owned and was intentionally not edited in this lane. Coordinator should add this lane checkpoint to `docs/process-checkpoints/INDEX.md` during final integration. No global synthesis, results, or completion claim is made here.
