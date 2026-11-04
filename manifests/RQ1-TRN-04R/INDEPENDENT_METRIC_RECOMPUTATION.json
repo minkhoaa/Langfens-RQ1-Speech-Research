@@ -1,0 +1,32 @@
+{
+  "status": "PENDING_COORDINATOR_FROZEN_INPUTS",
+  "execution_scope": "No model, inference, audio, TextGrid, or gold-source execution by Workstream B",
+  "real_data_metrics": null,
+  "reason": "Final recomputation awaits immutable coordinator-frozen prediction exchange and integrated revision",
+  "expected_cells": ["C0", "T1", "T2", "T3"],
+  "expected_val_population": {
+    "gold_positions": 9956,
+    "labels_correct_substitution_deletion": [8799, 1012, 145],
+    "zero_oracle_mapped_positions": 9919,
+    "mapped_labels_correct_substitution_deletion": [8774, 1008, 137],
+    "unmapped_gold_abstentions": 37,
+    "extra_prompt_positions_separate": 37
+  },
+  "recomputation_entrypoint": "audit_scripts/recompute_trn04r_metrics.py",
+  "input_layout": "<private-input-root>/{C0,T1,T2,T3}/{runtime_Z.jsonl,tokens_Z.jsonl,cal_runtime_Z.jsonl,cal_tokens_Z.jsonl,mismatched_runtime_Z.jsonl,mismatched_tokens_Z.jsonl,recognition_Z.jsonl}",
+  "acceptance_invariants": [
+    "Counts must be recomputed from actual saved gold rows, not substituted constants",
+    "For each available omission operating point FN=145-TP and TP<=137",
+    "T-OP dedicated scores remain distinct from s_error",
+    "B-Control dedicated omission/substitution metrics remain unavailable/null",
+    "Prompt extras are excluded from canonical metrics and separately alarm-audited",
+    "CAL is used for threshold selection; VAL threshold diagnostics are not CAL guarantees",
+    "Unknown labels, duplicate keys, nonfinite values, missing key records, and runtime/offline score mismatches fail explicitly"
+  ],
+  "contrast_plan": {
+    "matched": ["T1-C0", "T2-C0", "T3-C0"],
+    "interaction": "T3-T2-T1+C0",
+    "registration_gates": "separate; pending frozen protocol margins and external reference",
+    "noninferiority": "separate; pending frozen margin and comparator"
+  }
+}

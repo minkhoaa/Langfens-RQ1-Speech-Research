@@ -1,0 +1,22 @@
+# RQ1-TRN-04R independent metric-accounting correction
+
+**State: IMPLEMENTED; real-data recomputation PENDING coordinator-frozen inputs.** This document records the replacement accounting rules only. No historical benchmark numbers were imported or edited, and no inference/model execution occurred in this workstream.
+
+## Frozen input exchange
+
+`audit_scripts/recompute_trn04r_metrics.py` expects one private directory per arm (`C0/`, `T1/`, `T2/`, `T3/`), each containing `runtime_Z.jsonl`, `tokens_Z.jsonl`, `cal_runtime_Z.jsonl`, `cal_tokens_Z.jsonl`, `mismatched_runtime_Z.jsonl`, `mismatched_tokens_Z.jsonl`, and `recognition_Z.jsonl`. Offline token keys are `(speaker_id, utterance_id, gold_canonical_index)`; nullable gold index denotes an extra prompt row, and nullable `prompt_index` on a gold row is an unmapped/abstained gold event. Runtime scores may be top-level or nested under `scores`; offline values are checked against the runtime key. Recognition accepts saved `ref_phones`/`hyp_phones` with optional `edit_counts`, or `edit_counts` plus a reference count. Missing rows/keys, duplicate identities, inconsistent labels, unknown targets, non-finite values and score disagreement fail explicitly.
+
+Coordinator source/manifest hashes and immutable input provenance must accompany these rows. The command requires a new output path and does not read waveforms, TextGrids, checkpoints or labels outside the provided rows. C0 is treated as binary B-Control, and its unsupported dedicated subtype metrics remain null.
+
+## Accounting semantics
+
+- AP is non-interpolated grouped-tie AP, calculated only on finite answered members of each explicitly named score/population. Binary and legacy omission/substitution use `s_error`; dedicated omission/substitution use their own `s_omit`/`s_sub` and are unavailable for B-Control. Score families are never interchanged.
+- CAL thresholds use CAL correct-only scores, inclusive `score >= threshold`, with tied negatives not split. The .05/.10/.15 ceilings are computed independently per score. CAL is not VAL tuning. Threshold results include achieved CAL FPR and full-census confusion.
+- Operational omission confusion uses the entire canonical gold census. It reports TP, `FP_correct`, `FP_sub`, FN, aligned recall, all-gold recall (abstained true errors remain missed), answerable/all-gold correct-token FPR bounds, and false alarms per 1,000 of all gold positions. AP still excludes substitutions for legacy omission comparability. Extra prompt alarms are a separate ledger and never silently included in gold metrics.
+- Coverage, actual operation-label counts, speaker and canonical-phone strata are calculated from the saved rows. Saved greedy-CTC edit/reference counts produce PER and edit subtypes, expressly distinct from human omission/substitution counts.
+- Genuine Z record validation requires 9,956 actual gold rows with label counts 8,799/1,012/145, 9,919 mapped rows with labels 8,774/1,008/137, and separately counted 37 unmapped gold rows and 37 extras. For each available omission operating point `FN=145-TP` and `TP<=137` are enforced. These are validation checks, not inserted count corrections.
+- Matched factorial contrasts are T1-C0, T2-C0, T3-C0 and interaction T3-T2-T1+C0. A contrast is null/unavailable if any requisite cell endpoint is missing. Registration gates and noninferiority vs external reference and matched control are reported separately; no margins are invented by this implementation.
+
+## Execution status and restart
+
+Synthetic behavior tests are authorized and added. The CLI itself is not to be run against real rows by this worker; real-data rows are not present in this worktree and the coordinator owns final execution after the integrated revision is frozen. Resume with the immutable per-cell exchange, check its manifest/hash receipt and B-Control cell identity, then run the CLI once with a new output path. Persist raw inputs/results only in the approved private store. Do not access TEST or alter frozen originals.
