@@ -1,76 +1,88 @@
 {
   "endpoints": {
     "best": {
+      "B_audit_byte_matches_private_audit": true,
+      "B_recompute_byte_matches_private_metrics": true,
       "arms": {
         "C0": {
           "AP": {
-            "binary": 0.30946182181967874,
-            "omission_dedicated": 0.11094258200052046,
-            "omission_legacy": 0.035882111999249795,
-            "substitution_dedicated": 0.32335416450599114,
-            "substitution_legacy": 0.2976261073727019
+            "binary": 0.30946171260621264,
+            "omission_dedicated": 0.11094248775038876,
+            "omission_legacy": 0.035882129896804386,
+            "substitution_dedicated": 0.32335432799185815,
+            "substitution_legacy": 0.29762524338818663
           },
-          "CAL_s_omit_operating_points": {
+          "CTC_edits": 2464,
+          "CTC_reference_phones": 9881,
+          "PER": 0.2493674729278413,
+          "dedicated_omission_CAL_s_omit": {
             "0.05": {
-              "FA_per_1000_full_gold": 15.97026918441141,
+              "FA_per_1000": 15.97026918441141,
               "FN": 116,
+              "FP": 159,
               "FP_correct": 156,
               "FP_sub": 3,
               "TP": 29,
               "precision": 0.15425531914893617,
               "recall_all_gold": 0.2,
-              "threshold": 0.11645230650901796
+              "threshold": 0.11644901335239412
             },
             "0.1": {
-              "FA_per_1000_full_gold": 46.30373644033749,
+              "FA_per_1000": 46.30373644033749,
               "FN": 98,
+              "FP": 461,
               "FP_correct": 441,
               "FP_sub": 20,
               "TP": 47,
               "precision": 0.09251968503937008,
               "recall_all_gold": 0.32413793103448274,
-              "threshold": 0.07589456439018251
+              "threshold": 0.07590024173259736
             },
             "0.15": {
-              "FA_per_1000_full_gold": 78.54560064282845,
+              "FA_per_1000": 78.54560064282845,
               "FN": 85,
+              "FP": 782,
               "FP_correct": 745,
               "FP_sub": 37,
               "TP": 60,
               "precision": 0.07125890736342043,
               "recall_all_gold": 0.41379310344827586,
-              "threshold": 0.056422378867864616
+              "threshold": 0.05642224848270417
             }
           },
-          "CTC_edits": 2464,
-          "CTC_reference_phones": 9881,
-          "Level_A": "not_applicable",
-          "Level_B": "not_applicable",
-          "PER": 0.2493674729278413,
-          "matched_minus_mismatched_binary_AP": 0.021637541816196815
+          "gates": {
+            "Level_A": "not_applicable",
+            "Level_B": "not_applicable"
+          },
+          "matched_minus_mismatched_binary_AP": 0.021636882356507903
         },
         "T1": {
           "AP": {
-            "binary": 0.30813997848520264,
-            "omission_dedicated": 0.02563147897271023,
-            "omission_legacy": 0.023896095603726072,
-            "substitution_dedicated": 0.33999097480075696,
-            "substitution_legacy": 0.3063085672439715
+            "binary": 0.30814067105141246,
+            "omission_dedicated": 0.025631732543235752,
+            "omission_legacy": 0.023895988797492256,
+            "substitution_dedicated": 0.3399920888745334,
+            "substitution_legacy": 0.3063094355382062
           },
-          "CAL_s_omit_operating_points": {
+          "CTC_edits": 2790,
+          "CTC_reference_phones": 9881,
+          "PER": 0.2823600850116385,
+          "dedicated_omission_CAL_s_omit": {
             "0.05": {
-              "FA_per_1000_full_gold": 6.227400562474889,
+              "FA_per_1000": 6.227400562474889,
               "FN": 145,
+              "FP": 62,
               "FP_correct": 62,
               "FP_sub": 0,
               "TP": 0,
               "precision": 0.0,
               "recall_all_gold": 0.0,
-              "threshold": 0.19713070988655093
+              "threshold": 0.19713181257247928
             },
             "0.1": {
-              "FA_per_1000_full_gold": 17.97910807553234,
+              "FA_per_1000": 17.97910807553234,
               "FN": 138,
+              "FP": 179,
               "FP_correct": 175,
               "FP_sub": 4,
               "TP": 7,
@@ -79,119 +91,128 @@
               "threshold": 0.16556027531623843
             },
             "0.15": {
-              "FA_per_1000_full_gold": 37.36440337484934,
+              "FA_per_1000": 37.36440337484934,
               "FN": 133,
+              "FP": 372,
               "FP_correct": 362,
               "FP_sub": 10,
               "TP": 12,
               "precision": 0.03125,
               "recall_all_gold": 0.08275862068965517,
-              "threshold": 0.1434566378593445
+              "threshold": 0.14345656335353854
             }
           },
-          "CTC_edits": 2790,
-          "CTC_reference_phones": 9881,
-          "Level_A": "not_applicable",
-          "Level_B": "not_applicable",
-          "PER": 0.2823600850116385,
-          "matched_minus_mismatched_binary_AP": 0.021496220458024795
+          "gates": {
+            "Level_A": "not_applicable",
+            "Level_B": "not_applicable"
+          },
+          "matched_minus_mismatched_binary_AP": 0.021497837980288037
         },
         "T2": {
           "AP": {
-            "binary": 0.31816048701291,
-            "omission_dedicated": 0.0864635507885116,
-            "omission_legacy": 0.031205012154578427,
-            "substitution_dedicated": 0.3353118378117094,
-            "substitution_legacy": 0.310865257618881
+            "binary": 0.3181589435136053,
+            "omission_dedicated": 0.08646346950159671,
+            "omission_legacy": 0.031205329125611664,
+            "substitution_dedicated": 0.33531642642509474,
+            "substitution_legacy": 0.3108632533441791
           },
-          "CAL_s_omit_operating_points": {
+          "CTC_edits": 2361,
+          "CTC_reference_phones": 9881,
+          "PER": 0.23894342677866612,
+          "dedicated_omission_CAL_s_omit": {
             "0.05": {
-              "FA_per_1000_full_gold": 14.46364001607071,
+              "FA_per_1000": 14.46364001607071,
               "FN": 127,
+              "FP": 144,
               "FP_correct": 138,
               "FP_sub": 6,
               "TP": 18,
               "precision": 0.1111111111111111,
               "recall_all_gold": 0.12413793103448276,
-              "threshold": 0.13237510621547702
+              "threshold": 0.13237573206424716
             },
             "0.1": {
-              "FA_per_1000_full_gold": 48.31257533145842,
+              "FA_per_1000": 48.31257533145842,
               "FN": 102,
+              "FP": 481,
               "FP_correct": 455,
               "FP_sub": 26,
               "TP": 43,
               "precision": 0.08206106870229007,
               "recall_all_gold": 0.296551724137931,
-              "threshold": 0.09263350814580919
+              "threshold": 0.09262926876544954
             },
             "0.15": {
-              "FA_per_1000_full_gold": 98.63398955403777,
+              "FA_per_1000": 98.63398955403777,
               "FN": 78,
+              "FP": 982,
               "FP_correct": 922,
               "FP_sub": 60,
               "TP": 67,
               "precision": 0.06387035271687322,
               "recall_all_gold": 0.46206896551724136,
-              "threshold": 0.059710454195737846
+              "threshold": 0.05971360951662064
             }
           },
-          "CTC_edits": 2361,
-          "CTC_reference_phones": 9881,
-          "Level_A": "not_applicable",
-          "Level_B": "not_applicable",
-          "PER": 0.23894342677866612,
-          "matched_minus_mismatched_binary_AP": 0.020904059214678694
+          "gates": {
+            "Level_A": "not_applicable",
+            "Level_B": "not_applicable"
+          },
+          "matched_minus_mismatched_binary_AP": 0.0209011516397673
         },
         "T3": {
           "AP": {
-            "binary": 0.28190703890229424,
-            "omission_dedicated": 0.024484831215744934,
-            "omission_legacy": 0.026971816280685488,
-            "substitution_dedicated": 0.3255196145037081,
-            "substitution_legacy": 0.2739442188896778
+            "binary": 0.2819122780539181,
+            "omission_dedicated": 0.024483826029202127,
+            "omission_legacy": 0.026971582616048796,
+            "substitution_dedicated": 0.32551797030706686,
+            "substitution_legacy": 0.273950379268931
           },
-          "CAL_s_omit_operating_points": {
+          "CTC_edits": 2465,
+          "CTC_reference_phones": 9881,
+          "PER": 0.2494686772593867,
+          "dedicated_omission_CAL_s_omit": {
             "0.05": {
-              "FA_per_1000_full_gold": 12.153475291281639,
+              "FA_per_1000": 12.153475291281639,
               "FN": 143,
+              "FP": 121,
               "FP_correct": 116,
               "FP_sub": 5,
               "TP": 2,
               "precision": 0.016260162601626018,
               "recall_all_gold": 0.013793103448275862,
-              "threshold": 0.17374616861343387
+              "threshold": 0.17374667525291446
             },
             "0.1": {
-              "FA_per_1000_full_gold": 30.333467255926074,
+              "FA_per_1000": 30.333467255926074,
               "FN": 138,
+              "FP": 302,
               "FP_correct": 287,
               "FP_sub": 15,
               "TP": 7,
               "precision": 0.022653721682847898,
               "recall_all_gold": 0.04827586206896552,
-              "threshold": 0.15397489070892337
+              "threshold": 0.15397538244724276
             },
             "0.15": {
-              "FA_per_1000_full_gold": 62.274005624748895,
+              "FA_per_1000": 62.274005624748895,
               "FN": 130,
+              "FP": 620,
               "FP_correct": 596,
               "FP_sub": 24,
               "TP": 15,
               "precision": 0.023622047244094488,
               "recall_all_gold": 0.10344827586206896,
-              "threshold": 0.132509782910347
+              "threshold": 0.13250966370105746
             }
           },
-          "CTC_edits": 2465,
-          "CTC_reference_phones": 9881,
-          "Level_A": "not_applicable",
-          "Level_B": "not_applicable",
-          "PER": 0.2494686772593867,
-          "matched_minus_mismatched_binary_AP": 0.02144175485152383
+          "gates": {
+            "Level_A": "not_applicable",
+            "Level_B": "not_applicable"
+          },
+          "matched_minus_mismatched_binary_AP": 0.02144843759392767
         }
       },
-      "data_version": "v1",
       "factorial_contrasts": {
         "PER": {
           "direction": "lower_is_better",
@@ -211,50 +232,50 @@
         },
         "acoustic_gap_binary_ap": {
           "direction": "higher_is_better",
-          "interaction_T3_minus_T2_minus_T1_plus_C0": 0.0006790169950171565,
+          "interaction_T3_minus_T2_minus_T1_plus_C0": 0.0006863303303802359,
           "matched_contrasts": {
-            "T1_minus_C0": -0.00014132135817201963,
-            "T2_minus_C0": -0.0007334826015181206,
-            "T3_minus_C0": -0.00019578696467298373
+            "T1_minus_C0": -0.00013904437621986565,
+            "T2_minus_C0": -0.0007357307167406013,
+            "T3_minus_C0": -0.00018844476258023102
           },
           "status": "computed",
           "values": {
-            "C0": 0.021637541816196815,
-            "T1": 0.021496220458024795,
-            "T2": 0.020904059214678694,
-            "T3": 0.02144175485152383
+            "C0": 0.021636882356507903,
+            "T1": 0.021497837980288037,
+            "T2": 0.0209011516397673,
+            "T3": 0.02144843759392767
           }
         },
         "binary_ap": {
           "direction": "higher_is_better",
-          "interaction_T3_minus_T2_minus_T1_plus_C0": -0.03493160477613966,
+          "interaction_T3_minus_T2_minus_T1_plus_C0": -0.034925623904887015,
           "matched_contrasts": {
-            "T1_minus_C0": -0.0013218433344761027,
-            "T2_minus_C0": 0.008698665193231259,
-            "T3_minus_C0": -0.0275547829173845
+            "T1_minus_C0": -0.001321041554800173,
+            "T2_minus_C0": 0.008697230907392661,
+            "T3_minus_C0": -0.027549434552294527
           },
           "status": "computed",
           "values": {
-            "C0": 0.30946182181967874,
-            "T1": 0.30813997848520264,
-            "T2": 0.31816048701291,
-            "T3": 0.28190703890229424
+            "C0": 0.30946171260621264,
+            "T1": 0.30814067105141246,
+            "T2": 0.3181589435136053,
+            "T3": 0.2819122780539181
           }
         },
         "omission_dedicated_ap": {
           "direction": "higher_is_better",
-          "interaction_T3_minus_T2_minus_T1_plus_C0": 0.023332383455043557,
+          "interaction_T3_minus_T2_minus_T1_plus_C0": 0.023331111734758422,
           "matched_contrasts": {
-            "T1_minus_C0": -0.08531110302781023,
-            "T2_minus_C0": -0.024479031212008853,
-            "T3_minus_C0": -0.08645775078477552
+            "T1_minus_C0": -0.085310755207153,
+            "T2_minus_C0": -0.024479018248792048,
+            "T3_minus_C0": -0.08645866172118663
           },
           "status": "computed",
           "values": {
-            "C0": 0.11094258200052046,
-            "T1": 0.02563147897271023,
-            "T2": 0.0864635507885116,
-            "T3": 0.024484831215744934
+            "C0": 0.11094248775038876,
+            "T1": 0.025631732543235752,
+            "T2": 0.08646346950159671,
+            "T3": 0.024483826029202127
           }
         },
         "omission_fa_per_1000_cal15": {
@@ -307,234 +328,261 @@
         },
         "substitution_dedicated_ap": {
           "direction": "higher_is_better",
-          "interaction_T3_minus_T2_minus_T1_plus_C0": -0.02642903360276716,
+          "interaction_T3_minus_T2_minus_T1_plus_C0": -0.026436217000703144,
           "matched_contrasts": {
-            "T1_minus_C0": 0.016636810294765825,
-            "T2_minus_C0": 0.011957673305718286,
-            "T3_minus_C0": 0.0021654499977169506
+            "T1_minus_C0": 0.016637760882675268,
+            "T2_minus_C0": 0.01196209843323659,
+            "T3_minus_C0": 0.0021636423152087136
           },
           "status": "computed",
           "values": {
-            "C0": 0.32335416450599114,
-            "T1": 0.33999097480075696,
-            "T2": 0.3353118378117094,
-            "T3": 0.3255196145037081
+            "C0": 0.32335432799185815,
+            "T1": 0.3399920888745334,
+            "T2": 0.33531642642509474,
+            "T3": 0.32551797030706686
           }
         },
         "substitution_legacy_ap": {
           "direction": "higher_is_better",
-          "interaction_T3_minus_T2_minus_T1_plus_C0": -0.0456034986004728,
+          "interaction_T3_minus_T2_minus_T1_plus_C0": -0.04559706622526766,
           "matched_contrasts": {
-            "T1_minus_C0": 0.008682459871269588,
-            "T2_minus_C0": 0.01323915024617911,
-            "T3_minus_C0": -0.023681888483024105
+            "T1_minus_C0": 0.008684192150019587,
+            "T2_minus_C0": 0.013238009955992447,
+            "T3_minus_C0": -0.023674864119255623
           },
           "status": "computed",
           "values": {
-            "C0": 0.2976261073727019,
-            "T1": 0.3063085672439715,
-            "T2": 0.310865257618881,
-            "T3": 0.2739442188896778
+            "C0": 0.29762524338818663,
+            "T1": 0.3063094355382062,
+            "T2": 0.3108632533441791,
+            "T3": 0.273950379268931
           }
         }
       },
-      "final_decision_eligible": false,
       "gates_applicable": false,
-      "private_metrics_path": "/home/khoa/.cache/langfens/trn04r/genuine-z-v1-20261104T083210Z/metrics/best.json",
-      "provisional_note": "Metric reproduction is audited within v1; cross-arm contrasts and gates are provisional until coordinator v2."
+      "independent_auditor_status": "INDEPENDENT_RECOMPUTATION_AGREES",
+      "private_audit_sha256": "0fb23935cae75733be1ea9ae08c7e710bd503338376bd62b99d8ddd7e803a8f5",
+      "private_metrics_sha256": "f41e763a6c5c02ef8dbb42bbc560d02bcb6d6c7ab5cb11c4bfc686058c778c34",
+      "verified_arms": {
+        "C0": "VERIFIED",
+        "T1": "VERIFIED",
+        "T2": "VERIFIED",
+        "T3": "VERIFIED"
+      }
     },
     "fixed_budget_3600": {
+      "B_audit_byte_matches_private_audit": true,
+      "B_recompute_byte_matches_private_metrics": true,
       "arms": {
         "C0": {
           "AP": {
-            "binary": 0.31655504337680795,
-            "omission_dedicated": 0.10468961530297624,
-            "omission_legacy": 0.033765569497948275,
-            "substitution_dedicated": 0.3337872141473775,
-            "substitution_legacy": 0.3065187108540443
+            "binary": 0.31656014550795514,
+            "omission_dedicated": 0.10469025371998517,
+            "omission_legacy": 0.03376502201888351,
+            "substitution_dedicated": 0.33379514686611167,
+            "substitution_legacy": 0.3065248068499293
           },
-          "CAL_s_omit_operating_points": {
+          "CTC_edits": 2361,
+          "CTC_reference_phones": 9881,
+          "PER": 0.23894342677866612,
+          "dedicated_omission_CAL_s_omit": {
             "0.05": {
-              "FA_per_1000_full_gold": 17.677782241864204,
+              "FA_per_1000": 17.677782241864204,
               "FN": 118,
+              "FP": 176,
               "FP_correct": 170,
               "FP_sub": 6,
               "TP": 27,
               "precision": 0.1330049261083744,
               "recall_all_gold": 0.18620689655172415,
-              "threshold": 0.13684171438217166
+              "threshold": 0.13683906197547915
             },
             "0.1": {
-              "FA_per_1000_full_gold": 52.229811169144234,
+              "FA_per_1000": 52.229811169144234,
               "FN": 95,
+              "FP": 520,
               "FP_correct": 494,
               "FP_sub": 26,
               "TP": 50,
               "precision": 0.08771929824561403,
               "recall_all_gold": 0.3448275862068966,
-              "threshold": 0.0921192765235901
+              "threshold": 0.09212201833724977
             },
             "0.15": {
-              "FA_per_1000_full_gold": 106.26757734029731,
+              "FA_per_1000": 106.26757734029731,
               "FN": 65,
+              "FP": 1058,
               "FP_correct": 999,
               "FP_sub": 59,
               "TP": 80,
               "precision": 0.070298769771529,
               "recall_all_gold": 0.5517241379310345,
-              "threshold": 0.05801065638661385
+              "threshold": 0.058004841208457954
             }
           },
-          "CTC_edits": 2361,
-          "CTC_reference_phones": 9881,
-          "Level_A": "fail",
-          "Level_B": "fail",
-          "PER": 0.23894342677866612,
-          "matched_minus_mismatched_binary_AP": 0.01680855581480284
+          "gates": {
+            "Level_A": "fail",
+            "Level_B": "fail"
+          },
+          "matched_minus_mismatched_binary_AP": 0.01681396721531364
         },
         "T1": {
           "AP": {
-            "binary": 0.3110074909204202,
-            "omission_dedicated": 0.02992750631127339,
-            "omission_legacy": 0.024289865816884745,
-            "substitution_dedicated": 0.3410359585086276,
-            "substitution_legacy": 0.3086445396048997
+            "binary": 0.3110046842572319,
+            "omission_dedicated": 0.029927641127363395,
+            "omission_legacy": 0.024291675478182017,
+            "substitution_dedicated": 0.3410372412767048,
+            "substitution_legacy": 0.30863916406672176
           },
-          "CAL_s_omit_operating_points": {
+          "CTC_edits": 2362,
+          "CTC_reference_phones": 9881,
+          "PER": 0.23904463111021151,
+          "dedicated_omission_CAL_s_omit": {
             "0.05": {
-              "FA_per_1000_full_gold": 8.135797509039776,
+              "FA_per_1000": 8.135797509039776,
               "FN": 140,
+              "FP": 81,
               "FP_correct": 79,
               "FP_sub": 2,
               "TP": 5,
               "precision": 0.05813953488372093,
               "recall_all_gold": 0.034482758620689655,
-              "threshold": 0.13905204832553866
+              "threshold": 0.13905045390129092
             },
             "0.1": {
-              "FA_per_1000_full_gold": 29.5299316994777,
+              "FA_per_1000": 29.5299316994777,
               "FN": 134,
+              "FP": 294,
               "FP_correct": 289,
               "FP_sub": 5,
               "TP": 11,
               "precision": 0.036065573770491806,
               "recall_all_gold": 0.07586206896551724,
-              "threshold": 0.12292510271072389
+              "threshold": 0.12292923033237459
             },
             "0.15": {
-              "FA_per_1000_full_gold": 60.66693451185215,
+              "FA_per_1000": 60.66693451185215,
               "FN": 128,
+              "FP": 604,
               "FP_correct": 591,
               "FP_sub": 13,
               "TP": 17,
               "precision": 0.027375201288244767,
               "recall_all_gold": 0.11724137931034483,
-              "threshold": 0.10588481277227403
+              "threshold": 0.10588592290878297
             }
           },
-          "CTC_edits": 2362,
-          "CTC_reference_phones": 9881,
-          "Level_A": "fail",
-          "Level_B": "fail",
-          "PER": 0.23904463111021151,
-          "matched_minus_mismatched_binary_AP": 0.011737630536613697
+          "gates": {
+            "Level_A": "fail",
+            "Level_B": "fail"
+          },
+          "matched_minus_mismatched_binary_AP": 0.011733800163423347
         },
         "T2": {
           "AP": {
-            "binary": 0.31816048701291,
-            "omission_dedicated": 0.0864635507885116,
-            "omission_legacy": 0.031205012154578427,
-            "substitution_dedicated": 0.3353118378117094,
-            "substitution_legacy": 0.310865257618881
+            "binary": 0.3181589435136053,
+            "omission_dedicated": 0.08646346950159671,
+            "omission_legacy": 0.031205329125611664,
+            "substitution_dedicated": 0.33531642642509474,
+            "substitution_legacy": 0.3108632533441791
           },
-          "CAL_s_omit_operating_points": {
+          "CTC_edits": 2361,
+          "CTC_reference_phones": 9881,
+          "PER": 0.23894342677866612,
+          "dedicated_omission_CAL_s_omit": {
             "0.05": {
-              "FA_per_1000_full_gold": 14.46364001607071,
+              "FA_per_1000": 14.46364001607071,
               "FN": 127,
+              "FP": 144,
               "FP_correct": 138,
               "FP_sub": 6,
               "TP": 18,
               "precision": 0.1111111111111111,
               "recall_all_gold": 0.12413793103448276,
-              "threshold": 0.13237510621547702
+              "threshold": 0.13237573206424716
             },
             "0.1": {
-              "FA_per_1000_full_gold": 48.31257533145842,
+              "FA_per_1000": 48.31257533145842,
               "FN": 102,
+              "FP": 481,
               "FP_correct": 455,
               "FP_sub": 26,
               "TP": 43,
               "precision": 0.08206106870229007,
               "recall_all_gold": 0.296551724137931,
-              "threshold": 0.09263350814580919
+              "threshold": 0.09262926876544954
             },
             "0.15": {
-              "FA_per_1000_full_gold": 98.63398955403777,
+              "FA_per_1000": 98.63398955403777,
               "FN": 78,
+              "FP": 982,
               "FP_correct": 922,
               "FP_sub": 60,
               "TP": 67,
               "precision": 0.06387035271687322,
               "recall_all_gold": 0.46206896551724136,
-              "threshold": 0.059710454195737846
+              "threshold": 0.05971360951662064
             }
           },
-          "CTC_edits": 2361,
-          "CTC_reference_phones": 9881,
-          "Level_A": "fail",
-          "Level_B": "fail",
-          "PER": 0.23894342677866612,
-          "matched_minus_mismatched_binary_AP": 0.020904059214678694
+          "gates": {
+            "Level_A": "fail",
+            "Level_B": "fail"
+          },
+          "matched_minus_mismatched_binary_AP": 0.0209011516397673
         },
         "T3": {
           "AP": {
-            "binary": 0.3138862078579581,
-            "omission_dedicated": 0.0317056446067412,
-            "omission_legacy": 0.02501166499638031,
-            "substitution_dedicated": 0.33782167319948814,
-            "substitution_legacy": 0.31159843681069727
+            "binary": 0.3138968158730544,
+            "omission_dedicated": 0.031705545989403325,
+            "omission_legacy": 0.02501197116687181,
+            "substitution_dedicated": 0.33782538792514943,
+            "substitution_legacy": 0.31161006684319026
           },
-          "CAL_s_omit_operating_points": {
+          "CTC_edits": 2362,
+          "CTC_reference_phones": 9881,
+          "PER": 0.23904463111021151,
+          "dedicated_omission_CAL_s_omit": {
             "0.05": {
-              "FA_per_1000_full_gold": 11.349939734833267,
+              "FA_per_1000": 11.349939734833267,
               "FN": 143,
+              "FP": 113,
               "FP_correct": 104,
               "FP_sub": 9,
               "TP": 2,
               "precision": 0.017391304347826087,
               "recall_all_gold": 0.013793103448275862,
-              "threshold": 0.14024063944816592
+              "threshold": 0.14024150371551516
             },
             "0.1": {
-              "FA_per_1000_full_gold": 26.717557251908396,
+              "FA_per_1000": 26.717557251908396,
               "FN": 137,
+              "FP": 266,
               "FP_correct": 250,
               "FP_sub": 16,
               "TP": 8,
               "precision": 0.029197080291970802,
               "recall_all_gold": 0.05517241379310345,
-              "threshold": 0.12200949341058732
+              "threshold": 0.12201289832592012
             },
             "0.15": {
-              "FA_per_1000_full_gold": 51.727601446364,
+              "FA_per_1000": 51.727601446364,
               "FN": 123,
+              "FP": 515,
               "FP_correct": 493,
               "FP_sub": 22,
               "TP": 22,
               "precision": 0.040968342644320296,
               "recall_all_gold": 0.15172413793103448,
-              "threshold": 0.1043662801384926
+              "threshold": 0.10436487942934038
             }
           },
-          "CTC_edits": 2362,
-          "CTC_reference_phones": 9881,
-          "Level_A": "fail",
-          "Level_B": "fail",
-          "PER": 0.23904463111021151,
-          "matched_minus_mismatched_binary_AP": 0.01812818255476667
+          "gates": {
+            "Level_A": "fail",
+            "Level_B": "fail"
+          },
+          "matched_minus_mismatched_binary_AP": 0.018138827539707636
         }
       },
-      "data_version": "v1",
       "factorial_contrasts": {
         "PER": {
           "direction": "lower_is_better",
@@ -554,50 +602,50 @@
         },
         "acoustic_gap_binary_ap": {
           "direction": "higher_is_better",
-          "interaction_T3_minus_T2_minus_T1_plus_C0": 0.002295048618277118,
+          "interaction_T3_minus_T2_minus_T1_plus_C0": 0.0023178429518306287,
           "matched_contrasts": {
-            "T1_minus_C0": -0.005070925278189142,
-            "T2_minus_C0": 0.004095503399875855,
-            "T3_minus_C0": 0.0013196267399638306
+            "T1_minus_C0": -0.005080167051890294,
+            "T2_minus_C0": 0.00408718442445366,
+            "T3_minus_C0": 0.001324860324393995
           },
           "status": "computed",
           "values": {
-            "C0": 0.01680855581480284,
-            "T1": 0.011737630536613697,
-            "T2": 0.020904059214678694,
-            "T3": 0.01812818255476667
+            "C0": 0.01681396721531364,
+            "T1": 0.011733800163423347,
+            "T2": 0.0209011516397673,
+            "T3": 0.018138827539707636
           }
         },
         "binary_ap": {
           "direction": "higher_is_better",
-          "interaction_T3_minus_T2_minus_T1_plus_C0": 0.0012732733014358955,
+          "interaction_T3_minus_T2_minus_T1_plus_C0": 0.0012933336101723647,
           "matched_contrasts": {
-            "T1_minus_C0": -0.005547552456387772,
-            "T2_minus_C0": 0.001605443636102044,
-            "T3_minus_C0": -0.0026688355188498325
+            "T1_minus_C0": -0.005555461250723259,
+            "T2_minus_C0": 0.0015987980056501594,
+            "T3_minus_C0": -0.002663329634900735
           },
           "status": "computed",
           "values": {
-            "C0": 0.31655504337680795,
-            "T1": 0.3110074909204202,
-            "T2": 0.31816048701291,
-            "T3": 0.3138862078579581
+            "C0": 0.31656014550795514,
+            "T1": 0.3110046842572319,
+            "T2": 0.3181589435136053,
+            "T3": 0.3138968158730544
           }
         },
         "omission_dedicated_ap": {
           "direction": "higher_is_better",
-          "interaction_T3_minus_T2_minus_T1_plus_C0": 0.020004202809932453,
+          "interaction_T3_minus_T2_minus_T1_plus_C0": 0.02000468908042838,
           "matched_contrasts": {
-            "T1_minus_C0": -0.07476210899170285,
-            "T2_minus_C0": -0.018226064514464638,
-            "T3_minus_C0": -0.07298397069623505
+            "T1_minus_C0": -0.07476261259262176,
+            "T2_minus_C0": -0.018226784218388456,
+            "T3_minus_C0": -0.07298470773058184
           },
           "status": "computed",
           "values": {
-            "C0": 0.10468961530297624,
-            "T1": 0.02992750631127339,
-            "T2": 0.0864635507885116,
-            "T3": 0.0317056446067412
+            "C0": 0.10469025371998517,
+            "T1": 0.029927641127363395,
+            "T2": 0.08646346950159671,
+            "T3": 0.031705545989403325
           }
         },
         "omission_fa_per_1000_cal15": {
@@ -650,46 +698,52 @@
         },
         "substitution_dedicated_ap": {
           "direction": "higher_is_better",
-          "interaction_T3_minus_T2_minus_T1_plus_C0": -0.004738908973471401,
+          "interaction_T3_minus_T2_minus_T1_plus_C0": -0.004733132910538451,
           "matched_contrasts": {
-            "T1_minus_C0": 0.0072487443612501146,
-            "T2_minus_C0": 0.0015246236643319255,
-            "T3_minus_C0": 0.004034459052110639
+            "T1_minus_C0": 0.007242094410593147,
+            "T2_minus_C0": 0.0015212795589830685,
+            "T3_minus_C0": 0.004030241059037765
           },
           "status": "computed",
           "values": {
-            "C0": 0.3337872141473775,
-            "T1": 0.3410359585086276,
-            "T2": 0.3353118378117094,
-            "T3": 0.33782167319948814
+            "C0": 0.33379514686611167,
+            "T1": 0.3410372412767048,
+            "T2": 0.33531642642509474,
+            "T3": 0.33782538792514943
           }
         },
         "substitution_legacy_ap": {
           "direction": "higher_is_better",
-          "interaction_T3_minus_T2_minus_T1_plus_C0": -0.0013926495590391164,
+          "interaction_T3_minus_T2_minus_T1_plus_C0": -0.0013675437177813055,
           "matched_contrasts": {
-            "T1_minus_C0": 0.002125828750855374,
-            "T2_minus_C0": 0.004346546764836701,
-            "T3_minus_C0": 0.0050797259566529585
+            "T1_minus_C0": 0.002114357216792484,
+            "T2_minus_C0": 0.0043384464942498036,
+            "T3_minus_C0": 0.005085259993260982
           },
           "status": "computed",
           "values": {
-            "C0": 0.3065187108540443,
-            "T1": 0.3086445396048997,
-            "T2": 0.310865257618881,
-            "T3": 0.31159843681069727
+            "C0": 0.3065248068499293,
+            "T1": 0.30863916406672176,
+            "T2": 0.3108632533441791,
+            "T3": 0.31161006684319026
           }
         }
       },
-      "final_decision_eligible": false,
       "gates_applicable": true,
-      "private_metrics_path": "/home/khoa/.cache/langfens/trn04r/genuine-z-v1-20261104T083210Z/metrics/fixed_budget_3600.json",
-      "provisional_note": "Metric reproduction is audited within v1; cross-arm contrasts and gates are provisional until coordinator v2."
+      "independent_auditor_status": "INDEPENDENT_RECOMPUTATION_AGREES",
+      "private_audit_sha256": "04b237db0f8112007dad33efe0497cf75e8032862bc9f0bf3ac7d779782f2d75",
+      "private_metrics_sha256": "ac9c1d476f5cce124d630570fd569effef161623255b4aeb7f05e45576c4c2e9",
+      "verified_arms": {
+        "C0": "VERIFIED",
+        "T1": "VERIFIED",
+        "T2": "VERIFIED",
+        "T3": "VERIFIED"
+      }
     }
   },
-  "execution": "Model-free recomputation only; no new inference/model execution by Workstream B.",
-  "final_factorial_acceptance": "withheld pending coordinator v2 shared-encoder-cache run",
-  "historical_score_family_correction": "Prior evaluator calibrated from s_omit but, for class_focal rows where serializer left s_omit null, fell back to s_error on VAL (old evaluator.py CAL lines 164-171; scoring fallback line 415; prior p_sup/runtime.py only populated subtype scores for operation_ce). This explains the historical T1/T3 all-token alarm result as a cross-family threshold/score mismatch, not a valid s_omit operating-point result. The provisional v1 three-way operating values fail registered omission criteria, but v1 cross-arm gate interpretation is not final pending the cache-equivalent v2 run; do not infer all focal/acoustic methods are invalid.",
+  "execution_scope": "B independently recomputed metrics only; inference was coordinator-run.",
+  "final_data_version": "v2_shared_cache",
+  "final_factorial_acceptance": "Use v2 full-precision metrics. Fixed-budget registered Level A/B calculations fail in all four arms, same as v1. Parent private-store readback/review remains pending; no overall campaign PASS asserted.",
   "input_validation": {
     "aligned_labels": [
       8774,
@@ -707,60 +761,151 @@
     "reference_ctc_phones": 9881,
     "unmapped_gold": 37
   },
-  "parallel_execution": {
-    "all_succeeded": true,
-    "arms": [
-      "C0",
-      "T1",
-      "T2",
-      "T3"
-    ],
-    "contract_sha256": "4d99723e4b3f62f506165ced089eca82d4417279c76973b35470bd337cedfab2",
-    "device": "CPU FP32",
-    "threads_per_arm": 2,
-    "version": "v1"
-  },
-  "private_root": "/home/khoa/.cache/langfens/trn04r/genuine-z-v1-20261104T083210Z",
-  "source_commit": "c60a84fb044f049dc30f61046f819ff0ac36dc72",
-  "status": "V1_RECOMPUTED_AND_AUDITED_BUT_PROVISIONAL; V2_REQUIRED_FOR_FINAL_FACTORIAL_ACCEPTANCE; NO_OVERALL_PASS",
-  "v1_crossarmcache_review": {
-    "cause": "unknown; do not infer cause from these hash observations.",
-    "feature_hash_discrepancy": "fp32_feature_sha differs on 464/600 T2 records versus C0; T1/T3 match C0 exactly.",
-    "final_factorial_acceptance": "withheld pending v2",
-    "interpretation": "Per-arm v1 metric reproduction is independently audited; v1 cross-arm factorial contrasts/gates are provisional and are not final immutable decisions.",
-    "other_hashes": "waveform and 4D-cache hashes all match across arms.",
-    "preserve_raw_versions": true,
-    "source": "Coordinator-provided follow-up; Workstream B did not independently re-check this cache-hash comparison.",
-    "v2_requirement": "Coordinator-supplied v2 shared encoder cache, one process producing all 8 heads, same frozen c60 source, no code edits.",
-    "v2_root_status": "not supplied to Workstream B yet; no v2 processing performed.",
-    "version": "v1"
-  },
-  "verification": {
-    "best": {
-      "B_cli_output_sha256": "5d3871683028a19efe66eea3e564d60170edf46cb19c4317fa296ca14317acce",
-      "B_recompute_equals_private_metrics": true,
-      "arms": {
-        "C0": "VERIFIED",
-        "T1": "VERIFIED",
-        "T2": "VERIFIED",
-        "T3": "VERIFIED"
+  "private_input_sha256": {
+    "aggregate_manifest_sha256": "6f6903b05e8ce667045e4734000ab67980d4acdc0bd3125e457fee630f038567",
+    "by_endpoint": {
+      "best": {
+        "file_count": 32,
+        "file_sha256": {
+          "C0_best/cal_runtime_Z.jsonl": "c2b4c9a1a5b34233245f29dfc6eb3fe3706c1b31baa3bc992dc83498437790b1",
+          "C0_best/cal_tokens_Z.jsonl": "90fa1b19cc06466d4ca80cc73f4719dd2562f5fd154310b62dd365117473d437",
+          "C0_best/mismatched_runtime_Z.jsonl": "63b78ac6e7977b015214a592e75778c31607dc1b6ced82bac13688608469befd",
+          "C0_best/mismatched_tokens_Z.jsonl": "a15ef723182f6683ea5503acbfdb35e222df388ceb23fc0132dd28511b18136f",
+          "C0_best/recognition_Z.jsonl": "5bde0ea6d4fb0eb11f9f7a4b8d658cf14db5e936c2150a116c645b9fb87d224f",
+          "C0_best/recognition_runtime_Z.jsonl": "d052dff6cfff408ad5a10222e9f7a1741b7fef28fc4c69ef8a4463c3c49133b3",
+          "C0_best/runtime_Z.jsonl": "7898dd70a94e9b4130259bf94b106d6182e0e08ba8a7fa569be8521f5bf3a588",
+          "C0_best/tokens_Z.jsonl": "06320fdfb12329dd0b2c729de92d9adfb83fb67b8cec4bdfe822e4f84a4b5bdd",
+          "T1_best/cal_runtime_Z.jsonl": "ac90506bb5bbd1a9b885628d5c6f477546d65cb1cb26c5b33a3e0aa578a091bb",
+          "T1_best/cal_tokens_Z.jsonl": "b9d6aaba636fdddfdca9140c1c78f9dd893a4787d4b8fa7f8eca54acd6ea6751",
+          "T1_best/mismatched_runtime_Z.jsonl": "b7f7ee6d8052c2d7b549d68cea63f685094c3f6b48d68f7bd7d7d90885a38f36",
+          "T1_best/mismatched_tokens_Z.jsonl": "ac0042a0c5cb8a8efe6a84ce901b6b7c5432ff9eb41e2351f0e3b22561948bbe",
+          "T1_best/recognition_Z.jsonl": "1e05ea5d4a5f76f5162def760c509af5e99d058d4ccc65bdc1daaccdbdf8be3c",
+          "T1_best/recognition_runtime_Z.jsonl": "31db9578427481764ec0a0c95861c2ecf8cbf020de0851cbf534e318b06f3323",
+          "T1_best/runtime_Z.jsonl": "e6e41e5cc59c106b3835af976408fa139e23d431c844a871aaba06f3ce9ec9af",
+          "T1_best/tokens_Z.jsonl": "0373b583ae85cb5cf13c15306ff2123fd440227c677d633a8990abea421543b6",
+          "T2_best/cal_runtime_Z.jsonl": "f5299bb59e5bd6dc87143028c26be31c848690bb2ea1eff7f016e24408595f55",
+          "T2_best/cal_tokens_Z.jsonl": "6bf7d903b488a1a6a991b833576f85804412a4e7d324d24f61c603724ac30ea2",
+          "T2_best/mismatched_runtime_Z.jsonl": "80a59a3de44cc82d48aea049bedec22ee603469566590b3cbf67951018fce2be",
+          "T2_best/mismatched_tokens_Z.jsonl": "5a9b5fa4ee75106813920cf544937d14531c3fedd32288bf51a2b28a6bb64bd1",
+          "T2_best/recognition_Z.jsonl": "5ac5481fd275b0e66df2bb0a410b0ef16af21a6c012f5d7600f8c9cc13b3b364",
+          "T2_best/recognition_runtime_Z.jsonl": "ecd2580d752cb6c53a225273861a5eb3fb73fddbc2af1cb9b7b73ef38b0c53ef",
+          "T2_best/runtime_Z.jsonl": "a35c2d84b9306612ca448587878665c6799572d43a5f12ec9878f8d9462de3cc",
+          "T2_best/tokens_Z.jsonl": "5ac225eaf7fb731278179821201ae6460fa7c3a39cffd88ab272331a49d0b674",
+          "T3_best/cal_runtime_Z.jsonl": "242c8efae9f155c2f56f4ff2dea7a402c79019dc35479113fdbe4f740d14cfe5",
+          "T3_best/cal_tokens_Z.jsonl": "530aa10d53a21ba9d2e9e175e6067412f4a6194a8678fb3bb6c698bccd876fea",
+          "T3_best/mismatched_runtime_Z.jsonl": "76553e90c96f57dcb6dd6848629c90f92b9e279a4ea7b070ff31bc2095dda5a2",
+          "T3_best/mismatched_tokens_Z.jsonl": "c19e04b534458ba1c563b2929ed8d1162f32e48fecfccbdce22d740eeb815891",
+          "T3_best/recognition_Z.jsonl": "a97a108ec03dc51825c478bde18c8a3f1378b3fe0c6f36daf5ceee7656989a8f",
+          "T3_best/recognition_runtime_Z.jsonl": "0b872399d9fcd134eaeba008f564028d3fc9e3664a64143516fbbd99002d1200",
+          "T3_best/runtime_Z.jsonl": "e3c494863661bcb59bcbade44d8b73be5640dd02ec1e48ed0f17145a04e622db",
+          "T3_best/tokens_Z.jsonl": "4925f1c77fbcf0062cb70788e3087bc0f63c8b8b29610e1f26c241280f984c4b"
+        },
+        "sha256": "0128c6e8025f6c577eeb4dac8386a36390d4f07a97cda6e71fbe8fc1c477bab3"
       },
-      "auditor_output_sha256": "663cd3b948c5269c62b60d972e233d9bd8b77b33873cf5aa8c242fa549b1544a",
-      "independent_auditor_status": "INDEPENDENT_RECOMPUTATION_AGREES",
-      "scope": "global/speaker/phone AP; CAL thresholds; deployed TP/FP; omission FN; global/speaker greedy PER; runtime freeze and gold-field audit"
+      "fixed_budget_3600": {
+        "file_count": 32,
+        "file_sha256": {
+          "C0_fixed_budget_3600/cal_runtime_Z.jsonl": "5d39776707d27ab24b09bc13ec5434a11d5d7bd8a26845749b8c8bff283e8069",
+          "C0_fixed_budget_3600/cal_tokens_Z.jsonl": "8d842005a652719d258f1232b6159ebb03ca5cc4c13ac5e43753eaf3407161be",
+          "C0_fixed_budget_3600/mismatched_runtime_Z.jsonl": "184960ac8e3218f1ecc489f5351431f560e1b9c6840439bcb320217dabaf5c1a",
+          "C0_fixed_budget_3600/mismatched_tokens_Z.jsonl": "a9deb8c90c28cc1eaf70cd29b6d10dcdc65996743fec287cd06849d615dd8910",
+          "C0_fixed_budget_3600/recognition_Z.jsonl": "84c1d7c41dd69db1d05536709ca6ba3da1e4ee60dc8f205d1ede95c144fa75b5",
+          "C0_fixed_budget_3600/recognition_runtime_Z.jsonl": "d075a275d05f7588505016d57090535f47740513518efeb12a6c7c6e03936140",
+          "C0_fixed_budget_3600/runtime_Z.jsonl": "219acbce605c6196927d0a4237c09d07cde73a4141461aa3efdf2d368249003f",
+          "C0_fixed_budget_3600/tokens_Z.jsonl": "f65328897e6468fbb0c423e32ee9cb4cc7ea9c9695a36665b9fd90956f07cd0b",
+          "T1_fixed_budget_3600/cal_runtime_Z.jsonl": "d4fcd7926053756a728e52ed92b5faaf88f4a1018c72712a54c620c9976800e6",
+          "T1_fixed_budget_3600/cal_tokens_Z.jsonl": "b252275125cedeb33861bf1f33c50a4061ca8053121ccc898511c3223c1ec004",
+          "T1_fixed_budget_3600/mismatched_runtime_Z.jsonl": "9d683d70a8aaaca10e865172e9edd6a5e60b0138504f51b723645fecedfe0949",
+          "T1_fixed_budget_3600/mismatched_tokens_Z.jsonl": "480349ace66bc8ef4c423e0c8ec654aa977076bd4ecb4e789c8dd8948a666fdc",
+          "T1_fixed_budget_3600/recognition_Z.jsonl": "09fe9ca89c75565789035b0e3567c22f02d4b2e5642fa59b36a354d1656d0e2a",
+          "T1_fixed_budget_3600/recognition_runtime_Z.jsonl": "da61bfeefc8fada8a02ee0484fa425eda9015d41288a593778ab544d93487fc1",
+          "T1_fixed_budget_3600/runtime_Z.jsonl": "5289b9c9eae7fef62aeff92b43fa843f229067ba4bcc6e815ebc1f57852e0b7c",
+          "T1_fixed_budget_3600/tokens_Z.jsonl": "bad02961cceffa3fc3085607cced9d09fc3d0dc7443d2eedd9e877b1215fe76e",
+          "T2_fixed_budget_3600/cal_runtime_Z.jsonl": "d5e2ff4a0050246c2456023f9bf4c1d5bad1fcc8ea7f11b9854e3261a710d9c9",
+          "T2_fixed_budget_3600/cal_tokens_Z.jsonl": "aa7bf24848fa27792c22f3bc28984a68c7aa578338463a7c090fbce0147414e9",
+          "T2_fixed_budget_3600/mismatched_runtime_Z.jsonl": "4bb765dfa72184761f96e3aec91a3e191d03b7ea307b46d3958ed15b5c42ac8d",
+          "T2_fixed_budget_3600/mismatched_tokens_Z.jsonl": "24aff8e8bd2f2aef9882e5617b3a7f680a43049d0382656462fc1c3d7add7353",
+          "T2_fixed_budget_3600/recognition_Z.jsonl": "aa32004767f9c56e7c82ada0d7ec816f22665e47a7e8ec774bea33049ec00c0c",
+          "T2_fixed_budget_3600/recognition_runtime_Z.jsonl": "fc7a69f5d0302b2f4527ba6270b7dff08e2f5115dccba2fc81528db2bcfa18c5",
+          "T2_fixed_budget_3600/runtime_Z.jsonl": "1f575ada0b22415ca90298097c5f03ae117c2726bc1288f2371a6f2e4cdbd572",
+          "T2_fixed_budget_3600/tokens_Z.jsonl": "daf114c1fb372a6b82a4eeb7e4d4353aebeb0abecf40281d280e21026293c541",
+          "T3_fixed_budget_3600/cal_runtime_Z.jsonl": "3af55f1ebc53b2106bab59c38f6367fc7ab35f111c485ac42a14e24ccb5e08df",
+          "T3_fixed_budget_3600/cal_tokens_Z.jsonl": "1cfc00bf9d7775a66285bf8d282a0ac8361fd5925b33b289505baf6a1846ebfe",
+          "T3_fixed_budget_3600/mismatched_runtime_Z.jsonl": "3d6d6d2e566fdb115507e564f845f847b427b1afd8588e07f51da87569255b46",
+          "T3_fixed_budget_3600/mismatched_tokens_Z.jsonl": "60b0db5b9186f24f91fbfd1cbfae21908a7421d3b8f6f504ecdfdf317caa6532",
+          "T3_fixed_budget_3600/recognition_Z.jsonl": "d342e08a4ef4e6f1a6a15cd0966a49bab726cb72d847c6a3a4d0f267f10ba76d",
+          "T3_fixed_budget_3600/recognition_runtime_Z.jsonl": "38398fef74a14d54305ea338e0a0abed14c02cb53de78ae9b30e9bf10506bf0a",
+          "T3_fixed_budget_3600/runtime_Z.jsonl": "14757eeaf33cc2a802fc5df7d2965ac4f2726bee7bfe5c13232ba86542535953",
+          "T3_fixed_budget_3600/tokens_Z.jsonl": "c24d5dd30633ad73d2d3827d9c1c12499c44b150fbf671e59f231c69f2d918c1"
+        },
+        "sha256": "9e787335249eb09b99b78aa4df526a8ba57a2a57cc54b04c44ad30f4c731e53c"
+      }
     },
-    "fixed_budget_3600": {
-      "B_cli_output_sha256": "9ae6c2f28a32c81484528b320dbd8a91dd5e6201b1a64e9e90ec2b4e398c9012",
-      "B_recompute_equals_private_metrics": true,
-      "arms": {
-        "C0": "VERIFIED",
-        "T1": "VERIFIED",
-        "T2": "VERIFIED",
-        "T3": "VERIFIED"
-      },
-      "auditor_output_sha256": "5d0c4a82c2f3457fb992570f78f851393230a9898dc292466a57e3cc690b90ec",
-      "independent_auditor_status": "INDEPENDENT_RECOMPUTATION_AGREES",
-      "scope": "global/speaker/phone AP; CAL thresholds; deployed TP/FP; omission FN; global/speaker greedy PER; runtime freeze and gold-field audit"
+    "total_files": 64
+  },
+  "private_root": "/home/khoa/.cache/langfens/trn04r/genuine-z-v2-shared-20261104T084300Z",
+  "source_commit": "c60a84fb044f049dc30f61046f819ff0ac36dc72",
+  "status": "V2_RECOMPUTED_AND_INDEPENDENTLY_AUDITED; FIXED_BUDGET_GATES_FAIL; PRIVATE_STORE_READBACK_PENDING; NO_OVERALL_PASS",
+  "v1_provisional_history": {
+    "superseded_by": "v2_shared_cache; see final endpoints and v1_v2_comparison.",
+    "v1_audits_sha256": {
+      "best": "663cd3b948c5269c62b60d972e233d9bd8b77b33873cf5aa8c242fa549b1544a",
+      "fixed_budget_3600": "5d0c4a82c2f3457fb992570f78f851393230a9898dc292466a57e3cc690b90ec"
+    },
+    "v1_crossarmcache_note": {
+      "cause": "unknown; do not infer cause from these hash observations.",
+      "feature_hash_discrepancy": "fp32_feature_sha differs on 464/600 T2 records versus C0; T1/T3 match C0 exactly.",
+      "final_factorial_acceptance": "v1 acceptance was withheld pending v2; v2 has since been supplied, recomputed and audited.",
+      "interpretation": "Per-arm v1 metric reproduction is independently audited; v1 cross-arm factorial contrasts/gates are provisional and are not final immutable decisions.",
+      "other_hashes": "waveform and 4D-cache hashes all match across arms.",
+      "preserve_raw_versions": true,
+      "source": "Coordinator-provided follow-up; Workstream B did not independently re-check this cache-hash comparison.",
+      "v2_requirement": "Coordinator-supplied v2 shared encoder cache, one process producing all 8 heads, same frozen c60 source, no code edits.",
+      "v2_root_status": "supplied and consumed by Workstream B; v1 remains a preserved historical raw version.",
+      "version": "v1"
+    },
+    "v1_metrics_sha256": {
+      "best": "5d3871683028a19efe66eea3e564d60170edf46cb19c4317fa296ca14317acce",
+      "fixed_budget_3600": "9ae6c2f28a32c81484528b320dbd8a91dd5e6201b1a64e9e90ec2b4e398c9012"
     }
+  },
+  "v1_v2_comparison": {
+    "CAL15_operational_counts_and_rates_unchanged_excluding_threshold": true,
+    "coordinator_reported_v1_t2_fp32_feature_sha_mismatches": 464,
+    "fixed_budget_gate_status_unchanged": true,
+    "max_absolute_global_AP_delta": 1.1630032492992992e-05,
+    "max_delta": {
+      "arm": "T3",
+      "endpoint": "fixed_budget_3600",
+      "score": "substitution_legacy",
+      "v1": 0.31159843681069727,
+      "v2": 0.31161006684319026,
+      "v2_minus_v1": 1.1630032492992992e-05
+    },
+    "v1_feature_difference_cause": "unresolved",
+    "v1_outputs_preserved": true,
+    "v1_private_root": "/home/khoa/.cache/langfens/trn04r/genuine-z-v1-20261104T083210Z",
+    "version_difference_ledger_sha256": "ea7a774001442899a861ed2ff9d8d77964211e387e1a5181093d419ec2d54b19"
+  },
+  "v2_execution": {
+    "B_cli_source_sha256": "507f872e922877a82b685455481ef224a2f02efc6352d31b2318af0bcbb731a7",
+    "B_metrics_source_sha256": "717a45d072f477b0dd1811cc0b6ea9f846dea4b9991c8a7cfcd432e7c78994bb",
+    "all_eight_endpoints_one_process": true,
+    "backward_passes": 0,
+    "coordinator_status": "INFERENCE_RECORDS_FROZEN",
+    "device": "cpu",
+    "elapsed_seconds": 155.63740944862366,
+    "exit_code": 0,
+    "feature_cache_identity_sha256": "a9744f39fc4ae36ab3c688cf6eaa1c1ab37b2dde730a1e6c5207fa718084bc56",
+    "feature_cache_sha256": "a9744f39fc4ae36ab3c688cf6eaa1c1ab37b2dde730a1e6c5207fa718084bc56",
+    "git_dirty": false,
+    "git_tip": "c60a84fb044f049dc30f61046f819ff0ac36dc72",
+    "layout_only_auditor_source_sha256": "817b7a073a97dcebbc1e1f8ed6b303b7a6b2d844156e56c24fbcb4c233a2e894",
+    "optimizer_updates": 0,
+    "run_manifest_sha256": "a1872589948a4d587414168400f066da03152167e7e04bb884b1846b6894ff50",
+    "shared_cache_utterances": 600,
+    "source_hashes_verified_unchanged": true,
+    "source_snapshot_sha256": "7fdf1233f284a6a10ec5891d30ae48393a49367b1ccf1c780063b41d331619c8",
+    "threads": 4
   }
 }
