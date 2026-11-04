@@ -33,7 +33,7 @@ sys.path.insert(0, str(repo_root))
 import torch
 from langfens_prep.trn04.trainer import train_factorial_arm, ARM_CONFIGS
 from langfens_prep.p_sup.trainer import RemoteCheckpointMirror
-from audit_scripts.kaggle_checkpoint_sync import resolve_auth_token
+from audit_scripts.kaggle_checkpoint_sync import resolve_hf_token
 
 
 def main():
@@ -122,7 +122,7 @@ def main():
     # Remote mirroring setup
     remote_mirror = None
     mirror_prefix = f"trn04/{arm.lower()}"
-    auth_token = resolve_auth_token()
+    auth_token = resolve_hf_token()
 
     if args.remote_mirror_backend and auth_token:
         try:
