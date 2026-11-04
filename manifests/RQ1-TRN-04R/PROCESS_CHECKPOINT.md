@@ -1,5 +1,11 @@
 # LANGFENS-RQ1-TRN-04R — corrective campaign checkpoint
 
+## User-authorized review-branch push receipt
+
+After delivery, the user explicitly requested `push`. The clean review branch at `c6d8eb24cfaabae8d51b6a4633fb4717a1d04256` was pushed with `git push --set-upstream origin HEAD:refs/heads/review/rq1-trn-04r-genuine-z-rebenchmark`. Exit status was 0, and `git ls-remote --heads origin review/rq1-trn-04r-genuine-z-rebenchmark` independently returned that exact commit. Only source, tests and lightweight audit documents were included; raw predictions, datasets, model weights and credentials remain outside Git. No force-push, merge, PR creation, training, TEST access or model deployment occurred.
+
+This additive receipt supersedes earlier no-push statements only for the explicitly authorized review-branch push. Scientific results and limitations are unchanged. The receipt/index documentation commit is a separate fast-forward follow-up. If that follow-up push is interrupted, verify remote HEAD and push only this branch normally; never force-push.
+
 ## Current state: CORRECTED_REBENCHMARK_AND_DECISION_PACKAGE_DELIVERED_WITH_ACCOUNTED_LIMITATIONS
 
 Corrected inference and two independent metric implementations completed for all eight endpoints. Four initial parallel arm runs are preserved; their T2 cross-process encoder-hash parity gate failed. Final shared-cache V2 resolved identical input tensors by construction, without changing frozen inference source `c60a84fb044f049dc30f61046f819ff0ac36dc72`. Fixed-budget Level A/B gates fail for every arm; original conclusions are partially supported, with important overturned claims. All four workstreams, final B/D independent recomputation reports, scientific synthesis and durable evidence are integrated. No blanket scientific PASS: model acceptance gates fail and provenance/generalization limitations remain explicit.
