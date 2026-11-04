@@ -730,6 +730,7 @@
     "interpretation": "Per-arm v1 metric reproduction is independently audited; v1 cross-arm factorial contrasts/gates are provisional and are not final immutable decisions.",
     "other_hashes": "waveform and 4D-cache hashes all match across arms.",
     "preserve_raw_versions": true,
+    "source": "Coordinator-provided follow-up; Workstream B did not independently re-check this cache-hash comparison.",
     "v2_requirement": "Coordinator-supplied v2 shared encoder cache, one process producing all 8 heads, same frozen c60 source, no code edits.",
     "v2_root_status": "not supplied to Workstream B yet; no v2 processing performed.",
     "version": "v1"
