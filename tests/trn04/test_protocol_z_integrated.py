@@ -140,6 +140,51 @@ def test_metrics_production_ap_and_dynamic_false_negative_accounting():
     assert summary["coverage"]["gold_positions"] == 2
 
 
+def test_focal_dedicated_omission_uses_s_omit_for_cal_and_deployment_without_fallback():
+    _, metrics, _ = _api()
+    val_tokens, val_runtime = [], []
+    for i in range(21):
+        operation = 2 if i == 0 else 0
+        speaker, utterance = "NJS", f"v{i}"
+        score = {"s_error": .01 if i == 0 else .99,
+                 "s_omit": .8 if i == 0 else .2,
+                 "s_sub": .01}
+        val_tokens.append({"speaker_id": speaker, "utterance_id": utterance,
+                           "gold_canonical_index": 0, "operation_target": operation,
+                           "binary_target": int(operation != 0), "prompt_index": 0,
+                           "canonical_phone": "D", **score})
+        val_runtime.append({"speaker_id": speaker, "utterance_id": utterance,
+                            "prompt_index": 0, "scores": score})
+    cal_tokens, cal_runtime = [], []
+    for i in range(20):
+        speaker, utterance = "NCC", f"c{i}"
+        score = {"s_error": .99, "s_omit": .8 if i == 0 else .1, "s_sub": .01}
+        cal_tokens.append({"speaker_id": speaker, "utterance_id": utterance,
+                           "gold_canonical_index": 0, "operation_target": 0,
+                           "binary_target": 0, "prompt_index": 0,
+                           "canonical_phone": "D", **score})
+        cal_runtime.append({"speaker_id": speaker, "utterance_id": utterance,
+                            "prompt_index": 0, "scores": score})
+    result = metrics.summarize_cell(val_runtime, val_tokens, cal_tokens, [],
+                                    objective="class_focal", cell_id="focal-score-family",
+                                    cal_runtime=cal_runtime)
+    dedicated = result["metrics"]["omission_dedicated"]
+    point = dedicated["cal_operating_points"]["0.05"]
+    assert dedicated["score"] == "s_omit"
+    assert .1 < point["threshold"] < .8
+    assert point["counts"]["TP"] == 1
+    assert point["counts"]["FN"] == 0
+    assert point["counts"]["FP_correct"] == 20
+    # If no dedicated score exists, focal metrics must reject rather than fall back to s_error.
+    broken = [dict(row, s_omit=None) for row in val_tokens]
+    broken_cal = [dict(row, s_omit=None) for row in cal_tokens]
+    broken_runtime = [dict(row, scores={**row["scores"], "s_omit": None}) for row in val_runtime]
+    broken_cal_runtime = [dict(row, scores={**row["scores"], "s_omit": None}) for row in cal_runtime]
+    with pytest.raises(ValueError):
+        metrics.summarize_cell(broken_runtime, broken, broken_cal, [], objective="class_focal",
+                               cell_id="must-not-fallback", cal_runtime=broken_cal_runtime)
+
+
 def test_production_cal_threshold_uses_cal_correct_scores_and_ceiling():
     _, metrics, _ = _api()
     cut = metrics.calibration_threshold([0.1, 0.2, 0.3, 0.4], 0.25)
