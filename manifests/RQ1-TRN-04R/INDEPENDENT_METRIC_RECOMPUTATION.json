@@ -191,6 +191,7 @@
           "matched_minus_mismatched_binary_AP": 0.02144175485152383
         }
       },
+      "data_version": "v1",
       "factorial_contrasts": {
         "PER": {
           "direction": "lower_is_better",
@@ -337,8 +338,10 @@
           }
         }
       },
+      "final_decision_eligible": false,
       "gates_applicable": false,
-      "private_metrics_path": "/home/khoa/.cache/langfens/trn04r/genuine-z-v1-20261104T083210Z/metrics/best.json"
+      "private_metrics_path": "/home/khoa/.cache/langfens/trn04r/genuine-z-v1-20261104T083210Z/metrics/best.json",
+      "provisional_note": "Metric reproduction is audited within v1; cross-arm contrasts and gates are provisional until coordinator v2."
     },
     "fixed_budget_3600": {
       "arms": {
@@ -531,6 +534,7 @@
           "matched_minus_mismatched_binary_AP": 0.01812818255476667
         }
       },
+      "data_version": "v1",
       "factorial_contrasts": {
         "PER": {
           "direction": "lower_is_better",
@@ -677,12 +681,15 @@
           }
         }
       },
+      "final_decision_eligible": false,
       "gates_applicable": true,
-      "private_metrics_path": "/home/khoa/.cache/langfens/trn04r/genuine-z-v1-20261104T083210Z/metrics/fixed_budget_3600.json"
+      "private_metrics_path": "/home/khoa/.cache/langfens/trn04r/genuine-z-v1-20261104T083210Z/metrics/fixed_budget_3600.json",
+      "provisional_note": "Metric reproduction is audited within v1; cross-arm contrasts and gates are provisional until coordinator v2."
     }
   },
   "execution": "Model-free recomputation only; no new inference/model execution by Workstream B.",
-  "historical_score_family_correction": "Prior evaluator calibrated from s_omit but, for class_focal rows where serializer left s_omit null, fell back to s_error on VAL (old evaluator.py CAL lines 164-171; scoring fallback line 415; prior p_sup/runtime.py only populated subtype scores for operation_ce). This explains the historical T1/T3 all-token alarm result as a cross-family threshold/score mismatch, not a valid s_omit operating-point result. Corrected three-way measurements still fail registered omission gates; do not infer all focal/acoustic methods are invalid.",
+  "final_factorial_acceptance": "withheld pending coordinator v2 shared-encoder-cache run",
+  "historical_score_family_correction": "Prior evaluator calibrated from s_omit but, for class_focal rows where serializer left s_omit null, fell back to s_error on VAL (old evaluator.py CAL lines 164-171; scoring fallback line 415; prior p_sup/runtime.py only populated subtype scores for operation_ce). This explains the historical T1/T3 all-token alarm result as a cross-family threshold/score mismatch, not a valid s_omit operating-point result. The provisional v1 three-way operating values fail registered omission criteria, but v1 cross-arm gate interpretation is not final pending the cache-equivalent v2 run; do not infer all focal/acoustic methods are invalid.",
   "input_validation": {
     "aligned_labels": [
       8774,
@@ -710,11 +717,23 @@
     ],
     "contract_sha256": "4d99723e4b3f62f506165ced089eca82d4417279c76973b35470bd337cedfab2",
     "device": "CPU FP32",
-    "threads_per_arm": 2
+    "threads_per_arm": 2,
+    "version": "v1"
   },
   "private_root": "/home/khoa/.cache/langfens/trn04r/genuine-z-v1-20261104T083210Z",
   "source_commit": "c60a84fb044f049dc30f61046f819ff0ac36dc72",
-  "status": "INDEPENDENT_RECOMPUTATION_MATCHES; STORAGE_READBACK_PENDING; NO_OVERALL_PASS",
+  "status": "V1_RECOMPUTED_AND_AUDITED_BUT_PROVISIONAL; V2_REQUIRED_FOR_FINAL_FACTORIAL_ACCEPTANCE; NO_OVERALL_PASS",
+  "v1_crossarmcache_review": {
+    "cause": "unknown; do not infer cause from these hash observations.",
+    "feature_hash_discrepancy": "fp32_feature_sha differs on 464/600 T2 records versus C0; T1/T3 match C0 exactly.",
+    "final_factorial_acceptance": "withheld pending v2",
+    "interpretation": "Per-arm v1 metric reproduction is independently audited; v1 cross-arm factorial contrasts/gates are provisional and are not final immutable decisions.",
+    "other_hashes": "waveform and 4D-cache hashes all match across arms.",
+    "preserve_raw_versions": true,
+    "v2_requirement": "Coordinator-supplied v2 shared encoder cache, one process producing all 8 heads, same frozen c60 source, no code edits.",
+    "v2_root_status": "not supplied to Workstream B yet; no v2 processing performed.",
+    "version": "v1"
+  },
   "verification": {
     "best": {
       "B_cli_output_sha256": "5d3871683028a19efe66eea3e564d60170edf46cb19c4317fa296ca14317acce",

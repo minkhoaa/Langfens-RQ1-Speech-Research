@@ -1,10 +1,12 @@
-# Corrected RQ1-TRN-04R factorial comparison — independently recomputed
+# RQ1-TRN-04R factorial comparison — v1 provisional; v2 required
 
-**State: BOTH ENDPOINTS RECOMPUTED AND INDEPENDENTLY AUDITED; FIXED-BUDGET GATES FAIL; PRIVATE-STORE READBACK PENDING. No overall PASS.** This is a model-free result update. It does not train or infer, and does not edit old files. Full endpoint JSON stays private at `/home/khoa/.cache/langfens/trn04r/genuine-z-v1-20261104T083210Z/metrics/`.
+> **Current status: V1 endpoints were recomputed and independently audited, but v1 is not a final immutable factorial decision.** The coordinator withholds exact factorial acceptance pending a new v2 shared-encoder-cache run: one process, all eight heads, same frozen c60 source, no code edits. V1 showed `fp32_feature_sha` differs from C0 on 464/600 T2 records; T1/T3 match C0 exactly, and waveform/4D-cache hashes all match. Cause is unknown. Preserve both raw versions. Keep the tables below only as v1 descriptive/provisional results; final report must consume v2, and may compare v1 deltas without presenting v1 as final acceptance. No v2 root was supplied here, so no v2 processing was attempted.
+
+This is a model-free result update; Workstream B did not train or infer. V1 endpoint JSON remains in private storage at `/home/khoa/.cache/langfens/trn04r/genuine-z-v1-20261104T083210Z/metrics/`.
 
 ## Provenance and independent verification
 
-The frozen run records identify source commit `c60a84fb044f049dc30f61046f819ff0ac36dc72`, four completed arm processes (C0/T1/T2/T3, return code 0, two threads per arm), CPU FP32, and no optimizer/backward operations. Workstream B independently ran `recompute_trn04r_metrics.py` for `fixed_budget_3600` and `best` against the immutable rows using its permitted `arms/<CELL>/<CELL>_<endpoint>` layout. Both B recomputations were byte-for-byte equal to the existing private metrics JSON. The parent’s read-only standard-library auditor independently returned `INDEPENDENT_RECOMPUTATION_AGREES` for both endpoints, verifying global/speaker/phone AP, CAL thresholds, deployed counts, omission FN, PER, row coverage and runtime freeze hashes. Every cell had 9,956 gold rows = 9,919 mapped + 37 unmapped and 37 separate prompt extras; reference CTC count was 9,881. It checked numerical agreement at 1e-12. This validates metric reproduction, not durable-store readback; the coordinator still has that readback pending.
+The frozen v1 run records identify source commit `c60a84fb044f049dc30f61046f819ff0ac36dc72`, four completed arm processes, CPU FP32, and no optimizer/backward operations. Workstream B independently recomputed `fixed_budget_3600` and `best` from v1 rows; both reports byte-match the stored v1 metrics JSON. The read-only standard-library auditor returned `INDEPENDENT_RECOMPUTATION_AGREES` for both v1 endpoints, validating within-version metric reproduction, row coverage and runtime freeze. This does not validate cross-arm cache equivalence: the v1 feature-hash difference above means its factorial results and gate outcomes are provisional only. V1 coverage was 9,956 gold = 9,919 mapped + 37 unmapped, plus 37 separate prompt extras; reference CTC count 9,881. The coordinator's separate durable-store readback remains pending.
 
 ## Historical alarm-score correction
 
@@ -47,7 +49,7 @@ Cells below are `TP / FP / precision / all-gold recall / FA per 1,000`.
 
 ### Fixed-budget absolute registration gates (separate from factorial contrasts)
 
-All four cells fail both levels. C0/T2 pass recall, binary AP, substitution AP and PER; both fail precision and FA. T1 fails precision, recall, FA and binary AP; it passes legacy substitution AP and PER. T3 fails precision, recall and FA; it passes the binary AP threshold narrowly, legacy substitution AP and PER. The Level B acoustic-gap criterion passes in each cell, but cannot offset failures in other required criteria.
+On the v1 rows, all four cells' computed values fail both levels. C0/T2 pass recall, binary AP, substitution AP and PER; both fail precision and FA. T1 fails precision, recall, FA and binary AP; it passes legacy substitution AP and PER. T3 fails precision, recall and FA; it passes the binary AP threshold narrowly, legacy substitution AP and PER. The Level B acoustic-gap criterion passes in each cell, but cannot offset failures in other required criteria. **These are v1 calculations, not final accepted factorial/gate decisions; recompute and report from v2 before final acceptance.**
 
 | Level | Frozen requirements | C0 | T1 | T2 | T3 |
 |---|---|---|---|---|---|
@@ -56,7 +58,7 @@ All four cells fail both levels. C0/T2 pass recall, binary AP, substitution AP a
 
 ## SELECT-best endpoint
 
-This is a separately reported checkpoint stratum; fixed-budget registered gates are **not applicable**. AP and CAL-15 `s_omit` results:
+The values below are the **provisional v1** separately reported checkpoint stratum; fixed-budget registered gates are **not applicable**. They are not a substitute for the coordinator-required v2 comparison. AP and CAL-15 `s_omit` results:
 
 | Arm | Binary AP | Omission legacy AP | Omission dedicated AP | Substitution legacy AP | Substitution dedicated AP | PER | CAL-15 P / all-gold R / FA per 1,000 |
 |---|---:|---:|---:|---:|---:|---:|---:|
@@ -85,4 +87,4 @@ Each row reports `T1−C0 / T2−C0 / T3−C0 / (T3−T2−T1+C0)`. Higher is be
 
 ## Interpretation boundary
 
-All fixed-budget arms fail the registered joint gates, despite several individual binary/substitution/PER criteria passing. The score-family correction invalidates the earlier 985.4/1k focal-arm alarm claim as an `s_omit` deployment estimate; the corrected focal-arm outputs still show low omission precision/recall and low dedicated omission AP under this particular registered run. This single seed and two repeatedly used VAL speakers support descriptive results only—not population-level superiority, deployment approval, or a conclusion that focal loss/acoustic approaches generally fail. The full private rows/results were not copied into Git. Parent storage readback remains pending; therefore no overall campaign PASS is asserted.
+The v1 score-family correction invalidates the earlier 985.4/1k focal-arm alarm claim as an `s_omit` deployment estimate; v1 corrected focal-arm values still show low omission precision/recall and low dedicated omission AP. However, the discovered T2 feature-cache mismatch means the v1 between-arm contrasts and gate interpretation are provisional, not final immutable decisions. Do not infer its cause. The single seed and two repeatedly used VAL speakers support descriptive results only—not population-level superiority, deployment approval, or a conclusion that focal loss/acoustic approaches generally fail. Full private rows/results were not copied into Git; preserve both raw versions. Final factorial acceptance and overall PASS remain withheld pending v2 and parent private-store readback.

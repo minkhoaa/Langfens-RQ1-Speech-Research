@@ -1,6 +1,6 @@
 # Workstream B — independent metric accounting checkpoint
 
-**State: BOTH ENDPOINTS INDEPENDENTLY RECOMPUTED AND AUDITED; PARENT PRIVATE-STORE READBACK PENDING; NO OVERALL PASS.** Campaign LANGFENS-RQ1-TRN-04R; branch `review/trn04r-b`; base `d332997e732315292d673a3bd42a03698182f5f6`. This verification did no inference, model loading/mutation, training, backward pass, optimizer update, audio/TextGrid/gold-source read, TEST access, tuning, or publication/privacy change.
+**Current state: V1 endpoints recomputed/audited but PROVISIONAL; final factorial acceptance requires coordinator v2 shared-encoder-cache run; parent private-store readback pending; no overall PASS.** Campaign LANGFENS-RQ1-TRN-04R; branch `review/trn04r-b`; base `d332997e732315292d673a3bd42a03698182f5f6`. Workstream B performs no inference, model loading/mutation, training, backward pass, optimizer update, audio/TextGrid/gold-source read, TEST access, tuning, or publication/privacy change.
 
 ## Inputs and scope verified
 
@@ -19,6 +19,12 @@ Verified parent source checkout at `c60a84fb044f049dc30f61046f819ff0ac36dc72` re
 
 Private B CLI outputs are byte-identical to the coordinator's `metrics/{fixed_budget_3600,best}.json`; independent auditor results and output hashes are recorded in `INDEPENDENT_METRIC_RECOMPUTATION.json`. Fixed-budget Level A and Level B gates fail in all four arms; best-endpoint gates are not applicable. Corrected dedicated omission AP and CAL-15 operating values and contrasts are recorded in `CORRECTED_FACTORIAL_COMPARISON.md`. Historical T1/T3 all-token alarm behavior is traced to old CAL-`s_omit` versus VAL fallback-`s_error` score-family mismatch, not treated as valid `s_omit` evidence. Parent's private-store readback remains pending, so there is no overall PASS. No original/raw/private files were changed. The parent owns the global checkpoint index and final synthesis.
 
-## State and boundaries
+## State and boundaries at initial implementation checkpoint
 
-Implemented metric logic and synthetic validation only. Real-data recomputation, final contrasts, registered-gate evaluation, external-reference comparison and noninferiority assessment are **pending**, not executed. No source predictions, checkpoints, archives or datasets were copied/changed. Preserve originals and keep prediction/result rows in approved private storage.
+The following initial-checkpoint statements are historical and superseded by the follow-up amendment below. No source predictions, checkpoints, archives or datasets were copied/changed. Preserve originals and keep prediction/result rows in approved private storage.
+
+## Follow-up amendment — v1 cross-arm cache review
+
+The v1 fixed-budget and best reports were recomputed model-free by Workstream B and byte-matched the stored v1 metrics; the independent auditor returned `INDEPENDENT_RECOMPUTATION_AGREES` on both. This proves metric reproducibility within the v1 artifacts, not valid cross-arm comparison. Coordinator review found `fp32_feature_sha` differs between T2 and C0 on 464/600 rows; T1/T3 match C0 exactly, and waveform/4D-cache hashes all match. Cause is unknown. Preserve both raw versions; do not overwrite or relabel v1 as the final immutable result. V1 factorial contrasts and gate values remain provisional.
+
+Coordinator withholds exact factorial acceptance pending a new v2 shared-encoder-cache execution: one process, all eight heads, same frozen c60 source, no code edits. The v2 root has not been supplied to this worker; no v2 execution/recomputation was attempted. At restart, consume coordinator-supplied v2 immutably, verify its manifests and cache hashes, independently recompute the requested endpoints, and update final reports from v2. A v1/v2 delta may be reported as diagnostic only; do not speculate about mismatch cause. Parent private-store readback remains pending; therefore no final factorial acceptance or overall PASS.
