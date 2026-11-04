@@ -20,12 +20,16 @@ Actual result summary and scientific limits, including the T2 feature-identity i
 
 Feature receipts: C0/T1/T3 share encoder feature cache hash `49e5ff48fba344f251ce3ba91c136ee6ab063b7e6388886a0eeb1469fd125d3a`; T2 hash differs (`33ef54dd5539aeb4916566875cb066d9963a19192e852d9d1a5cb7d019cd5840`) and encoder feature hashes differ for 464/600 utterances. Waveform hashes, acoustic feature hashes, shapes and frame counts match; backbone source weights/fingerprint match. Cause is unknown; T2 cannot be treated as a strictly matched feature ablation, and no causal acoustic claim is allowed. FIT feature-statistics receipt, FIT-only prior, and original source-training provenance remain unverified/unavailable. HT/event-horizon estimators were not independently validated. G=2, one seed, no population significance.
 
-V1 outputs and independent recomputations remain preserved as genuine artifacts, but scientific acceptance is blocked. Parent plans a distinct V2 run on unchanged source `c60a84fb044f049dc30f61046f819ff0ac36dc72`, with one process sharing an immutable encoder feature cache across all eight heads. This is a pending matched-input parity audit, not a known explanation for V1 T2 or a result. Await the new V2 root and audit it before any final PASS; do not overwrite V1.
+V1 outputs and independent recomputations remain preserved as genuine artifacts, but scientific acceptance is blocked. V1 logs also show `masked_spec_embed | MISSING` for all separate model loads; its relationship to T2 feature differences is not established.
+
+V2 inference has completed on unchanged source `c60a84fb044f049dc30f61046f819ff0ac36dc72` using one process and a shared immutable encoder feature cache across all eight heads. Pre-metric audit verified source/output/runtime digests, before/after model fingerprints, no backward/optimizer work, freeze-before-gold, and all eight raw CAL/VAL cohorts. Shared cache receipt `a9744f39fc4ae36ab3c688cf6eaa1c1ab37b2dde730a1e6c5207fa718084bc56` has 600 IDs. V2 VAL each has 9,956 canonical rows; CAL each has the actual 9,977 (8,054 correct/1,462 sub/461 deletion), 9,958 aligned, 19 unmapped and 24 extras. V2 metric recomputation and independent saved-row audit remain pending; no V2 metric result or scientific PASS is claimed.
+
+Audit probe correction, preserved: an initial scratch checker incorrectly expected runtime line counts to equal 300 utterances and CAL gold positions to equal VAL's 9,956. Those assertions failed due checker assumptions, not a data/runtime failure. Corrected checks count distinct 300 utterance IDs and actual CAL 9,977 canonical positions; corrected V1 and V2 raw checks passed.
 
 ## Commands and scope
 
 - Parent safe test command: `cd /home/khoa/Projects/KLTN/Dataset && .venv/bin/python -m pytest -q tests/trn04/test_protocol_z_integrated.py tests/trn04/test_protocol_z_regression.py tests/trn04r` — **38 passed**.
-- Read-only independent recomputation commands used the parent `.venv` and wrote only `/tmp` audit JSON.
+- Read-only independent recomputation commands used the parent `.venv` and wrote only `/tmp` audit JSON. V2 pre-metric raw/source check: `/home/khoa/Projects/KLTN/Dataset/.venv/bin/python /tmp/d_v2_pre_metric_audit.py` — passed for all eight configs; deliberately did not inspect or recompute V2 metrics while parent recomputation was pending.
 - No D inference, training, backward, optimizer update, model mutation, privacy/publication change or TEST payload access. Only authorized frozen CAL/VAL outputs were audited.
 
 Parent checkout was observed with an unstaged edit to `audit_scripts/audit_trn04r_saved_rows.py` after the tests/audits (path compatibility change); D did not edit it. No benchmark PASS is claimed; parent owns synthesis and private persistence.
