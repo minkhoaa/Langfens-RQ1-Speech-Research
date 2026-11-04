@@ -1,6 +1,6 @@
 # Workstream B — independent metric accounting checkpoint
 
-**Current state: V2 shared-cache metrics recomputed and independently audited; fixed-budget gates fail all arms; parent private-store readback/review pending; no overall PASS.** Campaign LANGFENS-RQ1-TRN-04R; branch `review/trn04r-b`; base `d332997e732315292d673a3bd42a03698182f5f6`. Workstream B performed no inference, model loading/mutation, training, backward pass, optimizer update, audio/TextGrid/gold-source read, TEST access, tuning, or publication/privacy change.
+**Current state: V2 shared-cache metrics recomputed and independently audited; V1/V2 private SHA-256 readback verified; fixed-budget gates fail all arms; coordinator synthesis ready; no overall research PASS.** Campaign LANGFENS-RQ1-TRN-04R; branch `review/trn04r-b`; base `d332997e732315292d673a3bd42a03698182f5f6`. Workstream B performed no inference, model loading/mutation, training, backward pass, optimizer update, audio/TextGrid/gold-source read, TEST access, tuning, or publication/privacy change.
 
 ## Inputs and scope verified
 
@@ -37,8 +37,10 @@ B independently ran its c60-identical metric CLI on the flat v2 prediction root 
 
 V2 has 64 per-file metric input hashes (32/endpoint); canonical aggregate input-manifest SHA-256 `6f6903b05e8ce667045e4734000ab67980d4acdc0bd3125e457fee630f038567`. V2 metrics hashes: fixed `ac9c1d476f5cce124d630570fd569effef161623255b4aeb7f05e45576c4c2e9`, best `f41e763a6c5c02ef8dbb42bbc560d02bcb6d6c7ab5cb11c4bfc686058c778c34`. Independent audit hashes: fixed `04b237db0f8112007dad33efe0497cf75e8032862bc9f0bf3ac7d779782f2d75`, best `0fb23935cae75733be1ea9ae08c7e710bd503338376bd62b99d8ddd7e803a8f5`.
 
-Compared to preserved v1: all CAL-15 omission operational counts/rates and fixed-budget gate statuses are unchanged (thresholds can move); maximum absolute AP delta is `0.000011630032492992992`, fixed T3 legacy substitution AP. V2 gates fail Level A/B in all four arms; best endpoint gates remain not applicable. V1 feature-hash discrepancy cause remains unknown. Final reports now use v2 full-precision values, not v1 AP values. V1 and v2 raw versions are preserved. No v2 source root in the parent repository was modified by B; parent private-store readback/review remains pending, so no overall PASS is claimed.
+Compared to preserved v1: all CAL-15 omission operational counts/rates and fixed-budget gate statuses are unchanged (thresholds can move); maximum absolute AP delta is `0.000011630032492992992`, fixed T3 legacy substitution AP. V2 gates fail Level A/B in all four arms; best endpoint gates remain not applicable. V1 feature-hash discrepancy cause remains unknown. Final reports now use v2 full-precision values, not v1 AP values. V1 and v2 raw versions are preserved. No v2 source root in the parent repository was modified by B. Parent durable readback is verified; gate failures still preclude an overall research PASS.
 
 Post-v2 report validation: `/home/khoa/Projects/KLTN/Dataset/.venv/bin/python -m pytest -q tests/trn04r/test_metrics_accounting.py` passed (16 tests); JSON parse and `git diff --check` passed. This was docs/report verification only; no new model/inference execution by B.
 
-Safe next step: coordinator performs the pending private-store readback and required review; preserve both evidence roots and retain v2 as the final matched-cache metric input.
+Coordinator confirms V2 private SHA-256 readback for all 78 files at revision `c1880ea3cbe292df55c2ed2d1ea09bc67910f97b`, prefix `benchmarks/trn04r/genuine-z-v2-shared-20261104T084300Z`; V1 separately verified for 92 files at revision `57f014b44b0358fadbe62bd6097bbc7e9b30dbe2`. D's final independent V2 audit commit `95a86b0` is integrated. Coordinator synthesis is ready; B's bounded final report/commit is the next action, with no further experiments.
+
+B report commit chain before this durability closeout, oldest to newest: `9e55489` -> `d85f90c` -> `dd18201` -> `7d4b9fc` -> `a10f71f` -> `d3afdf1` -> `f7f729f` -> `23d2970`. Preserve this history and append the current closeout commit. Preserve both raw roots; v2 remains the final matched-cache metric input.

@@ -1,6 +1,6 @@
 # Final TRN-04R factorial metric report — v2 shared cache
 
-**Final metric version: v2 shared encoder cache.** Workstream B recomputed both endpoints from v2 at `/home/khoa/.cache/langfens/trn04r/genuine-z-v2-shared-20261104T084300Z/predictions/`. Both full-precision B reports are byte-identical to private `metrics/*.json`; the independent standard-library auditor agrees with both reports and stored `audits/*.json`. Fixed-budget Level A/B calculations fail in all four arms. Private-store readback/review remains pending, so no overall PASS is claimed.
+**Final metric version: v2 shared encoder cache.** Workstream B recomputed both endpoints from v2 at `/home/khoa/.cache/langfens/trn04r/genuine-z-v2-shared-20261104T084300Z/predictions/`. Both full-precision B reports are byte-identical to private `metrics/*.json`; the independent standard-library auditor agrees with both reports and stored `audits/*.json`. Coordinator verified SHA-256 readback for both preserved private versions. Fixed-budget Level A/B calculations fail in all four arms; therefore no overall research PASS is claimed.
 
 ## Provenance, source integrity and v2 input hashes
 
@@ -18,6 +18,10 @@ B output/audit agreement:
 | best | `f41e763a6c5c02ef8dbb42bbc560d02bcb6d6c7ab5cb11c4bfc686058c778c34` | `0fb23935cae75733be1ea9ae08c7e710bd503338376bd62b99d8ddd7e803a8f5` | `INDEPENDENT_RECOMPUTATION_AGREES`, all 4 arms verified |
 
 Each arm: 9,956 gold = 9,919 mapped + 37 unmapped; 37 separate prompt extras; 9,881 reference CTC phones. Auditor covers global/speaker/phone AP, CAL thresholds and deployed TP/FP, omission FN, global/speaker PER, runtime freeze and gold-field audit.
+
+## Durable private preservation and independent audit
+
+Coordinator verified final V2 private SHA-256 readback for all 78 files at revision `c1880ea3cbe292df55c2ed2d1ea09bc67910f97b`, prefix `benchmarks/trn04r/genuine-z-v2-shared-20261104T084300Z`. V1 was separately verified for all 92 files at revision `57f014b44b0358fadbe62bd6097bbc7e9b30dbe2`. The coordinator's final independent V2 audit (D commit `95a86b0`) is integrated. This confirms durable evidence identity; it does not turn the failed registered model gates into a PASS.
 
 ## v1 to v2 comparison
 
@@ -107,4 +111,4 @@ Each row is `T1−C0 / T2−C0 / T3−C0 / (T3−T2−T1+C0)`. Higher is better 
 
 The historical T1/T3 alarm explosion (985.436 false alarms/1,000; 9,811 false alarms) is not a valid `s_omit` operating result. The old evaluator calibrated from deletion probability but fell back to `s_error` on VAL where the class-focal serializer left `s_omit` null. V2's corrected T1/T3 CAL-15 FA rates are 60.666934511852148 and 51.727601446363998 per 1,000. The score-family explanation is independent of the v1 cache mismatch; the latter's cause remains unknown.
 
-The final v2 calculations show all arms fail the joint fixed-budget gates, although individual binary/substitution/PER criteria pass. Results are one seed and two VAL speakers; contrasts are descriptive, not inferential. They do not establish population superiority, deployment approval, or that focal-loss/acoustic methods generally fail. V2 raw outputs and v1 originals remain preserved in private storage. Parent private-store readback/review remains pending; therefore no overall campaign PASS is asserted.
+The final v2 calculations show all arms fail the joint fixed-budget gates, although individual binary/substitution/PER criteria pass. Results are one seed and two VAL speakers; contrasts are descriptive, not inferential. They do not establish population superiority, deployment approval, or that focal-loss/acoustic methods generally fail. V1 and v2 raw outputs remain preserved in their verified private revisions. Private-store readback is complete; registered fixed-budget gates still fail, so no overall campaign PASS is asserted.

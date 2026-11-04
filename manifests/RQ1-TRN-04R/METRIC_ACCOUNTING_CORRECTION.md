@@ -1,6 +1,6 @@
 # RQ1-TRN-04R independent metric-accounting correction
 
-**State: FINAL METRIC REPORT USES V2 SHARED CACHE; BOTH ENDPOINTS RECOMPUTED AND INDEPENDENTLY AUDITED.** Fixed-budget Level A/B calculations fail in all four arms. Parent private-store readback/review is pending, so no overall PASS is claimed. V1 raw outputs remain preserved as historical comparison only. Workstream B performed model-free accounting, no inference/training, and no parent/raw writes.
+**State: FINAL METRIC REPORT USES V2 SHARED CACHE; BOTH ENDPOINTS RECOMPUTED, INDEPENDENTLY AUDITED, AND PRIVATE SHA-256 READBACK VERIFIED.** Fixed-budget Level A/B calculations fail in all four arms, so no overall research PASS is claimed. V1 raw outputs remain preserved as historical comparison only. Workstream B performed model-free accounting, no inference/training, and no parent/raw writes.
 
 ## Frozen input exchange
 
@@ -28,4 +28,4 @@ V1 and v2 primary CAL-15 omission operating counts/rates are identical (CAL thre
 
 Historical score-family correction remains: the former T1/T3 985.436 FA/1,000 result applied VAL `s_error` fallback scores to CAL thresholds derived from `s_omit` when the old class-focal serializer left subtype scores null. It is not a valid dedicated-omission estimate. Final v2 T1/T3 CAL-15 FA/1,000 are 60.666934511852148 and 51.727601446363998. This correction and one-seed/two-speaker evidence do not establish broad superiority or general failure of focal/acoustic methods.
 
-No TEST data, new inference/training/backward/optimizer step, VAL tuning or source/prediction changes were made by B. Coordinator private-store durability/readback and required review remain pending; therefore no overall PASS is asserted. Full v2 outputs remain private; Git contains only full-precision summaries and hashes.
+Coordinator verified private V2 SHA-256 readback for 78 files at revision `c1880ea3cbe292df55c2ed2d1ea09bc67910f97b` / prefix `benchmarks/trn04r/genuine-z-v2-shared-20261104T084300Z`; preserved V1 readback is verified for 92 files at revision `57f014b44b0358fadbe62bd6097bbc7e9b30dbe2`. The coordinator's final independent V2 audit (D commit `95a86b0`) is integrated. No TEST data, new inference/training/backward/optimizer step, VAL tuning or source/prediction changes were made by B. Durable evidence integrity is verified, but registered gate failures preclude an overall PASS. Full v2 outputs remain private; Git contains only full-precision summaries and hashes.

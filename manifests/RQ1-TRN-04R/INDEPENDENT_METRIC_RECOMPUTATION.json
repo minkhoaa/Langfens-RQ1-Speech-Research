@@ -743,7 +743,7 @@
   },
   "execution_scope": "B independently recomputed metrics only; inference was coordinator-run.",
   "final_data_version": "v2_shared_cache",
-  "final_factorial_acceptance": "Use v2 full-precision metrics. Fixed-budget registered Level A/B calculations fail in all four arms, same as v1. Parent private-store readback/review remains pending; no overall campaign PASS asserted.",
+  "final_factorial_acceptance": "v2 is the final shared-cache metric input; all four fixed-budget arms fail registered Level A/B gates. Both raw versions have verified private SHA-256 readback. No overall research PASS.",
   "input_validation": {
     "aligned_labels": [
       8774,
@@ -760,6 +760,21 @@
     "prompt_extras": 37,
     "reference_ctc_phones": 9881,
     "unmapped_gold": 37
+  },
+  "private_durability": {
+    "D_audit_commit": "95a86b0",
+    "D_final_independent_v2_audit": "integrated",
+    "v1": {
+      "file_count": 92,
+      "revision": "57f014b44b0358fadbe62bd6097bbc7e9b30dbe2",
+      "status": "VERIFIED_PRIVATE_SHA256_READBACK"
+    },
+    "v2": {
+      "file_count": 78,
+      "prefix": "benchmarks/trn04r/genuine-z-v2-shared-20261104T084300Z",
+      "revision": "c1880ea3cbe292df55c2ed2d1ea09bc67910f97b",
+      "status": "VERIFIED_PRIVATE_SHA256_READBACK"
+    }
   },
   "private_input_sha256": {
     "aggregate_manifest_sha256": "6f6903b05e8ce667045e4734000ab67980d4acdc0bd3125e457fee630f038567",
@@ -845,7 +860,7 @@
   },
   "private_root": "/home/khoa/.cache/langfens/trn04r/genuine-z-v2-shared-20261104T084300Z",
   "source_commit": "c60a84fb044f049dc30f61046f819ff0ac36dc72",
-  "status": "V2_RECOMPUTED_AND_INDEPENDENTLY_AUDITED; FIXED_BUDGET_GATES_FAIL; PRIVATE_STORE_READBACK_PENDING; NO_OVERALL_PASS",
+  "status": "V2_RECOMPUTED; INDEPENDENT_AUDIT_AGREES; V1_AND_V2_PRIVATE_SHA256_READBACK_VERIFIED; FIXED_BUDGET_GATES_FAIL; NO_OVERALL_PASS",
   "v1_provisional_history": {
     "superseded_by": "v2_shared_cache; see final endpoints and v1_v2_comparison.",
     "v1_audits_sha256": {
