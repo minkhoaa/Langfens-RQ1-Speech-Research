@@ -1,0 +1,159 @@
+{
+  "experiment": "LANGFENS-RQ1-TRN-04",
+  "architecture": "CompactFactorialOperationHead",
+  "total_trainable_parameters": 267179,
+  "seed": 1337,
+  "arms": [
+    "C0",
+    "T1",
+    "T2",
+    "T3"
+  ],
+  "shared_tensor_hashes": {
+    "acoustic_projection.weight": {
+      "shape": [
+        128,
+        768
+      ],
+      "numel": 98304,
+      "trainable": true,
+      "sha256": "ccbd0eae2841e753360a27c95396426ed5cd486539712525fa1d634fa7654ef4"
+    },
+    "acoustic_projection.bias": {
+      "shape": [
+        128
+      ],
+      "numel": 128,
+      "trainable": true,
+      "sha256": "a0f3ab85e86c621813cdda2385994d2995d5155dd18b9a055c3df5da791fc5a2"
+    },
+    "acoustic_feature_projection.weight": {
+      "shape": [
+        128,
+        4
+      ],
+      "numel": 512,
+      "trainable": true,
+      "sha256": "05b3d0ef251847d0fb74c148a44fbcb46ae4e36b989ddcc07b808a054244a524"
+    },
+    "phone_embedding.weight": {
+      "shape": [
+        40,
+        128
+      ],
+      "numel": 5120,
+      "trainable": true,
+      "sha256": "8e75fb59e7256bd43901bd2ab1fa4ff6483972d492dcb71b9c4acf8acaa6c17c"
+    },
+    "position_embedding.weight": {
+      "shape": [
+        256,
+        128
+      ],
+      "numel": 32768,
+      "trainable": true,
+      "sha256": "905725f9d0a50a720f733a8649dcb82727fad9237630d02c2f8d15beaf8c55b9"
+    },
+    "attention.in_proj_weight": {
+      "shape": [
+        384,
+        128
+      ],
+      "numel": 49152,
+      "trainable": true,
+      "sha256": "c503c6c26f3032d750a39f2318e0b735ddb2743b560643b32bd5e6c1acdf4cd9"
+    },
+    "attention.in_proj_bias": {
+      "shape": [
+        384
+      ],
+      "numel": 384,
+      "trainable": true,
+      "sha256": "80422bc3d307b4a25bdafcc84ac7fb01cb55a09810e8b0f37bb12e0edb5c48ca"
+    },
+    "attention.out_proj.weight": {
+      "shape": [
+        128,
+        128
+      ],
+      "numel": 16384,
+      "trainable": true,
+      "sha256": "4543192d3776df4feb2afb0b9077a3d3d33ddda2f1bbc65cfa4e98aa721e0cb2"
+    },
+    "attention.out_proj.bias": {
+      "shape": [
+        128
+      ],
+      "numel": 128,
+      "trainable": true,
+      "sha256": "076a27c79e5ace2a3d47f9dd2e83e4ff6ea8872b3c2218f66c92b89b55f36560"
+    },
+    "acoustic_norm.weight": {
+      "shape": [
+        128
+      ],
+      "numel": 128,
+      "trainable": true,
+      "sha256": "02722f124d0f1736a9dd7c4ddcd05630dcf16ee1ce3454e9a876005ce005d4ac"
+    },
+    "acoustic_norm.bias": {
+      "shape": [
+        128
+      ],
+      "numel": 128,
+      "trainable": true,
+      "sha256": "076a27c79e5ace2a3d47f9dd2e83e4ff6ea8872b3c2218f66c92b89b55f36560"
+    },
+    "operation_head.0.weight": {
+      "shape": [
+        128,
+        256
+      ],
+      "numel": 32768,
+      "trainable": true,
+      "sha256": "b01d1167d40d4ee61f613930ad0630d1feffaff1ca1ef632a146f76c0cfd7bb0"
+    },
+    "operation_head.0.bias": {
+      "shape": [
+        128
+      ],
+      "numel": 128,
+      "trainable": true,
+      "sha256": "6dcc552d2955cbb3b08ec626468c05ff1c71ca97e05bfb290b8a06f095cbac99"
+    },
+    "operation_head.3.weight": {
+      "shape": [
+        3,
+        128
+      ],
+      "numel": 384,
+      "trainable": true,
+      "sha256": "b7a2aa6b09005d5ad95227023f53c24f3de06ffcc02b688366cd6762a5bfd348"
+    },
+    "operation_head.3.bias": {
+      "shape": [
+        3
+      ],
+      "numel": 3,
+      "trainable": true,
+      "sha256": "ede9f73d5d01d94c6bc90eb8a86b4b578dd7da44ec5d54a222bbd82fa292aa63"
+    },
+    "ctc_head.weight": {
+      "shape": [
+        40,
+        768
+      ],
+      "numel": 30720,
+      "trainable": true,
+      "sha256": "5126924d8744b73799428c17834cad3553f1e6832fcf12cfb313d2ae9bdc837b"
+    },
+    "ctc_head.bias": {
+      "shape": [
+        40
+      ],
+      "numel": 40,
+      "trainable": true,
+      "sha256": "331adda6622a9f62bc88c8987600bc4578b70f7480dac90b72474b8af5e18a2a"
+    }
+  }
+}
