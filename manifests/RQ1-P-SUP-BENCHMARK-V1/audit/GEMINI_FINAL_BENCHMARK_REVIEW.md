@@ -1,0 +1,65 @@
+## Review
+
+- Correct:
+  - **Inference Execution & Artifact Completeness:**
+    - Live inference completed successfully in scratch directory `/home/khoa/.cache/langfens/psup-benchmark-v1/recovered-final-v2-20261104` (295 MB, 110 files across four checkpoints, two protocols, three conditions, and independent recomputation records).
+    - `RUN_MANIFEST.json` (SHA-256 `051383f00132ba503681541858f15a5ed01d1803ebc027cc36410f6206627332`) indexes and verifies every single output file digest, pinning all 12 source files, hardware metadata, and dependency versions.
+    - Parameter state-dict fingerprints before and after inference match identically across the backbone encoder and all four heads (`audit_scripts/run_psup_recovered_benchmark_v1.py:347, 460`).
+  - **Dual Model-Free Independent Recomputation Parity:**
+    - Primary recomputation in `recovered-final-v2-20261104/recomputed/SUMMARY.json` and sibling recomputation in `/home/khoa/.cache/langfens/psup-benchmark-v1/recovered-final-v2-independent-recompute-20261104/SUMMARY.json` recomputed all metrics without audio loading or model forward passes.
+    - An entirely independent second auditor script (`audit_scripts/recompute_psup_benchmark_v1.py`, SHA-256 `f0ed571f08170072816f82afe929c92d3b5d2e9c263c5db22977d810aec1deb2`) audited all 8 cells (`manifests/RQ1-P-SUP-BENCHMARK-V1/FINAL_RUN_INDEPENDENT_RECOMPUTATION.json`). Every single cell reports `"validation_issues": []` with zero discrepancies.
+    - Metric agreement across recomputation engines is bit-identical to full floating-point precision:
+      - `t_op_fixed_budget_3600` (3,600 up): Protocol O Binary AP `0.324085197578646`, Dedicated Omission AP `0.10772370037575879`; Protocol Z Binary AP `0.31861875159159175`, Dedicated Omission AP `0.09856039010116739`.
+      - `b_control_fixed_budget_3600` (3,600 up): Protocol O Binary AP `0.3226003568684591`, Dedicated Omission AP `null`; Protocol Z Binary AP `0.3161944949535878`, Dedicated Omission AP `null`.
+      - `t_op_best` (2,700 up): Protocol O Binary AP `0.32170427777890714`, Dedicated Omission AP `0.09902649950580031`; Protocol Z Binary AP `0.31595506068683116`, Dedicated Omission AP `0.0868861618085822`.
+      - `b_control_best` (2,250 up): Protocol O Binary AP `0.32726972177324554`, Dedicated Omission AP `null`; Protocol Z Binary AP `0.3213588356177642`, Dedicated Omission AP `null`.
+  - **True Protocol Z Isolation & Freeze-Before-Gold Verification:**
+    - `audit_scripts/run_psup_recovered_benchmark_v1.py:283–285` constructs `CMUDictG2P(verify_checksum=True, oov_policy='strict')`, enforcing primary pronunciation only (`src/langfens_prep/g2p.py:89–95`).
+    - `ZeroOracleL2ArcticDataset` (`src/langfens_prep/dataset.py:290–395`) reads only 16 kHz audio and written prompt text, completely bypassing TextGrids.
+    - All Protocol Z predictions were written and hashed into `Z_RUNTIME_FREEZE.json` (SHA-256 `0d4a54e492b764b892a0370f851b8f99e4574edd82658bcea7625da534c1ff8b`) with `gold_reads_before_this_freeze: 0` before line 412 imported `textgrid_parser`.
+    - Line 462 asserts post-join integrity: all Z runtime file hashes remained bit-for-bit identical after gold annotation access.
+  - **Protocol O vs Protocol Z Separation:**
+    - Segregated into independent directory trees and manifest namespaces (`O-ARCHIVE` vs `Z-PROMPT-V1`), completely eliminating prior matrix conflation or Protocol O relabeling.
+    - Serialized protocol tags match actual protocols with zero disagreements across all 8 cells.
+  - **CAL Operating Threshold Selection (NCC/THV):**
+    - CAL partition (300 utterances from `NCC` and `THV`) was evaluated under the identical batch-1 FP32 cached feature policy.
+    - `cal_threshold` (`audit_scripts/run_psup_recovered_benchmark_v1.py:92–98`) computes order statistics strictly on correct CAL tokens (`operation_target == 0`), breaking ties upwards (`math.nextafter(..., math.inf)`) so negative groups are never split.
+    - Achieved CAL FPRs strictly satisfy ceilings: $0.049900 \le 0.05$, $0.099925 \le 0.10$, and $0.149950 \le 0.15$ ($N_{\text{CAL,correct}}=8,036$).
+    - Retrospective VAL FPR points are isolated and explicitly labeled diagnostic (`threshold_status="VAL-derived retrospective diagnostic; not calibrated"`).
+  - **Full Gold (9,956) vs Answered (9,919) Accounting & Abstentions:**
+    - Full gold coverage is verified across every cell ($N=9,956$).
+    - Protocol Z accounts for all positions: exactly 9,919 answered positions, 37 unmapped gold abstentions (25 correct, 4 substitutions, 8 deletions), and 37 prompt extras (`prompt_extra`, `gold_canonical_index=None`).
+    - AP is evaluated exclusively on answered positions (`ap_population="Finite aligned/answered scores only; no full-gold AP imputation"`).
+    - Operating points evaluate over all 9,956 gold tokens, counting abstained errors as undetected (FN) and reporting lower/upper correct-token FPR bounds.
+  - **CTC Real-Phone Reference Parity & Event Disambiguation:**
+    - Decoded against chronological realized valid phones (`labels.ctc`), asserting exact parity with historical reference count ($N=9,881$).
+    - Query-independence verified: greedy CTC hypotheses for Protocol O and Protocol Z forward passes match identically (`audit_scripts/run_psup_recovered_benchmark_v1.py:457`).
+    - Recognition PER semantics explicitly declare: `CTC recognition edits against realized phones; NOT human omission/substitution event counts`.
+  - **Same-Batch Frozen Features & Within-Speaker Cyclic Controls:**
+    - 16 kHz FP32 batch-1 features were extracted once per utterance and verified via `FROZEN_FEATURE_IDENTITIES.json`.
+    - Mismatch control uses same-speaker cyclic shift-1 permutation with zero fixed points (`AUDIO_MISMATCH_MAPPING.json`).
+    - Matched vs. mismatched binary AP gaps are computed directly from live runs on identical cohorts (gap: $+0.017447$ for T-OP fixed 3600 Z; $+0.009615$ for B-Control fixed 3600 Z).
+    - Canonical empirical prior is honestly marked `evidence_status="unavailable"` because the frozen FIT-1799 lookup was not recovered, and new fitting is forbidden.
+  - **Private Storage Durability & Readback:**
+    - All 110 raw benchmark files (295 MB) were mirrored to approved private Hugging Face repository `minkhoaa/langfens-rq1-cross-fold-checkpoints` at revision `7a9eae3d7e7ae4709f03e3766c2310991e1f314a` under prefix `benchmarks/psup-v1/recovered-final-v2-20261104`.
+    - Cryptographic verification confirmed by `FINAL_PRIVATE_STORAGE_RECEIPT.json` with verified SHA-256 readback. Git repository contains only lightweight manifests, summaries, and audit receipts.
+
+- Fixed:
+  - None (read-only independent acceptance audit; coordinator is sole writer).
+
+- Finding:
+  - P2 — Operational / Artifact Note: Superseded Partial Scratch `recovered-final-v1-20261104`
+    - Location: `/home/khoa/.cache/langfens/psup-benchmark-v1/recovered-final-v1-20261104/`
+    - Evidence: Directory contains only preliminary `AUDIO_MISMATCH_MAPPING.json`. `recovered-final-v1-20261104.execution.log` confirms inference terminated early at CAL feature extraction (`features cal: 100/300`). Sibling directory `recovered-final-v2-20261104` completed the full benchmark execution and is the sole authoritative raw store.
+    - Smallest fix: Retain explicit documentation in final process checkpoints that `recovered-final-v2-20261104` is the authoritative run and `recovered-final-v1-20261104` is an aborted preliminary scratch.
+  - P2 — Methodological Disclosure: Historical E0 Training Exposure on CAL Speakers
+    - Location: `manifests/RQ1-WORKSPACE-PREP-01/EVALUATION_CONTRACT_V1.md:129–133` and `audit_scripts/run_psup_recovered_benchmark_v1.py:324`
+    - Evidence: CAL speakers (`NCC`, `THV`) are strictly disjoint from reduced-train FIT (1,799 utterances) and VAL (`NJS`, `RRBI`), but upstream pretrained Wav2Vec2 and historical Baseline R E0 checkpoints were originally trained on the unpartitioned full 2,399-utterance training set.
+    - Smallest fix: Maintain the explicit contract disclosure in the final evaluation report that CAL operating thresholds are speaker-disjoint for P-SUP candidate training, but not strictly speaker-disjoint from historical E0 initialization.
+  - P2 — Thesis Scope Bounding: VAL Speaker Generalization
+    - Location: `manifests/RQ1-P-SUP-BENCHMARK-V1/BENCHMARK_PROTOCOL.md:58`
+    - Evidence: VAL evaluation is conducted on $G=2$ speakers (`NJS`, `RRBI`).
+    - Smallest fix: Retain the protocol requirement that per-speaker metrics must be reported separately alongside pooled metrics, and avoid claiming broad population-level generalization or diagnostic clinical readiness based solely on Fold-1 VAL.
+
+- Merge verdict:
+  OK with notes

@@ -1,0 +1,104 @@
+{
+  "status": "REQUIRED_ARTIFACTS_RECOVERED_AND_REVERIFIED",
+  "sources": {
+    "t_op": {
+      "receipt_sha256": "97a8d892f5a226ec337e0fc6db2461a26035f4f8512d82698a708e5bb13c7faf",
+      "receipt": "manifests/RQ1-P-SUP-BENCHMARK-V1/recovery/t_op/RECOVERY_RECEIPT.json",
+      "files": {
+        "fixed_budget_3600.pt": {
+          "local_path": "/home/khoa/.cache/langfens/psup-benchmark-v1/t_op/canonical_recovery/fixed_budget_3600.pt",
+          "sha256": "a8559b382ff6ec09f9c90ed4eccba59fa45ff41e20e10aae1cea9eff7697fbd9",
+          "bytes": 3241295,
+          "remote_repository": "minkhoaa/langfens-rq1-cross-fold-checkpoints",
+          "remote_revision": "4aa9f2a68f0709889eacacf170b6446d3c45c73d",
+          "remote_path": "psup/t_op/fixed_budget_3600.pt"
+        },
+        "best.pt": {
+          "local_path": "/home/khoa/.cache/langfens/psup-benchmark-v1/t_op/canonical_recovery/best.pt",
+          "sha256": "3b492049399608a1f0319accee0404de50fe4972340ff5cc3c930f58867a14e9",
+          "bytes": 3239578,
+          "remote_repository": "minkhoaa/langfens-rq1-cross-fold-checkpoints",
+          "remote_revision": "4aa9f2a68f0709889eacacf170b6446d3c45c73d",
+          "remote_path": "psup/t_op/best.pt"
+        },
+        "last.pt": {
+          "local_path": "/home/khoa/.cache/langfens/psup-benchmark-v1/t_op/canonical_recovery/last.pt",
+          "sha256": "93c65bc5ceef60c9d985492b9a1e8d9e4042cbf866a837815c705ac0e8237811",
+          "bytes": 3239898,
+          "remote_repository": "minkhoaa/langfens-rq1-cross-fold-checkpoints",
+          "remote_revision": "4aa9f2a68f0709889eacacf170b6446d3c45c73d",
+          "remote_path": "psup/t_op/last.pt"
+        },
+        "training_summary.json": {
+          "local_path": "/home/khoa/.cache/langfens/psup-benchmark-v1/t_op/canonical_recovery/training_summary.json",
+          "sha256": "096959938ddbb8b0ef3fd9cf8fee9452a41e88e029d865a6cd943c3a4f995c5c",
+          "bytes": 3339,
+          "remote_repository": "minkhoaa/langfens-rq1-cross-fold-checkpoints",
+          "remote_revision": "4aa9f2a68f0709889eacacf170b6446d3c45c73d",
+          "remote_path": "psup/t_op/training_summary.json"
+        },
+        "history.json": {
+          "local_path": "/home/khoa/.cache/langfens/psup-benchmark-v1/t_op/canonical_recovery/history.json",
+          "sha256": "6ef6ec6e3f553e94084d971115ba458833e7657676ff185b08c2b70a23e7b425",
+          "bytes": 2900,
+          "remote_repository": "minkhoaa/langfens-rq1-cross-fold-checkpoints",
+          "remote_revision": "4aa9f2a68f0709889eacacf170b6446d3c45c73d",
+          "remote_path": "psup/t_op/history.json"
+        }
+      }
+    },
+    "b_control": {
+      "receipt_sha256": "04c4baa2710bab4c544ecbe2dac4d68979b0990e87fb89af0c772c163c84f280",
+      "receipt": "manifests/RQ1-P-SUP-BENCHMARK-V1/recovery/b_control/RECOVERY_RECEIPT.json",
+      "files": {
+        "fixed_budget_3600.pt": {
+          "local_path": "/home/khoa/.cache/langfens/psup-benchmark-v1/b_control/recovered/fixed_budget_3600.pt",
+          "sha256": "e121a7b965747b49608263f1e3ec447f2a631f09a36e326e20fe5f2cfe619201",
+          "bytes": 3241295,
+          "remote_repository": "minkhoaa/langfens-rq1-cross-fold-checkpoints",
+          "remote_revision": "4aa9f2a68f0709889eacacf170b6446d3c45c73d",
+          "remote_path": "psup/b_control/fixed_budget_3600.pt"
+        },
+        "best.pt": {
+          "local_path": "/home/khoa/.cache/langfens/psup-benchmark-v1/b_control/recovered/best.pt",
+          "sha256": "2dbad5a0160224f9d936e564a6c5d52dffe6a8efdbde8e409c50a8cc393be93f",
+          "bytes": 3239450,
+          "remote_repository": "minkhoaa/langfens-rq1-cross-fold-checkpoints",
+          "remote_revision": "4aa9f2a68f0709889eacacf170b6446d3c45c73d",
+          "remote_path": "psup/b_control/best.pt"
+        },
+        "last.pt": {
+          "local_path": "/home/khoa/.cache/langfens/psup-benchmark-v1/b_control/recovered/last.pt",
+          "sha256": "aa35c14dbf6827050efa779b419b3c4887988fa073bc693c81dcb41275afa1b5",
+          "bytes": 3239898,
+          "remote_repository": "minkhoaa/langfens-rq1-cross-fold-checkpoints",
+          "remote_revision": "4aa9f2a68f0709889eacacf170b6446d3c45c73d",
+          "remote_path": "psup/b_control/last.pt"
+        },
+        "training_summary.json": {
+          "local_path": "/home/khoa/.cache/langfens/psup-benchmark-v1/b_control/recovered/training_summary.json",
+          "sha256": "fb8917eda607e2cffdc3e276507a3924b68d418a01a3bd0302a296a24b174b4f",
+          "bytes": 3339,
+          "remote_repository": "minkhoaa/langfens-rq1-cross-fold-checkpoints",
+          "remote_revision": "4aa9f2a68f0709889eacacf170b6446d3c45c73d",
+          "remote_path": "psup/b_control/training_summary.json"
+        },
+        "history.json": {
+          "local_path": "/home/khoa/.cache/langfens/psup-benchmark-v1/b_control/recovered/history.json",
+          "sha256": "dc61bbff9b58f804712b49ba4e5c1998a2b137b58d53c544910e7fa31e0ce2c6",
+          "bytes": 2896,
+          "remote_repository": "minkhoaa/langfens-rq1-cross-fold-checkpoints",
+          "remote_revision": "4aa9f2a68f0709889eacacf170b6446d3c45c73d",
+          "remote_path": "psup/b_control/history.json"
+        }
+      }
+    }
+  },
+  "source_sha256": "e64874f00af7d3a5708b988a4c999e7a9fff4d94186ddc4deecd3786cb9d784d",
+  "notes": [
+    "Arm recovery reports retained as historical agent evidence, not blanket scientific approval.",
+    "B-Control report identical-gradient wording is imprecise: gradients differ by within-error softmax weights; subtype semantics remain unidentified.",
+    "Recovery timestamp strings have inconsistent UTC/local formatting; do not use them as training event times. Use checkpoint metadata created_at_utc and original logs.",
+    "Kaggle notebooks reported is_private=false; no new sensitive artifact uploaded to them. HF mirror verified private."
+  ]
+}

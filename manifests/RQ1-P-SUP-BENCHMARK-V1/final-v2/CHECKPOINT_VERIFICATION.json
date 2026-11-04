@@ -1,0 +1,1298 @@
+{
+  "status": "VERIFIED",
+  "this_process_optimizer_steps": 0,
+  "this_process_backward_passes": 0,
+  "source_sha256": "e64874f00af7d3a5708b988a4c999e7a9fff4d94186ddc4deecd3786cb9d784d",
+  "checkpoints": {
+    "t_op/fixed_budget_3600.pt": {
+      "status": "VERIFIED_LOCAL_PAYLOAD_AND_RECOVERY_IDENTITY",
+      "sha256": "a8559b382ff6ec09f9c90ed4eccba59fa45ff41e20e10aae1cea9eff7697fbd9",
+      "objective": "operation_ce",
+      "successful_updates": 3600,
+      "skipped_updates": 0,
+      "micro_steps": 7200,
+      "epoch": 7,
+      "optimizer_step_counters": [
+        3600,
+        3600,
+        3600,
+        3600,
+        3600,
+        3600,
+        3600,
+        3600,
+        3600,
+        3600,
+        3600,
+        3600,
+        3600,
+        3600,
+        3600,
+        3600
+      ],
+      "scheduler_last_epoch": 3600,
+      "parameter_count": 266667,
+      "embedded_history_last_update": 3150,
+      "history_qualification": "Fixed endpoint saved before final epoch history append; embedded history ends3150, while optimizer/scheduler/payload counters are3600. External history/last checkpoint contain3600.",
+      "all_head_and_optimizer_tensors_finite": true,
+      "rng_components": [
+        "python",
+        "numpy",
+        "torch",
+        "cuda"
+      ],
+      "metadata": {
+        "registration": "P-SUP-COMPACT-OP-V1",
+        "objective": "operation_ce",
+        "git_sha": "dd2dd8953fc5d946c0b88d72e915be53e7cd0d9f",
+        "created_at_utc": "2026-11-03T15:43:36.234144+00:00",
+        "seed": 1337,
+        "batch_size": 2,
+        "gradient_accumulation_steps": 2,
+        "effective_batch_size": 4,
+        "warmup_updates": 100,
+        "cosine_horizon_updates": 15000,
+        "max_successful_updates": 3600,
+        "learning_rate": 0.001,
+        "weight_decay": 0.01,
+        "ctc_weight": 1.0,
+        "task_weight": 1.0,
+        "backbone": "facebook/wav2vec2-base-960h",
+        "backbone_revision": "22aad52d435eb6dbaf354bdad9b0da84ce7d6156",
+        "contract_sha256": "4d99723e4b3f62f506165ced089eca82d4417279c76973b35470bd337cedfab2",
+        "split_manifest_path": "/kaggle/working/repo/manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json",
+        "split_manifest_sha256": "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b",
+        "zip_path": "/kaggle/input/datasets/minkhoaa/langfens-rq1-fold1-staging/authorized_RQ1-TRN-02A_fold1_train_val_only.bin",
+        "zip_sha256": "b750eb3bf3971afccd9ab9058a64fa6b3f5781399b9ef0f1294d29bf580784a9",
+        "parameters": {
+          "acoustic_projection.weight": {
+            "shape": [
+              128,
+              768
+            ],
+            "trainable": true,
+            "numel": 98304
+          },
+          "acoustic_projection.bias": {
+            "shape": [
+              128
+            ],
+            "trainable": true,
+            "numel": 128
+          },
+          "phone_embedding.weight": {
+            "shape": [
+              40,
+              128
+            ],
+            "trainable": true,
+            "numel": 5120
+          },
+          "position_embedding.weight": {
+            "shape": [
+              256,
+              128
+            ],
+            "trainable": true,
+            "numel": 32768
+          },
+          "attention.in_proj_weight": {
+            "shape": [
+              384,
+              128
+            ],
+            "trainable": true,
+            "numel": 49152
+          },
+          "attention.in_proj_bias": {
+            "shape": [
+              384
+            ],
+            "trainable": true,
+            "numel": 384
+          },
+          "attention.out_proj.weight": {
+            "shape": [
+              128,
+              128
+            ],
+            "trainable": true,
+            "numel": 16384
+          },
+          "attention.out_proj.bias": {
+            "shape": [
+              128
+            ],
+            "trainable": true,
+            "numel": 128
+          },
+          "acoustic_norm.weight": {
+            "shape": [
+              128
+            ],
+            "trainable": true,
+            "numel": 128
+          },
+          "acoustic_norm.bias": {
+            "shape": [
+              128
+            ],
+            "trainable": true,
+            "numel": 128
+          },
+          "operation_head.0.weight": {
+            "shape": [
+              128,
+              256
+            ],
+            "trainable": true,
+            "numel": 32768
+          },
+          "operation_head.0.bias": {
+            "shape": [
+              128
+            ],
+            "trainable": true,
+            "numel": 128
+          },
+          "operation_head.3.weight": {
+            "shape": [
+              3,
+              128
+            ],
+            "trainable": true,
+            "numel": 384
+          },
+          "operation_head.3.bias": {
+            "shape": [
+              3
+            ],
+            "trainable": true,
+            "numel": 3
+          },
+          "ctc_head.weight": {
+            "shape": [
+              40,
+              768
+            ],
+            "trainable": true,
+            "numel": 30720
+          },
+          "ctc_head.bias": {
+            "shape": [
+              40
+            ],
+            "trainable": true,
+            "numel": 40
+          }
+        },
+        "fit_utterances": 1799,
+        "selection_utterances": 300,
+        "calibration_utterances": 300,
+        "evaluation_utterances": 300,
+        "fit_speakers": [
+          "BWC",
+          "ERMS",
+          "HKK",
+          "HQTV",
+          "SKA",
+          "SVBI",
+          "TNI",
+          "TXHC",
+          "YBAA",
+          "YDCK",
+          "YKWK",
+          "ZHAA"
+        ],
+        "selection_speakers": [
+          "MBMPS",
+          "TLV"
+        ],
+        "calibration_speakers": [
+          "NCC",
+          "THV"
+        ],
+        "evaluation_speakers": [
+          "NJS",
+          "RRBI"
+        ]
+      },
+      "source_receipt_sha256": "97a8d892f5a226ec337e0fc6db2461a26035f4f8512d82698a708e5bb13c7faf"
+    },
+    "t_op/best.pt": {
+      "status": "VERIFIED_LOCAL_PAYLOAD_AND_RECOVERY_IDENTITY",
+      "sha256": "3b492049399608a1f0319accee0404de50fe4972340ff5cc3c930f58867a14e9",
+      "objective": "operation_ce",
+      "successful_updates": 2700,
+      "skipped_updates": 0,
+      "micro_steps": 5400,
+      "epoch": 5,
+      "optimizer_step_counters": [
+        2700,
+        2700,
+        2700,
+        2700,
+        2700,
+        2700,
+        2700,
+        2700,
+        2700,
+        2700,
+        2700,
+        2700,
+        2700,
+        2700,
+        2700,
+        2700
+      ],
+      "scheduler_last_epoch": 2700,
+      "parameter_count": 266667,
+      "embedded_history_last_update": 2700,
+      "history_qualification": null,
+      "all_head_and_optimizer_tensors_finite": true,
+      "rng_components": [
+        "python",
+        "numpy",
+        "torch",
+        "cuda"
+      ],
+      "metadata": {
+        "registration": "P-SUP-COMPACT-OP-V1",
+        "objective": "operation_ce",
+        "git_sha": "dd2dd8953fc5d946c0b88d72e915be53e7cd0d9f",
+        "created_at_utc": "2026-11-03T15:43:36.234144+00:00",
+        "seed": 1337,
+        "batch_size": 2,
+        "gradient_accumulation_steps": 2,
+        "effective_batch_size": 4,
+        "warmup_updates": 100,
+        "cosine_horizon_updates": 15000,
+        "max_successful_updates": 3600,
+        "learning_rate": 0.001,
+        "weight_decay": 0.01,
+        "ctc_weight": 1.0,
+        "task_weight": 1.0,
+        "backbone": "facebook/wav2vec2-base-960h",
+        "backbone_revision": "22aad52d435eb6dbaf354bdad9b0da84ce7d6156",
+        "contract_sha256": "4d99723e4b3f62f506165ced089eca82d4417279c76973b35470bd337cedfab2",
+        "split_manifest_path": "/kaggle/working/repo/manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json",
+        "split_manifest_sha256": "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b",
+        "zip_path": "/kaggle/input/datasets/minkhoaa/langfens-rq1-fold1-staging/authorized_RQ1-TRN-02A_fold1_train_val_only.bin",
+        "zip_sha256": "b750eb3bf3971afccd9ab9058a64fa6b3f5781399b9ef0f1294d29bf580784a9",
+        "parameters": {
+          "acoustic_projection.weight": {
+            "shape": [
+              128,
+              768
+            ],
+            "trainable": true,
+            "numel": 98304
+          },
+          "acoustic_projection.bias": {
+            "shape": [
+              128
+            ],
+            "trainable": true,
+            "numel": 128
+          },
+          "phone_embedding.weight": {
+            "shape": [
+              40,
+              128
+            ],
+            "trainable": true,
+            "numel": 5120
+          },
+          "position_embedding.weight": {
+            "shape": [
+              256,
+              128
+            ],
+            "trainable": true,
+            "numel": 32768
+          },
+          "attention.in_proj_weight": {
+            "shape": [
+              384,
+              128
+            ],
+            "trainable": true,
+            "numel": 49152
+          },
+          "attention.in_proj_bias": {
+            "shape": [
+              384
+            ],
+            "trainable": true,
+            "numel": 384
+          },
+          "attention.out_proj.weight": {
+            "shape": [
+              128,
+              128
+            ],
+            "trainable": true,
+            "numel": 16384
+          },
+          "attention.out_proj.bias": {
+            "shape": [
+              128
+            ],
+            "trainable": true,
+            "numel": 128
+          },
+          "acoustic_norm.weight": {
+            "shape": [
+              128
+            ],
+            "trainable": true,
+            "numel": 128
+          },
+          "acoustic_norm.bias": {
+            "shape": [
+              128
+            ],
+            "trainable": true,
+            "numel": 128
+          },
+          "operation_head.0.weight": {
+            "shape": [
+              128,
+              256
+            ],
+            "trainable": true,
+            "numel": 32768
+          },
+          "operation_head.0.bias": {
+            "shape": [
+              128
+            ],
+            "trainable": true,
+            "numel": 128
+          },
+          "operation_head.3.weight": {
+            "shape": [
+              3,
+              128
+            ],
+            "trainable": true,
+            "numel": 384
+          },
+          "operation_head.3.bias": {
+            "shape": [
+              3
+            ],
+            "trainable": true,
+            "numel": 3
+          },
+          "ctc_head.weight": {
+            "shape": [
+              40,
+              768
+            ],
+            "trainable": true,
+            "numel": 30720
+          },
+          "ctc_head.bias": {
+            "shape": [
+              40
+            ],
+            "trainable": true,
+            "numel": 40
+          }
+        },
+        "fit_utterances": 1799,
+        "selection_utterances": 300,
+        "calibration_utterances": 300,
+        "evaluation_utterances": 300,
+        "fit_speakers": [
+          "BWC",
+          "ERMS",
+          "HKK",
+          "HQTV",
+          "SKA",
+          "SVBI",
+          "TNI",
+          "TXHC",
+          "YBAA",
+          "YDCK",
+          "YKWK",
+          "ZHAA"
+        ],
+        "selection_speakers": [
+          "MBMPS",
+          "TLV"
+        ],
+        "calibration_speakers": [
+          "NCC",
+          "THV"
+        ],
+        "evaluation_speakers": [
+          "NJS",
+          "RRBI"
+        ]
+      },
+      "source_receipt_sha256": "97a8d892f5a226ec337e0fc6db2461a26035f4f8512d82698a708e5bb13c7faf"
+    },
+    "t_op/last.pt": {
+      "status": "VERIFIED_LOCAL_PAYLOAD_AND_RECOVERY_IDENTITY",
+      "sha256": "93c65bc5ceef60c9d985492b9a1e8d9e4042cbf866a837815c705ac0e8237811",
+      "objective": "operation_ce",
+      "successful_updates": 3600,
+      "skipped_updates": 0,
+      "micro_steps": 7200,
+      "epoch": 7,
+      "optimizer_step_counters": [
+        3600,
+        3600,
+        3600,
+        3600,
+        3600,
+        3600,
+        3600,
+        3600,
+        3600,
+        3600,
+        3600,
+        3600,
+        3600,
+        3600,
+        3600,
+        3600
+      ],
+      "scheduler_last_epoch": 3600,
+      "parameter_count": 266667,
+      "embedded_history_last_update": 3600,
+      "history_qualification": null,
+      "all_head_and_optimizer_tensors_finite": true,
+      "rng_components": [
+        "python",
+        "numpy",
+        "torch",
+        "cuda"
+      ],
+      "metadata": {
+        "registration": "P-SUP-COMPACT-OP-V1",
+        "objective": "operation_ce",
+        "git_sha": "dd2dd8953fc5d946c0b88d72e915be53e7cd0d9f",
+        "created_at_utc": "2026-11-03T15:43:36.234144+00:00",
+        "seed": 1337,
+        "batch_size": 2,
+        "gradient_accumulation_steps": 2,
+        "effective_batch_size": 4,
+        "warmup_updates": 100,
+        "cosine_horizon_updates": 15000,
+        "max_successful_updates": 3600,
+        "learning_rate": 0.001,
+        "weight_decay": 0.01,
+        "ctc_weight": 1.0,
+        "task_weight": 1.0,
+        "backbone": "facebook/wav2vec2-base-960h",
+        "backbone_revision": "22aad52d435eb6dbaf354bdad9b0da84ce7d6156",
+        "contract_sha256": "4d99723e4b3f62f506165ced089eca82d4417279c76973b35470bd337cedfab2",
+        "split_manifest_path": "/kaggle/working/repo/manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json",
+        "split_manifest_sha256": "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b",
+        "zip_path": "/kaggle/input/datasets/minkhoaa/langfens-rq1-fold1-staging/authorized_RQ1-TRN-02A_fold1_train_val_only.bin",
+        "zip_sha256": "b750eb3bf3971afccd9ab9058a64fa6b3f5781399b9ef0f1294d29bf580784a9",
+        "parameters": {
+          "acoustic_projection.weight": {
+            "shape": [
+              128,
+              768
+            ],
+            "trainable": true,
+            "numel": 98304
+          },
+          "acoustic_projection.bias": {
+            "shape": [
+              128
+            ],
+            "trainable": true,
+            "numel": 128
+          },
+          "phone_embedding.weight": {
+            "shape": [
+              40,
+              128
+            ],
+            "trainable": true,
+            "numel": 5120
+          },
+          "position_embedding.weight": {
+            "shape": [
+              256,
+              128
+            ],
+            "trainable": true,
+            "numel": 32768
+          },
+          "attention.in_proj_weight": {
+            "shape": [
+              384,
+              128
+            ],
+            "trainable": true,
+            "numel": 49152
+          },
+          "attention.in_proj_bias": {
+            "shape": [
+              384
+            ],
+            "trainable": true,
+            "numel": 384
+          },
+          "attention.out_proj.weight": {
+            "shape": [
+              128,
+              128
+            ],
+            "trainable": true,
+            "numel": 16384
+          },
+          "attention.out_proj.bias": {
+            "shape": [
+              128
+            ],
+            "trainable": true,
+            "numel": 128
+          },
+          "acoustic_norm.weight": {
+            "shape": [
+              128
+            ],
+            "trainable": true,
+            "numel": 128
+          },
+          "acoustic_norm.bias": {
+            "shape": [
+              128
+            ],
+            "trainable": true,
+            "numel": 128
+          },
+          "operation_head.0.weight": {
+            "shape": [
+              128,
+              256
+            ],
+            "trainable": true,
+            "numel": 32768
+          },
+          "operation_head.0.bias": {
+            "shape": [
+              128
+            ],
+            "trainable": true,
+            "numel": 128
+          },
+          "operation_head.3.weight": {
+            "shape": [
+              3,
+              128
+            ],
+            "trainable": true,
+            "numel": 384
+          },
+          "operation_head.3.bias": {
+            "shape": [
+              3
+            ],
+            "trainable": true,
+            "numel": 3
+          },
+          "ctc_head.weight": {
+            "shape": [
+              40,
+              768
+            ],
+            "trainable": true,
+            "numel": 30720
+          },
+          "ctc_head.bias": {
+            "shape": [
+              40
+            ],
+            "trainable": true,
+            "numel": 40
+          }
+        },
+        "fit_utterances": 1799,
+        "selection_utterances": 300,
+        "calibration_utterances": 300,
+        "evaluation_utterances": 300,
+        "fit_speakers": [
+          "BWC",
+          "ERMS",
+          "HKK",
+          "HQTV",
+          "SKA",
+          "SVBI",
+          "TNI",
+          "TXHC",
+          "YBAA",
+          "YDCK",
+          "YKWK",
+          "ZHAA"
+        ],
+        "selection_speakers": [
+          "MBMPS",
+          "TLV"
+        ],
+        "calibration_speakers": [
+          "NCC",
+          "THV"
+        ],
+        "evaluation_speakers": [
+          "NJS",
+          "RRBI"
+        ]
+      },
+      "source_receipt_sha256": "97a8d892f5a226ec337e0fc6db2461a26035f4f8512d82698a708e5bb13c7faf"
+    },
+    "b_control/fixed_budget_3600.pt": {
+      "status": "VERIFIED_LOCAL_PAYLOAD_AND_RECOVERY_IDENTITY",
+      "sha256": "e121a7b965747b49608263f1e3ec447f2a631f09a36e326e20fe5f2cfe619201",
+      "objective": "binary_collapsed",
+      "successful_updates": 3600,
+      "skipped_updates": 0,
+      "micro_steps": 7200,
+      "epoch": 7,
+      "optimizer_step_counters": [
+        3600,
+        3600,
+        3600,
+        3600,
+        3600,
+        3600,
+        3600,
+        3600,
+        3600,
+        3600,
+        3600,
+        3600,
+        3600,
+        3600,
+        3600,
+        3600
+      ],
+      "scheduler_last_epoch": 3600,
+      "parameter_count": 266667,
+      "embedded_history_last_update": 3150,
+      "history_qualification": "Fixed endpoint saved before final epoch history append; embedded history ends3150, while optimizer/scheduler/payload counters are3600. External history/last checkpoint contain3600.",
+      "all_head_and_optimizer_tensors_finite": true,
+      "rng_components": [
+        "python",
+        "numpy",
+        "torch",
+        "cuda"
+      ],
+      "metadata": {
+        "registration": "P-SUP-COMPACT-OP-V1",
+        "objective": "binary_collapsed",
+        "git_sha": "dd2dd8953fc5d946c0b88d72e915be53e7cd0d9f",
+        "created_at_utc": "2026-11-03T15:58:32.625340+00:00",
+        "seed": 1337,
+        "batch_size": 2,
+        "gradient_accumulation_steps": 2,
+        "effective_batch_size": 4,
+        "warmup_updates": 100,
+        "cosine_horizon_updates": 15000,
+        "max_successful_updates": 3600,
+        "learning_rate": 0.001,
+        "weight_decay": 0.01,
+        "ctc_weight": 1.0,
+        "task_weight": 1.0,
+        "backbone": "facebook/wav2vec2-base-960h",
+        "backbone_revision": "22aad52d435eb6dbaf354bdad9b0da84ce7d6156",
+        "contract_sha256": "4d99723e4b3f62f506165ced089eca82d4417279c76973b35470bd337cedfab2",
+        "split_manifest_path": "/kaggle/working/repo/manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json",
+        "split_manifest_sha256": "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b",
+        "zip_path": "/kaggle/input/datasets/minkhoaa/langfens-rq1-fold1-staging/authorized_RQ1-TRN-02A_fold1_train_val_only.bin",
+        "zip_sha256": "b750eb3bf3971afccd9ab9058a64fa6b3f5781399b9ef0f1294d29bf580784a9",
+        "parameters": {
+          "acoustic_projection.weight": {
+            "shape": [
+              128,
+              768
+            ],
+            "trainable": true,
+            "numel": 98304
+          },
+          "acoustic_projection.bias": {
+            "shape": [
+              128
+            ],
+            "trainable": true,
+            "numel": 128
+          },
+          "phone_embedding.weight": {
+            "shape": [
+              40,
+              128
+            ],
+            "trainable": true,
+            "numel": 5120
+          },
+          "position_embedding.weight": {
+            "shape": [
+              256,
+              128
+            ],
+            "trainable": true,
+            "numel": 32768
+          },
+          "attention.in_proj_weight": {
+            "shape": [
+              384,
+              128
+            ],
+            "trainable": true,
+            "numel": 49152
+          },
+          "attention.in_proj_bias": {
+            "shape": [
+              384
+            ],
+            "trainable": true,
+            "numel": 384
+          },
+          "attention.out_proj.weight": {
+            "shape": [
+              128,
+              128
+            ],
+            "trainable": true,
+            "numel": 16384
+          },
+          "attention.out_proj.bias": {
+            "shape": [
+              128
+            ],
+            "trainable": true,
+            "numel": 128
+          },
+          "acoustic_norm.weight": {
+            "shape": [
+              128
+            ],
+            "trainable": true,
+            "numel": 128
+          },
+          "acoustic_norm.bias": {
+            "shape": [
+              128
+            ],
+            "trainable": true,
+            "numel": 128
+          },
+          "operation_head.0.weight": {
+            "shape": [
+              128,
+              256
+            ],
+            "trainable": true,
+            "numel": 32768
+          },
+          "operation_head.0.bias": {
+            "shape": [
+              128
+            ],
+            "trainable": true,
+            "numel": 128
+          },
+          "operation_head.3.weight": {
+            "shape": [
+              3,
+              128
+            ],
+            "trainable": true,
+            "numel": 384
+          },
+          "operation_head.3.bias": {
+            "shape": [
+              3
+            ],
+            "trainable": true,
+            "numel": 3
+          },
+          "ctc_head.weight": {
+            "shape": [
+              40,
+              768
+            ],
+            "trainable": true,
+            "numel": 30720
+          },
+          "ctc_head.bias": {
+            "shape": [
+              40
+            ],
+            "trainable": true,
+            "numel": 40
+          }
+        },
+        "fit_utterances": 1799,
+        "selection_utterances": 300,
+        "calibration_utterances": 300,
+        "evaluation_utterances": 300,
+        "fit_speakers": [
+          "BWC",
+          "ERMS",
+          "HKK",
+          "HQTV",
+          "SKA",
+          "SVBI",
+          "TNI",
+          "TXHC",
+          "YBAA",
+          "YDCK",
+          "YKWK",
+          "ZHAA"
+        ],
+        "selection_speakers": [
+          "MBMPS",
+          "TLV"
+        ],
+        "calibration_speakers": [
+          "NCC",
+          "THV"
+        ],
+        "evaluation_speakers": [
+          "NJS",
+          "RRBI"
+        ]
+      },
+      "source_receipt_sha256": "04c4baa2710bab4c544ecbe2dac4d68979b0990e87fb89af0c772c163c84f280"
+    },
+    "b_control/best.pt": {
+      "status": "VERIFIED_LOCAL_PAYLOAD_AND_RECOVERY_IDENTITY",
+      "sha256": "2dbad5a0160224f9d936e564a6c5d52dffe6a8efdbde8e409c50a8cc393be93f",
+      "objective": "binary_collapsed",
+      "successful_updates": 2250,
+      "skipped_updates": 0,
+      "micro_steps": 4500,
+      "epoch": 4,
+      "optimizer_step_counters": [
+        2250,
+        2250,
+        2250,
+        2250,
+        2250,
+        2250,
+        2250,
+        2250,
+        2250,
+        2250,
+        2250,
+        2250,
+        2250,
+        2250,
+        2250,
+        2250
+      ],
+      "scheduler_last_epoch": 2250,
+      "parameter_count": 266667,
+      "embedded_history_last_update": 2250,
+      "history_qualification": null,
+      "all_head_and_optimizer_tensors_finite": true,
+      "rng_components": [
+        "python",
+        "numpy",
+        "torch",
+        "cuda"
+      ],
+      "metadata": {
+        "registration": "P-SUP-COMPACT-OP-V1",
+        "objective": "binary_collapsed",
+        "git_sha": "dd2dd8953fc5d946c0b88d72e915be53e7cd0d9f",
+        "created_at_utc": "2026-11-03T15:58:32.625340+00:00",
+        "seed": 1337,
+        "batch_size": 2,
+        "gradient_accumulation_steps": 2,
+        "effective_batch_size": 4,
+        "warmup_updates": 100,
+        "cosine_horizon_updates": 15000,
+        "max_successful_updates": 3600,
+        "learning_rate": 0.001,
+        "weight_decay": 0.01,
+        "ctc_weight": 1.0,
+        "task_weight": 1.0,
+        "backbone": "facebook/wav2vec2-base-960h",
+        "backbone_revision": "22aad52d435eb6dbaf354bdad9b0da84ce7d6156",
+        "contract_sha256": "4d99723e4b3f62f506165ced089eca82d4417279c76973b35470bd337cedfab2",
+        "split_manifest_path": "/kaggle/working/repo/manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json",
+        "split_manifest_sha256": "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b",
+        "zip_path": "/kaggle/input/datasets/minkhoaa/langfens-rq1-fold1-staging/authorized_RQ1-TRN-02A_fold1_train_val_only.bin",
+        "zip_sha256": "b750eb3bf3971afccd9ab9058a64fa6b3f5781399b9ef0f1294d29bf580784a9",
+        "parameters": {
+          "acoustic_projection.weight": {
+            "shape": [
+              128,
+              768
+            ],
+            "trainable": true,
+            "numel": 98304
+          },
+          "acoustic_projection.bias": {
+            "shape": [
+              128
+            ],
+            "trainable": true,
+            "numel": 128
+          },
+          "phone_embedding.weight": {
+            "shape": [
+              40,
+              128
+            ],
+            "trainable": true,
+            "numel": 5120
+          },
+          "position_embedding.weight": {
+            "shape": [
+              256,
+              128
+            ],
+            "trainable": true,
+            "numel": 32768
+          },
+          "attention.in_proj_weight": {
+            "shape": [
+              384,
+              128
+            ],
+            "trainable": true,
+            "numel": 49152
+          },
+          "attention.in_proj_bias": {
+            "shape": [
+              384
+            ],
+            "trainable": true,
+            "numel": 384
+          },
+          "attention.out_proj.weight": {
+            "shape": [
+              128,
+              128
+            ],
+            "trainable": true,
+            "numel": 16384
+          },
+          "attention.out_proj.bias": {
+            "shape": [
+              128
+            ],
+            "trainable": true,
+            "numel": 128
+          },
+          "acoustic_norm.weight": {
+            "shape": [
+              128
+            ],
+            "trainable": true,
+            "numel": 128
+          },
+          "acoustic_norm.bias": {
+            "shape": [
+              128
+            ],
+            "trainable": true,
+            "numel": 128
+          },
+          "operation_head.0.weight": {
+            "shape": [
+              128,
+              256
+            ],
+            "trainable": true,
+            "numel": 32768
+          },
+          "operation_head.0.bias": {
+            "shape": [
+              128
+            ],
+            "trainable": true,
+            "numel": 128
+          },
+          "operation_head.3.weight": {
+            "shape": [
+              3,
+              128
+            ],
+            "trainable": true,
+            "numel": 384
+          },
+          "operation_head.3.bias": {
+            "shape": [
+              3
+            ],
+            "trainable": true,
+            "numel": 3
+          },
+          "ctc_head.weight": {
+            "shape": [
+              40,
+              768
+            ],
+            "trainable": true,
+            "numel": 30720
+          },
+          "ctc_head.bias": {
+            "shape": [
+              40
+            ],
+            "trainable": true,
+            "numel": 40
+          }
+        },
+        "fit_utterances": 1799,
+        "selection_utterances": 300,
+        "calibration_utterances": 300,
+        "evaluation_utterances": 300,
+        "fit_speakers": [
+          "BWC",
+          "ERMS",
+          "HKK",
+          "HQTV",
+          "SKA",
+          "SVBI",
+          "TNI",
+          "TXHC",
+          "YBAA",
+          "YDCK",
+          "YKWK",
+          "ZHAA"
+        ],
+        "selection_speakers": [
+          "MBMPS",
+          "TLV"
+        ],
+        "calibration_speakers": [
+          "NCC",
+          "THV"
+        ],
+        "evaluation_speakers": [
+          "NJS",
+          "RRBI"
+        ]
+      },
+      "source_receipt_sha256": "04c4baa2710bab4c544ecbe2dac4d68979b0990e87fb89af0c772c163c84f280"
+    },
+    "b_control/last.pt": {
+      "status": "VERIFIED_LOCAL_PAYLOAD_AND_RECOVERY_IDENTITY",
+      "sha256": "aa35c14dbf6827050efa779b419b3c4887988fa073bc693c81dcb41275afa1b5",
+      "objective": "binary_collapsed",
+      "successful_updates": 3600,
+      "skipped_updates": 0,
+      "micro_steps": 7200,
+      "epoch": 7,
+      "optimizer_step_counters": [
+        3600,
+        3600,
+        3600,
+        3600,
+        3600,
+        3600,
+        3600,
+        3600,
+        3600,
+        3600,
+        3600,
+        3600,
+        3600,
+        3600,
+        3600,
+        3600
+      ],
+      "scheduler_last_epoch": 3600,
+      "parameter_count": 266667,
+      "embedded_history_last_update": 3600,
+      "history_qualification": null,
+      "all_head_and_optimizer_tensors_finite": true,
+      "rng_components": [
+        "python",
+        "numpy",
+        "torch",
+        "cuda"
+      ],
+      "metadata": {
+        "registration": "P-SUP-COMPACT-OP-V1",
+        "objective": "binary_collapsed",
+        "git_sha": "dd2dd8953fc5d946c0b88d72e915be53e7cd0d9f",
+        "created_at_utc": "2026-11-03T15:58:32.625340+00:00",
+        "seed": 1337,
+        "batch_size": 2,
+        "gradient_accumulation_steps": 2,
+        "effective_batch_size": 4,
+        "warmup_updates": 100,
+        "cosine_horizon_updates": 15000,
+        "max_successful_updates": 3600,
+        "learning_rate": 0.001,
+        "weight_decay": 0.01,
+        "ctc_weight": 1.0,
+        "task_weight": 1.0,
+        "backbone": "facebook/wav2vec2-base-960h",
+        "backbone_revision": "22aad52d435eb6dbaf354bdad9b0da84ce7d6156",
+        "contract_sha256": "4d99723e4b3f62f506165ced089eca82d4417279c76973b35470bd337cedfab2",
+        "split_manifest_path": "/kaggle/working/repo/manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json",
+        "split_manifest_sha256": "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b",
+        "zip_path": "/kaggle/input/datasets/minkhoaa/langfens-rq1-fold1-staging/authorized_RQ1-TRN-02A_fold1_train_val_only.bin",
+        "zip_sha256": "b750eb3bf3971afccd9ab9058a64fa6b3f5781399b9ef0f1294d29bf580784a9",
+        "parameters": {
+          "acoustic_projection.weight": {
+            "shape": [
+              128,
+              768
+            ],
+            "trainable": true,
+            "numel": 98304
+          },
+          "acoustic_projection.bias": {
+            "shape": [
+              128
+            ],
+            "trainable": true,
+            "numel": 128
+          },
+          "phone_embedding.weight": {
+            "shape": [
+              40,
+              128
+            ],
+            "trainable": true,
+            "numel": 5120
+          },
+          "position_embedding.weight": {
+            "shape": [
+              256,
+              128
+            ],
+            "trainable": true,
+            "numel": 32768
+          },
+          "attention.in_proj_weight": {
+            "shape": [
+              384,
+              128
+            ],
+            "trainable": true,
+            "numel": 49152
+          },
+          "attention.in_proj_bias": {
+            "shape": [
+              384
+            ],
+            "trainable": true,
+            "numel": 384
+          },
+          "attention.out_proj.weight": {
+            "shape": [
+              128,
+              128
+            ],
+            "trainable": true,
+            "numel": 16384
+          },
+          "attention.out_proj.bias": {
+            "shape": [
+              128
+            ],
+            "trainable": true,
+            "numel": 128
+          },
+          "acoustic_norm.weight": {
+            "shape": [
+              128
+            ],
+            "trainable": true,
+            "numel": 128
+          },
+          "acoustic_norm.bias": {
+            "shape": [
+              128
+            ],
+            "trainable": true,
+            "numel": 128
+          },
+          "operation_head.0.weight": {
+            "shape": [
+              128,
+              256
+            ],
+            "trainable": true,
+            "numel": 32768
+          },
+          "operation_head.0.bias": {
+            "shape": [
+              128
+            ],
+            "trainable": true,
+            "numel": 128
+          },
+          "operation_head.3.weight": {
+            "shape": [
+              3,
+              128
+            ],
+            "trainable": true,
+            "numel": 384
+          },
+          "operation_head.3.bias": {
+            "shape": [
+              3
+            ],
+            "trainable": true,
+            "numel": 3
+          },
+          "ctc_head.weight": {
+            "shape": [
+              40,
+              768
+            ],
+            "trainable": true,
+            "numel": 30720
+          },
+          "ctc_head.bias": {
+            "shape": [
+              40
+            ],
+            "trainable": true,
+            "numel": 40
+          }
+        },
+        "fit_utterances": 1799,
+        "selection_utterances": 300,
+        "calibration_utterances": 300,
+        "evaluation_utterances": 300,
+        "fit_speakers": [
+          "BWC",
+          "ERMS",
+          "HKK",
+          "HQTV",
+          "SKA",
+          "SVBI",
+          "TNI",
+          "TXHC",
+          "YBAA",
+          "YDCK",
+          "YKWK",
+          "ZHAA"
+        ],
+        "selection_speakers": [
+          "MBMPS",
+          "TLV"
+        ],
+        "calibration_speakers": [
+          "NCC",
+          "THV"
+        ],
+        "evaluation_speakers": [
+          "NJS",
+          "RRBI"
+        ]
+      },
+      "source_receipt_sha256": "04c4baa2710bab4c544ecbe2dac4d68979b0990e87fb89af0c772c163c84f280"
+    }
+  }
+}

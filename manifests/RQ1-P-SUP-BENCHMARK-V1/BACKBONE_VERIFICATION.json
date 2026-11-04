@@ -1,0 +1,38 @@
+{
+  "status": "PINNED_BACKBONE_WEIGHT_LFS_VERIFIED",
+  "repository": "facebook/wav2vec2-base-960h",
+  "revision": "22aad52d435eb6dbaf354bdad9b0da84ce7d6156",
+  "artifacts": {
+    "config.json": {
+      "local_path": "/home/khoa/.cache/huggingface/hub/models--facebook--wav2vec2-base-960h/snapshots/22aad52d435eb6dbaf354bdad9b0da84ce7d6156/config.json",
+      "resolved_path": "/home/khoa/.cache/huggingface/hub/models--facebook--wav2vec2-base-960h/blobs/8ca9cc7496e145e37d09cec17d0c3bf9b8523c8e",
+      "bytes": 1596,
+      "sha256": "d3ec255c063d9f95057b553b19c20135b259875834a4fe9deb218a6be25b4cf3",
+      "lfs_sha256": null,
+      "verification": "PINNED_CONFIG_LOCAL_HASH_ONLY"
+    },
+    "model.safetensors": {
+      "local_path": "/home/khoa/.cache/huggingface/hub/models--facebook--wav2vec2-base-960h/snapshots/22aad52d435eb6dbaf354bdad9b0da84ce7d6156/model.safetensors",
+      "resolved_path": "/home/khoa/.cache/huggingface/hub/blobs/ad/adeb514fa922dccc0d5fcaad5d58bfa42e49e6a821620032fb13c2b59552eb5e",
+      "bytes": 377607901,
+      "sha256": "8aa76ab2243c81747a1f832954586bc566090c83a0ac167df6f31f0fa917d74a",
+      "lfs_sha256": "8aa76ab2243c81747a1f832954586bc566090c83a0ac167df6f31f0fa917d74a",
+      "verification": "LFS_SHA256_MATCH"
+    }
+  },
+  "verification_script_sha256": "1e124c97c0ef243ab2e8f3e63d869ac9e7e47a297914781a04c048f2e249ddea",
+  "interpreter": "/home/khoa/Projects/KLTN/Dataset/.venv-cuda/bin/python",
+  "python": "3.11.17",
+  "platform": "Linux-7.3.1-1-cachyos-x86_64-with-glibc2.44",
+  "dependencies": {
+    "torch": "2.14.1",
+    "transformers": "5.20.2",
+    "numpy": "2.4.6",
+    "soundfile": "0.14.0",
+    "scipy": "1.17.1",
+    "huggingface-hub": "2.3.0"
+  },
+  "model_executed": false,
+  "downloaded_model": false,
+  "optimizer_steps": 0
+}

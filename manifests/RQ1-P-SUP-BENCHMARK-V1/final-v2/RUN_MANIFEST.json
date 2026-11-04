@@ -1,0 +1,1516 @@
+{
+  "allowed_id_hashes": {
+    "cal": "931900b7ab1778df28b4098fc7d3048a93c41ecaee5ef14e43477a4b04e51034",
+    "val": "6d34642b15bbf80cbd5bd102b5574ab36f5adac74be6d6d0ae7218b002eff065"
+  },
+  "allowed_ids": {
+    "cal": [
+      "NCC/arctic_a0003",
+      "NCC/arctic_a0005",
+      "NCC/arctic_a0006",
+      "NCC/arctic_a0007",
+      "NCC/arctic_a0008",
+      "NCC/arctic_a0010",
+      "NCC/arctic_a0011",
+      "NCC/arctic_a0013",
+      "NCC/arctic_a0018",
+      "NCC/arctic_a0019",
+      "NCC/arctic_a0020",
+      "NCC/arctic_a0021",
+      "NCC/arctic_a0022",
+      "NCC/arctic_a0023",
+      "NCC/arctic_a0024",
+      "NCC/arctic_a0025",
+      "NCC/arctic_a0026",
+      "NCC/arctic_a0027",
+      "NCC/arctic_a0028",
+      "NCC/arctic_a0029",
+      "NCC/arctic_a0030",
+      "NCC/arctic_a0031",
+      "NCC/arctic_a0032",
+      "NCC/arctic_a0036",
+      "NCC/arctic_a0037",
+      "NCC/arctic_a0038",
+      "NCC/arctic_a0039",
+      "NCC/arctic_a0040",
+      "NCC/arctic_a0041",
+      "NCC/arctic_a0042",
+      "NCC/arctic_a0045",
+      "NCC/arctic_a0046",
+      "NCC/arctic_a0047",
+      "NCC/arctic_a0048",
+      "NCC/arctic_a0051",
+      "NCC/arctic_a0052",
+      "NCC/arctic_a0053",
+      "NCC/arctic_a0054",
+      "NCC/arctic_a0058",
+      "NCC/arctic_a0059",
+      "NCC/arctic_a0060",
+      "NCC/arctic_a0062",
+      "NCC/arctic_a0063",
+      "NCC/arctic_a0064",
+      "NCC/arctic_a0065",
+      "NCC/arctic_a0067",
+      "NCC/arctic_a0071",
+      "NCC/arctic_a0073",
+      "NCC/arctic_a0075",
+      "NCC/arctic_a0076",
+      "NCC/arctic_a0077",
+      "NCC/arctic_a0078",
+      "NCC/arctic_a0079",
+      "NCC/arctic_a0081",
+      "NCC/arctic_a0082",
+      "NCC/arctic_a0085",
+      "NCC/arctic_a0086",
+      "NCC/arctic_a0088",
+      "NCC/arctic_a0089",
+      "NCC/arctic_a0090",
+      "NCC/arctic_a0091",
+      "NCC/arctic_a0092",
+      "NCC/arctic_a0093",
+      "NCC/arctic_a0094",
+      "NCC/arctic_a0095",
+      "NCC/arctic_a0096",
+      "NCC/arctic_a0097",
+      "NCC/arctic_a0098",
+      "NCC/arctic_a0099",
+      "NCC/arctic_a0100",
+      "NCC/arctic_a0101",
+      "NCC/arctic_a0102",
+      "NCC/arctic_a0103",
+      "NCC/arctic_a0104",
+      "NCC/arctic_a0105",
+      "NCC/arctic_a0106",
+      "NCC/arctic_a0107",
+      "NCC/arctic_a0108",
+      "NCC/arctic_a0109",
+      "NCC/arctic_a0111",
+      "NCC/arctic_a0112",
+      "NCC/arctic_a0113",
+      "NCC/arctic_a0115",
+      "NCC/arctic_a0116",
+      "NCC/arctic_a0117",
+      "NCC/arctic_a0120",
+      "NCC/arctic_a0121",
+      "NCC/arctic_a0122",
+      "NCC/arctic_a0123",
+      "NCC/arctic_a0125",
+      "NCC/arctic_a0126",
+      "NCC/arctic_a0127",
+      "NCC/arctic_a0128",
+      "NCC/arctic_a0129",
+      "NCC/arctic_a0130",
+      "NCC/arctic_a0131",
+      "NCC/arctic_a0134",
+      "NCC/arctic_a0136",
+      "NCC/arctic_a0137",
+      "NCC/arctic_a0139",
+      "NCC/arctic_a0225",
+      "NCC/arctic_a0245",
+      "NCC/arctic_a0335",
+      "NCC/arctic_a0434",
+      "NCC/arctic_a0459",
+      "NCC/arctic_a0515",
+      "NCC/arctic_a0519",
+      "NCC/arctic_a0536",
+      "NCC/arctic_a0549",
+      "NCC/arctic_a0571",
+      "NCC/arctic_a0575",
+      "NCC/arctic_a0576",
+      "NCC/arctic_b0004",
+      "NCC/arctic_b0026",
+      "NCC/arctic_b0048",
+      "NCC/arctic_b0074",
+      "NCC/arctic_b0075",
+      "NCC/arctic_b0140",
+      "NCC/arctic_b0142",
+      "NCC/arctic_b0165",
+      "NCC/arctic_b0185",
+      "NCC/arctic_b0189",
+      "NCC/arctic_b0203",
+      "NCC/arctic_b0251",
+      "NCC/arctic_b0282",
+      "NCC/arctic_b0288",
+      "NCC/arctic_b0323",
+      "NCC/arctic_b0358",
+      "NCC/arctic_b0366",
+      "NCC/arctic_b0380",
+      "NCC/arctic_b0385",
+      "NCC/arctic_b0393",
+      "NCC/arctic_b0400",
+      "NCC/arctic_b0402",
+      "NCC/arctic_b0415",
+      "NCC/arctic_b0416",
+      "NCC/arctic_b0418",
+      "NCC/arctic_b0422",
+      "NCC/arctic_b0430",
+      "NCC/arctic_b0456",
+      "NCC/arctic_b0461",
+      "NCC/arctic_b0465",
+      "NCC/arctic_b0476",
+      "NCC/arctic_b0479",
+      "NCC/arctic_b0481",
+      "NCC/arctic_b0483",
+      "NCC/arctic_b0488",
+      "NCC/arctic_b0509",
+      "NCC/arctic_b0527",
+      "NCC/arctic_b0531",
+      "THV/arctic_a0003",
+      "THV/arctic_a0005",
+      "THV/arctic_a0006",
+      "THV/arctic_a0007",
+      "THV/arctic_a0008",
+      "THV/arctic_a0010",
+      "THV/arctic_a0011",
+      "THV/arctic_a0013",
+      "THV/arctic_a0018",
+      "THV/arctic_a0019",
+      "THV/arctic_a0020",
+      "THV/arctic_a0021",
+      "THV/arctic_a0022",
+      "THV/arctic_a0023",
+      "THV/arctic_a0024",
+      "THV/arctic_a0025",
+      "THV/arctic_a0026",
+      "THV/arctic_a0027",
+      "THV/arctic_a0028",
+      "THV/arctic_a0029",
+      "THV/arctic_a0030",
+      "THV/arctic_a0031",
+      "THV/arctic_a0032",
+      "THV/arctic_a0036",
+      "THV/arctic_a0037",
+      "THV/arctic_a0038",
+      "THV/arctic_a0039",
+      "THV/arctic_a0040",
+      "THV/arctic_a0041",
+      "THV/arctic_a0042",
+      "THV/arctic_a0045",
+      "THV/arctic_a0046",
+      "THV/arctic_a0047",
+      "THV/arctic_a0048",
+      "THV/arctic_a0051",
+      "THV/arctic_a0052",
+      "THV/arctic_a0053",
+      "THV/arctic_a0054",
+      "THV/arctic_a0058",
+      "THV/arctic_a0059",
+      "THV/arctic_a0060",
+      "THV/arctic_a0062",
+      "THV/arctic_a0063",
+      "THV/arctic_a0064",
+      "THV/arctic_a0065",
+      "THV/arctic_a0067",
+      "THV/arctic_a0071",
+      "THV/arctic_a0073",
+      "THV/arctic_a0075",
+      "THV/arctic_a0076",
+      "THV/arctic_a0077",
+      "THV/arctic_a0078",
+      "THV/arctic_a0079",
+      "THV/arctic_a0081",
+      "THV/arctic_a0082",
+      "THV/arctic_a0085",
+      "THV/arctic_a0086",
+      "THV/arctic_a0088",
+      "THV/arctic_a0089",
+      "THV/arctic_a0090",
+      "THV/arctic_a0091",
+      "THV/arctic_a0092",
+      "THV/arctic_a0093",
+      "THV/arctic_a0094",
+      "THV/arctic_a0095",
+      "THV/arctic_a0096",
+      "THV/arctic_a0097",
+      "THV/arctic_a0098",
+      "THV/arctic_a0099",
+      "THV/arctic_a0100",
+      "THV/arctic_a0101",
+      "THV/arctic_a0102",
+      "THV/arctic_a0103",
+      "THV/arctic_a0104",
+      "THV/arctic_a0105",
+      "THV/arctic_a0106",
+      "THV/arctic_a0107",
+      "THV/arctic_a0108",
+      "THV/arctic_a0109",
+      "THV/arctic_a0111",
+      "THV/arctic_a0112",
+      "THV/arctic_a0113",
+      "THV/arctic_a0115",
+      "THV/arctic_a0116",
+      "THV/arctic_a0117",
+      "THV/arctic_a0120",
+      "THV/arctic_a0121",
+      "THV/arctic_a0122",
+      "THV/arctic_a0123",
+      "THV/arctic_a0125",
+      "THV/arctic_a0126",
+      "THV/arctic_a0127",
+      "THV/arctic_a0128",
+      "THV/arctic_a0129",
+      "THV/arctic_a0130",
+      "THV/arctic_a0131",
+      "THV/arctic_a0134",
+      "THV/arctic_a0136",
+      "THV/arctic_a0137",
+      "THV/arctic_a0139",
+      "THV/arctic_a0168",
+      "THV/arctic_a0178",
+      "THV/arctic_a0209",
+      "THV/arctic_a0225",
+      "THV/arctic_a0260",
+      "THV/arctic_a0271",
+      "THV/arctic_a0364",
+      "THV/arctic_a0375",
+      "THV/arctic_a0378",
+      "THV/arctic_a0434",
+      "THV/arctic_a0459",
+      "THV/arctic_a0475",
+      "THV/arctic_a0515",
+      "THV/arctic_a0519",
+      "THV/arctic_a0542",
+      "THV/arctic_b0019",
+      "THV/arctic_b0048",
+      "THV/arctic_b0074",
+      "THV/arctic_b0075",
+      "THV/arctic_b0106",
+      "THV/arctic_b0140",
+      "THV/arctic_b0165",
+      "THV/arctic_b0189",
+      "THV/arctic_b0192",
+      "THV/arctic_b0201",
+      "THV/arctic_b0251",
+      "THV/arctic_b0288",
+      "THV/arctic_b0304",
+      "THV/arctic_b0315",
+      "THV/arctic_b0320",
+      "THV/arctic_b0323",
+      "THV/arctic_b0342",
+      "THV/arctic_b0355",
+      "THV/arctic_b0358",
+      "THV/arctic_b0380",
+      "THV/arctic_b0386",
+      "THV/arctic_b0393",
+      "THV/arctic_b0415",
+      "THV/arctic_b0416",
+      "THV/arctic_b0422",
+      "THV/arctic_b0425",
+      "THV/arctic_b0465",
+      "THV/arctic_b0469",
+      "THV/arctic_b0481",
+      "THV/arctic_b0488",
+      "THV/arctic_b0503",
+      "THV/arctic_b0509",
+      "THV/arctic_b0518",
+      "THV/arctic_b0527",
+      "THV/arctic_b0534"
+    ],
+    "val": [
+      "NJS/arctic_a0003",
+      "NJS/arctic_a0005",
+      "NJS/arctic_a0006",
+      "NJS/arctic_a0007",
+      "NJS/arctic_a0008",
+      "NJS/arctic_a0010",
+      "NJS/arctic_a0011",
+      "NJS/arctic_a0013",
+      "NJS/arctic_a0018",
+      "NJS/arctic_a0019",
+      "NJS/arctic_a0020",
+      "NJS/arctic_a0021",
+      "NJS/arctic_a0022",
+      "NJS/arctic_a0023",
+      "NJS/arctic_a0024",
+      "NJS/arctic_a0025",
+      "NJS/arctic_a0026",
+      "NJS/arctic_a0027",
+      "NJS/arctic_a0028",
+      "NJS/arctic_a0029",
+      "NJS/arctic_a0030",
+      "NJS/arctic_a0031",
+      "NJS/arctic_a0032",
+      "NJS/arctic_a0036",
+      "NJS/arctic_a0037",
+      "NJS/arctic_a0038",
+      "NJS/arctic_a0039",
+      "NJS/arctic_a0040",
+      "NJS/arctic_a0041",
+      "NJS/arctic_a0042",
+      "NJS/arctic_a0045",
+      "NJS/arctic_a0046",
+      "NJS/arctic_a0047",
+      "NJS/arctic_a0048",
+      "NJS/arctic_a0051",
+      "NJS/arctic_a0052",
+      "NJS/arctic_a0053",
+      "NJS/arctic_a0054",
+      "NJS/arctic_a0058",
+      "NJS/arctic_a0059",
+      "NJS/arctic_a0060",
+      "NJS/arctic_a0062",
+      "NJS/arctic_a0063",
+      "NJS/arctic_a0064",
+      "NJS/arctic_a0065",
+      "NJS/arctic_a0067",
+      "NJS/arctic_a0071",
+      "NJS/arctic_a0073",
+      "NJS/arctic_a0075",
+      "NJS/arctic_a0076",
+      "NJS/arctic_a0077",
+      "NJS/arctic_a0078",
+      "NJS/arctic_a0079",
+      "NJS/arctic_a0081",
+      "NJS/arctic_a0082",
+      "NJS/arctic_a0085",
+      "NJS/arctic_a0086",
+      "NJS/arctic_a0088",
+      "NJS/arctic_a0089",
+      "NJS/arctic_a0090",
+      "NJS/arctic_a0091",
+      "NJS/arctic_a0092",
+      "NJS/arctic_a0093",
+      "NJS/arctic_a0094",
+      "NJS/arctic_a0095",
+      "NJS/arctic_a0096",
+      "NJS/arctic_a0097",
+      "NJS/arctic_a0098",
+      "NJS/arctic_a0099",
+      "NJS/arctic_a0100",
+      "NJS/arctic_a0101",
+      "NJS/arctic_a0102",
+      "NJS/arctic_a0103",
+      "NJS/arctic_a0104",
+      "NJS/arctic_a0105",
+      "NJS/arctic_a0106",
+      "NJS/arctic_a0107",
+      "NJS/arctic_a0108",
+      "NJS/arctic_a0109",
+      "NJS/arctic_a0111",
+      "NJS/arctic_a0112",
+      "NJS/arctic_a0113",
+      "NJS/arctic_a0115",
+      "NJS/arctic_a0116",
+      "NJS/arctic_a0117",
+      "NJS/arctic_a0120",
+      "NJS/arctic_a0121",
+      "NJS/arctic_a0122",
+      "NJS/arctic_a0123",
+      "NJS/arctic_a0125",
+      "NJS/arctic_a0126",
+      "NJS/arctic_a0127",
+      "NJS/arctic_a0128",
+      "NJS/arctic_a0129",
+      "NJS/arctic_a0130",
+      "NJS/arctic_a0131",
+      "NJS/arctic_a0134",
+      "NJS/arctic_a0136",
+      "NJS/arctic_a0137",
+      "NJS/arctic_a0139",
+      "NJS/arctic_a0145",
+      "NJS/arctic_a0148",
+      "NJS/arctic_a0154",
+      "NJS/arctic_a0159",
+      "NJS/arctic_a0170",
+      "NJS/arctic_a0176",
+      "NJS/arctic_a0178",
+      "NJS/arctic_a0185",
+      "NJS/arctic_a0191",
+      "NJS/arctic_a0198",
+      "NJS/arctic_a0210",
+      "NJS/arctic_a0212",
+      "NJS/arctic_a0227",
+      "NJS/arctic_a0233",
+      "NJS/arctic_a0254",
+      "NJS/arctic_a0260",
+      "NJS/arctic_a0265",
+      "NJS/arctic_a0269",
+      "NJS/arctic_a0271",
+      "NJS/arctic_a0295",
+      "NJS/arctic_a0298",
+      "NJS/arctic_a0299",
+      "NJS/arctic_a0300",
+      "NJS/arctic_a0303",
+      "NJS/arctic_a0320",
+      "NJS/arctic_a0363",
+      "NJS/arctic_a0369",
+      "NJS/arctic_a0401",
+      "NJS/arctic_a0416",
+      "NJS/arctic_a0441",
+      "NJS/arctic_a0487",
+      "NJS/arctic_a0500",
+      "NJS/arctic_a0548",
+      "NJS/arctic_a0556",
+      "NJS/arctic_b0019",
+      "NJS/arctic_b0042",
+      "NJS/arctic_b0070",
+      "NJS/arctic_b0150",
+      "NJS/arctic_b0187",
+      "NJS/arctic_b0269",
+      "NJS/arctic_b0279",
+      "NJS/arctic_b0298",
+      "NJS/arctic_b0304",
+      "NJS/arctic_b0413",
+      "NJS/arctic_b0434",
+      "NJS/arctic_b0461",
+      "NJS/arctic_b0494",
+      "NJS/arctic_b0503",
+      "NJS/arctic_b0534",
+      "NJS/arctic_b0538",
+      "RRBI/arctic_a0003",
+      "RRBI/arctic_a0005",
+      "RRBI/arctic_a0006",
+      "RRBI/arctic_a0007",
+      "RRBI/arctic_a0008",
+      "RRBI/arctic_a0010",
+      "RRBI/arctic_a0011",
+      "RRBI/arctic_a0013",
+      "RRBI/arctic_a0018",
+      "RRBI/arctic_a0019",
+      "RRBI/arctic_a0020",
+      "RRBI/arctic_a0021",
+      "RRBI/arctic_a0022",
+      "RRBI/arctic_a0023",
+      "RRBI/arctic_a0024",
+      "RRBI/arctic_a0025",
+      "RRBI/arctic_a0026",
+      "RRBI/arctic_a0027",
+      "RRBI/arctic_a0028",
+      "RRBI/arctic_a0029",
+      "RRBI/arctic_a0030",
+      "RRBI/arctic_a0031",
+      "RRBI/arctic_a0032",
+      "RRBI/arctic_a0036",
+      "RRBI/arctic_a0037",
+      "RRBI/arctic_a0038",
+      "RRBI/arctic_a0039",
+      "RRBI/arctic_a0040",
+      "RRBI/arctic_a0041",
+      "RRBI/arctic_a0042",
+      "RRBI/arctic_a0045",
+      "RRBI/arctic_a0046",
+      "RRBI/arctic_a0047",
+      "RRBI/arctic_a0048",
+      "RRBI/arctic_a0051",
+      "RRBI/arctic_a0052",
+      "RRBI/arctic_a0053",
+      "RRBI/arctic_a0054",
+      "RRBI/arctic_a0058",
+      "RRBI/arctic_a0059",
+      "RRBI/arctic_a0060",
+      "RRBI/arctic_a0062",
+      "RRBI/arctic_a0063",
+      "RRBI/arctic_a0064",
+      "RRBI/arctic_a0065",
+      "RRBI/arctic_a0067",
+      "RRBI/arctic_a0071",
+      "RRBI/arctic_a0073",
+      "RRBI/arctic_a0075",
+      "RRBI/arctic_a0076",
+      "RRBI/arctic_a0077",
+      "RRBI/arctic_a0078",
+      "RRBI/arctic_a0079",
+      "RRBI/arctic_a0081",
+      "RRBI/arctic_a0082",
+      "RRBI/arctic_a0085",
+      "RRBI/arctic_a0086",
+      "RRBI/arctic_a0088",
+      "RRBI/arctic_a0089",
+      "RRBI/arctic_a0090",
+      "RRBI/arctic_a0091",
+      "RRBI/arctic_a0092",
+      "RRBI/arctic_a0093",
+      "RRBI/arctic_a0094",
+      "RRBI/arctic_a0095",
+      "RRBI/arctic_a0096",
+      "RRBI/arctic_a0097",
+      "RRBI/arctic_a0098",
+      "RRBI/arctic_a0099",
+      "RRBI/arctic_a0100",
+      "RRBI/arctic_a0101",
+      "RRBI/arctic_a0102",
+      "RRBI/arctic_a0103",
+      "RRBI/arctic_a0104",
+      "RRBI/arctic_a0105",
+      "RRBI/arctic_a0106",
+      "RRBI/arctic_a0107",
+      "RRBI/arctic_a0108",
+      "RRBI/arctic_a0109",
+      "RRBI/arctic_a0111",
+      "RRBI/arctic_a0112",
+      "RRBI/arctic_a0113",
+      "RRBI/arctic_a0115",
+      "RRBI/arctic_a0116",
+      "RRBI/arctic_a0117",
+      "RRBI/arctic_a0120",
+      "RRBI/arctic_a0121",
+      "RRBI/arctic_a0122",
+      "RRBI/arctic_a0123",
+      "RRBI/arctic_a0125",
+      "RRBI/arctic_a0126",
+      "RRBI/arctic_a0127",
+      "RRBI/arctic_a0128",
+      "RRBI/arctic_a0129",
+      "RRBI/arctic_a0130",
+      "RRBI/arctic_a0131",
+      "RRBI/arctic_a0134",
+      "RRBI/arctic_a0136",
+      "RRBI/arctic_a0137",
+      "RRBI/arctic_a0139",
+      "RRBI/arctic_a0144",
+      "RRBI/arctic_a0159",
+      "RRBI/arctic_a0168",
+      "RRBI/arctic_a0178",
+      "RRBI/arctic_a0188",
+      "RRBI/arctic_a0191",
+      "RRBI/arctic_a0199",
+      "RRBI/arctic_a0208",
+      "RRBI/arctic_a0214",
+      "RRBI/arctic_a0246",
+      "RRBI/arctic_a0255",
+      "RRBI/arctic_a0266",
+      "RRBI/arctic_a0269",
+      "RRBI/arctic_a0272",
+      "RRBI/arctic_a0282",
+      "RRBI/arctic_a0292",
+      "RRBI/arctic_a0301",
+      "RRBI/arctic_a0303",
+      "RRBI/arctic_a0365",
+      "RRBI/arctic_a0384",
+      "RRBI/arctic_a0405",
+      "RRBI/arctic_a0410",
+      "RRBI/arctic_a0411",
+      "RRBI/arctic_a0416",
+      "RRBI/arctic_a0424",
+      "RRBI/arctic_b0002",
+      "RRBI/arctic_b0017",
+      "RRBI/arctic_b0038",
+      "RRBI/arctic_b0047",
+      "RRBI/arctic_b0057",
+      "RRBI/arctic_b0061",
+      "RRBI/arctic_b0073",
+      "RRBI/arctic_b0081",
+      "RRBI/arctic_b0089",
+      "RRBI/arctic_b0104",
+      "RRBI/arctic_b0118",
+      "RRBI/arctic_b0136",
+      "RRBI/arctic_b0141",
+      "RRBI/arctic_b0158",
+      "RRBI/arctic_b0160",
+      "RRBI/arctic_b0171",
+      "RRBI/arctic_b0197",
+      "RRBI/arctic_b0215",
+      "RRBI/arctic_b0315",
+      "RRBI/arctic_b0317",
+      "RRBI/arctic_b0321",
+      "RRBI/arctic_b0371",
+      "RRBI/arctic_b0396",
+      "RRBI/arctic_b0411",
+      "RRBI/arctic_b0433"
+    ]
+  },
+  "backbone": {
+    "repository": "facebook/wav2vec2-base-960h",
+    "revision": "22aad52d435eb6dbaf354bdad9b0da84ce7d6156",
+    "weight_sha256": "8aa76ab2243c81747a1f832954586bc566090c83a0ac167df6f31f0fa917d74a"
+  },
+  "backward_passes_this_process": 0,
+  "cache_policy": "Original frozen encoder forward once per utterance, unchanged head consumes exact cached tensor",
+  "command": [
+    "audit_scripts/run_psup_recovered_benchmark_v1.py",
+    "infer",
+    "--output-root",
+    "/home/khoa/.cache/langfens/psup-benchmark-v1/recovered-final-v2-20261104",
+    "--threads",
+    "4"
+  ],
+  "configurations": {
+    "b_control_best": {
+      "metadata": {
+        "backbone": "facebook/wav2vec2-base-960h",
+        "backbone_revision": "22aad52d435eb6dbaf354bdad9b0da84ce7d6156",
+        "batch_size": 2,
+        "calibration_speakers": [
+          "NCC",
+          "THV"
+        ],
+        "calibration_utterances": 300,
+        "contract_sha256": "4d99723e4b3f62f506165ced089eca82d4417279c76973b35470bd337cedfab2",
+        "cosine_horizon_updates": 15000,
+        "created_at_utc": "2026-11-03T15:58:32.625340+00:00",
+        "ctc_weight": 1.0,
+        "effective_batch_size": 4,
+        "evaluation_speakers": [
+          "NJS",
+          "RRBI"
+        ],
+        "evaluation_utterances": 300,
+        "fit_speakers": [
+          "BWC",
+          "ERMS",
+          "HKK",
+          "HQTV",
+          "SKA",
+          "SVBI",
+          "TNI",
+          "TXHC",
+          "YBAA",
+          "YDCK",
+          "YKWK",
+          "ZHAA"
+        ],
+        "fit_utterances": 1799,
+        "git_sha": "dd2dd8953fc5d946c0b88d72e915be53e7cd0d9f",
+        "gradient_accumulation_steps": 2,
+        "learning_rate": 0.001,
+        "max_successful_updates": 3600,
+        "objective": "binary_collapsed",
+        "parameters": {
+          "acoustic_norm.bias": {
+            "numel": 128,
+            "shape": [
+              128
+            ],
+            "trainable": true
+          },
+          "acoustic_norm.weight": {
+            "numel": 128,
+            "shape": [
+              128
+            ],
+            "trainable": true
+          },
+          "acoustic_projection.bias": {
+            "numel": 128,
+            "shape": [
+              128
+            ],
+            "trainable": true
+          },
+          "acoustic_projection.weight": {
+            "numel": 98304,
+            "shape": [
+              128,
+              768
+            ],
+            "trainable": true
+          },
+          "attention.in_proj_bias": {
+            "numel": 384,
+            "shape": [
+              384
+            ],
+            "trainable": true
+          },
+          "attention.in_proj_weight": {
+            "numel": 49152,
+            "shape": [
+              384,
+              128
+            ],
+            "trainable": true
+          },
+          "attention.out_proj.bias": {
+            "numel": 128,
+            "shape": [
+              128
+            ],
+            "trainable": true
+          },
+          "attention.out_proj.weight": {
+            "numel": 16384,
+            "shape": [
+              128,
+              128
+            ],
+            "trainable": true
+          },
+          "ctc_head.bias": {
+            "numel": 40,
+            "shape": [
+              40
+            ],
+            "trainable": true
+          },
+          "ctc_head.weight": {
+            "numel": 30720,
+            "shape": [
+              40,
+              768
+            ],
+            "trainable": true
+          },
+          "operation_head.0.bias": {
+            "numel": 128,
+            "shape": [
+              128
+            ],
+            "trainable": true
+          },
+          "operation_head.0.weight": {
+            "numel": 32768,
+            "shape": [
+              128,
+              256
+            ],
+            "trainable": true
+          },
+          "operation_head.3.bias": {
+            "numel": 3,
+            "shape": [
+              3
+            ],
+            "trainable": true
+          },
+          "operation_head.3.weight": {
+            "numel": 384,
+            "shape": [
+              3,
+              128
+            ],
+            "trainable": true
+          },
+          "phone_embedding.weight": {
+            "numel": 5120,
+            "shape": [
+              40,
+              128
+            ],
+            "trainable": true
+          },
+          "position_embedding.weight": {
+            "numel": 32768,
+            "shape": [
+              256,
+              128
+            ],
+            "trainable": true
+          }
+        },
+        "registration": "P-SUP-COMPACT-OP-V1",
+        "seed": 1337,
+        "selection_speakers": [
+          "MBMPS",
+          "TLV"
+        ],
+        "selection_utterances": 300,
+        "split_manifest_path": "/kaggle/working/repo/manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json",
+        "split_manifest_sha256": "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b",
+        "task_weight": 1.0,
+        "warmup_updates": 100,
+        "weight_decay": 0.01,
+        "zip_path": "/kaggle/input/datasets/minkhoaa/langfens-rq1-fold1-staging/authorized_RQ1-TRN-02A_fold1_train_val_only.bin",
+        "zip_sha256": "b750eb3bf3971afccd9ab9058a64fa6b3f5781399b9ef0f1294d29bf580784a9"
+      },
+      "path": "/home/khoa/.cache/langfens/psup-benchmark-v1/b_control/recovered/best.pt",
+      "sha256": "2dbad5a0160224f9d936e564a6c5d52dffe6a8efdbde8e409c50a8cc393be93f",
+      "skipped_updates": 0,
+      "successful_updates": 2250
+    },
+    "b_control_fixed_budget_3600": {
+      "metadata": {
+        "backbone": "facebook/wav2vec2-base-960h",
+        "backbone_revision": "22aad52d435eb6dbaf354bdad9b0da84ce7d6156",
+        "batch_size": 2,
+        "calibration_speakers": [
+          "NCC",
+          "THV"
+        ],
+        "calibration_utterances": 300,
+        "contract_sha256": "4d99723e4b3f62f506165ced089eca82d4417279c76973b35470bd337cedfab2",
+        "cosine_horizon_updates": 15000,
+        "created_at_utc": "2026-11-03T15:58:32.625340+00:00",
+        "ctc_weight": 1.0,
+        "effective_batch_size": 4,
+        "evaluation_speakers": [
+          "NJS",
+          "RRBI"
+        ],
+        "evaluation_utterances": 300,
+        "fit_speakers": [
+          "BWC",
+          "ERMS",
+          "HKK",
+          "HQTV",
+          "SKA",
+          "SVBI",
+          "TNI",
+          "TXHC",
+          "YBAA",
+          "YDCK",
+          "YKWK",
+          "ZHAA"
+        ],
+        "fit_utterances": 1799,
+        "git_sha": "dd2dd8953fc5d946c0b88d72e915be53e7cd0d9f",
+        "gradient_accumulation_steps": 2,
+        "learning_rate": 0.001,
+        "max_successful_updates": 3600,
+        "objective": "binary_collapsed",
+        "parameters": {
+          "acoustic_norm.bias": {
+            "numel": 128,
+            "shape": [
+              128
+            ],
+            "trainable": true
+          },
+          "acoustic_norm.weight": {
+            "numel": 128,
+            "shape": [
+              128
+            ],
+            "trainable": true
+          },
+          "acoustic_projection.bias": {
+            "numel": 128,
+            "shape": [
+              128
+            ],
+            "trainable": true
+          },
+          "acoustic_projection.weight": {
+            "numel": 98304,
+            "shape": [
+              128,
+              768
+            ],
+            "trainable": true
+          },
+          "attention.in_proj_bias": {
+            "numel": 384,
+            "shape": [
+              384
+            ],
+            "trainable": true
+          },
+          "attention.in_proj_weight": {
+            "numel": 49152,
+            "shape": [
+              384,
+              128
+            ],
+            "trainable": true
+          },
+          "attention.out_proj.bias": {
+            "numel": 128,
+            "shape": [
+              128
+            ],
+            "trainable": true
+          },
+          "attention.out_proj.weight": {
+            "numel": 16384,
+            "shape": [
+              128,
+              128
+            ],
+            "trainable": true
+          },
+          "ctc_head.bias": {
+            "numel": 40,
+            "shape": [
+              40
+            ],
+            "trainable": true
+          },
+          "ctc_head.weight": {
+            "numel": 30720,
+            "shape": [
+              40,
+              768
+            ],
+            "trainable": true
+          },
+          "operation_head.0.bias": {
+            "numel": 128,
+            "shape": [
+              128
+            ],
+            "trainable": true
+          },
+          "operation_head.0.weight": {
+            "numel": 32768,
+            "shape": [
+              128,
+              256
+            ],
+            "trainable": true
+          },
+          "operation_head.3.bias": {
+            "numel": 3,
+            "shape": [
+              3
+            ],
+            "trainable": true
+          },
+          "operation_head.3.weight": {
+            "numel": 384,
+            "shape": [
+              3,
+              128
+            ],
+            "trainable": true
+          },
+          "phone_embedding.weight": {
+            "numel": 5120,
+            "shape": [
+              40,
+              128
+            ],
+            "trainable": true
+          },
+          "position_embedding.weight": {
+            "numel": 32768,
+            "shape": [
+              256,
+              128
+            ],
+            "trainable": true
+          }
+        },
+        "registration": "P-SUP-COMPACT-OP-V1",
+        "seed": 1337,
+        "selection_speakers": [
+          "MBMPS",
+          "TLV"
+        ],
+        "selection_utterances": 300,
+        "split_manifest_path": "/kaggle/working/repo/manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json",
+        "split_manifest_sha256": "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b",
+        "task_weight": 1.0,
+        "warmup_updates": 100,
+        "weight_decay": 0.01,
+        "zip_path": "/kaggle/input/datasets/minkhoaa/langfens-rq1-fold1-staging/authorized_RQ1-TRN-02A_fold1_train_val_only.bin",
+        "zip_sha256": "b750eb3bf3971afccd9ab9058a64fa6b3f5781399b9ef0f1294d29bf580784a9"
+      },
+      "path": "/home/khoa/.cache/langfens/psup-benchmark-v1/b_control/recovered/fixed_budget_3600.pt",
+      "sha256": "e121a7b965747b49608263f1e3ec447f2a631f09a36e326e20fe5f2cfe619201",
+      "skipped_updates": 0,
+      "successful_updates": 3600
+    },
+    "t_op_best": {
+      "metadata": {
+        "backbone": "facebook/wav2vec2-base-960h",
+        "backbone_revision": "22aad52d435eb6dbaf354bdad9b0da84ce7d6156",
+        "batch_size": 2,
+        "calibration_speakers": [
+          "NCC",
+          "THV"
+        ],
+        "calibration_utterances": 300,
+        "contract_sha256": "4d99723e4b3f62f506165ced089eca82d4417279c76973b35470bd337cedfab2",
+        "cosine_horizon_updates": 15000,
+        "created_at_utc": "2026-11-03T15:43:36.234144+00:00",
+        "ctc_weight": 1.0,
+        "effective_batch_size": 4,
+        "evaluation_speakers": [
+          "NJS",
+          "RRBI"
+        ],
+        "evaluation_utterances": 300,
+        "fit_speakers": [
+          "BWC",
+          "ERMS",
+          "HKK",
+          "HQTV",
+          "SKA",
+          "SVBI",
+          "TNI",
+          "TXHC",
+          "YBAA",
+          "YDCK",
+          "YKWK",
+          "ZHAA"
+        ],
+        "fit_utterances": 1799,
+        "git_sha": "dd2dd8953fc5d946c0b88d72e915be53e7cd0d9f",
+        "gradient_accumulation_steps": 2,
+        "learning_rate": 0.001,
+        "max_successful_updates": 3600,
+        "objective": "operation_ce",
+        "parameters": {
+          "acoustic_norm.bias": {
+            "numel": 128,
+            "shape": [
+              128
+            ],
+            "trainable": true
+          },
+          "acoustic_norm.weight": {
+            "numel": 128,
+            "shape": [
+              128
+            ],
+            "trainable": true
+          },
+          "acoustic_projection.bias": {
+            "numel": 128,
+            "shape": [
+              128
+            ],
+            "trainable": true
+          },
+          "acoustic_projection.weight": {
+            "numel": 98304,
+            "shape": [
+              128,
+              768
+            ],
+            "trainable": true
+          },
+          "attention.in_proj_bias": {
+            "numel": 384,
+            "shape": [
+              384
+            ],
+            "trainable": true
+          },
+          "attention.in_proj_weight": {
+            "numel": 49152,
+            "shape": [
+              384,
+              128
+            ],
+            "trainable": true
+          },
+          "attention.out_proj.bias": {
+            "numel": 128,
+            "shape": [
+              128
+            ],
+            "trainable": true
+          },
+          "attention.out_proj.weight": {
+            "numel": 16384,
+            "shape": [
+              128,
+              128
+            ],
+            "trainable": true
+          },
+          "ctc_head.bias": {
+            "numel": 40,
+            "shape": [
+              40
+            ],
+            "trainable": true
+          },
+          "ctc_head.weight": {
+            "numel": 30720,
+            "shape": [
+              40,
+              768
+            ],
+            "trainable": true
+          },
+          "operation_head.0.bias": {
+            "numel": 128,
+            "shape": [
+              128
+            ],
+            "trainable": true
+          },
+          "operation_head.0.weight": {
+            "numel": 32768,
+            "shape": [
+              128,
+              256
+            ],
+            "trainable": true
+          },
+          "operation_head.3.bias": {
+            "numel": 3,
+            "shape": [
+              3
+            ],
+            "trainable": true
+          },
+          "operation_head.3.weight": {
+            "numel": 384,
+            "shape": [
+              3,
+              128
+            ],
+            "trainable": true
+          },
+          "phone_embedding.weight": {
+            "numel": 5120,
+            "shape": [
+              40,
+              128
+            ],
+            "trainable": true
+          },
+          "position_embedding.weight": {
+            "numel": 32768,
+            "shape": [
+              256,
+              128
+            ],
+            "trainable": true
+          }
+        },
+        "registration": "P-SUP-COMPACT-OP-V1",
+        "seed": 1337,
+        "selection_speakers": [
+          "MBMPS",
+          "TLV"
+        ],
+        "selection_utterances": 300,
+        "split_manifest_path": "/kaggle/working/repo/manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json",
+        "split_manifest_sha256": "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b",
+        "task_weight": 1.0,
+        "warmup_updates": 100,
+        "weight_decay": 0.01,
+        "zip_path": "/kaggle/input/datasets/minkhoaa/langfens-rq1-fold1-staging/authorized_RQ1-TRN-02A_fold1_train_val_only.bin",
+        "zip_sha256": "b750eb3bf3971afccd9ab9058a64fa6b3f5781399b9ef0f1294d29bf580784a9"
+      },
+      "path": "/home/khoa/.cache/langfens/psup-benchmark-v1/t_op/canonical_recovery/best.pt",
+      "sha256": "3b492049399608a1f0319accee0404de50fe4972340ff5cc3c930f58867a14e9",
+      "skipped_updates": 0,
+      "successful_updates": 2700
+    },
+    "t_op_fixed_budget_3600": {
+      "metadata": {
+        "backbone": "facebook/wav2vec2-base-960h",
+        "backbone_revision": "22aad52d435eb6dbaf354bdad9b0da84ce7d6156",
+        "batch_size": 2,
+        "calibration_speakers": [
+          "NCC",
+          "THV"
+        ],
+        "calibration_utterances": 300,
+        "contract_sha256": "4d99723e4b3f62f506165ced089eca82d4417279c76973b35470bd337cedfab2",
+        "cosine_horizon_updates": 15000,
+        "created_at_utc": "2026-11-03T15:43:36.234144+00:00",
+        "ctc_weight": 1.0,
+        "effective_batch_size": 4,
+        "evaluation_speakers": [
+          "NJS",
+          "RRBI"
+        ],
+        "evaluation_utterances": 300,
+        "fit_speakers": [
+          "BWC",
+          "ERMS",
+          "HKK",
+          "HQTV",
+          "SKA",
+          "SVBI",
+          "TNI",
+          "TXHC",
+          "YBAA",
+          "YDCK",
+          "YKWK",
+          "ZHAA"
+        ],
+        "fit_utterances": 1799,
+        "git_sha": "dd2dd8953fc5d946c0b88d72e915be53e7cd0d9f",
+        "gradient_accumulation_steps": 2,
+        "learning_rate": 0.001,
+        "max_successful_updates": 3600,
+        "objective": "operation_ce",
+        "parameters": {
+          "acoustic_norm.bias": {
+            "numel": 128,
+            "shape": [
+              128
+            ],
+            "trainable": true
+          },
+          "acoustic_norm.weight": {
+            "numel": 128,
+            "shape": [
+              128
+            ],
+            "trainable": true
+          },
+          "acoustic_projection.bias": {
+            "numel": 128,
+            "shape": [
+              128
+            ],
+            "trainable": true
+          },
+          "acoustic_projection.weight": {
+            "numel": 98304,
+            "shape": [
+              128,
+              768
+            ],
+            "trainable": true
+          },
+          "attention.in_proj_bias": {
+            "numel": 384,
+            "shape": [
+              384
+            ],
+            "trainable": true
+          },
+          "attention.in_proj_weight": {
+            "numel": 49152,
+            "shape": [
+              384,
+              128
+            ],
+            "trainable": true
+          },
+          "attention.out_proj.bias": {
+            "numel": 128,
+            "shape": [
+              128
+            ],
+            "trainable": true
+          },
+          "attention.out_proj.weight": {
+            "numel": 16384,
+            "shape": [
+              128,
+              128
+            ],
+            "trainable": true
+          },
+          "ctc_head.bias": {
+            "numel": 40,
+            "shape": [
+              40
+            ],
+            "trainable": true
+          },
+          "ctc_head.weight": {
+            "numel": 30720,
+            "shape": [
+              40,
+              768
+            ],
+            "trainable": true
+          },
+          "operation_head.0.bias": {
+            "numel": 128,
+            "shape": [
+              128
+            ],
+            "trainable": true
+          },
+          "operation_head.0.weight": {
+            "numel": 32768,
+            "shape": [
+              128,
+              256
+            ],
+            "trainable": true
+          },
+          "operation_head.3.bias": {
+            "numel": 3,
+            "shape": [
+              3
+            ],
+            "trainable": true
+          },
+          "operation_head.3.weight": {
+            "numel": 384,
+            "shape": [
+              3,
+              128
+            ],
+            "trainable": true
+          },
+          "phone_embedding.weight": {
+            "numel": 5120,
+            "shape": [
+              40,
+              128
+            ],
+            "trainable": true
+          },
+          "position_embedding.weight": {
+            "numel": 32768,
+            "shape": [
+              256,
+              128
+            ],
+            "trainable": true
+          }
+        },
+        "registration": "P-SUP-COMPACT-OP-V1",
+        "seed": 1337,
+        "selection_speakers": [
+          "MBMPS",
+          "TLV"
+        ],
+        "selection_utterances": 300,
+        "split_manifest_path": "/kaggle/working/repo/manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json",
+        "split_manifest_sha256": "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b",
+        "task_weight": 1.0,
+        "warmup_updates": 100,
+        "weight_decay": 0.01,
+        "zip_path": "/kaggle/input/datasets/minkhoaa/langfens-rq1-fold1-staging/authorized_RQ1-TRN-02A_fold1_train_val_only.bin",
+        "zip_sha256": "b750eb3bf3971afccd9ab9058a64fa6b3f5781399b9ef0f1294d29bf580784a9"
+      },
+      "path": "/home/khoa/.cache/langfens/psup-benchmark-v1/t_op/canonical_recovery/fixed_budget_3600.pt",
+      "sha256": "a8559b382ff6ec09f9c90ed4eccba59fa45ff41e20e10aae1cea9eff7697fbd9",
+      "skipped_updates": 0,
+      "successful_updates": 3600
+    }
+  },
+  "dataset": {
+    "archive": "/home/khoa/Projects/KLTN/Dataset/datasets/L2-ARCTIC/authorized_RQ1-TRN-02A_fold1_train_val_only.zip",
+    "contract_sha256": "4d99723e4b3f62f506165ced089eca82d4417279c76973b35470bd337cedfab2",
+    "sha256": "b750eb3bf3971afccd9ab9058a64fa6b3f5781399b9ef0f1294d29bf580784a9",
+    "split_sha256": "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b"
+  },
+  "dependencies": {
+    "huggingface-hub": "2.3.0",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "soundfile": "0.14.0",
+    "torch": "2.14.1",
+    "transformers": "5.20.2"
+  },
+  "dictionary_sha256": "81917843c7f44ce2b094ac63873c2c7a4cf802040792c455ba3ca406891c3d22",
+  "elapsed_inference_and_gold_join_seconds": 162.9790871480002,
+  "git_dirty": true,
+  "git_head": "ea16b83ca906e6bbd867296ed702bdf57e677feb",
+  "gold_free_Z_runtime_freeze_sha256": "0d4a54e492b764b892a0370f851b8f99e4574edd82658bcea7625da534c1ff8b",
+  "hardware": "Linux-7.3.1-1-cachyos-x86_64-with-glibc2.44",
+  "inference_source_sha256": "f19d2e1f2d62b1646979a06c9bfe7b0ddb47c689ca01981827d2ba541ef35d40",
+  "interpreter": "/home/khoa/Projects/KLTN/Dataset/.venv-cuda/bin/python",
+  "optimizer_updates_this_process": 0,
+  "output_hashes": {
+    "AUDIO_MISMATCH_MAPPING.json": "ec05eef6f342ee43196fdc80a4e2d1c64dcec123d743134c92e3ea1129e61909",
+    "FROZEN_FEATURE_IDENTITIES.json": "fd2939d0083ea3f71f9a8543c2099e7f50b71625b94e6ace84afc1d7c0c913c5",
+    "Z_RUNTIME_FREEZE.json": "0d4a54e492b764b892a0370f851b8f99e4574edd82658bcea7625da534c1ff8b",
+    "b_control_best/protocol_o/calibration/offline_token_evaluation.jsonl": "0a5525da7f70c980e37e9ac0d687d1552b550d915a378d9b8b68c65e932945cf",
+    "b_control_best/protocol_o/calibration/runtime_predictions.jsonl": "00e77f9d6e478ac1fb0912c1456b0214df015b8066164526c845ed50a7522834",
+    "b_control_best/protocol_o/calibration/utterance_predictions.jsonl": "0742cb281572dca5d4b24d3a3211c108ec19b244b948247c80325ef0cff1954c",
+    "b_control_best/protocol_o/calibration/utterance_runtime_predictions.jsonl": "a1a1a0f68abcd23a04421ddbf2e629a77f1e17120d746e89eeeba2aea8dd45bf",
+    "b_control_best/protocol_o/mismatch/offline_token_evaluation.jsonl": "db1c3a1831f95e40bf3b5fbc6ac30560a612d3be422c55fc1a563488f1938cb9",
+    "b_control_best/protocol_o/mismatch/runtime_predictions.jsonl": "b86f76c84d6c1e88a81da90b43daa445bcb7eff241838b3d79589c1898f3bfb9",
+    "b_control_best/protocol_o/mismatch/utterance_predictions.jsonl": "8108f639cc75e0351c1f1020df2c69361a51f86880abaedc11cd32fd0458b741",
+    "b_control_best/protocol_o/mismatch/utterance_runtime_predictions.jsonl": "c1e57431ce1fd475b8d4075a89676f5eff6edd0bad834cecadb7f1e4de31fb4d",
+    "b_control_best/protocol_o/offline_token_evaluation.jsonl": "6420f59a594819b4455fb6b761e0a33b4de6bd4f1512fb114bbba7aa173055dc",
+    "b_control_best/protocol_o/runtime_predictions.jsonl": "086fc135587df4dfeb9a97c582325af2be36a3fadae64025a0751a10507539ad",
+    "b_control_best/protocol_o/utterance_predictions.jsonl": "4779913d725b2af2926b67f76ac2f39734ac08be323c57b1e775d756403ac241",
+    "b_control_best/protocol_o/utterance_runtime_predictions.jsonl": "3c170039d0d143b1af5179627cc222e2d0fc685a2c1ad3e3e07315eaf2b33914",
+    "b_control_best/protocol_z/calibration/offline_token_evaluation.jsonl": "3813cfbe0ceb429640c3240af6ae0acdd076c553d8861cb0aae221ac4d797ca1",
+    "b_control_best/protocol_z/calibration/runtime_predictions.jsonl": "b9d3403e0bdf4ead1e0d1b1b6481749795899461ca29ba19d72065af611cdf41",
+    "b_control_best/protocol_z/calibration/utterance_predictions.jsonl": "0742cb281572dca5d4b24d3a3211c108ec19b244b948247c80325ef0cff1954c",
+    "b_control_best/protocol_z/calibration/utterance_runtime_predictions.jsonl": "a1a1a0f68abcd23a04421ddbf2e629a77f1e17120d746e89eeeba2aea8dd45bf",
+    "b_control_best/protocol_z/mismatch/offline_token_evaluation.jsonl": "ef56158d6d83af5704e509b7b90c58d5d3c6452f57d1f5076669a06310fb3172",
+    "b_control_best/protocol_z/mismatch/runtime_predictions.jsonl": "fa830e6fcbcca485031e96fd5b70cbd58f3e6f9ef8ee2090b0c0719cdad24743",
+    "b_control_best/protocol_z/mismatch/utterance_predictions.jsonl": "8108f639cc75e0351c1f1020df2c69361a51f86880abaedc11cd32fd0458b741",
+    "b_control_best/protocol_z/mismatch/utterance_runtime_predictions.jsonl": "c1e57431ce1fd475b8d4075a89676f5eff6edd0bad834cecadb7f1e4de31fb4d",
+    "b_control_best/protocol_z/offline_token_evaluation.jsonl": "f3b764230e698c9df7684abe0151c54c2a41428917e03ed25fef1ba3b365687b",
+    "b_control_best/protocol_z/runtime_predictions.jsonl": "b5626ed277ff9ff561a873f5b8fb7de7caca352394ae7dfcbcf23fa5d414ed1b",
+    "b_control_best/protocol_z/utterance_predictions.jsonl": "4779913d725b2af2926b67f76ac2f39734ac08be323c57b1e775d756403ac241",
+    "b_control_best/protocol_z/utterance_runtime_predictions.jsonl": "3c170039d0d143b1af5179627cc222e2d0fc685a2c1ad3e3e07315eaf2b33914",
+    "b_control_fixed_budget_3600/protocol_o/calibration/offline_token_evaluation.jsonl": "250c4dc4475d71f9df59fa7d57c7cb4c9303788d221e4091047fd5e2d75b8f7b",
+    "b_control_fixed_budget_3600/protocol_o/calibration/runtime_predictions.jsonl": "ed1e2a060d75574d387407c723d100fc1f71362e5f8365e984276e1326892633",
+    "b_control_fixed_budget_3600/protocol_o/calibration/utterance_predictions.jsonl": "a8f8677461e668bd3554c8c1c62e2915f26679829b78f87b87ac7f6f28dc0b6b",
+    "b_control_fixed_budget_3600/protocol_o/calibration/utterance_runtime_predictions.jsonl": "603deca56a2a032acd572e1ec90211227d972005c8bc582954ce8e65fab309be",
+    "b_control_fixed_budget_3600/protocol_o/mismatch/offline_token_evaluation.jsonl": "fc8c5ffe1f66690b078c5b59b67809909e85f9e5d238812a5c82d770cf07270d",
+    "b_control_fixed_budget_3600/protocol_o/mismatch/runtime_predictions.jsonl": "5490cf79d66bf2bf9b287bc3f45d2e61b8115e077107642b92f368e3b13cb937",
+    "b_control_fixed_budget_3600/protocol_o/mismatch/utterance_predictions.jsonl": "4b058c0970870e2c91704769c3fa311400150e63a05c8acc06b42b2c245e74a3",
+    "b_control_fixed_budget_3600/protocol_o/mismatch/utterance_runtime_predictions.jsonl": "eca0d33497da449fe53bd7e3e514961f86c898494dea7894ea01a7f2cb01042b",
+    "b_control_fixed_budget_3600/protocol_o/offline_token_evaluation.jsonl": "047a080290bcf76b7c019a8f9462a5ab99673d3f77cdd17868eba5cbbb2bc7c7",
+    "b_control_fixed_budget_3600/protocol_o/runtime_predictions.jsonl": "b8e462f79d5faca8d470dfc341710fea6d8744c8170cc73a8d6e1c04ecc5e0f4",
+    "b_control_fixed_budget_3600/protocol_o/utterance_predictions.jsonl": "6b6c72eb3cc0389cefd511bc460dad24fa38a42314d506ff25182e0816932853",
+    "b_control_fixed_budget_3600/protocol_o/utterance_runtime_predictions.jsonl": "45825585af6d8b4e038acb4116c05832128add19674bf07d11dffd87b5804420",
+    "b_control_fixed_budget_3600/protocol_z/calibration/offline_token_evaluation.jsonl": "c577c3d11fe98b977c552bef5ad01784e003c3cf57203c32404d0aebba82cd45",
+    "b_control_fixed_budget_3600/protocol_z/calibration/runtime_predictions.jsonl": "ad7b865318efec472332e63e7f60081f0e01cfe5a6113224990911fd65f0c137",
+    "b_control_fixed_budget_3600/protocol_z/calibration/utterance_predictions.jsonl": "a8f8677461e668bd3554c8c1c62e2915f26679829b78f87b87ac7f6f28dc0b6b",
+    "b_control_fixed_budget_3600/protocol_z/calibration/utterance_runtime_predictions.jsonl": "603deca56a2a032acd572e1ec90211227d972005c8bc582954ce8e65fab309be",
+    "b_control_fixed_budget_3600/protocol_z/mismatch/offline_token_evaluation.jsonl": "dcd478ba8192bef3752ade2e3a8a7c805dd5c8b6871f7adac5f313b5b2bd13cb",
+    "b_control_fixed_budget_3600/protocol_z/mismatch/runtime_predictions.jsonl": "d17241a68f978e9c4acae8a25fca6df8f2d24c46d36da9b299cf5b77743c257a",
+    "b_control_fixed_budget_3600/protocol_z/mismatch/utterance_predictions.jsonl": "4b058c0970870e2c91704769c3fa311400150e63a05c8acc06b42b2c245e74a3",
+    "b_control_fixed_budget_3600/protocol_z/mismatch/utterance_runtime_predictions.jsonl": "eca0d33497da449fe53bd7e3e514961f86c898494dea7894ea01a7f2cb01042b",
+    "b_control_fixed_budget_3600/protocol_z/offline_token_evaluation.jsonl": "86af6f25701271e00ad95c9822ed6392e327231820b47ed0dec45c5bf6046e9e",
+    "b_control_fixed_budget_3600/protocol_z/runtime_predictions.jsonl": "460722c3b1beae5da205ff8c4bbf023abd0639f7ca14884fe18aa378d0598458",
+    "b_control_fixed_budget_3600/protocol_z/utterance_predictions.jsonl": "6b6c72eb3cc0389cefd511bc460dad24fa38a42314d506ff25182e0816932853",
+    "b_control_fixed_budget_3600/protocol_z/utterance_runtime_predictions.jsonl": "45825585af6d8b4e038acb4116c05832128add19674bf07d11dffd87b5804420",
+    "inference_source.json": "e8e868b8a1be89d6698da88a483fdc0f22acc02261c7641be80d4fb720b4cf9d",
+    "t_op_best/protocol_o/calibration/offline_token_evaluation.jsonl": "4f4841f025d22ffca3ff9c36593397f19b925c7d0bf69bc734586cf08eac7cea",
+    "t_op_best/protocol_o/calibration/runtime_predictions.jsonl": "9da851aea3b7ab59d62aa64a4d11a35cd8403cdacb35ea18efe4183a11d70132",
+    "t_op_best/protocol_o/calibration/utterance_predictions.jsonl": "fd41e61f88a86f1459ab560aed9d016d1bb1dbfa41858cb168e225dab76a3277",
+    "t_op_best/protocol_o/calibration/utterance_runtime_predictions.jsonl": "955f2715af408a07523ab86183766f83b6fa302bfddff8ee4d1913c5c8e14777",
+    "t_op_best/protocol_o/mismatch/offline_token_evaluation.jsonl": "2e73888609743809b6d7c241d085fd83337e6e7ce8edbfe3ae3bf1db8067374e",
+    "t_op_best/protocol_o/mismatch/runtime_predictions.jsonl": "4af75cab749088acd0d8a9608baf38a16559dea50373059f4c303a6c20daa41a",
+    "t_op_best/protocol_o/mismatch/utterance_predictions.jsonl": "416260a209c90cd9d67044d45034cb57886845b2d5d5e6e747003e7b60b54111",
+    "t_op_best/protocol_o/mismatch/utterance_runtime_predictions.jsonl": "7ba8f68b94dc660a9addf9ff3f8f2c3b573a2af0bc71f57c2c3a8c69a76941ea",
+    "t_op_best/protocol_o/offline_token_evaluation.jsonl": "c189490c43230aa352be4422c2b24461bfa477c426e2593d3487e1879372bfe1",
+    "t_op_best/protocol_o/runtime_predictions.jsonl": "184562e6c377c2fed2b3e9cc57d66c31f3b91518deb0e6f1bcf2cd2fdf7540e8",
+    "t_op_best/protocol_o/utterance_predictions.jsonl": "8fd2763bf56a7449f67712bc92a05db6072f7f8aef80797890bfe1d6854fbe05",
+    "t_op_best/protocol_o/utterance_runtime_predictions.jsonl": "b5226ba465329f6f47267590fc8e4f2f583566e95bd4dd7ace812148a0967419",
+    "t_op_best/protocol_z/calibration/offline_token_evaluation.jsonl": "616cc96eb2bfed154dbba15dd9060b35bd7ce678d2f76af96dabb9b63e322c7d",
+    "t_op_best/protocol_z/calibration/runtime_predictions.jsonl": "8545ae0f70bf19f8c355ddc175c8260390623652e556d490e30d47f651aac206",
+    "t_op_best/protocol_z/calibration/utterance_predictions.jsonl": "fd41e61f88a86f1459ab560aed9d016d1bb1dbfa41858cb168e225dab76a3277",
+    "t_op_best/protocol_z/calibration/utterance_runtime_predictions.jsonl": "955f2715af408a07523ab86183766f83b6fa302bfddff8ee4d1913c5c8e14777",
+    "t_op_best/protocol_z/mismatch/offline_token_evaluation.jsonl": "226b2a3dbfdb88782e5821a0eafe242f21bfe9a0fd5db75a9606707a6cb1eeaa",
+    "t_op_best/protocol_z/mismatch/runtime_predictions.jsonl": "f6b29c41995b754794de23bb8d95aecc89590256fb72f6f0acf1c1232373aade",
+    "t_op_best/protocol_z/mismatch/utterance_predictions.jsonl": "416260a209c90cd9d67044d45034cb57886845b2d5d5e6e747003e7b60b54111",
+    "t_op_best/protocol_z/mismatch/utterance_runtime_predictions.jsonl": "7ba8f68b94dc660a9addf9ff3f8f2c3b573a2af0bc71f57c2c3a8c69a76941ea",
+    "t_op_best/protocol_z/offline_token_evaluation.jsonl": "3c77faaa3a496799623b74bedc6eb359544fd41fd9ffc919068934c5f0fcbfc3",
+    "t_op_best/protocol_z/runtime_predictions.jsonl": "7d705c90abcb419078a162d780e6aa0f2364ed96329268d82b8873e872e0a071",
+    "t_op_best/protocol_z/utterance_predictions.jsonl": "8fd2763bf56a7449f67712bc92a05db6072f7f8aef80797890bfe1d6854fbe05",
+    "t_op_best/protocol_z/utterance_runtime_predictions.jsonl": "b5226ba465329f6f47267590fc8e4f2f583566e95bd4dd7ace812148a0967419",
+    "t_op_fixed_budget_3600/protocol_o/calibration/offline_token_evaluation.jsonl": "a9a09b66b5aef65c5fe31d31f727fefba425c73c4754466838e22f4499281a16",
+    "t_op_fixed_budget_3600/protocol_o/calibration/runtime_predictions.jsonl": "2c5bd2286560c8617f2fa251064de2207fd4e08a89ad740eb840988450fe41dc",
+    "t_op_fixed_budget_3600/protocol_o/calibration/utterance_predictions.jsonl": "2e004224068e909a5bab6cda8c7ea94f476720bcb90e8b9f7b1ee54481853e6b",
+    "t_op_fixed_budget_3600/protocol_o/calibration/utterance_runtime_predictions.jsonl": "8a937aa63a5dd47f38d08d8e3c9095027248076b2c0cbf82209d845cc821154b",
+    "t_op_fixed_budget_3600/protocol_o/mismatch/offline_token_evaluation.jsonl": "8dc2653e7a8d2d78a33e8fe417c25c11fe38a81f224493e592d6788462923028",
+    "t_op_fixed_budget_3600/protocol_o/mismatch/runtime_predictions.jsonl": "8e899cf91b313db6b26a209a59f2a93b9623b218a5ecfd99a9dbf4f69defc78d",
+    "t_op_fixed_budget_3600/protocol_o/mismatch/utterance_predictions.jsonl": "d20f285b440dd3ba46232c02a7681db485536411cb1ab7e0396a856659aa6d4b",
+    "t_op_fixed_budget_3600/protocol_o/mismatch/utterance_runtime_predictions.jsonl": "10608486d0529d81c3ef42531576cd1412362477801440e402ec1f9caa137d3b",
+    "t_op_fixed_budget_3600/protocol_o/offline_token_evaluation.jsonl": "3edb9d1eeb20446fb39def3c83509a09c5643071b114315c274d73c686917838",
+    "t_op_fixed_budget_3600/protocol_o/runtime_predictions.jsonl": "5871a2c15c9da4c927a66b64c9adae320f9ca38a5c6ff8f12319a7e6e39b23d1",
+    "t_op_fixed_budget_3600/protocol_o/utterance_predictions.jsonl": "330631c9ff9138ca87773054065e6a4a10f6f7f3017d80b179f7254bdcb5ad4f",
+    "t_op_fixed_budget_3600/protocol_o/utterance_runtime_predictions.jsonl": "f9503313245c43b7a6f16e886cb98d9fb396ece246478bb4bca746d5138bcab1",
+    "t_op_fixed_budget_3600/protocol_z/calibration/offline_token_evaluation.jsonl": "3ff1a9d3c1cd61d40815e7849ecf7ce538d54877f8db0b288752c3a8790a1df1",
+    "t_op_fixed_budget_3600/protocol_z/calibration/runtime_predictions.jsonl": "c8542624624dd9f5f7e63a96c62741bbb0b0954df1c7a2467b69677e2f5fec56",
+    "t_op_fixed_budget_3600/protocol_z/calibration/utterance_predictions.jsonl": "2e004224068e909a5bab6cda8c7ea94f476720bcb90e8b9f7b1ee54481853e6b",
+    "t_op_fixed_budget_3600/protocol_z/calibration/utterance_runtime_predictions.jsonl": "8a937aa63a5dd47f38d08d8e3c9095027248076b2c0cbf82209d845cc821154b",
+    "t_op_fixed_budget_3600/protocol_z/mismatch/offline_token_evaluation.jsonl": "d73ee89a9caebef54ef5b453bcf43b5f760ae4ac08fec62f4f1abe43c397fb02",
+    "t_op_fixed_budget_3600/protocol_z/mismatch/runtime_predictions.jsonl": "4b1e6ca29dada601da94404087fc6bf74ea84dd06d3582a45aeca5eb1a4673b5",
+    "t_op_fixed_budget_3600/protocol_z/mismatch/utterance_predictions.jsonl": "d20f285b440dd3ba46232c02a7681db485536411cb1ab7e0396a856659aa6d4b",
+    "t_op_fixed_budget_3600/protocol_z/mismatch/utterance_runtime_predictions.jsonl": "10608486d0529d81c3ef42531576cd1412362477801440e402ec1f9caa137d3b",
+    "t_op_fixed_budget_3600/protocol_z/offline_token_evaluation.jsonl": "260b851d9324235cddf93eff29cd734c97f31ddc13de06165a0cb103d5afb74d",
+    "t_op_fixed_budget_3600/protocol_z/runtime_predictions.jsonl": "5a67f36289f176df57093bd1e7b458c2009b553907a32b5a250636549128bec5",
+    "t_op_fixed_budget_3600/protocol_z/utterance_predictions.jsonl": "330631c9ff9138ca87773054065e6a4a10f6f7f3017d80b179f7254bdcb5ad4f",
+    "t_op_fixed_budget_3600/protocol_z/utterance_runtime_predictions.jsonl": "f9503313245c43b7a6f16e886cb98d9fb396ece246478bb4bca746d5138bcab1"
+  },
+  "parameter_fingerprints_after": {
+    "b_control_best": "fdc8c94a593294621f9c4c940d366ff4d07ec0618e1a59bc1d97153c93a236ec",
+    "b_control_fixed_budget_3600": "3dc863bfe9e7aeec337c7af9e1e987182df41773e9840fe21ecaeccaf101c19b",
+    "backbone": "8f295f20b1c58d033692366bbbae7479e36d4ed4dd49d9ffdd2db12b183fe4a0",
+    "t_op_best": "4befd9fcc165cf0019c2408440de8c65b1cffba55a42f5c2be7cbfaa067c4bb1",
+    "t_op_fixed_budget_3600": "9714c8b9b23eec1e1a08a9a175375c12a65aa78a9da55784687ce39e977741c3"
+  },
+  "parameter_fingerprints_before": {
+    "b_control_best": "fdc8c94a593294621f9c4c940d366ff4d07ec0618e1a59bc1d97153c93a236ec",
+    "b_control_fixed_budget_3600": "3dc863bfe9e7aeec337c7af9e1e987182df41773e9840fe21ecaeccaf101c19b",
+    "backbone": "8f295f20b1c58d033692366bbbae7479e36d4ed4dd49d9ffdd2db12b183fe4a0",
+    "t_op_best": "4befd9fcc165cf0019c2408440de8c65b1cffba55a42f5c2be7cbfaa067c4bb1",
+    "t_op_fixed_budget_3600": "9714c8b9b23eec1e1a08a9a175375c12a65aa78a9da55784687ce39e977741c3"
+  },
+  "precision": "CPU FP32; batch1 for all endpoints, protocols and conditions",
+  "prompts_sha256": "87843d363bc7e2bbe849842efe16974cb6634dfe0539efb42d666aed7e17f11e",
+  "python": "3.11.17",
+  "schema_version": "psup-recovered-benchmark-v1",
+  "source_hashes": {
+    "audit_scripts/run_psup_recovered_benchmark_v1.py": "f19d2e1f2d62b1646979a06c9bfe7b0ddb47c689ca01981827d2ba541ef35d40",
+    "audit_scripts/verify_psup_archival_v1.py": "978b448be224f7cd4d662ee3c1b7d26c6a6975699bde526aa82de0015026027b",
+    "src/langfens_prep/alignment.py": "28e64545eb2614be7ff9109492beb87b7b3b30dc6850dc03d83ada2247885881",
+    "src/langfens_prep/audio_loader.py": "a6221e90bb1e1b47e07f0637dc41f319f1906cf706d848a22059b3640047103a",
+    "src/langfens_prep/dataset.py": "b23058e75777816d429b1097eabd637576b1d4b37f6cbf963e4e13a910daaa6c",
+    "src/langfens_prep/g2p.py": "a8e0b1a037e4ca87b08566c87fdfb6d976f73f826f7d87db441d59e5fe095c23",
+    "src/langfens_prep/p_sup/labels.py": "c7b2ba9ba4a7af09e103f4eb0d9f61b995313f160a4b6701988837eac0b91a29",
+    "src/langfens_prep/p_sup/model.py": "8cdd664c220644e5163aca6d492181c5f02ec453e0bdf33b765cf7daf06a40f5",
+    "src/langfens_prep/p_sup/runtime.py": "4147f810c71eb54a8c0f8faa4b4e4e4dbf45daa251b4338a9d1035b211b2f47b",
+    "src/langfens_prep/p_sup/trainer.py": "a75559dbd7586b4c9188a89411c44e8588d6309b2cd434bc7dc71605673893fc",
+    "src/langfens_prep/phoneme_normalizer.py": "1096d8d95c9e3b3b3f2bacf0fa0d6109c36d4027e40cf832bf6b6cbc045df9fe",
+    "src/langfens_prep/textgrid_parser.py": "e765bcc0a03c8dbc3d6005db39f221e2658470692e48edf2d21998369d029ef1"
+  },
+  "status": "INFERENCE_RECORDS_FROZEN",
+  "threads": 4
+}

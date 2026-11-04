@@ -1,6 +1,10 @@
 # P-SUP benchmark comparison V1
 
-## Initial actual inference results — acceptance pending remediation
+## Latest executed result: final V2
+
+The authoritative final batch1 FP32 O/Z results, CAL-selected operating points, recognition/mismatch/speaker/WFC breakdowns and reconciliation are in **[final-v2/BENCHMARK_COMPARISON.md](final-v2/BENCHMARK_COMPARISON.md)**. All4configurations were freshly evaluated; savedtoken recomputation and privateSHA256readback executed. Full-control completion remains PARTIAL only for unavailable frozenFIT-onlycanonicalprior (no replacementfit). [Actual reproduction commands](REPRODUCTION_REPORT.md). The initial tables below remain historical evidence and are not silently overwritten with the new numerical stratum.
+
+## Initial actual inference results — historical acceptance pending remediation
 
 These numbers are independently recomputed from the initial **actual fresh CPU FP32** runtime predictions and gold joins, not copied from the preparation report. Evidence: `INITIAL_FRESH_RUN_INDEPENDENT_RECOMPUTATION.json`; raw bytes preserved under private HF revision `0d50af15823b67b27766551545f284c6aa33d00a`, prefix `benchmarks/psup-v1/initial-fresh-inference-20261104`. The initial runner's summaries/provenance/coverage failed review; corrected versioned runs are required before a completion claim. These tables preserve the initial evidence and are not an assertion that the whole benchmark passed.
 

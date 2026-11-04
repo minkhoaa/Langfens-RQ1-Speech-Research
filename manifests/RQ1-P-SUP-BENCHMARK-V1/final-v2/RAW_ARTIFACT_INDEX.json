@@ -1,0 +1,612 @@
+{
+  "evidence_status": "reproduced",
+  "storage_status": "VERIFIED_PRIVATE_SHA256_READBACK",
+  "repository": "minkhoaa/langfens-rq1-cross-fold-checkpoints",
+  "revision": "7a9eae3d7e7ae4709f03e3766c2310991e1f314a",
+  "prefix": "benchmarks/psup-v1/recovered-final-v2-20261104",
+  "private": true,
+  "local_root": "/home/khoa/.cache/langfens/psup-benchmark-v1/recovered-final-v2-20261104",
+  "files": [
+    {
+      "path": "AUDIO_MISMATCH_MAPPING.json",
+      "sha256": "ec05eef6f342ee43196fdc80a4e2d1c64dcec123d743134c92e3ea1129e61909",
+      "bytes": 20987
+    },
+    {
+      "path": "EXECUTION.log",
+      "sha256": "8a96974d44c9267e0fe2a9ee4bcef0b6b7e2620ed4f157e724ee4e822f61bcf5",
+      "bytes": 1664
+    },
+    {
+      "path": "FROZEN_FEATURE_IDENTITIES.json",
+      "sha256": "fd2939d0083ea3f71f9a8543c2099e7f50b71625b94e6ace84afc1d7c0c913c5",
+      "bytes": 174057
+    },
+    {
+      "path": "RUN_MANIFEST.json",
+      "sha256": "051383f00132ba503681541858f15a5ed01d1803ebc027cc36410f6206627332",
+      "bytes": 54270
+    },
+    {
+      "path": "Z_RUNTIME_FREEZE.json",
+      "sha256": "0d4a54e492b764b892a0370f851b8f99e4574edd82658bcea7625da534c1ff8b",
+      "bytes": 3498
+    },
+    {
+      "path": "b_control_best/protocol_o/calibration/offline_token_evaluation.jsonl",
+      "sha256": "0a5525da7f70c980e37e9ac0d687d1552b550d915a378d9b8b68c65e932945cf",
+      "bytes": 4006558
+    },
+    {
+      "path": "b_control_best/protocol_o/calibration/runtime_predictions.jsonl",
+      "sha256": "00e77f9d6e478ac1fb0912c1456b0214df015b8066164526c845ed50a7522834",
+      "bytes": 7580631
+    },
+    {
+      "path": "b_control_best/protocol_o/calibration/utterance_predictions.jsonl",
+      "sha256": "0742cb281572dca5d4b24d3a3211c108ec19b244b948247c80325ef0cff1954c",
+      "bytes": 160535
+    },
+    {
+      "path": "b_control_best/protocol_o/calibration/utterance_runtime_predictions.jsonl",
+      "sha256": "a1a1a0f68abcd23a04421ddbf2e629a77f1e17120d746e89eeeba2aea8dd45bf",
+      "bytes": 94046
+    },
+    {
+      "path": "b_control_best/protocol_o/mismatch/offline_token_evaluation.jsonl",
+      "sha256": "db1c3a1831f95e40bf3b5fbc6ac30560a612d3be422c55fc1a563488f1938cb9",
+      "bytes": 4143427
+    },
+    {
+      "path": "b_control_best/protocol_o/mismatch/runtime_predictions.jsonl",
+      "sha256": "b86f76c84d6c1e88a81da90b43daa445bcb7eff241838b3d79589c1898f3bfb9",
+      "bytes": 7848428
+    },
+    {
+      "path": "b_control_best/protocol_o/mismatch/utterance_predictions.jsonl",
+      "sha256": "8108f639cc75e0351c1f1020df2c69361a51f86880abaedc11cd32fd0458b741",
+      "bytes": 164100
+    },
+    {
+      "path": "b_control_best/protocol_o/mismatch/utterance_runtime_predictions.jsonl",
+      "sha256": "c1e57431ce1fd475b8d4075a89676f5eff6edd0bad834cecadb7f1e4de31fb4d",
+      "bytes": 96275
+    },
+    {
+      "path": "b_control_best/protocol_o/offline_token_evaluation.jsonl",
+      "sha256": "6420f59a594819b4455fb6b761e0a33b4de6bd4f1512fb114bbba7aa173055dc",
+      "bytes": 4004239
+    },
+    {
+      "path": "b_control_best/protocol_o/runtime_predictions.jsonl",
+      "sha256": "086fc135587df4dfeb9a97c582325af2be36a3fadae64025a0751a10507539ad",
+      "bytes": 7569645
+    },
+    {
+      "path": "b_control_best/protocol_o/utterance_predictions.jsonl",
+      "sha256": "4779913d725b2af2926b67f76ac2f39734ac08be323c57b1e775d756403ac241",
+      "bytes": 164100
+    },
+    {
+      "path": "b_control_best/protocol_o/utterance_runtime_predictions.jsonl",
+      "sha256": "3c170039d0d143b1af5179627cc222e2d0fc685a2c1ad3e3e07315eaf2b33914",
+      "bytes": 96275
+    },
+    {
+      "path": "b_control_best/protocol_z/calibration/offline_token_evaluation.jsonl",
+      "sha256": "3813cfbe0ceb429640c3240af6ae0acdd076c553d8861cb0aae221ac4d797ca1",
+      "bytes": 4016606
+    },
+    {
+      "path": "b_control_best/protocol_z/calibration/runtime_predictions.jsonl",
+      "sha256": "b9d3403e0bdf4ead1e0d1b1b6481749795899461ca29ba19d72065af611cdf41",
+      "bytes": 7624328
+    },
+    {
+      "path": "b_control_best/protocol_z/calibration/utterance_predictions.jsonl",
+      "sha256": "0742cb281572dca5d4b24d3a3211c108ec19b244b948247c80325ef0cff1954c",
+      "bytes": 160535
+    },
+    {
+      "path": "b_control_best/protocol_z/calibration/utterance_runtime_predictions.jsonl",
+      "sha256": "a1a1a0f68abcd23a04421ddbf2e629a77f1e17120d746e89eeeba2aea8dd45bf",
+      "bytes": 94046
+    },
+    {
+      "path": "b_control_best/protocol_z/mismatch/offline_token_evaluation.jsonl",
+      "sha256": "ef56158d6d83af5704e509b7b90c58d5d3c6452f57d1f5076669a06310fb3172",
+      "bytes": 4159491
+    },
+    {
+      "path": "b_control_best/protocol_z/mismatch/runtime_predictions.jsonl",
+      "sha256": "fa830e6fcbcca485031e96fd5b70cbd58f3e6f9ef8ee2090b0c0719cdad24743",
+      "bytes": 7888251
+    },
+    {
+      "path": "b_control_best/protocol_z/mismatch/utterance_predictions.jsonl",
+      "sha256": "8108f639cc75e0351c1f1020df2c69361a51f86880abaedc11cd32fd0458b741",
+      "bytes": 164100
+    },
+    {
+      "path": "b_control_best/protocol_z/mismatch/utterance_runtime_predictions.jsonl",
+      "sha256": "c1e57431ce1fd475b8d4075a89676f5eff6edd0bad834cecadb7f1e4de31fb4d",
+      "bytes": 96275
+    },
+    {
+      "path": "b_control_best/protocol_z/offline_token_evaluation.jsonl",
+      "sha256": "f3b764230e698c9df7684abe0151c54c2a41428917e03ed25fef1ba3b365687b",
+      "bytes": 4019771
+    },
+    {
+      "path": "b_control_best/protocol_z/runtime_predictions.jsonl",
+      "sha256": "b5626ed277ff9ff561a873f5b8fb7de7caca352394ae7dfcbcf23fa5d414ed1b",
+      "bytes": 7609302
+    },
+    {
+      "path": "b_control_best/protocol_z/utterance_predictions.jsonl",
+      "sha256": "4779913d725b2af2926b67f76ac2f39734ac08be323c57b1e775d756403ac241",
+      "bytes": 164100
+    },
+    {
+      "path": "b_control_best/protocol_z/utterance_runtime_predictions.jsonl",
+      "sha256": "3c170039d0d143b1af5179627cc222e2d0fc685a2c1ad3e3e07315eaf2b33914",
+      "bytes": 96275
+    },
+    {
+      "path": "b_control_fixed_budget_3600/protocol_o/calibration/offline_token_evaluation.jsonl",
+      "sha256": "250c4dc4475d71f9df59fa7d57c7cb4c9303788d221e4091047fd5e2d75b8f7b",
+      "bytes": 4006172
+    },
+    {
+      "path": "b_control_fixed_budget_3600/protocol_o/calibration/runtime_predictions.jsonl",
+      "sha256": "ed1e2a060d75574d387407c723d100fc1f71362e5f8365e984276e1326892633",
+      "bytes": 7712794
+    },
+    {
+      "path": "b_control_fixed_budget_3600/protocol_o/calibration/utterance_predictions.jsonl",
+      "sha256": "a8f8677461e668bd3554c8c1c62e2915f26679829b78f87b87ac7f6f28dc0b6b",
+      "bytes": 160373
+    },
+    {
+      "path": "b_control_fixed_budget_3600/protocol_o/calibration/utterance_runtime_predictions.jsonl",
+      "sha256": "603deca56a2a032acd572e1ec90211227d972005c8bc582954ce8e65fab309be",
+      "bytes": 93909
+    },
+    {
+      "path": "b_control_fixed_budget_3600/protocol_o/mismatch/offline_token_evaluation.jsonl",
+      "sha256": "fc8c5ffe1f66690b078c5b59b67809909e85f9e5d238812a5c82d770cf07270d",
+      "bytes": 4142994
+    },
+    {
+      "path": "b_control_fixed_budget_3600/protocol_o/mismatch/runtime_predictions.jsonl",
+      "sha256": "5490cf79d66bf2bf9b287bc3f45d2e61b8115e077107642b92f368e3b13cb937",
+      "bytes": 7979678
+    },
+    {
+      "path": "b_control_fixed_budget_3600/protocol_o/mismatch/utterance_predictions.jsonl",
+      "sha256": "4b058c0970870e2c91704769c3fa311400150e63a05c8acc06b42b2c245e74a3",
+      "bytes": 163891
+    },
+    {
+      "path": "b_control_fixed_budget_3600/protocol_o/mismatch/utterance_runtime_predictions.jsonl",
+      "sha256": "eca0d33497da449fe53bd7e3e514961f86c898494dea7894ea01a7f2cb01042b",
+      "bytes": 96080
+    },
+    {
+      "path": "b_control_fixed_budget_3600/protocol_o/offline_token_evaluation.jsonl",
+      "sha256": "047a080290bcf76b7c019a8f9462a5ab99673d3f77cdd17868eba5cbbb2bc7c7",
+      "bytes": 4003745
+    },
+    {
+      "path": "b_control_fixed_budget_3600/protocol_o/runtime_predictions.jsonl",
+      "sha256": "b8e462f79d5faca8d470dfc341710fea6d8744c8170cc73a8d6e1c04ecc5e0f4",
+      "bytes": 7701047
+    },
+    {
+      "path": "b_control_fixed_budget_3600/protocol_o/utterance_predictions.jsonl",
+      "sha256": "6b6c72eb3cc0389cefd511bc460dad24fa38a42314d506ff25182e0816932853",
+      "bytes": 163891
+    },
+    {
+      "path": "b_control_fixed_budget_3600/protocol_o/utterance_runtime_predictions.jsonl",
+      "sha256": "45825585af6d8b4e038acb4116c05832128add19674bf07d11dffd87b5804420",
+      "bytes": 96080
+    },
+    {
+      "path": "b_control_fixed_budget_3600/protocol_z/calibration/offline_token_evaluation.jsonl",
+      "sha256": "c577c3d11fe98b977c552bef5ad01784e003c3cf57203c32404d0aebba82cd45",
+      "bytes": 4016193
+    },
+    {
+      "path": "b_control_fixed_budget_3600/protocol_z/calibration/runtime_predictions.jsonl",
+      "sha256": "ad7b865318efec472332e63e7f60081f0e01cfe5a6113224990911fd65f0c137",
+      "bytes": 7756598
+    },
+    {
+      "path": "b_control_fixed_budget_3600/protocol_z/calibration/utterance_predictions.jsonl",
+      "sha256": "a8f8677461e668bd3554c8c1c62e2915f26679829b78f87b87ac7f6f28dc0b6b",
+      "bytes": 160373
+    },
+    {
+      "path": "b_control_fixed_budget_3600/protocol_z/calibration/utterance_runtime_predictions.jsonl",
+      "sha256": "603deca56a2a032acd572e1ec90211227d972005c8bc582954ce8e65fab309be",
+      "bytes": 93909
+    },
+    {
+      "path": "b_control_fixed_budget_3600/protocol_z/mismatch/offline_token_evaluation.jsonl",
+      "sha256": "dcd478ba8192bef3752ade2e3a8a7c805dd5c8b6871f7adac5f313b5b2bd13cb",
+      "bytes": 4159096
+    },
+    {
+      "path": "b_control_fixed_budget_3600/protocol_z/mismatch/runtime_predictions.jsonl",
+      "sha256": "d17241a68f978e9c4acae8a25fca6df8f2d24c46d36da9b299cf5b77743c257a",
+      "bytes": 8019497
+    },
+    {
+      "path": "b_control_fixed_budget_3600/protocol_z/mismatch/utterance_predictions.jsonl",
+      "sha256": "4b058c0970870e2c91704769c3fa311400150e63a05c8acc06b42b2c245e74a3",
+      "bytes": 163891
+    },
+    {
+      "path": "b_control_fixed_budget_3600/protocol_z/mismatch/utterance_runtime_predictions.jsonl",
+      "sha256": "eca0d33497da449fe53bd7e3e514961f86c898494dea7894ea01a7f2cb01042b",
+      "bytes": 96080
+    },
+    {
+      "path": "b_control_fixed_budget_3600/protocol_z/offline_token_evaluation.jsonl",
+      "sha256": "86af6f25701271e00ad95c9822ed6392e327231820b47ed0dec45c5bf6046e9e",
+      "bytes": 4019265
+    },
+    {
+      "path": "b_control_fixed_budget_3600/protocol_z/runtime_predictions.jsonl",
+      "sha256": "460722c3b1beae5da205ff8c4bbf023abd0639f7ca14884fe18aa378d0598458",
+      "bytes": 7740768
+    },
+    {
+      "path": "b_control_fixed_budget_3600/protocol_z/utterance_predictions.jsonl",
+      "sha256": "6b6c72eb3cc0389cefd511bc460dad24fa38a42314d506ff25182e0816932853",
+      "bytes": 163891
+    },
+    {
+      "path": "b_control_fixed_budget_3600/protocol_z/utterance_runtime_predictions.jsonl",
+      "sha256": "45825585af6d8b4e038acb4116c05832128add19674bf07d11dffd87b5804420",
+      "bytes": 96080
+    },
+    {
+      "path": "inference_source.json",
+      "sha256": "e8e868b8a1be89d6698da88a483fdc0f22acc02261c7641be80d4fb720b4cf9d",
+      "bytes": 32800
+    },
+    {
+      "path": "recomputed/RECOMPUTATION_MANIFEST.json",
+      "sha256": "00dd76d1ade1c5740cfa3315169459148d32fb062d2c019ed876e92568319551",
+      "bytes": 319
+    },
+    {
+      "path": "recomputed/SUMMARY.json",
+      "sha256": "76bfcfeed3b15689f2ccf3725f75d45a5a57eaa1ce3b2208de6546eebe86828b",
+      "bytes": 1190295
+    },
+    {
+      "path": "recomputed/b_control_best/protocol_o/metrics.json",
+      "sha256": "51b067505c0a1ea6b6c5503bc2b8b61ee9e88870a9434c14f8d901b463f1adb1",
+      "bytes": 98131
+    },
+    {
+      "path": "recomputed/b_control_best/protocol_o/mismatch/metrics.json",
+      "sha256": "7c5bb285e933df4b99df6aa13ea04dde710fb79276c8957bd3df1c3a9bfb52b0",
+      "bytes": 22830
+    },
+    {
+      "path": "recomputed/b_control_best/protocol_z/metrics.json",
+      "sha256": "e948e05f82f606e62a7e976c8badc51946a65c3a40f83103665b2d296c618f41",
+      "bytes": 98387
+    },
+    {
+      "path": "recomputed/b_control_best/protocol_z/mismatch/metrics.json",
+      "sha256": "c4936bae6f5cf725cf467472b10ec690cf3562751ad2bc227bb18d56f1fa6b47",
+      "bytes": 22910
+    },
+    {
+      "path": "recomputed/b_control_fixed_budget_3600/protocol_o/metrics.json",
+      "sha256": "c656ee4d5979de16544fb4b27e4b2c90388ef408bad4459ec038a1beaeb674b8",
+      "bytes": 98255
+    },
+    {
+      "path": "recomputed/b_control_fixed_budget_3600/protocol_o/mismatch/metrics.json",
+      "sha256": "e88d913376c2022048658190b0020c4f37bd6fb9c24c6e4b3bbd2c7c2e6c82dd",
+      "bytes": 22835
+    },
+    {
+      "path": "recomputed/b_control_fixed_budget_3600/protocol_z/metrics.json",
+      "sha256": "6eed70b12a89d9cb37014eedd0d7dcce4a30b529c1e9980cc2616624a56f85a0",
+      "bytes": 98504
+    },
+    {
+      "path": "recomputed/b_control_fixed_budget_3600/protocol_z/mismatch/metrics.json",
+      "sha256": "d1b117bf58678e71285ea18d23e76d02817e0dca7ed78e9b136c3ead302b4a4d",
+      "bytes": 22920
+    },
+    {
+      "path": "recomputed/t_op_best/protocol_o/metrics.json",
+      "sha256": "2041d8b6a25be1b7d352a9616a67ae7f7c2bfc2060cf0b644aee4ed3bb0fa135",
+      "bytes": 159221
+    },
+    {
+      "path": "recomputed/t_op_best/protocol_o/mismatch/metrics.json",
+      "sha256": "d2d4a90447d499c9a1c59369548c68353c6b818cacf5ef851dd87cc4ae9de746",
+      "bytes": 37273
+    },
+    {
+      "path": "recomputed/t_op_best/protocol_z/metrics.json",
+      "sha256": "d857388a66069a7e0e755136aef383cf1310b930c6c92104909ea08d3eee2ba2",
+      "bytes": 159655
+    },
+    {
+      "path": "recomputed/t_op_best/protocol_z/mismatch/metrics.json",
+      "sha256": "26e840bfd8951d67af512731ce6acdb2bc3d33468c86d5cfdd860065473888f9",
+      "bytes": 37304
+    },
+    {
+      "path": "recomputed/t_op_fixed_budget_3600/protocol_o/metrics.json",
+      "sha256": "ce6da78857b9dc726ec8a208cf990c02761294270ce41f2588695d445a8032a7",
+      "bytes": 159328
+    },
+    {
+      "path": "recomputed/t_op_fixed_budget_3600/protocol_o/mismatch/metrics.json",
+      "sha256": "36c63ba4cda37a84338b6a03ff34a2cbeb33f520c85bf55d64e1d6c1975c4903",
+      "bytes": 37211
+    },
+    {
+      "path": "recomputed/t_op_fixed_budget_3600/protocol_z/metrics.json",
+      "sha256": "964e27924c517fc05c5a43f9d1fc96fcce6ca815fea1eadcbd09960dae6cec5e",
+      "bytes": 159751
+    },
+    {
+      "path": "recomputed/t_op_fixed_budget_3600/protocol_z/mismatch/metrics.json",
+      "sha256": "e2afac2d35c914af9e3f52b64811956f984d0d9ddceab8fe56a0539cb29f61f0",
+      "bytes": 37353
+    },
+    {
+      "path": "t_op_best/protocol_o/calibration/offline_token_evaluation.jsonl",
+      "sha256": "4f4841f025d22ffca3ff9c36593397f19b925c7d0bf69bc734586cf08eac7cea",
+      "bytes": 4315182
+    },
+    {
+      "path": "t_op_best/protocol_o/calibration/runtime_predictions.jsonl",
+      "sha256": "9da851aea3b7ab59d62aa64a4d11a35cd8403cdacb35ea18efe4183a11d70132",
+      "bytes": 8579132
+    },
+    {
+      "path": "t_op_best/protocol_o/calibration/utterance_predictions.jsonl",
+      "sha256": "fd41e61f88a86f1459ab560aed9d016d1bb1dbfa41858cb168e225dab76a3277",
+      "bytes": 160743
+    },
+    {
+      "path": "t_op_best/protocol_o/calibration/utterance_runtime_predictions.jsonl",
+      "sha256": "955f2715af408a07523ab86183766f83b6fa302bfddff8ee4d1913c5c8e14777",
+      "bytes": 94269
+    },
+    {
+      "path": "t_op_best/protocol_o/mismatch/offline_token_evaluation.jsonl",
+      "sha256": "2e73888609743809b6d7c241d085fd83337e6e7ce8edbfe3ae3bf1db8067374e",
+      "bytes": 4453960
+    },
+    {
+      "path": "t_op_best/protocol_o/mismatch/runtime_predictions.jsonl",
+      "sha256": "4af75cab749088acd0d8a9608baf38a16559dea50373059f4c303a6c20daa41a",
+      "bytes": 8849690
+    },
+    {
+      "path": "t_op_best/protocol_o/mismatch/utterance_predictions.jsonl",
+      "sha256": "416260a209c90cd9d67044d45034cb57886845b2d5d5e6e747003e7b60b54111",
+      "bytes": 164388
+    },
+    {
+      "path": "t_op_best/protocol_o/mismatch/utterance_runtime_predictions.jsonl",
+      "sha256": "7ba8f68b94dc660a9addf9ff3f8f2c3b573a2af0bc71f57c2c3a8c69a76941ea",
+      "bytes": 96569
+    },
+    {
+      "path": "t_op_best/protocol_o/offline_token_evaluation.jsonl",
+      "sha256": "c189490c43230aa352be4422c2b24461bfa477c426e2593d3487e1879372bfe1",
+      "bytes": 4314879
+    },
+    {
+      "path": "t_op_best/protocol_o/runtime_predictions.jsonl",
+      "sha256": "184562e6c377c2fed2b3e9cc57d66c31f3b91518deb0e6f1bcf2cd2fdf7540e8",
+      "bytes": 8571273
+    },
+    {
+      "path": "t_op_best/protocol_o/utterance_predictions.jsonl",
+      "sha256": "8fd2763bf56a7449f67712bc92a05db6072f7f8aef80797890bfe1d6854fbe05",
+      "bytes": 164388
+    },
+    {
+      "path": "t_op_best/protocol_o/utterance_runtime_predictions.jsonl",
+      "sha256": "b5226ba465329f6f47267590fc8e4f2f583566e95bd4dd7ace812148a0967419",
+      "bytes": 96569
+    },
+    {
+      "path": "t_op_best/protocol_z/calibration/offline_token_evaluation.jsonl",
+      "sha256": "616cc96eb2bfed154dbba15dd9060b35bd7ce678d2f76af96dabb9b63e322c7d",
+      "bytes": 4325308
+    },
+    {
+      "path": "t_op_best/protocol_z/calibration/runtime_predictions.jsonl",
+      "sha256": "8545ae0f70bf19f8c355ddc175c8260390623652e556d490e30d47f651aac206",
+      "bytes": 8623200
+    },
+    {
+      "path": "t_op_best/protocol_z/calibration/utterance_predictions.jsonl",
+      "sha256": "fd41e61f88a86f1459ab560aed9d016d1bb1dbfa41858cb168e225dab76a3277",
+      "bytes": 160743
+    },
+    {
+      "path": "t_op_best/protocol_z/calibration/utterance_runtime_predictions.jsonl",
+      "sha256": "955f2715af408a07523ab86183766f83b6fa302bfddff8ee4d1913c5c8e14777",
+      "bytes": 94269
+    },
+    {
+      "path": "t_op_best/protocol_z/mismatch/offline_token_evaluation.jsonl",
+      "sha256": "226b2a3dbfdb88782e5821a0eafe242f21bfe9a0fd5db75a9606707a6cb1eeaa",
+      "bytes": 4470029
+    },
+    {
+      "path": "t_op_best/protocol_z/mismatch/runtime_predictions.jsonl",
+      "sha256": "f6b29c41995b754794de23bb8d95aecc89590256fb72f6f0acf1c1232373aade",
+      "bytes": 8889444
+    },
+    {
+      "path": "t_op_best/protocol_z/mismatch/utterance_predictions.jsonl",
+      "sha256": "416260a209c90cd9d67044d45034cb57886845b2d5d5e6e747003e7b60b54111",
+      "bytes": 164388
+    },
+    {
+      "path": "t_op_best/protocol_z/mismatch/utterance_runtime_predictions.jsonl",
+      "sha256": "7ba8f68b94dc660a9addf9ff3f8f2c3b573a2af0bc71f57c2c3a8c69a76941ea",
+      "bytes": 96569
+    },
+    {
+      "path": "t_op_best/protocol_z/offline_token_evaluation.jsonl",
+      "sha256": "3c77faaa3a496799623b74bedc6eb359544fd41fd9ffc919068934c5f0fcbfc3",
+      "bytes": 4330372
+    },
+    {
+      "path": "t_op_best/protocol_z/runtime_predictions.jsonl",
+      "sha256": "7d705c90abcb419078a162d780e6aa0f2364ed96329268d82b8873e872e0a071",
+      "bytes": 8610937
+    },
+    {
+      "path": "t_op_best/protocol_z/utterance_predictions.jsonl",
+      "sha256": "8fd2763bf56a7449f67712bc92a05db6072f7f8aef80797890bfe1d6854fbe05",
+      "bytes": 164388
+    },
+    {
+      "path": "t_op_best/protocol_z/utterance_runtime_predictions.jsonl",
+      "sha256": "b5226ba465329f6f47267590fc8e4f2f583566e95bd4dd7ace812148a0967419",
+      "bytes": 96569
+    },
+    {
+      "path": "t_op_fixed_budget_3600/protocol_o/calibration/offline_token_evaluation.jsonl",
+      "sha256": "a9a09b66b5aef65c5fe31d31f727fefba425c73c4754466838e22f4499281a16",
+      "bytes": 4312708
+    },
+    {
+      "path": "t_op_fixed_budget_3600/protocol_o/calibration/runtime_predictions.jsonl",
+      "sha256": "2c5bd2286560c8617f2fa251064de2207fd4e08a89ad740eb840988450fe41dc",
+      "bytes": 8706104
+    },
+    {
+      "path": "t_op_fixed_budget_3600/protocol_o/calibration/utterance_predictions.jsonl",
+      "sha256": "2e004224068e909a5bab6cda8c7ea94f476720bcb90e8b9f7b1ee54481853e6b",
+      "bytes": 160391
+    },
+    {
+      "path": "t_op_fixed_budget_3600/protocol_o/calibration/utterance_runtime_predictions.jsonl",
+      "sha256": "8a937aa63a5dd47f38d08d8e3c9095027248076b2c0cbf82209d845cc821154b",
+      "bytes": 93928
+    },
+    {
+      "path": "t_op_fixed_budget_3600/protocol_o/mismatch/offline_token_evaluation.jsonl",
+      "sha256": "8dc2653e7a8d2d78a33e8fe417c25c11fe38a81f224493e592d6788462923028",
+      "bytes": 4450949
+    },
+    {
+      "path": "t_op_fixed_budget_3600/protocol_o/mismatch/runtime_predictions.jsonl",
+      "sha256": "8e899cf91b313db6b26a209a59f2a93b9623b218a5ecfd99a9dbf4f69defc78d",
+      "bytes": 8975558
+    },
+    {
+      "path": "t_op_fixed_budget_3600/protocol_o/mismatch/utterance_predictions.jsonl",
+      "sha256": "d20f285b440dd3ba46232c02a7681db485536411cb1ab7e0396a856659aa6d4b",
+      "bytes": 163861
+    },
+    {
+      "path": "t_op_fixed_budget_3600/protocol_o/mismatch/utterance_runtime_predictions.jsonl",
+      "sha256": "10608486d0529d81c3ef42531576cd1412362477801440e402ec1f9caa137d3b",
+      "bytes": 96045
+    },
+    {
+      "path": "t_op_fixed_budget_3600/protocol_o/offline_token_evaluation.jsonl",
+      "sha256": "3edb9d1eeb20446fb39def3c83509a09c5643071b114315c274d73c686917838",
+      "bytes": 4311784
+    },
+    {
+      "path": "t_op_fixed_budget_3600/protocol_o/runtime_predictions.jsonl",
+      "sha256": "5871a2c15c9da4c927a66b64c9adae320f9ca38a5c6ff8f12319a7e6e39b23d1",
+      "bytes": 8697213
+    },
+    {
+      "path": "t_op_fixed_budget_3600/protocol_o/utterance_predictions.jsonl",
+      "sha256": "330631c9ff9138ca87773054065e6a4a10f6f7f3017d80b179f7254bdcb5ad4f",
+      "bytes": 163861
+    },
+    {
+      "path": "t_op_fixed_budget_3600/protocol_o/utterance_runtime_predictions.jsonl",
+      "sha256": "f9503313245c43b7a6f16e886cb98d9fb396ece246478bb4bca746d5138bcab1",
+      "bytes": 96045
+    },
+    {
+      "path": "t_op_fixed_budget_3600/protocol_z/calibration/offline_token_evaluation.jsonl",
+      "sha256": "3ff1a9d3c1cd61d40815e7849ecf7ce538d54877f8db0b288752c3a8790a1df1",
+      "bytes": 4322813
+    },
+    {
+      "path": "t_op_fixed_budget_3600/protocol_z/calibration/runtime_predictions.jsonl",
+      "sha256": "c8542624624dd9f5f7e63a96c62741bbb0b0954df1c7a2467b69677e2f5fec56",
+      "bytes": 8750186
+    },
+    {
+      "path": "t_op_fixed_budget_3600/protocol_z/calibration/utterance_predictions.jsonl",
+      "sha256": "2e004224068e909a5bab6cda8c7ea94f476720bcb90e8b9f7b1ee54481853e6b",
+      "bytes": 160391
+    },
+    {
+      "path": "t_op_fixed_budget_3600/protocol_z/calibration/utterance_runtime_predictions.jsonl",
+      "sha256": "8a937aa63a5dd47f38d08d8e3c9095027248076b2c0cbf82209d845cc821154b",
+      "bytes": 93928
+    },
+    {
+      "path": "t_op_fixed_budget_3600/protocol_z/mismatch/offline_token_evaluation.jsonl",
+      "sha256": "d73ee89a9caebef54ef5b453bcf43b5f760ae4ac08fec62f4f1abe43c397fb02",
+      "bytes": 4466986
+    },
+    {
+      "path": "t_op_fixed_budget_3600/protocol_z/mismatch/runtime_predictions.jsonl",
+      "sha256": "4b1e6ca29dada601da94404087fc6bf74ea84dd06d3582a45aeca5eb1a4673b5",
+      "bytes": 9015171
+    },
+    {
+      "path": "t_op_fixed_budget_3600/protocol_z/mismatch/utterance_predictions.jsonl",
+      "sha256": "d20f285b440dd3ba46232c02a7681db485536411cb1ab7e0396a856659aa6d4b",
+      "bytes": 163861
+    },
+    {
+      "path": "t_op_fixed_budget_3600/protocol_z/mismatch/utterance_runtime_predictions.jsonl",
+      "sha256": "10608486d0529d81c3ef42531576cd1412362477801440e402ec1f9caa137d3b",
+      "bytes": 96045
+    },
+    {
+      "path": "t_op_fixed_budget_3600/protocol_z/offline_token_evaluation.jsonl",
+      "sha256": "260b851d9324235cddf93eff29cd734c97f31ddc13de06165a0cb103d5afb74d",
+      "bytes": 4327318
+    },
+    {
+      "path": "t_op_fixed_budget_3600/protocol_z/runtime_predictions.jsonl",
+      "sha256": "5a67f36289f176df57093bd1e7b458c2009b553907a32b5a250636549128bec5",
+      "bytes": 8736864
+    },
+    {
+      "path": "t_op_fixed_budget_3600/protocol_z/utterance_predictions.jsonl",
+      "sha256": "330631c9ff9138ca87773054065e6a4a10f6f7f3017d80b179f7254bdcb5ad4f",
+      "bytes": 163861
+    },
+    {
+      "path": "t_op_fixed_budget_3600/protocol_z/utterance_runtime_predictions.jsonl",
+      "sha256": "f9503313245c43b7a6f16e886cb98d9fb396ece246478bb4bca746d5138bcab1",
+      "bytes": 96045
+    }
+  ],
+  "note": "Raw runtime/offline/calibration/mismatch/decoded predictions remain in approved private storage, not Git; hashes and lightweight metrics only in Git."
+}

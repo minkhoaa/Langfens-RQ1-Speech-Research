@@ -1,0 +1,6 @@
+{
+  "input_root": "/home/khoa/.cache/langfens/psup-benchmark-v1/recovered-final-v2-20261104",
+  "model_executed": false,
+  "recomputation_source_sha256": "f19d2e1f2d62b1646979a06c9bfe7b0ddb47c689ca01981827d2ba541ef35d40",
+  "source_manifest_sha256": "051383f00132ba503681541858f15a5ed01d1803ebc027cc36410f6206627332"
+}
