@@ -22,6 +22,8 @@ FILES = ("runtime_Z.jsonl", "tokens_Z.jsonl", "cal_runtime_Z.jsonl", "cal_tokens
          "mismatched_runtime_Z.jsonl", "mismatched_tokens_Z.jsonl", "recognition_Z.jsonl")
 EXPECTED_GOLD = {0: 8799, 1: 1012, 2: 145}
 EXPECTED_ALIGNED = {0: 8774, 1: 1008, 2: 137}
+OBJECTIVES = {"C0": "operation_ce", "T1": "class_focal",
+              "T2": "operation_ce", "T3": "class_focal"}
 
 
 def load(path: Path):
@@ -102,11 +104,10 @@ def main() -> int:
             keys = [(r.get("speaker_id"), r.get("utterance_id"), r.get("prompt_index")) for r in records]
             if len(keys) != len(set(keys)):
                 raise ValueError(f"{cell}: duplicate key in {label}")
-        # C0 is the binary B-Control; T1-T3 are operation-score treatments.
-        is_binary_control = cell == "C0"
-        primary = summarize_cell(runtime, tokens, cal_tokens, recognition, control=is_binary_control, cell_id=cell,
+        objective = OBJECTIVES[cell]
+        primary = summarize_cell(runtime, tokens, cal_tokens, recognition, objective=objective, cell_id=cell,
                                  cal_runtime=cal_runtime)
-        mismatch = summarize_cell(mismatch_runtime, mismatch_tokens, cal_tokens, (), control=is_binary_control,
+        mismatch = summarize_cell(mismatch_runtime, mismatch_tokens, cal_tokens, (), objective=objective,
                                   cell_id=cell + "_mismatched", cal_runtime=cal_runtime)
         primary["_tokens"] = tokens
         verify_z_contract(primary, cell)

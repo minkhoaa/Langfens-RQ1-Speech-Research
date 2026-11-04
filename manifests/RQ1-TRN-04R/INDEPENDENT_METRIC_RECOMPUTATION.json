@@ -4,6 +4,7 @@
   "real_data_metrics": null,
   "reason": "Final recomputation awaits immutable coordinator-frozen prediction exchange and integrated revision",
   "expected_cells": ["C0", "T1", "T2", "T3"],
+  "expected_objectives": {"C0": "operation_ce", "T1": "class_focal", "T2": "operation_ce", "T3": "class_focal"},
   "expected_val_population": {
     "gold_positions": 9956,
     "labels_correct_substitution_deletion": [8799, 1012, 145],
@@ -17,8 +18,9 @@
   "acceptance_invariants": [
     "Counts must be recomputed from actual saved gold rows, not substituted constants",
     "For each available omission operating point FN=145-TP and TP<=137",
-    "T-OP dedicated scores remain distinct from s_error",
-    "B-Control dedicated omission/substitution metrics remain unavailable/null",
+    "T1/T3 class_focal require three-way s_omit/s_sub channels distinct from s_error",
+    "C0/T2 operation_ce also retain dedicated three-way channels",
+    "Only an explicitly binary_collapsed B-Control has unavailable/null dedicated subtype metrics",
     "Prompt extras are excluded from canonical metrics and separately alarm-audited",
     "CAL is used for threshold selection; VAL threshold diagnostics are not CAL guarantees",
     "Unknown labels, duplicate keys, nonfinite values, missing key records, and runtime/offline score mismatches fail explicitly"

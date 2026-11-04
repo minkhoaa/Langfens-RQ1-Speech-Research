@@ -4,7 +4,7 @@
 
 ## Analysis contract
 
-Each cell is scored separately from the same frozen VAL rows and CAL threshold rows. Binary and legacy omission/substitution AP use `s_error`; T-OP dedicated omission/substitution AP use `s_omit`/`s_sub`, respectively. Dedicated B-Control subtype metrics are unsupported and must remain null/unavailable. AP uses exact grouped ties. CAL correct-only thresholds at FPR ceilings 5%, 10%, and 15% are reported independently from retrospective VAL curves. Operational omission alarms use the full 9,956-position gold census; prompt-only extras are a distinct, out-of-census alarm group.
+Each cell is scored separately from the same frozen VAL rows and CAL threshold rows. C0/T2 use `operation_ce`; T1/T3 use `class_focal`. All four three-way objectives must supply `s_omit`/`s_sub` separately from `s_error`; missing class-focal subtype channels fail validation. Binary and legacy omission/substitution AP use `s_error`; dedicated omission/substitution AP use `s_omit`/`s_sub`, respectively. Dedicated subtype metrics are null/unavailable only for an explicitly `binary_collapsed` B-Control. AP uses exact grouped ties. CAL correct-only thresholds at FPR ceilings 5%, 10%, and 15% are reported independently from retrospective VAL curves. Operational omission alarms use the full 9,956-position gold census; prompt-only extras are a distinct, out-of-census alarm group.
 
 The primary matched cell contrasts are **T1−C0, T2−C0, T3−C0**. The factorial interaction is **T3−T2−T1+C0**. Every contrast reports endpoint, population, score semantics, coverage and denominator. Missing or unsupported values make that contrast unavailable, not zero.
 
@@ -19,4 +19,4 @@ No CAL/VAL role changes or threshold tuning are permitted. Saved CTC recognition
 
 ## Required coordinator resumption
 
-Verify the frozen exchange manifest and hashes; preserve originals and private-only record storage; run `audit_scripts/recompute_trn04r_metrics.py --input-root <immutable-private-root> --output <new-private-output>` (with `--control` when processing B-Control if invoking individual validation); review output invariants and compare independently before preparing a final synthesized result. Until this is done results are **pending**, not executed.
+Verify the frozen exchange manifest and hashes; preserve originals and private-only record storage; run `audit_scripts/recompute_trn04r_metrics.py --input-root <immutable-private-root> --output <new-private-output>`; its frozen cell map requires C0/T2 `operation_ce` and T1/T3 `class_focal`, so `class_focal` cannot be treated as `binary_collapsed`; review output invariants and compare independently before preparing a final synthesized result. Until this is done results are **pending**, not executed.

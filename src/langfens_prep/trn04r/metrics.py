@@ -5,6 +5,20 @@ import math
 from collections import Counter, defaultdict
 from typing import Any, Iterable, Mapping, Sequence
 
+OBJECTIVE_SCORE_SUPPORT = {
+    "operation_ce": True,
+    "class_focal": True,
+    "binary_collapsed": False,
+}
+
+
+def objective_supports_subtypes(objective: str) -> bool:
+    try:
+        return OBJECTIVE_SCORE_SUPPORT[objective]
+    except KeyError as exc:
+        raise ValueError(f"Unknown score objective: {objective!r}") from exc
+
+
 SCORE_FAMILIES = {
     "binary": ("s_error", None, {0, 1, 2}),
     "omission_legacy": ("s_error", 2, {0, 2}),
@@ -131,11 +145,11 @@ def _confusion(gold: Sequence[Mapping[str, Any]], score_name: str, positive_op: 
 
 
 def _one_family(gold: list[dict[str, Any]], cal: list[dict[str, Any]], name: str,
-                control: bool) -> dict[str, Any]:
+                subtype_supported: bool) -> dict[str, Any]:
     score_name, positive_op, operations = SCORE_FAMILIES[name]
-    if control and name.endswith("dedicated"):
+    if not subtype_supported and name.endswith("dedicated"):
         return {"status": "unavailable", "ap": None,
-                "reason": "B-Control has no identifiable dedicated subtype score"}
+                "reason": "binary_collapsed objective does not identify subtype scores"}
     eligible = [r for r in gold if r["operation_target"] in operations]
     scored = [r for r in eligible if r.get(score_name) is not None]
     labels = [int(r["binary_target"] if positive_op is None else r["operation_target"] == positive_op) for r in scored]
@@ -204,14 +218,26 @@ def recognition_summary(records: Iterable[Mapping[str, Any]]) -> dict[str, Any]:
 
 def summarize_cell(runtime: Iterable[Mapping[str, Any]], tokens: Iterable[Mapping[str, Any]],
                    cal_tokens: Iterable[Mapping[str, Any]], recognition: Iterable[Mapping[str, Any]],
-                   *, control: bool, cell_id: str,
+                   *, objective: str, cell_id: str,
                    cal_runtime: Iterable[Mapping[str, Any]] | None = None) -> dict[str, Any]:
     """Audit and compute one immutable endpoint/protocol/condition cell."""
     runtime_rows = [dict(r) for r in runtime]
+    cal_runtime_rows = [dict(r) for r in cal_runtime] if cal_runtime is not None else None
     token_rows = [dict(r) for r in tokens]
     cal_rows = [dict(r) for r in cal_tokens]
+    subtype_supported = objective_supports_subtypes(objective)
     gold = _validate_gold(token_rows)
     cal = _validate_gold(cal_rows)
+    for partition, records in (("VAL", token_rows), ("CAL", cal_rows), ("runtime VAL", runtime_rows),
+                               ("runtime CAL", cal_runtime_rows or [])):
+        for row in records:
+            scores = row.get("scores", row)
+            error = scores.get("s_error")
+            omission, substitution = scores.get("s_omit"), scores.get("s_sub")
+            if subtype_supported and error is not None and (omission is None or substitution is None):
+                raise ValueError(f"{partition}: {objective} requires three-way s_omit and s_sub with s_error")
+            if not subtype_supported and (omission is not None or substitution is not None):
+                raise ValueError(f"{partition}: binary_collapsed must leave dedicated subtype scores null")
     extra_rows = [r for r in token_rows if r.get("gold_canonical_index") is None]
     by_key = {}
     for row in runtime_rows:
@@ -239,9 +265,9 @@ def summarize_cell(runtime: Iterable[Mapping[str, Any]], tokens: Iterable[Mappin
         if actual != expected:
             raise ValueError(f"{partition} runtime/offline prompt-key coverage differs: runtime_only={len(actual-expected)}, offline_only={len(expected-actual)}")
     validate_join(token_rows, by_key, "VAL")
-    if cal_runtime is not None:
+    if cal_runtime_rows is not None:
         cal_index = {}
-        for row in cal_runtime:
+        for row in cal_runtime_rows:
             key = (row.get("speaker_id"), row.get("utterance_id"), row.get("prompt_index"))
             if key in cal_index:
                 raise ValueError(f"Duplicate CAL runtime prompt key {key}")
@@ -254,13 +280,13 @@ def summarize_cell(runtime: Iterable[Mapping[str, Any]], tokens: Iterable[Mappin
         for row in gold: groups[str(row.get(group_key, "unknown"))].append(row)
         target = speaker if group_name == "speaker" else phones
         for value, subset in groups.items():
-            target[value] = {name: _one_family(subset, cal, name, control)
+            target[value] = {name: _one_family(subset, cal, name, subtype_supported)
                              for name in SCORE_FAMILIES}
-    return {"cell_id": cell_id, "gold_rows": len(gold), "actual_label_counts": dict(Counter(str(r["operation_target"]) for r in gold)),
+    return {"cell_id": cell_id, "objective": objective, "gold_rows": len(gold), "actual_label_counts": dict(Counter(str(r["operation_target"]) for r in gold)),
             "coverage": {"gold_positions": len(gold), "answered_s_error": sum(r.get("s_error") is not None for r in gold),
                          "abstained_s_error": sum(r.get("s_error") is None for r in gold),
                          "prompt_extras": len(extra_rows), "runtime_prompts": len(runtime_rows)},
-            "metrics": {name: _one_family(gold, cal, name, control) for name in SCORE_FAMILIES},
+            "metrics": {name: _one_family(gold, cal, name, subtype_supported) for name in SCORE_FAMILIES},
             "by_speaker": speaker, "by_phone": phones,
             "extra_prompt_alarms": {name: {"scored": sum(r.get(name) is not None for r in extra_rows),
                                                    "alarms_at_thresholds": {

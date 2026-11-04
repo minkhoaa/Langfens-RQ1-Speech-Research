@@ -1,6 +1,7 @@
 import pytest
 
-from langfens_prep.trn04r.metrics import average_precision, summarize_cell, factorial_contrasts
+from langfens_prep.trn04r.metrics import (average_precision, summarize_cell, factorial_contrasts,
+                                            objective_supports_subtypes)
 
 
 def token(i, op, score, *, phone="AA", prompt=None, dedicated=None):
@@ -34,7 +35,7 @@ def test_synthetic_full_gold_alarm_accounting_keeps_substitution_fp_distinct():
     cal_runtime = [{"speaker_id": "S", "utterance_id": "u", "prompt_index": i,
                     "s_error": row["s_error"], "s_omit": row["s_omit"], "s_sub": row["s_sub"]}
                    for i, row in enumerate(cal)]
-    result = summarize_cell(runtime, rows, cal, [], control=False, cell_id="synthetic", cal_runtime=cal_runtime)
+    result = summarize_cell(runtime, rows, cal, [], objective="operation_ce", cell_id="synthetic", cal_runtime=cal_runtime)
     alarm = result["metrics"]["omission_legacy"]["cal_operating_points"]["0.1"]["counts"]
     assert alarm["TP"] == 1
     assert alarm["FP_correct"] == 0
@@ -48,7 +49,7 @@ def test_synthetic_full_gold_alarm_accounting_keeps_substitution_fp_distinct():
     assert result["extra_prompt_alarms"]["s_error"]["scored"] == 1
 
 
-def test_binary_control_does_not_claim_dedicated_subtype_score():
+def test_binary_collapsed_control_does_not_claim_dedicated_subtype_score():
     rows = [token(0, 0, .2, dedicated=None), token(1, 2, .8, dedicated=None)]
     for row in rows:
         row["s_omit"] = row["s_sub"] = None
@@ -60,20 +61,45 @@ def test_binary_control_does_not_claim_dedicated_subtype_score():
     cal_runtime = [{"speaker_id": "S", "utterance_id": "u", "prompt_index": i,
                     "s_error": row["s_error"], "s_omit": None, "s_sub": None}
                    for i, row in enumerate(cal)]
-    out = summarize_cell(runtime, rows, cal, [], control=True, cell_id="B-Control", cal_runtime=cal_runtime)
+    out = summarize_cell(runtime, rows, cal, [], objective="binary_collapsed", cell_id="B-Control", cal_runtime=cal_runtime)
     assert out["metrics"]["omission_dedicated"]["status"] == "unavailable"
     assert out["metrics"]["substitution_dedicated"]["ap"] is None
     assert out["recognition"]["reference_phones"] == 0
+    rows[1]["s_omit"] = .7
+    with pytest.raises(ValueError, match="binary_collapsed must leave"):
+        summarize_cell(runtime, rows, cal, [], objective="binary_collapsed", cell_id="B-Control",
+                       cal_runtime=cal_runtime)
+
+
+def test_class_focal_has_dedicated_three_way_scores_while_binary_collapsed_does_not():
+    rows = [token(0, 0, .1, dedicated=.02), token(1, 2, .9, dedicated=.8)]
+    cal = [token(i, 0, .1 + i*.01, dedicated=.02 + i*.01) for i in range(3)]
+    runtime = [{"speaker_id": "S", "utterance_id": "u", "prompt_index": i,
+                "s_error": row["s_error"], "s_omit": row["s_omit"], "s_sub": row["s_sub"]}
+               for i, row in enumerate(rows)]
+    cal_runtime = [{"speaker_id": "S", "utterance_id": "u", "prompt_index": i,
+                    "s_error": row["s_error"], "s_omit": row["s_omit"], "s_sub": row["s_sub"]}
+                   for i, row in enumerate(cal)]
+    assert objective_supports_subtypes("class_focal") is True
+    assert objective_supports_subtypes("operation_ce") is True
+    assert objective_supports_subtypes("binary_collapsed") is False
+    result = summarize_cell(runtime, rows, cal, [], objective="class_focal", cell_id="T1",
+                            cal_runtime=cal_runtime)
+    assert result["metrics"]["omission_dedicated"]["ap"] == 1.0
+    rows[1]["s_omit"] = None
+    with pytest.raises(ValueError, match="requires three-way"):
+        summarize_cell(runtime, rows, cal, [], objective="class_focal", cell_id="T1",
+                       cal_runtime=cal_runtime)
 
 
 def test_nonfinite_and_inconsistent_labels_fail_explicitly():
     bad = [token(0, 0, float("nan"))]
     with pytest.raises(ValueError, match="finite"):
-        summarize_cell([], bad, [], [], control=False, cell_id="bad")
+        summarize_cell([], bad, [], [], objective="operation_ce", cell_id="bad")
     bad_label = [token(0, 2, .5)]
     bad_label[0]["binary_target"] = 0
     with pytest.raises(ValueError, match="disagrees"):
-        summarize_cell([], bad_label, [], [], control=False, cell_id="bad-label")
+        summarize_cell([], bad_label, [], [], objective="operation_ce", cell_id="bad-label")
 
 
 def test_factorial_contrasts_use_registered_directions():
