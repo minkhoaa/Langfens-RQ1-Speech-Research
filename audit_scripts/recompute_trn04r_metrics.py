@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Independent model-free recomputation from coordinator-frozen TRN-04R rows.
 
-Expected layout: INPUT/{C0,T1,T2,T3}_{fixed_budget_3600|best}/ with the eight named JSONL files.
+Accepted layouts: INPUT/C0_endpoint, INPUT/arms/C0/C0_endpoint, or INPUT/C0/C0_endpoint (likewise other cells), with eight named JSONL files. Symlinks and ambiguous layouts are rejected.
 No model/audio/label sources are loaded. Use a new output directory; raw inputs
 and resulting records must remain in the approved private store.
 """
@@ -42,6 +42,41 @@ def load(path: Path):
                 raise ValueError(f"Expected object at {path}:{number}")
             rows.append(row)
     return rows
+
+
+def _reject_symlink_components(root: Path, path: Path) -> None:
+    root = root.absolute()
+    path = path.absolute()
+    if root.is_symlink():
+        raise ValueError(f"input root must not be a symlink: {root}")
+    try:
+        relative = path.relative_to(root)
+    except ValueError as exc:
+        raise ValueError(f"resolved input escaped input root: {path}") from exc
+    current = root
+    for component in relative.parts:
+        current = current / component
+        if current.is_symlink():
+            raise ValueError(f"input path must not contain symlinks: {current}")
+
+
+def resolve_cell_directory(input_root: Path, cell: str, endpoint: str) -> Path:
+    """Resolve only the three authorized layouts; refuse ambiguity and symlinks."""
+    root = input_root.absolute()
+    if not root.is_dir():
+        raise FileNotFoundError(f"input root is not a directory: {input_root}")
+    if root.is_symlink():
+        raise ValueError(f"input root must not be a symlink: {root}")
+    leaf = f"{cell}_{endpoint}"
+    candidates = (root / leaf, root / "arms" / cell / leaf, root / cell / leaf)
+    for candidate in candidates:
+        _reject_symlink_components(root, candidate)
+    matches = [candidate for candidate in candidates if candidate.is_dir()]
+    if not matches:
+        raise FileNotFoundError(f"no authorized input layout for {cell}/{endpoint}; tried {list(map(str, candidates))}")
+    if len(matches) != 1:
+        raise ValueError(f"ambiguous input layout for {cell}/{endpoint}: {list(map(str, matches))}")
+    return matches[0]
 
 
 def sha256(path: Path) -> str:
@@ -188,7 +223,10 @@ def main() -> int:
     all_results = {}
     input_hashes = {}
     for cell in CELLS:
-        directory = args.input_root / f"{cell}_{args.endpoint}"
+        directory = resolve_cell_directory(args.input_root, cell, args.endpoint)
+        symlink_files = [filename for filename in FILES if (directory / filename).is_symlink()]
+        if symlink_files:
+            raise ValueError(f"{cell}: input files must not be symlinks: {symlink_files}")
         missing = [filename for filename in FILES if not (directory / filename).is_file()]
         if missing:
             raise FileNotFoundError(f"{cell}: missing frozen exchange files: {missing}")

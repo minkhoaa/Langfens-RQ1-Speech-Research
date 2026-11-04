@@ -14,7 +14,9 @@
     "extra_prompt_positions_separate": 37
   },
   "recomputation_entrypoint": "audit_scripts/recompute_trn04r_metrics.py",
-  "input_layout": "<private-input-root>/{C0,T1,T2,T3}_{fixed_budget_3600|best}/{runtime_Z.jsonl,tokens_Z.jsonl,cal_runtime_Z.jsonl,cal_tokens_Z.jsonl,mismatched_runtime_Z.jsonl,mismatched_tokens_Z.jsonl,recognition_Z.jsonl,recognition_runtime_Z.jsonl}",
+  "input_layouts": ["<root>/<CELL>_<endpoint>/", "<root>/arms/<CELL>/<CELL>_<endpoint>/", "<root>/<CELL>/<CELL>_<endpoint>/"],
+  "symlink_inputs": "rejected; no copies or symlinks are created",
+  "required_cell_files": ["runtime_Z.jsonl", "tokens_Z.jsonl", "cal_runtime_Z.jsonl", "cal_tokens_Z.jsonl", "mismatched_runtime_Z.jsonl", "mismatched_tokens_Z.jsonl", "recognition_Z.jsonl", "recognition_runtime_Z.jsonl"],
   "endpoint_choices": ["fixed_budget_3600", "best"],
   "acceptance_invariants": [
     "Counts must be recomputed from actual saved gold rows, not substituted constants",

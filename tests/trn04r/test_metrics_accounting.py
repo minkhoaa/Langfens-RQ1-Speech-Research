@@ -4,7 +4,7 @@ from langfens_prep.trn04r.metrics import (average_precision, summarize_cell, fac
                                             objective_supports_subtypes, _confusion, recognition_summary,
                                             validate_speaker_census, VAL_SPEAKERS, CAL_SPEAKERS)
 from audit_scripts.recompute_trn04r_metrics import (primary_scalar_values, evaluate_registered_gates,
-                                                   validate_recognition_pair)
+                                                   validate_recognition_pair, resolve_cell_directory)
 
 
 def token(i, op, score, *, phone="AA", prompt=None, dedicated=None):
@@ -180,6 +180,33 @@ def test_registered_gates_use_frozen_levels_and_fixed_budget_only():
     assert evaluate_registered_gates(scalar, "best")["T1"]["Level_A"]["status"] == "not_applicable"
     scalar["T3"]["PER"] = None
     assert evaluate_registered_gates(scalar, "fixed_budget_3600")["T3"]["Level_A"]["status"] == "unavailable"
+
+
+@pytest.mark.parametrize("layout", ["flat", "arms", "cell"])
+def test_endpoint_directory_resolves_all_three_authorized_layouts(tmp_path, layout):
+    if layout == "flat":
+        directory = tmp_path / "C0_fixed_budget_3600"
+    elif layout == "arms":
+        directory = tmp_path / "arms" / "C0" / "C0_fixed_budget_3600"
+    else:
+        directory = tmp_path / "C0" / "C0_fixed_budget_3600"
+    directory.mkdir(parents=True)
+    assert resolve_cell_directory(tmp_path, "C0", "fixed_budget_3600") == directory
+
+
+def test_endpoint_directory_resolver_rejects_ambiguity_and_symlinks(tmp_path):
+    flat = tmp_path / "C0_fixed_budget_3600"
+    flat.mkdir()
+    nested = tmp_path / "C0" / "C0_fixed_budget_3600"
+    nested.mkdir(parents=True)
+    with pytest.raises(ValueError, match="ambiguous"):
+        resolve_cell_directory(tmp_path, "C0", "fixed_budget_3600")
+    other = tmp_path / "other" / "C0_fixed_budget_3600"
+    other.mkdir(parents=True)
+    symlink_root = tmp_path / "linked"
+    symlink_root.symlink_to(tmp_path / "other", target_is_directory=True)
+    with pytest.raises(ValueError, match="symlink"):
+        resolve_cell_directory(symlink_root, "C0", "fixed_budget_3600")
 
 
 def test_factorial_contrasts_use_registered_directions():
