@@ -1,0 +1,17 @@
+{
+  "schema_version": "trn04r-raw-prediction-index-v1",
+  "status": "NOT_EXECUTED",
+  "run_output_policy": "Private raw prediction files remain outside Git under a new /home/khoa/.cache/langfens/trn04r/<unique-run> directory.",
+  "cell_key": "<ARM>_<ENDPOINT>",
+  "expected_cells": [
+    "C0_fixed_budget_3600", "C0_best", "T1_fixed_budget_3600", "T1_best",
+    "T2_fixed_budget_3600", "T2_best", "T3_fixed_budget_3600", "T3_best"
+  ],
+  "expected_files_per_cell": [
+    "runtime_Z.jsonl", "tokens_Z.jsonl", "cal_runtime_Z.jsonl", "cal_tokens_Z.jsonl",
+    "mismatched_runtime_Z.jsonl", "mismatched_tokens_Z.jsonl", "recognition_Z.jsonl"
+  ],
+  "hashes": null,
+  "execution_time": null,
+  "note": "Coordinator creates the actual hash-indexed run receipt after authorized execution; this source index contains no predictions or copied historical metrics."
+}

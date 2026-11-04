@@ -1,0 +1,59 @@
+{
+  "schema_version": "trn04r-protocol-z-runtime-v1",
+  "status": "IMPLEMENTATION_SPECIFICATION_ONLY_NOT_EXECUTED",
+  "contract": {
+    "name": "EVALUATION_CONTRACT_V1",
+    "sha256": "4d99723e4b3f62f506165ced089eca82d4417279c76973b35470bd337cedfab2"
+  },
+  "protocol": "Z-PROMPT-V1",
+  "inputs": ["16kHz waveform", "written prompt text", "frozen CMUDict G2P"],
+  "prohibited_runtime_inputs": ["TextGrid", "gold canonical phone", "gold timestamp", "operation label", "realized transcript"],
+  "runtime_freeze_before_first_gold_read": true,
+  "split_sha256": "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b",
+  "authorized_audio_archive_sha256": "b750eb3bf3971afccd9ab9058a64fa6b3f5781399b9ef0f1294d29bf580784a9",
+  "backbone": {
+    "repository": "facebook/wav2vec2-base-960h",
+    "revision": "22aad52d435eb6dbaf354bdad9b0da84ce7d6156",
+    "cached_model_safetensors_sha256": "8aa76ab2243c81747a1f832954586bc566090c83a0ac167df6f31f0fa917d74a",
+    "downloads": "disabled; cached local artifact only"
+  },
+  "sealed_test_speakers": ["ABA", "ASI", "EBVS", "HJK", "LXC", "PNV"],
+  "allowlisted_checkpoints": {
+    "C0": {
+      "fixed_budget_3600": "ca4cff18ff38729a221fbeaba459f85afad23b595be41d7100b513b7917a2338",
+      "best": "0b7092d44bae013fb971ce64130c173f14acb45bc3f46f99c429880213a4571c"
+    },
+    "T1": {
+      "fixed_budget_3600": "0d3cdad4a0ab786bcfc26e4d05c2353ddc0d59e117577574ff543bfdfe663589",
+      "best": "88a39b3617219db313340fba9db0de082f5286908234db43a9818afff5cdf3ee"
+    },
+    "T2": {
+      "fixed_budget_3600": "e8b00002aef9ee1587990a69162d5a5438b092e02c83d5654ae5aea0e1ec9c13",
+      "best": "98d3fc1ecf6a5539d211028e32c9cbd2d5668b3942ad4d8fcae8226a99927fb1"
+    },
+    "T3": {
+      "fixed_budget_3600": "ca32da07eac20946af125539ca1ef7ca3835a35ce05e1ec4897d3a790e90eeb9",
+      "best": "1feb311ec9f88569915fa43aefaa923e24c55f7fadb77a821a2b2c2c8dcf6107"
+    }
+  },
+  "cells": {
+    "arms": ["C0", "T1", "T2", "T3"],
+    "endpoints": ["fixed_budget_3600", "best"],
+    "precision": "CPU FP32",
+    "batch_size": 1,
+    "feature_cache": "trn04r-fp32-batch1-v1; per-utterance encoder and acoustic-feature hashes in private run receipt",
+    "mismatch": "within-speaker cyclic shift; prompt fixed; both encoder features and 4D features derive from shifted waveform"
+  },
+  "expected_private_files_per_cell": [
+    "runtime_Z.jsonl",
+    "tokens_Z.jsonl",
+    "cal_runtime_Z.jsonl",
+    "cal_tokens_Z.jsonl",
+    "mismatched_runtime_Z.jsonl",
+    "mismatched_tokens_Z.jsonl",
+    "recognition_Z.jsonl"
+  ],
+  "run_manifest_and_source_hashes": "RUN_MANIFEST.json in private run output",
+  "execution_status": "PENDING_COORDINATOR_AFTER_FROZEN_INTEGRATED_REVISION",
+  "scores_or_results": null
+}
