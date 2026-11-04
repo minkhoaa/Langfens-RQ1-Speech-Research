@@ -1,6 +1,6 @@
 {
-  "id": "minkhoaa/langfens-rq1-trn04-t2-ce-feat",
-  "title": "LANGFENS RQ1 TRN-04 T2 CE Feat",
+  "id": "minkhoaa/langfens-rq1-trn-04-t2-ce-feat",
+  "title": "langfens-rq1-trn-04-t2-ce-feat",
   "code_file": "kaggle_train.ipynb",
   "language": "python",
   "kernel_type": "notebook",

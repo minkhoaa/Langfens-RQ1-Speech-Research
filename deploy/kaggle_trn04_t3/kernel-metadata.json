@@ -1,6 +1,6 @@
 {
-  "id": "minkhoaa/langfens-rq1-trn04-t3-focal-feat",
-  "title": "LANGFENS RQ1 TRN-04 T3 Focal Feat",
+  "id": "minkhoaa/langfens-rq1-trn-04-t3-focal-feat",
+  "title": "langfens-rq1-trn-04-t3-focal-feat",
   "code_file": "kaggle_train.ipynb",
   "language": "python",
   "kernel_type": "notebook",

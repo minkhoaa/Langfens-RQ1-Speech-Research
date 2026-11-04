@@ -1,6 +1,6 @@
 {
-  "id": "minkhoaa/langfens-rq1-trn04-t1-focal-nofeat",
-  "title": "LANGFENS RQ1 TRN-04 T1 Focal NoFeat",
+  "id": "minkhoaa/langfens-rq1-trn-04-t1-focal-nofeat",
+  "title": "langfens-rq1-trn-04-t1-focal-nofeat",
   "code_file": "kaggle_train.ipynb",
   "language": "python",
   "kernel_type": "notebook",
