@@ -9,7 +9,8 @@
   ],
   "expected_files_per_cell": [
     "runtime_Z.jsonl", "tokens_Z.jsonl", "cal_runtime_Z.jsonl", "cal_tokens_Z.jsonl",
-    "mismatched_runtime_Z.jsonl", "mismatched_tokens_Z.jsonl", "recognition_Z.jsonl"
+    "mismatched_runtime_Z.jsonl", "mismatched_tokens_Z.jsonl",
+    "recognition_runtime_Z.jsonl", "recognition_Z.jsonl"
   ],
   "hashes": null,
   "execution_time": null,

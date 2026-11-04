@@ -16,7 +16,7 @@
 ## Implemented
 
 - `src/langfens_prep/trn04/runtime.py`: CPU FP32 waveform+prompt forward closure, frozen eval-only model handling, raw full-precision runtime and greedy CTC recognition rows, gold-only offline `sub_first` alignment join, and deterministic JSONL serialization.
-- `audit_scripts/run_trn04r_benchmark.py`: coordinator entrypoint with configurable checkpoint root, split, authorized ZIP, private output, arm(s), endpoint(s), local cached backbone, and CPU threads. CAL+VAL raw Z rows are generated and hashed before the first TextGrid read. It runs all eight cells by default, extracts one batch-one shared feature cache, keeps raw files outside Git, and applies within-speaker cyclic mismatch with prompt held fixed and features recomputed from mismatched audio.
+- `audit_scripts/run_trn04r_benchmark.py`: coordinator entrypoint with configurable checkpoint root, split, authorized ZIP, private output, arm(s), endpoint(s), local cached backbone, and CPU threads. CAL+VAL raw Z rows (including separate raw recognition records) are generated and hashed before the first TextGrid read. It runs all eight cells by default, extracts one batch-one shared feature cache, keeps raw files outside Git, and applies a fully recorded within-speaker cyclic mismatch using cached encoder/acoustic features from the shifted audio with the prompt held fixed.
 - Correction/spec/index artifacts distinguish implementation from execution and contain no copied benchmark values.
 
 ## Executed verification
@@ -38,6 +38,32 @@ Before execution, independently review the integrated runner and ensure checkpoi
 Coordinator guidance identified a P-SUP-specific ambiguity: its runtime conditionally nulls dedicated subtype scores outside `operation_ce`. The TRN-04R serializer does not use or edit that old runtime. It serializes **all four TRN-04 arms** from the unchanged three-logit operation head as three-way softmax outputs. Runtime/offline rows now explicitly carry objective (`operation_ce` or `class_focal`), `score_semantics`, all three class probabilities, logits, and the derived `s_error`, `s_omit`, `s_sub`. Thus T1/T3 retain dedicated scores; no B-Control semantics or null subtype behavior is applied. The protocol manifest records this rule.
 
 Follow-up synthetic regression command exercised T1 and T3 runtime serialization from finite three-class logits and checked non-null dedicated scores, probabilities summing to one, and explicit focal objective/semantics. It uses no checkpoint/audio/gold and performs no backward/update. D remains responsible for its independent regression coverage.
+
+## Follow-up: integration review corrections (execution remains pending)
+
+Addressed coordinator integration review findings without editing other workstream paths:
+
+1. Mismatch rows are grouped by the complete `speaker_id/utterance_id` key; `AUDIO_MISMATCH_MAPPING.json` stores and hashes the complete ordered within-speaker permutation.
+2. Raw `recognition_runtime_Z.jsonl` is frozen before gold reads. Offline `recognition_Z.jsonl` is generated afterward from `labels.ctc`, with `ref_phones`, `hyp_phones`, `edit_counts` ordered `(total, substitutions, deletions, insertions)`, and `reference_phone_count`. The frozen raw recognition file is never rewritten.
+3. Runtime rows contain no `operation_target`, `binary_target`, `gold_canonical_index`, or annotation-derived phone fields. Written-prompt phones are named `prompt_phone`; offline joins add gold fields separately.
+4. Runtime serialization rejects wrong shapes/dtypes/devices, nonfinite logits/probabilities/scores, inconsistent phone mappings, missing/duplicate/out-of-order prompt positions, and gold-key fields. `s_error` uses Python addition of the serialized FP32 softmax values, consistent with recovered V2 semantics.
+5. Mismatch evaluation reuses the immutable batch-one cache instead of re-encoding source audio per endpoint; both model features and 4D features in cache originate from the mismatch audio. The complete permutation is output and hashed.
+6. Checkpoint loading verifies exact hash, objective/features/contract/endpoint metadata, successful updates (fixed 3600; best C0/T3 2247, T1 897, T2 3600), and skipped attempts (3) before loading. Run provenance records those counters.
+7. The pinned prompt table (`87843d363bc7e2bbe849842efe16974cb6634dfe0539efb42d666aed7e17f11e`) is verified before data access; frozen dictionary checksum is verified. Run manifest records command, interpreter, Python/dependency versions, hardware, source hashes including labels/trainer/runtime dependencies, and requires source hashes unchanged at end.
+
+**Executed synthetic validation only:** actual TRN-04 head instances with a synthetic encoder were run in CPU FP32 eval/inference mode for T1 and T3. Tests covered absence of gold-key names in raw rows, complete prompt-map validation and rejection of an incomplete map, full-precision operation serialization, offline `sub_first` join/prompt-extra accounting, and CTC reference/hypothesis/edit-count construction using synthetic CTC reference IDs. No checkpoints, corpus audio, TextGrid, real inference, backward pass, or optimizer update were used. Compilation passed. No final benchmark was launched.
+
+## Follow-up: integration review blockers (benchmark still pending)
+
+Applied the coordinator's latest bounded fixes in A-owned files only:
+
+- Mismatch joins key rows by complete `speaker_id/utterance_id`; mismatched encoder and 4D features now reuse the immutable batch-one cache, and `AUDIO_MISMATCH_MAPPING.json` records the full ordered same-speaker cyclic permutation.
+- Frozen raw recognition is `recognition_runtime_Z.jsonl`; `recognition_Z.jsonl` is created only after gold access, using `labels.ctc` reference IDs and the frozen raw hypothesis, with `ref_phones`, `hyp_phones`, `(total,S,D,I)` `edit_counts`, and `reference_phone_count`. Raw recognition remains hash-frozen and unmodified.
+- Runtime rows now use prompt-only identity, omit every gold/annotation target/index field, and validate exact keys, CPU FP32 tensor shapes, finiteness, class score/probability consistency, and complete ordered prompt positions. `s_error` sums the Python floats serialized from softmax output, preserving recovered V2 semantics.
+- Checkpoints are rejected before load unless exact endpoint hash, arm/objective/features/contract/endpoint metadata, update count and 3 skipped attempts match. Best update counts: C0/T3 2247, T1 897, T2 3600; fixed endpoints 3600.
+- Prompt table SHA-256 is checked before data use; dictionary identity remains pinned. Source hash inventory now includes TRN-04 package/model/features/objectives/evaluator/runtime, allowlisted dataset/G2P/alignment/audio/TextGrid/phoneme code, P-SUP labels/trainer, and runner. Command, interpreter/Python, dependencies, hardware, prompt/dictionary hashes and unchanged-source verification are included in the run manifest.
+
+**Executed validation:** runner/runtime compilation; CLI `--help`; JSON specification/index parse; and CPU FP32 synthetic smoke using actual `CompactFactorialOperationHead` instances with a synthetic encoder for T1 and T3. The smoke verified gold-free raw-key schema, non-null focal dedicated scores, serialized FP32 addition semantics, rejection of nonfinite logits and incomplete prompt maps, offline DP join/prompt extra, and offline CTC reference/hypothesis/edit-count output. No checkpoint, corpus audio, TextGrid, real inference, backward pass or optimizer update was used. No benchmark launched.
 
 ## Process registry
 

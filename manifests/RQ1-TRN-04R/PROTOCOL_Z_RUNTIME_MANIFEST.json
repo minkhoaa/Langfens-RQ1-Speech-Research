@@ -36,6 +36,15 @@
       "best": "1feb311ec9f88569915fa43aefaa923e24c55f7fadb77a821a2b2c2c8dcf6107"
     }
   },
+  "expected_checkpoint_counters": {
+    "fixed_budget_3600": {"successful_updates": 3600, "skipped_updates": 3},
+    "best": {
+      "C0": {"successful_updates": 2247, "skipped_updates": 3},
+      "T1": {"successful_updates": 897, "skipped_updates": 3},
+      "T2": {"successful_updates": 3600, "skipped_updates": 3},
+      "T3": {"successful_updates": 2247, "skipped_updates": 3}
+    }
+  },
   "cells": {
     "arms": ["C0", "T1", "T2", "T3"],
     "endpoints": ["fixed_budget_3600", "best"],
@@ -52,9 +61,10 @@
     "cal_tokens_Z.jsonl",
     "mismatched_runtime_Z.jsonl",
     "mismatched_tokens_Z.jsonl",
+    "recognition_runtime_Z.jsonl",
     "recognition_Z.jsonl"
   ],
-  "run_manifest_and_source_hashes": "RUN_MANIFEST.json in private run output",
+  "run_manifest_and_source_hashes": "RUN_MANIFEST.json records command/interpreter/dependencies/hardware/source hashes, checkpoint counters, output hashes, and verifies source bytes unchanged.",
   "execution_status": "PENDING_COORDINATOR_AFTER_FROZEN_INTEGRATED_REVISION",
   "scores_or_results": null
 }

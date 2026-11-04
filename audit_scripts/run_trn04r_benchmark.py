@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import importlib.metadata
 import json
 import os
 import platform
@@ -23,7 +24,7 @@ sys.path.insert(0, str(ROOT / "src"))
 from langfens_prep.trn04.model import CompactFactorialOperationHead, FactorialHeadConfig
 from langfens_prep.trn04.runtime import (
     ARMS, ENDPOINTS, FEATURES_ENABLED, OBJECTIVES, SEALED_SPEAKERS,
-    join_gold_rows, make_head_forward, runtime_rows, sha256_file, write_jsonl,
+    join_gold_rows, make_head_forward, offline_recognition_row, runtime_rows, sha256_file, write_jsonl,
 )
 
 SPLIT_SHA = "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b"
@@ -32,6 +33,20 @@ CONTRACT_SHA = "4d99723e4b3f62f506165ced089eca82d4417279c76973b35470bd337cedfab2
 BACKBONE = "facebook/wav2vec2-base-960h"
 BACKBONE_REVISION = "22aad52d435eb6dbaf354bdad9b0da84ce7d6156"
 ARMS_DIR = {"C0": "c0", "T1": "t1", "T2": "t2", "T3": "t3"}
+BEST_UPDATES = {"C0": 2247, "T1": 897, "T2": 3600, "T3": 2247}
+EXPECTED_SKIPPED_ATTEMPTS = 3
+PROMPT_SHA = "87843d363bc7e2bbe849842efe16974cb6634dfe0539efb42d666aed7e17f11e"
+DICTIONARY_SHA = "81917843c7f44ce2b094ac63873c2c7a4cf802040792c455ba3ca406891c3d22"
+SOURCE_FILES = [
+    "audit_scripts/run_trn04r_benchmark.py",
+    "src/langfens_prep/trn04/__init__.py", "src/langfens_prep/trn04/runtime.py",
+    "src/langfens_prep/trn04/model.py", "src/langfens_prep/trn04/features.py",
+    "src/langfens_prep/trn04/objectives.py", "src/langfens_prep/trn04/evaluator.py",
+    "src/langfens_prep/dataset.py", "src/langfens_prep/alignment.py",
+    "src/langfens_prep/g2p.py", "src/langfens_prep/phoneme_normalizer.py",
+    "src/langfens_prep/textgrid_parser.py", "src/langfens_prep/audio_loader.py",
+    "src/langfens_prep/p_sup/labels.py", "src/langfens_prep/p_sup/trainer.py",
+]
 
 
 def file_digest(path: Path) -> str:
@@ -53,14 +68,23 @@ def load_head(path: Path, arm: str, endpoint: str):
     # Checkpoint file hash is verified before any deserialization.
     payload = torch.load(path, map_location="cpu", weights_only=False)
     metadata = payload.get("metadata", {})
-    if metadata.get("arm") != arm or metadata.get("objective") != OBJECTIVES[arm] or metadata.get("features_enabled") is not FEATURES_ENABLED[arm]:
-        raise ValueError(f"checkpoint metadata mismatch: {arm}/{endpoint}")
+    expected_updates = 3600 if endpoint == "fixed_budget_3600" else BEST_UPDATES[arm]
+    endpoint_flag = "is_fixed_budget_endpoint" if endpoint == "fixed_budget_3600" else "is_best_endpoint"
+    if (metadata.get("arm") != arm or metadata.get("objective") != OBJECTIVES[arm]
+            or metadata.get("contract_sha256") != CONTRACT_SHA
+            or metadata.get("features_enabled") is not FEATURES_ENABLED[arm]
+            or metadata.get(endpoint_flag) is not True
+            or payload.get("successful_updates") != expected_updates
+            or payload.get("skipped_amp_attempts_total") != EXPECTED_SKIPPED_ATTEMPTS):
+        raise ValueError(f"checkpoint metadata/counter mismatch: {arm}/{endpoint}")
     head = CompactFactorialOperationHead(FactorialHeadConfig()).float().cpu().eval().requires_grad_(False)
     head.load_state_dict(payload["head"], strict=True)
     for param in head.parameters():
         if param.requires_grad:
             raise AssertionError("loaded model must be frozen")
-    return head, {"path": str(path), "sha256": actual, "metadata": metadata}
+    return head, {"path": str(path), "sha256": actual, "metadata": metadata,
+                  "successful_updates": expected_updates,
+                  "skipped_updates": EXPECTED_SKIPPED_ATTEMPTS}
 
 
 def fingerprint(module) -> str:
@@ -104,6 +128,11 @@ def main() -> None:
     split_path = args.split.resolve()
     archive = args.archive.resolve()
     contract = ROOT / "manifests/RQ1-WORKSPACE-PREP-01/EVALUATION_CONTRACT_V1.md"
+    prompts_file = ROOT / "resources/L2-ARCTIC/prompts.json"
+    dictionary_file = ROOT / "resources/CMUDict/cmudict.dict"
+    source_hashes_before = {name: file_digest(ROOT / name) for name in SOURCE_FILES}
+    if file_digest(prompts_file) != PROMPT_SHA or file_digest(dictionary_file) != DICTIONARY_SHA:
+        raise ValueError("pinned prompt table or CMUDict checksum mismatch")
     if file_digest(split_path) != SPLIT_SHA or file_digest(contract) != CONTRACT_SHA:
         raise ValueError("frozen split or evaluation contract hash mismatch")
     if file_digest(archive) != ZIP_SHA:
@@ -132,11 +161,11 @@ def main() -> None:
             path = args.checkpoint_root / ARMS_DIR[arm] / ("fixed_budget_3600.pt" if endpoint == "fixed_budget_3600" else "best.pt")
             heads[arm, endpoint], checkpoint_info[arm, endpoint] = load_head(path, arm, endpoint)
 
-    backbone_kwargs = {"revision": BACKBONE_REVISION, "local_files_only": True}
-    if args.backbone_cache:
-        os.environ["HF_HOME"] = str(args.backbone_cache.resolve())
+    backbone_cache = args.backbone_cache.resolve() if args.backbone_cache else None
+    backbone_kwargs = {"revision": BACKBONE_REVISION, "local_files_only": True, "cache_dir": backbone_cache}
     from transformers.utils.hub import cached_file
-    backbone_weights = Path(cached_file(BACKBONE, "model.safetensors", revision=BACKBONE_REVISION, local_files_only=True))
+    backbone_weights = Path(cached_file(BACKBONE, "model.safetensors", revision=BACKBONE_REVISION,
+                                        local_files_only=True, cache_dir=backbone_cache))
     backbone_sha256 = file_digest(backbone_weights)
     if backbone_sha256 != "8aa76ab2243c81747a1f832954586bc566090c83a0ac167df6f31f0fa917d74a":
         raise ValueError(f"cached backbone hash mismatch: {backbone_sha256}")
@@ -146,8 +175,7 @@ def main() -> None:
     model_before = {f"{a}:{e}": fingerprint(h) for (a, e), h in heads.items()}
     backbone_before = fingerprint(frozen_encoder)
 
-    g2p = CMUDictG2P(dict_path=ROOT / "resources/CMUDict/cmudict.dict", verify_checksum=True, oov_policy="strict")
-    prompts_file = ROOT / "resources/L2-ARCTIC/prompts.json"
+    g2p = CMUDictG2P(dict_path=dictionary_file, verify_checksum=True, oov_policy="strict")
     cache = {}
     feature_cache_receipt = {}
     for partition, split_name in (("cal", "train"), ("val", "val")):
@@ -189,11 +217,20 @@ def main() -> None:
         if len(speaker_ids) < 2:
             raise ValueError("within-speaker cyclic mismatch requires at least two utterances per speaker")
         val_map.update({uid: speaker_ids[(i + 1) % len(speaker_ids)] for i, uid in enumerate(speaker_ids)})
+    if (set(val_map) != set(ids["val"]) or set(val_map.values()) != set(ids["val"])
+            or any(target == source or target.split("/")[0] != source.split("/")[0]
+                   for target, source in val_map.items())):
+        raise ValueError("mismatch permutation must cover VAL exactly with same-speaker nonfixed points")
+    mapping_rows = [{"target_id": uid, "audio_source_id": val_map[uid]} for uid in ids["val"]]
+    mapping_digest = hashlib.sha256(json.dumps(mapping_rows, separators=(",", ":"), ensure_ascii=False).encode()).hexdigest()
+    mismatch_mapping_path = output_root / "AUDIO_MISMATCH_MAPPING.json"
+    mismatch_mapping_path.write_text(json.dumps({"policy": "within_speaker_cyclic_shift_1", "ordered_mapping": mapping_rows,
+                                                "mapping_sha256": mapping_digest}, indent=2, sort_keys=True) + "\n")
     for (arm, endpoint), head in heads.items():
         key = f"{arm}_{endpoint}"
         cfg_dir = output_root / key
         cfg_dir.mkdir()
-        groups = {"runtime_Z.jsonl": [], "cal_runtime_Z.jsonl": [], "mismatched_runtime_Z.jsonl": [], "recognition_Z.jsonl": []}
+        groups = {"runtime_Z.jsonl": [], "cal_runtime_Z.jsonl": [], "mismatched_runtime_Z.jsonl": [], "recognition_runtime_Z.jsonl": []}
         prompts_by_uid = {}
         for partition in ("cal", "val"):
             for uid in ids[partition]:
@@ -209,20 +246,20 @@ def main() -> None:
                 prompts_by_uid[uid] = rows
                 groups["cal_runtime_Z.jsonl" if partition == "cal" else "runtime_Z.jsonl"].extend(rows)
                 if partition == "val":
-                    groups["recognition_Z.jsonl"].append(recognition)
+                    groups["recognition_runtime_Z.jsonl"].append(recognition)
         mismatch_rows = []
         for uid in ids["val"]:
             source_uid = val_map[uid]
             source = cache[source_uid]
             target = cache[uid]
+            # Reuse the immutable batch-one cache for this source waveform; only target prompt varies.
             with torch.inference_mode():
-                features, lengths = frozen_encoder(source["waveform"].unsqueeze(0), torch.tensor([source["waveform"].numel()], dtype=torch.long))
-                acoustic = extract_frame_acoustic_features(source["waveform"].unsqueeze(0), lengths).float().cpu()
-                output = head(features=features.float().cpu(), acoustic_features=acoustic if FEATURES_ENABLED[arm] else torch.zeros_like(acoustic),
-                              frame_lengths=lengths.cpu(), prompt_phone_ids=target["prompt_ids"].unsqueeze(0),
+                output = head(features=source["features"],
+                              acoustic_features=source["acoustics"] if FEATURES_ENABLED[arm] else torch.zeros_like(source["acoustics"]),
+                              frame_lengths=source["lengths"], prompt_phone_ids=target["prompt_ids"].unsqueeze(0),
                               prompt_lengths=torch.tensor([target["prompt_ids"].numel()], dtype=torch.long))
             rows, _ = runtime_rows(logits=output["operation_logits"][0, :target["prompt_ids"].numel()],
-                ctc_logits=output["ctc_logits"][0, :int(lengths[0])], prompt_phone_ids=target["prompt_ids"].tolist(),
+                ctc_logits=output["ctc_logits"][0, :int(source["lengths"][0])], prompt_phone_ids=target["prompt_ids"].tolist(),
                 canonical_phones=target["prompt_phones"],
                 speaker_id=uid.split("/")[0], utterance_id=uid.split("/")[1], arm=arm, endpoint=endpoint,
                 condition="within_speaker_cyclic", audio_source_id=source_uid)
@@ -230,10 +267,12 @@ def main() -> None:
         groups["mismatched_runtime_Z.jsonl"] = mismatch_rows
         for filename, rows in groups.items():
             freeze_hashes[f"{key}/{filename}"] = write_jsonl(cfg_dir / filename, rows)
-        raw_by_config[key] = {"matched": prompts_by_uid, "mismatch": mismatch_rows}
+        raw_by_config[key] = {"matched": prompts_by_uid, "mismatch": mismatch_rows,
+                              "recognition_runtime": groups["recognition_runtime_Z.jsonl"]}
         print(f"Frozen Z runtime: {key}", flush=True)
     freeze_receipt = {"contract_sha256": CONTRACT_SHA, "gold_reads_before_freeze": 0,
-                      "runtime_hashes": freeze_hashes, "allowed_id_hashes": {
+                      "runtime_hashes": freeze_hashes, "audio_mismatch_mapping_sha256": mapping_digest,
+                      "allowed_id_hashes": {
                           part: hashlib.sha256(("\n".join(values) + "\n").encode()).hexdigest() for part, values in ids.items()}}
     freeze_path = output_root / "Z_RUNTIME_FREEZE.json"
     freeze_path.write_text(json.dumps(freeze_receipt, indent=2, sort_keys=True, allow_nan=False) + "\n")
@@ -258,7 +297,10 @@ def main() -> None:
                 positions.append({"canonical_phone": interval.canonical_phone,
                                   "operation_target": operation, "binary_target": int(operation != 0),
                                   "word_final_consonant": len(word_positions) > 1 and i == word_positions[-1] and interval.canonical_phone in consonants})
-            gold[uid] = positions
+            reference_ids = [int(phone_id) for phone_id in labels.ctc.tolist()]
+            if any(phone_id not in CTC_INDEX_TO_PHONE or phone_id == 0 for phone_id in reference_ids):
+                raise ValueError(f"invalid realized CTC reference for {uid}")
+            gold[uid] = {"positions": positions, "reference_phone_ids": reference_ids}
 
     for (arm, endpoint), _head in heads.items():
         key = f"{arm}_{endpoint}"
@@ -267,17 +309,25 @@ def main() -> None:
         for partition, output_name in (("cal", "cal_tokens_Z.jsonl"), ("val", "tokens_Z.jsonl")):
             joined = []
             for uid in ids[partition]:
-                joined.extend(join_gold_rows(gold_positions=gold[uid], prompt_phones=cache[uid]["prompt_phones"],
+                joined.extend(join_gold_rows(gold_positions=gold[uid]["positions"], prompt_phones=cache[uid]["prompt_phones"],
                                              runtime=matched[uid], align=align_canonical_sequences))
             write_jsonl(cfg_dir / output_name, joined)
         mismatch_join = []
         mismatch_index = {}
         for row in raw_by_config[key]["mismatch"]:
-            mismatch_index.setdefault(row["utterance_id"], []).append(row)
+            row_uid = f"{row['speaker_id']}/{row['utterance_id']}"
+            mismatch_index.setdefault(row_uid, []).append(row)
         for uid in ids["val"]:
-            mismatch_join.extend(join_gold_rows(gold_positions=gold[uid], prompt_phones=cache[uid]["prompt_phones"],
+            mismatch_join.extend(join_gold_rows(gold_positions=gold[uid]["positions"], prompt_phones=cache[uid]["prompt_phones"],
                                                 runtime=mismatch_index[uid], align=align_canonical_sequences))
         write_jsonl(cfg_dir / "mismatched_tokens_Z.jsonl", mismatch_join)
+
+        runtime_recognition = {(row["speaker_id"], row["utterance_id"]): row
+                               for row in raw_by_config[key]["recognition_runtime"]}
+        offline_recognition = [offline_recognition_row(runtime_recognition[tuple(uid.split("/"))],
+                                                       gold[uid]["reference_phone_ids"])
+                               for uid in ids["val"]]
+        write_jsonl(cfg_dir / "recognition_Z.jsonl", offline_recognition)
 
     for relative, expected_hash in freeze_hashes.items():
         if file_digest(output_root / relative) != expected_hash:
@@ -290,21 +340,28 @@ def main() -> None:
     cache_receipt_path = output_root / "FEATURE_CACHE_IDENTITIES.json"
     cache_receipt_path.write_text(json.dumps({"version": "trn04r-fp32-batch1-v1", "utterances": feature_cache_receipt},
                                              indent=2, sort_keys=True, allow_nan=False) + "\n")
-    source_files = ["audit_scripts/run_trn04r_benchmark.py", "src/langfens_prep/trn04/runtime.py",
-                    "src/langfens_prep/trn04/model.py", "src/langfens_prep/trn04/features.py",
-                    "src/langfens_prep/dataset.py", "src/langfens_prep/alignment.py",
-                    "src/langfens_prep/g2p.py", "src/langfens_prep/phoneme_normalizer.py",
-                    "src/langfens_prep/textgrid_parser.py", "src/langfens_prep/audio_loader.py"]
+    source_hashes_after = {name: file_digest(ROOT / name) for name in SOURCE_FILES}
+    if source_hashes_after != source_hashes_before:
+        raise ValueError("runtime source files changed during inference")
+    if (file_digest(prompts_file) != PROMPT_SHA or file_digest(dictionary_file) != DICTIONARY_SHA
+            or file_digest(split_path) != SPLIT_SHA or file_digest(contract) != CONTRACT_SHA):
+        raise ValueError("frozen prompt/G2P/split/contract input changed during inference")
     manifest = {"schema_version": "trn04r-v1", "status": "INFERENCE_RECORDS_FROZEN",
         "contract_sha256": CONTRACT_SHA, "protocol": "Z-PROMPT-V1", "git_tip": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
         "git_dirty": bool(subprocess.check_output(["git", "status", "--porcelain"], cwd=ROOT, text=True)),
-        "source_hashes": {name: file_digest(ROOT / name) for name in source_files},
+        "source_hashes": source_hashes_before,
+        "source_hashes_verified_unchanged": source_hashes_after == source_hashes_before,
         "split_sha256": file_digest(split_path), "authorized_archive_sha256": file_digest(archive),
+        "prompt_table_sha256": file_digest(prompts_file), "g2p_dictionary_sha256": file_digest(dictionary_file),
         "arms_endpoints": {f"{arm}:{endpoint}": checkpoint_info[arm, endpoint] for arm, endpoint in heads},
         "backbone": {"repo": BACKBONE, "revision": BACKBONE_REVISION, "model_safetensors_sha256": backbone_sha256},
         "id_hashes": freeze_receipt["allowed_id_hashes"], "feature_cache_sha256": file_digest(cache_receipt_path),
-        "precision": "CPU FP32", "batch_size": 1,
+        "audio_mismatch_mapping_sha256": mapping_digest,
+        "precision": "CPU FP32", "device": "cpu", "batch_size": 1,
         "threads": torch.get_num_threads(), "elapsed_seconds": time.time() - start,
+        "command": sys.argv, "interpreter": sys.executable, "python_version": platform.python_version(),
+        "hardware": {"platform": platform.platform(), "processor": platform.processor(), "cpu_count": os.cpu_count()},
+        "dependencies": {name: importlib.metadata.version(name) for name in ("torch", "transformers", "numpy", "soundfile", "scipy", "huggingface-hub")},
         "backward_passes": 0, "optimizer_updates": 0, "gold_free_z_frozen_before_annotation": True,
         "outputs": {str(path.relative_to(output_root)): file_digest(path) for path in sorted(output_root.rglob("*")) if path.is_file()}}
     (output_root / "RUN_MANIFEST.json").write_text(json.dumps(manifest, indent=2, sort_keys=True, allow_nan=False) + "\n")
