@@ -14,6 +14,12 @@
 
 Evaluation-only user authorization. CPU FP32 frozen inference permitted after corrected source freeze. No new training, backward pass, optimizer attempt/update/skipped update, model artifact, TEST payload access, VAL threshold tuning, historical rewrite, publication, push or merge. Existing 3,600-update counters are historical, not new optimization. Last valid model identity remains pending byte verification.
 
+## Integration checkpoint — revisions required before inference
+
+All initial four lanes completed and their owned commits were cherry-picked (coordinator HEAD `eca2cba`). Coordinator review identified runtime mismatch join key inconsistency, absent offline CTC references, null gold-field names in runtime, inconsistent score summation precision, and binary/substitution confusion and speaker PER bugs. Independent tests still targeted an old serializer rather than corrected production code. **Final benchmark NOT_STARTED; integration gate NOT_PASSED.** No failed benchmark outputs exist.
+
+Native retained resumes: A `ee969a99-fa2a-4972-b285-a520c6885814`, B `25364de1-520f-49f3-b1f0-5c2000da700e`, C `bb94c6fd-e0f5-4d2c-bd3e-e4087cb1d49c`, D `3fff2925-8e48-42e7-a163-f91945a80090`. Each remains sole writer in its own worktree; parent owns coordinator checkout. C initial evidence matches eight local checkpoints plus four summaries to pinned private remote revision `af6ac3620fb78873ff213c064dffe71fb8acadd4`; historical training-source commit remains unverified. Exact SELECT-best successful counters are 2247/897/3600/2247 (C0/T1/T2/T3), not rounded historical claims.
+
 ## Safe restart
 
 Read global index and lane checkpoints. Verify coordinator/lane HEADs and diffs; collect native completion artifacts rather than poll. Integrate only non-overlapping reviewed changes, run safe no-training tests, freeze corrected source in a reviewable commit, then execute benchmark into a new private cache directory. Independently recompute saved rows, verify immutable private SHA-256 readback, and only then finalize conclusions. Never reuse incomplete outputs as complete; do not overwrite original TRN-04 artifacts.
