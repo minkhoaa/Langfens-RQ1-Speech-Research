@@ -17,51 +17,392 @@
     "private_verified_before_download": true,
     "revision": "af6ac3620fb78873ff213c064dffe71fb8acadd4",
     "revision_basis": "authenticated repo_info HEAD; all readback downloads explicitly pinned to this immutable commit",
-    "readback": "all 12 checkpoint and four summary payloads downloaded read-only and SHA-256 matched the local bytes and local receipts",
+    "readback": "12 total payloads: eight checkpoint endpoint files (fixed_budget_3600.pt and best.pt for four arms) plus four training_summary.json files; all were downloaded read-only at the pinned revision and SHA-256/byte-count matched local files and persisted receipts.",
     "upload_performed": false
   },
   "partitions": {
     "source": "frozen EVALUATION_CONTRACT_V1 and referenced RQ1-SPLIT-01 manifest metadata",
     "split_manifest_sha256": "7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b",
-    "train": {"utterances": 2399, "speakers": ["BWC", "ERMS", "HKK", "HQTV", "MBMPS", "NCC", "SKA", "SVBI", "THV", "TLV", "TNI", "TXHC", "YBAA", "YDCK", "YKWK", "ZHAA"], "ordered_id_sha256": "2ebe54f2fc77e2a3ee9890ce3dc21f725897ebbe85f812d3c017c3b495f14b27"},
-    "fit": {"utterances": 1799, "speakers": ["BWC", "ERMS", "HKK", "HQTV", "SKA", "SVBI", "TNI", "TXHC", "YBAA", "YDCK", "YKWK", "ZHAA"]},
-    "select": {"utterances": 300, "speakers": ["MBMPS", "TLV"]},
-    "calibration": {"utterances": 300, "speakers": ["NCC", "THV"]},
-    "val": {"utterances": 300, "speakers": ["NJS", "RRBI"], "ordered_id_sha256": "6d34642b15bbf80cbd5bd102b5574ab36f5adac74be6d6d0ae7218b002eff065"},
-    "test": {"utterances": 900, "speakers": ["ABA", "ASI", "EBVS", "HJK", "LXC", "PNV"], "status": "SEALED; metadata only; no payload or TEST IDs accessed/exported"}
+    "train": {
+      "utterances": 2399,
+      "speakers": [
+        "BWC",
+        "ERMS",
+        "HKK",
+        "HQTV",
+        "MBMPS",
+        "NCC",
+        "SKA",
+        "SVBI",
+        "THV",
+        "TLV",
+        "TNI",
+        "TXHC",
+        "YBAA",
+        "YDCK",
+        "YKWK",
+        "ZHAA"
+      ],
+      "ordered_id_sha256": "2ebe54f2fc77e2a3ee9890ce3dc21f725897ebbe85f812d3c017c3b495f14b27"
+    },
+    "fit": {
+      "utterances": 1799,
+      "speakers": [
+        "BWC",
+        "ERMS",
+        "HKK",
+        "HQTV",
+        "SKA",
+        "SVBI",
+        "TNI",
+        "TXHC",
+        "YBAA",
+        "YDCK",
+        "YKWK",
+        "ZHAA"
+      ]
+    },
+    "select": {
+      "utterances": 300,
+      "speakers": [
+        "MBMPS",
+        "TLV"
+      ]
+    },
+    "calibration": {
+      "utterances": 300,
+      "speakers": [
+        "NCC",
+        "THV"
+      ]
+    },
+    "val": {
+      "utterances": 300,
+      "speakers": [
+        "NJS",
+        "RRBI"
+      ],
+      "ordered_id_sha256": "6d34642b15bbf80cbd5bd102b5574ab36f5adac74be6d6d0ae7218b002eff065",
+      "speaker_metadata": {
+        "NJS": {
+          "l1": "Spanish",
+          "sex": "female"
+        },
+        "RRBI": {
+          "l1": "Hindi",
+          "sex": "male"
+        }
+      },
+      "speaker_metadata_sources": [
+        "manifests/RQ1-STD-01/SPEAKER_SPLIT_PROTOCOL.md",
+        "manifests/RQ1-SPLIT-01/SPLIT_VALIDATION_REPORT.md"
+      ]
+    },
+    "test": {
+      "utterances": 900,
+      "speakers": [
+        "ABA",
+        "ASI",
+        "EBVS",
+        "HJK",
+        "LXC",
+        "PNV"
+      ],
+      "status": "SEALED; metadata only; no payload or TEST IDs accessed/exported"
+    }
   },
   "arms": {
-    "c0": {"arm_id": "C0", "objective": "operation_ce", "features_enabled": false, "successful_updates_fixed": 3600, "skipped_amp_attempts_total": 3, "fixed_epoch": 9, "fixed_micro_steps": 7206, "best_successful_updates": 2247, "best_epoch": 5, "best_micro_steps": 4500, "artifacts": {
-      "fixed_budget_3600.pt": {"path": "/home/khoa/Projects/KLTN/Dataset/checkpoints/RQ1-TRN-04/c0/fixed_budget_3600.pt", "bytes": 3243408, "sha256": "ca4cff18ff38729a221fbeaba459f85afad23b595be41d7100b513b7917a2338", "remote_path": "trn04/c0/fixed_budget_3600.pt", "integrity_manifest_matches": true, "remote_pinned_readback_matches": true},
-      "best.pt": {"path": "/home/khoa/Projects/KLTN/Dataset/checkpoints/RQ1-TRN-04/c0/best.pt", "bytes": 3239079, "sha256": "0b7092d44bae013fb971ce64130c173f14acb45bc3f46f99c429880213a4571c", "remote_path": "trn04/c0/best.pt", "integrity_manifest_matches": true, "remote_pinned_readback_matches": true},
-      "training_summary.json": {"path": "/home/khoa/Projects/KLTN/Dataset/checkpoints/RQ1-TRN-04/c0/training_summary.json", "bytes": 4152, "sha256": "e41e99add01882e95faee01cf963ea6facabf0bc68c1aa364f092ad2b43bfe4e", "remote_path": "trn04/c0/training_summary.json", "remote_pinned_readback_matches": true}}, "model_head_parameters": 267179, "model_head_tensors": 17, "all_saved_head_tensors_finite": true},
-    "t1": {"arm_id": "T1", "objective": "class_focal", "features_enabled": false, "successful_updates_fixed": 3600, "skipped_amp_attempts_total": 3, "fixed_epoch": 9, "fixed_micro_steps": 7206, "best_successful_updates": 897, "best_epoch": 2, "best_micro_steps": 1800, "artifacts": {
-      "fixed_budget_3600.pt": {"path": "/home/khoa/Projects/KLTN/Dataset/checkpoints/RQ1-TRN-04/t1/fixed_budget_3600.pt", "bytes": 3243408, "sha256": "0d3cdad4a0ab786bcfc26e4d05c2353ddc0d59e117577574ff543bfdfe663589", "remote_path": "trn04/t1/fixed_budget_3600.pt", "integrity_manifest_matches": true, "remote_pinned_readback_matches": true},
-      "best.pt": {"path": "/home/khoa/Projects/KLTN/Dataset/checkpoints/RQ1-TRN-04/t1/best.pt", "bytes": 3238631, "sha256": "88a39b3617219db313340fba9db0de082f5286908234db43a9818afff5cdf3ee", "remote_path": "trn04/t1/best.pt", "integrity_manifest_matches": true, "remote_pinned_readback_matches": true},
-      "training_summary.json": {"path": "/home/khoa/Projects/KLTN/Dataset/checkpoints/RQ1-TRN-04/t1/training_summary.json", "bytes": 4169, "sha256": "88ff27256c104106730ba408c912e939245d39508e873d5d13965d6cef7626e4", "remote_path": "trn04/t1/training_summary.json", "remote_pinned_readback_matches": true}}, "model_head_parameters": 267179, "model_head_tensors": 17, "all_saved_head_tensors_finite": true},
-    "t2": {"arm_id": "T2", "objective": "operation_ce", "features_enabled": true, "successful_updates_fixed": 3600, "skipped_amp_attempts_total": 3, "fixed_epoch": 9, "fixed_micro_steps": 7206, "best_successful_updates": 3600, "best_epoch": 9, "best_micro_steps": 7206, "artifacts": {
-      "fixed_budget_3600.pt": {"path": "/home/khoa/Projects/KLTN/Dataset/checkpoints/RQ1-TRN-04/t2/fixed_budget_3600.pt", "bytes": 3243408, "sha256": "e8b00002aef9ee1587990a69162d5a5438b092e02c83d5654ae5aea0e1ec9c13", "remote_path": "trn04/t2/fixed_budget_3600.pt", "integrity_manifest_matches": true, "remote_pinned_readback_matches": true},
-      "best.pt": {"path": "/home/khoa/Projects/KLTN/Dataset/checkpoints/RQ1-TRN-04/t2/best.pt", "bytes": 3239591, "sha256": "98d3fc1ecf6a5539d211028e32c9cbd2d5668b3942ad4d8fcae8226a99927fb1", "remote_path": "trn04/t2/best.pt", "integrity_manifest_matches": true, "remote_pinned_readback_matches": true},
-      "training_summary.json": {"path": "/home/khoa/Projects/KLTN/Dataset/checkpoints/RQ1-TRN-04/t2/training_summary.json", "bytes": 4141, "sha256": "a5e1f69581d789fc4e2804b630e9669cd24aec30dc020a75ea87aa2040dc678c", "remote_path": "trn04/t2/training_summary.json", "remote_pinned_readback_matches": true}}, "model_head_parameters": 267179, "model_head_tensors": 17, "all_saved_head_tensors_finite": true},
-    "t3": {"arm_id": "T3", "objective": "class_focal", "features_enabled": true, "successful_updates_fixed": 3600, "skipped_amp_attempts_total": 3, "fixed_epoch": 9, "fixed_micro_steps": 7206, "best_successful_updates": 2247, "best_epoch": 5, "best_micro_steps": 4500, "artifacts": {
-      "fixed_budget_3600.pt": {"path": "/home/khoa/Projects/KLTN/Dataset/checkpoints/RQ1-TRN-04/t3/fixed_budget_3600.pt", "bytes": 3243408, "sha256": "ca32da07eac20946af125539ca1ef7ca3835a35ce05e1ec4897d3a790e90eeb9", "remote_path": "trn04/t3/fixed_budget_3600.pt", "integrity_manifest_matches": true, "remote_pinned_readback_matches": true},
-      "best.pt": {"path": "/home/khoa/Projects/KLTN/Dataset/checkpoints/RQ1-TRN-04/t3/best.pt", "bytes": 3239079, "sha256": "1feb311ec9f88569915fa43aefaa923e24c55f7fadb77a821a2b2c2c8dcf6107", "remote_path": "trn04/t3/best.pt", "integrity_manifest_matches": true, "remote_pinned_readback_matches": true},
-      "training_summary.json": {"path": "/home/khoa/Projects/KLTN/Dataset/checkpoints/RQ1-TRN-04/t3/training_summary.json", "bytes": 4160, "sha256": "247bcaeb32fd44b6ff6c42790728faa626d5c7c259f09fa3479d11e87a0355f8", "remote_path": "trn04/t3/training_summary.json", "remote_pinned_readback_matches": true}}, "model_head_parameters": 267179, "model_head_tensors": 17, "all_saved_head_tensors_finite": true}
+    "c0": {
+      "arm_id": "C0",
+      "objective": "operation_ce",
+      "features_enabled": false,
+      "successful_updates_fixed": 3600,
+      "skipped_amp_attempts_total": 3,
+      "fixed_epoch": 9,
+      "fixed_micro_steps": 7206,
+      "best_successful_updates": 2247,
+      "best_epoch": 5,
+      "best_micro_steps": 4500,
+      "artifacts": {
+        "fixed_budget_3600.pt": {
+          "path": "/home/khoa/Projects/KLTN/Dataset/checkpoints/RQ1-TRN-04/c0/fixed_budget_3600.pt",
+          "bytes": 3243408,
+          "sha256": "ca4cff18ff38729a221fbeaba459f85afad23b595be41d7100b513b7917a2338",
+          "remote_path": "trn04/c0/fixed_budget_3600.pt",
+          "integrity_manifest_matches": true,
+          "remote_pinned_readback_matches": true,
+          "historical_process_checkpoint_claim_sha256": "ca4cff18ff38729ae553483017cf70678d975db353bb895e6f6a7d5fa21c4",
+          "historical_claim_length": 61,
+          "remote_readback_sha256": "ca4cff18ff38729a221fbeaba459f85afad23b595be41d7100b513b7917a2338",
+          "remote_readback_bytes": 3243408
+        },
+        "best.pt": {
+          "path": "/home/khoa/Projects/KLTN/Dataset/checkpoints/RQ1-TRN-04/c0/best.pt",
+          "bytes": 3239079,
+          "sha256": "0b7092d44bae013fb971ce64130c173f14acb45bc3f46f99c429880213a4571c",
+          "remote_path": "trn04/c0/best.pt",
+          "integrity_manifest_matches": true,
+          "remote_pinned_readback_matches": true,
+          "historical_process_checkpoint_claim_sha256": "0b7092d44bae013fa89369e96f1fa2c263795ba429b6f849ff0dc4d830b56",
+          "historical_claim_length": 61,
+          "remote_readback_sha256": "0b7092d44bae013fb971ce64130c173f14acb45bc3f46f99c429880213a4571c",
+          "remote_readback_bytes": 3239079
+        },
+        "training_summary.json": {
+          "path": "/home/khoa/Projects/KLTN/Dataset/checkpoints/RQ1-TRN-04/c0/training_summary.json",
+          "bytes": 4152,
+          "sha256": "e41e99add01882e95faee01cf963ea6facabf0bc68c1aa364f092ad2b43bfe4e",
+          "remote_path": "trn04/c0/training_summary.json",
+          "remote_pinned_readback_matches": true,
+          "remote_readback_sha256": "e41e99add01882e95faee01cf963ea6facabf0bc68c1aa364f092ad2b43bfe4e",
+          "remote_readback_bytes": 4152
+        }
+      },
+      "model_head_parameters": 267179,
+      "model_head_tensors": 17,
+      "all_saved_head_tensors_finite": true
+    },
+    "t1": {
+      "arm_id": "T1",
+      "objective": "class_focal",
+      "features_enabled": false,
+      "successful_updates_fixed": 3600,
+      "skipped_amp_attempts_total": 3,
+      "fixed_epoch": 9,
+      "fixed_micro_steps": 7206,
+      "best_successful_updates": 897,
+      "best_epoch": 2,
+      "best_micro_steps": 1800,
+      "artifacts": {
+        "fixed_budget_3600.pt": {
+          "path": "/home/khoa/Projects/KLTN/Dataset/checkpoints/RQ1-TRN-04/t1/fixed_budget_3600.pt",
+          "bytes": 3243408,
+          "sha256": "0d3cdad4a0ab786bcfc26e4d05c2353ddc0d59e117577574ff543bfdfe663589",
+          "remote_path": "trn04/t1/fixed_budget_3600.pt",
+          "integrity_manifest_matches": true,
+          "remote_pinned_readback_matches": true,
+          "historical_process_checkpoint_claim_sha256": "0d3cdad4a0ab786b51eb5825a071d227dddb5eb8d197607d727b1ee6c7647",
+          "historical_claim_length": 61,
+          "remote_readback_sha256": "0d3cdad4a0ab786bcfc26e4d05c2353ddc0d59e117577574ff543bfdfe663589",
+          "remote_readback_bytes": 3243408
+        },
+        "best.pt": {
+          "path": "/home/khoa/Projects/KLTN/Dataset/checkpoints/RQ1-TRN-04/t1/best.pt",
+          "bytes": 3238631,
+          "sha256": "88a39b3617219db313340fba9db0de082f5286908234db43a9818afff5cdf3ee",
+          "remote_path": "trn04/t1/best.pt",
+          "integrity_manifest_matches": true,
+          "remote_pinned_readback_matches": true,
+          "historical_process_checkpoint_claim_sha256": "88a39b3617219db3f28cf67484df463aa1f40212f453c072c4161bb740ca3",
+          "historical_claim_length": 61,
+          "remote_readback_sha256": "88a39b3617219db313340fba9db0de082f5286908234db43a9818afff5cdf3ee",
+          "remote_readback_bytes": 3238631
+        },
+        "training_summary.json": {
+          "path": "/home/khoa/Projects/KLTN/Dataset/checkpoints/RQ1-TRN-04/t1/training_summary.json",
+          "bytes": 4169,
+          "sha256": "88ff27256c104106730ba408c912e939245d39508e873d5d13965d6cef7626e4",
+          "remote_path": "trn04/t1/training_summary.json",
+          "remote_pinned_readback_matches": true,
+          "remote_readback_sha256": "88ff27256c104106730ba408c912e939245d39508e873d5d13965d6cef7626e4",
+          "remote_readback_bytes": 4169
+        }
+      },
+      "model_head_parameters": 267179,
+      "model_head_tensors": 17,
+      "all_saved_head_tensors_finite": true
+    },
+    "t2": {
+      "arm_id": "T2",
+      "objective": "operation_ce",
+      "features_enabled": true,
+      "successful_updates_fixed": 3600,
+      "skipped_amp_attempts_total": 3,
+      "fixed_epoch": 9,
+      "fixed_micro_steps": 7206,
+      "best_successful_updates": 3600,
+      "best_epoch": 9,
+      "best_micro_steps": 7206,
+      "artifacts": {
+        "fixed_budget_3600.pt": {
+          "path": "/home/khoa/Projects/KLTN/Dataset/checkpoints/RQ1-TRN-04/t2/fixed_budget_3600.pt",
+          "bytes": 3243408,
+          "sha256": "e8b00002aef9ee1587990a69162d5a5438b092e02c83d5654ae5aea0e1ec9c13",
+          "remote_path": "trn04/t2/fixed_budget_3600.pt",
+          "integrity_manifest_matches": true,
+          "remote_pinned_readback_matches": true,
+          "historical_process_checkpoint_claim_sha256": "e8b00002aef9ee1587990a69162d5a5438b092e02c83d5654ae5aea0e1ec9",
+          "historical_claim_length": 61,
+          "remote_readback_sha256": "e8b00002aef9ee1587990a69162d5a5438b092e02c83d5654ae5aea0e1ec9c13",
+          "remote_readback_bytes": 3243408
+        },
+        "best.pt": {
+          "path": "/home/khoa/Projects/KLTN/Dataset/checkpoints/RQ1-TRN-04/t2/best.pt",
+          "bytes": 3239591,
+          "sha256": "98d3fc1ecf6a5539d211028e32c9cbd2d5668b3942ad4d8fcae8226a99927fb1",
+          "remote_path": "trn04/t2/best.pt",
+          "integrity_manifest_matches": true,
+          "remote_pinned_readback_matches": true,
+          "historical_process_checkpoint_claim_sha256": "98d3fc1ecf6a5539d211028e32c9cbd2d5668b3942ad4d8fcae8226a99927",
+          "historical_claim_length": 61,
+          "remote_readback_sha256": "98d3fc1ecf6a5539d211028e32c9cbd2d5668b3942ad4d8fcae8226a99927fb1",
+          "remote_readback_bytes": 3239591
+        },
+        "training_summary.json": {
+          "path": "/home/khoa/Projects/KLTN/Dataset/checkpoints/RQ1-TRN-04/t2/training_summary.json",
+          "bytes": 4141,
+          "sha256": "a5e1f69581d789fc4e2804b630e9669cd24aec30dc020a75ea87aa2040dc678c",
+          "remote_path": "trn04/t2/training_summary.json",
+          "remote_pinned_readback_matches": true,
+          "remote_readback_sha256": "a5e1f69581d789fc4e2804b630e9669cd24aec30dc020a75ea87aa2040dc678c",
+          "remote_readback_bytes": 4141
+        }
+      },
+      "model_head_parameters": 267179,
+      "model_head_tensors": 17,
+      "all_saved_head_tensors_finite": true
+    },
+    "t3": {
+      "arm_id": "T3",
+      "objective": "class_focal",
+      "features_enabled": true,
+      "successful_updates_fixed": 3600,
+      "skipped_amp_attempts_total": 3,
+      "fixed_epoch": 9,
+      "fixed_micro_steps": 7206,
+      "best_successful_updates": 2247,
+      "best_epoch": 5,
+      "best_micro_steps": 4500,
+      "artifacts": {
+        "fixed_budget_3600.pt": {
+          "path": "/home/khoa/Projects/KLTN/Dataset/checkpoints/RQ1-TRN-04/t3/fixed_budget_3600.pt",
+          "bytes": 3243408,
+          "sha256": "ca32da07eac20946af125539ca1ef7ca3835a35ce05e1ec4897d3a790e90eeb9",
+          "remote_path": "trn04/t3/fixed_budget_3600.pt",
+          "integrity_manifest_matches": true,
+          "remote_pinned_readback_matches": true,
+          "historical_process_checkpoint_claim_sha256": "ca32da07eac2094676451eebc95350c33748be7c4c1a719c8366ce2b451ec",
+          "historical_claim_length": 61,
+          "remote_readback_sha256": "ca32da07eac20946af125539ca1ef7ca3835a35ce05e1ec4897d3a790e90eeb9",
+          "remote_readback_bytes": 3243408
+        },
+        "best.pt": {
+          "path": "/home/khoa/Projects/KLTN/Dataset/checkpoints/RQ1-TRN-04/t3/best.pt",
+          "bytes": 3239079,
+          "sha256": "1feb311ec9f88569915fa43aefaa923e24c55f7fadb77a821a2b2c2c8dcf6107",
+          "remote_path": "trn04/t3/best.pt",
+          "integrity_manifest_matches": true,
+          "remote_pinned_readback_matches": true,
+          "historical_process_checkpoint_claim_sha256": "1feb311ec9f88569c735d487cb1f912e75e1b6f00db1bbad478bf11979ad7",
+          "historical_claim_length": 61,
+          "remote_readback_sha256": "1feb311ec9f88569915fa43aefaa923e24c55f7fadb77a821a2b2c2c8dcf6107",
+          "remote_readback_bytes": 3239079
+        },
+        "training_summary.json": {
+          "path": "/home/khoa/Projects/KLTN/Dataset/checkpoints/RQ1-TRN-04/t3/training_summary.json",
+          "bytes": 4160,
+          "sha256": "247bcaeb32fd44b6ff6c42790728faa626d5c7c259f09fa3479d11e87a0355f8",
+          "remote_path": "trn04/t3/training_summary.json",
+          "remote_pinned_readback_matches": true,
+          "remote_readback_sha256": "247bcaeb32fd44b6ff6c42790728faa626d5c7c259f09fa3479d11e87a0355f8",
+          "remote_readback_bytes": 4160
+        }
+      },
+      "model_head_parameters": 267179,
+      "model_head_tensors": 17,
+      "all_saved_head_tensors_finite": true
+    }
   },
   "historical_provenance": {
     "training_summary_full_budget_counter": "all four summaries record 3600 successful updates and 3 skipped AMP attempts (3603 attempts); this agrees with full-budget checkpoint metadata and training-run summaries",
     "best_endpoint_counters": "fixed separately from terminal counters; C0 2247, T1 897, T2 3600, T3 2247 successful updates",
     "original_integrity_claims": "all eight local checkpoint byte counts and SHA-256 values match each original arm CHECKPOINT_INTEGRITY.json; those full values also match CHECKPOINT_RECEIPT.json and authenticated pinned HF readback",
-    "executive_checkpoint_table": "historical PROCESS_CHECKPOINT.md renders shortened/non-64-character SHA strings, not valid SHA-256 values; correct full identities are additive in this ledger",
-    "source_revision": "per-artifact metadata, training_summary.json, and TRAINING_RUN_MANIFEST.json do not identify an immutable training-source commit; run manifests identify the arms and Kaggle kernel slugs only. Current review worktree HEAD must not be represented as the historical training source revision",
+    "executive_checkpoint_table": "The historical PROCESS_CHECKPOINT.md displays all eight endpoint checksum strings exactly as recorded in historical_checkpoint_claims. Every string is 61 hex characters, not a SHA-256 digest. Six conflict with the actual SHA-256 before the end of the displayed string; only T2 fixed_budget_3600.pt and T2 best.pt are incomplete prefixes of their actual digests. Treat the six as malformed/conflicting claims and the other two as incomplete, never as full identities. Original file remains unchanged.",
+    "source_revision": "Per-artifact metadata, training_summary.json, and TRAINING_RUN_MANIFEST.json do not identify an immutable historical training-source commit. No inspected artifact receipt establishes one. Current review worktree HEAD must not be represented as the historical training-source revision.",
     "split_provenance": "contract frozen manifest digest and TRAIN/VAL ordered-ID digests are recorded above; contract speakers/partitions distinguish FIT, SELECT, CAL, VAL. TEST remains metadata-only and sealed",
     "objective_feature_capacity": "objectives/features and 267179 saved head parameters are read from loaded CPU checkpoint metadata/state; all arms have same 17-tensor head layout and finite head values",
-    "CAL_VAL_summary": "partition metadata identifies CAL NCC/THV and VAL NJS/RRBI; no CAL/VAL inference, tuning, or metric conclusion performed in this workstream"
+    "CAL_VAL_summary": "partition metadata identifies CAL NCC/THV and VAL NJS/RRBI; no CAL/VAL inference, tuning, or metric conclusion performed in this workstream",
+    "validation_speaker_demographics": "Fold-1 VAL metadata: NJS is Spanish L1, female; RRBI is Hindi L1, male. These facts are sourced from the two RQ1-STD-01/SPLIT-01 documentation files recorded in partitions.val.speaker_metadata_sources; no audio or labels were accessed.",
+    "acoustic_feature_constant_provenance": "Current src/langfens_prep/trn04/features.py defines FIT_LOG_ENERGY_MEAN=-6.047091 and FIT_LOG_ENERGY_STD=2.544367 and calls them FIT-derived/pinned; factorial design documentation also claims FIT derivation. The available records inspected contain no calculation receipt tying values to empirical FIT data. Treat values as frozen original constants; empirical FIT provenance has not been independently verified."
   },
   "limitations": [
     "No immutable historical training-source commit identity was recovered from these artifacts or local manifests.",
     "Remote revision af6ac3620fb78873ff213c064dffe71fb8acadd4 is the currently pinned/readback revision; historical receipts previously cite mutable main URLs and do not identify a commit.",
     "No model inference, validation tuning, training, backward pass, optimizer update, model mutation, TEST payload access, upload, publication, or privacy-setting change occurred.",
     "Coordinator final benchmark runtime remains pending; no metrics conclusion is made here."
+  ],
+  "historical_checkpoint_claims": [
+    {
+      "arm": "c0",
+      "endpoint": "fixed_budget_3600.pt",
+      "historical_displayed_claim": "ca4cff18ff38729ae553483017cf70678d975db353bb895e6f6a7d5fa21c4",
+      "claim_length": 61,
+      "actual_sha256": "ca4cff18ff38729a221fbeaba459f85afad23b595be41d7100b513b7917a2338",
+      "claim_is_actual_prefix": false,
+      "assessment": "conflicting/malformed checksum claim"
+    },
+    {
+      "arm": "c0",
+      "endpoint": "best.pt",
+      "historical_displayed_claim": "0b7092d44bae013fa89369e96f1fa2c263795ba429b6f849ff0dc4d830b56",
+      "claim_length": 61,
+      "actual_sha256": "0b7092d44bae013fb971ce64130c173f14acb45bc3f46f99c429880213a4571c",
+      "claim_is_actual_prefix": false,
+      "assessment": "conflicting/malformed checksum claim"
+    },
+    {
+      "arm": "t1",
+      "endpoint": "fixed_budget_3600.pt",
+      "historical_displayed_claim": "0d3cdad4a0ab786b51eb5825a071d227dddb5eb8d197607d727b1ee6c7647",
+      "claim_length": 61,
+      "actual_sha256": "0d3cdad4a0ab786bcfc26e4d05c2353ddc0d59e117577574ff543bfdfe663589",
+      "claim_is_actual_prefix": false,
+      "assessment": "conflicting/malformed checksum claim"
+    },
+    {
+      "arm": "t1",
+      "endpoint": "best.pt",
+      "historical_displayed_claim": "88a39b3617219db3f28cf67484df463aa1f40212f453c072c4161bb740ca3",
+      "claim_length": 61,
+      "actual_sha256": "88a39b3617219db313340fba9db0de082f5286908234db43a9818afff5cdf3ee",
+      "claim_is_actual_prefix": false,
+      "assessment": "conflicting/malformed checksum claim"
+    },
+    {
+      "arm": "t2",
+      "endpoint": "fixed_budget_3600.pt",
+      "historical_displayed_claim": "e8b00002aef9ee1587990a69162d5a5438b092e02c83d5654ae5aea0e1ec9",
+      "claim_length": 61,
+      "actual_sha256": "e8b00002aef9ee1587990a69162d5a5438b092e02c83d5654ae5aea0e1ec9c13",
+      "claim_is_actual_prefix": true,
+      "assessment": "matching but incomplete 61-character prefix"
+    },
+    {
+      "arm": "t2",
+      "endpoint": "best.pt",
+      "historical_displayed_claim": "98d3fc1ecf6a5539d211028e32c9cbd2d5668b3942ad4d8fcae8226a99927",
+      "claim_length": 61,
+      "actual_sha256": "98d3fc1ecf6a5539d211028e32c9cbd2d5668b3942ad4d8fcae8226a99927fb1",
+      "claim_is_actual_prefix": true,
+      "assessment": "matching but incomplete 61-character prefix"
+    },
+    {
+      "arm": "t3",
+      "endpoint": "fixed_budget_3600.pt",
+      "historical_displayed_claim": "ca32da07eac2094676451eebc95350c33748be7c4c1a719c8366ce2b451ec",
+      "claim_length": 61,
+      "actual_sha256": "ca32da07eac20946af125539ca1ef7ca3835a35ce05e1ec4897d3a790e90eeb9",
+      "claim_is_actual_prefix": false,
+      "assessment": "conflicting/malformed checksum claim"
+    },
+    {
+      "arm": "t3",
+      "endpoint": "best.pt",
+      "historical_displayed_claim": "1feb311ec9f88569c735d487cb1f912e75e1b6f00db1bbad478bf11979ad7",
+      "claim_length": 61,
+      "actual_sha256": "1feb311ec9f88569915fa43aefaa923e24c55f7fadb77a821a2b2c2c8dcf6107",
+      "claim_is_actual_prefix": false,
+      "assessment": "conflicting/malformed checksum claim"
+    }
   ]
 }

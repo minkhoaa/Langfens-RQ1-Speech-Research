@@ -1,49 +1,59 @@
-# LANGFENS-RQ1-TRN-04R — Workstream C Artifact Checkpoint & Source Reconciliation
 
-**Status:** `ARTIFACT_BYTES_AND_METADATA_RECONCILED; HISTORICAL_SOURCE_REVISION_UNRECOVERED; COORDINATOR_RUNTIME_PENDING`
-**Workstream:** C — checkpoint integrity and source reconciliation
-**Worktree base/head at start:** `d332997e732315292d673a3bd42a03698182f5f6` (`review/trn04r-c`)
-**Scope:** read-only artifact metadata, hashes, provenance and frozen partition metadata only. No benchmark inference was run.
 
-## Inputs reviewed
+## Additive correction — exact historical digest claims and reproducible readback
 
-- `AGENTS.md`, global process-checkpoint index, `manifests/RQ1-TRN-04/PROCESS_CHECKPOINT.md`, `manifests/RQ1-P-SUP-BENCHMARK-V1/final-v2/PROCESS_CHECKPOINT.md`, and frozen `EVALUATION_CONTRACT_V1.md` (SHA-256 `4d99723e4b3f62f506165ced089eca82d4417279c76973b35470bd337cedfab2`).
-- Only the allowlisted checkpoint files beneath `/home/khoa/Projects/KLTN/Dataset/checkpoints/RQ1-TRN-04/{c0,t1,t2,t3}`: `fixed_budget_3600.pt`, `best.pt`, `training_summary.json`. Did not recurse into datasets/archives.
-- Each arm's tracked `CHECKPOINT_INTEGRITY.json`, `TRAINING_RUN_MANIFEST.json`; root `CHECKPOINT_RECEIPT.json` in the parent checkout; frozen contract partition metadata.
+This correction supplements the earlier prose in this report without changing the historical `manifests/RQ1-TRN-04/PROCESS_CHECKPOINT.md`. Its eight endpoint checksum strings are each exactly 61 hexadecimal characters. Six are malformed/conflicting with the actual full SHA-256 before the displayed string ends; only T2's two strings are incomplete prefixes of the actual digests. The exact original strings, classifications and resolved digests are recorded in `ARTIFACT_PROVENANCE_LEDGER.json` under `historical_checkpoint_claims` and on each artifact. Do not treat the six mismatches as harmless truncations.
 
-## Findings
+| Arm / endpoint | Exact historical PROCESS_CHECKPOINT.md string (61 chars) | Verified actual SHA-256 | Relation |
+|---|---|---|---|
+| C0 fixed | `ca4cff18ff38729ae553483017cf70678d975db353bb895e6f6a7d5fa21c4` | `ca4cff18ff38729a221fbeaba459f85afad23b595be41d7100b513b7917a2338` | conflicting/malformed |
+| C0 best | `0b7092d44bae013fa89369e96f1fa2c263795ba429b6f849ff0dc4d830b56` | `0b7092d44bae013fb971ce64130c173f14acb45bc3f46f99c429880213a4571c` | conflicting/malformed |
+| T1 fixed | `0d3cdad4a0ab786b51eb5825a071d227dddb5eb8d197607d727b1ee6c7647` | `0d3cdad4a0ab786bcfc26e4d05c2353ddc0d59e117577574ff543bfdfe663589` | conflicting/malformed |
+| T1 best | `88a39b3617219db3f28cf67484df463aa1f40212f453c072c4161bb740ca3` | `88a39b3617219db313340fba9db0de082f5286908234db43a9818afff5cdf3ee` | conflicting/malformed |
+| T2 fixed | `e8b00002aef9ee1587990a69162d5a5438b092e02c83d5654ae5aea0e1ec9` | `e8b00002aef9ee1587990a69162d5a5438b092e02c83d5654ae5aea0e1ec9c13` | matching but incomplete prefix |
+| T2 best | `98d3fc1ecf6a5539d211028e32c9cbd2d5668b3942ad4d8fcae8226a99927` | `98d3fc1ecf6a5539d211028e32c9cbd2d5668b3942ad4d8fcae8226a99927fb1` | matching but incomplete prefix |
+| T3 fixed | `ca32da07eac2094676451eebc95350c33748be7c4c1a719c8366ce2b451ec` | `ca32da07eac20946af125539ca1ef7ca3835a35ce05e1ec4897d3a790e90eeb9` | conflicting/malformed |
+| T3 best | `1feb311ec9f88569c735d487cb1f912e75e1b6f00db1bbad478bf11979ad7` | `1feb311ec9f88569915fa43aefaa923e24c55f7fadb77a821a2b2c2c8dcf6107` | conflicting/malformed |
 
-### Byte integrity and remote readback
+### Remote readback count and identities
 
-All eight local model checkpoint files have the same byte lengths and full SHA-256 values as their arm `CHECKPOINT_INTEGRITY.json` and the parent checkout's persisted receipt. All four local training summaries also match the parent persisted receipt. Then, after authenticated Hugging Face API metadata confirmed the repository is private, each of these 12 existing payloads was downloaded read-only at pinned repository commit `af6ac3620fb78873ff213c064dffe71fb8acadd4`; downloaded bytes/hash match the local bytes. No uploads, deletions, or privacy changes occurred. Current immutable revision and exact file identities are in `ARTIFACT_PROVENANCE_LEDGER.json`.
+Correction to the earlier ledger sentence: exactly **12 payloads total** were read back at pinned revision `af6ac3620fb78873ff213c064dffe71fb8acadd4`: 8 model endpoint files (fixed and best for four arms) plus 4 `training_summary.json` files. Each of their remote-readback SHA-256 values and byte counts is stored with the individual artifact entry in the ledger. Readback was authenticated, private-repository-checked first, revision-pinned, and read-only.
 
-The RQ1-TRN-04 master checkpoint's displayed artifact table contains shortened strings presented as SHA-256 checksums; these are not complete 64-hex digests. Do not use those truncated values as identities. Its sizes and update/skip account broadly correspond to the verified receipts, but ledger values here are the complete receipts. Original arm integrity manifests themselves contain correct full hashes.
+The command below is the reproducible verification procedure used. Run from the repository root with the parent checkout `.venv` available and authenticated Hugging Face cache configured. It prints all 12 remote paths, byte counts and digests, asserts each against both local bytes and ledger receipts, asserts the repository is private and at the recorded revision, and performs no writes to the remote repository or checkpoints.
 
-### CPU metadata/state inspection (not inference)
+```bash
+cd /home/khoa/Projects/KLTN/trn04r-c
+HF_HUB_DISABLE_TELEMETRY=1 /home/khoa/Projects/KLTN/Dataset/.venv/bin/python - <<'PY'
+import hashlib, json, os
+from huggingface_hub import HfApi, hf_hub_download
+repo = "minkhoaa/langfens-rq1-cross-fold-checkpoints"
+revision = "af6ac3620fb78873ff213c064dffe71fb8acadd4"
+info = HfApi().repo_info(repo, repo_type="model")
+assert info.private is True and info.sha == revision
+ledger = json.load(open("manifests/RQ1-TRN-04R/ARTIFACT_PROVENANCE_LEDGER.json"))
+count = 0
+for arm, entry in ledger["arms"].items():
+    for name, item in entry["artifacts"].items():
+        remote = hf_hub_download(repo_id=repo, filename=item["remote_path"],
+                                revision=revision, repo_type="model")
+        remote_sha = hashlib.sha256(open(remote, "rb").read()).hexdigest()
+        remote_bytes = os.path.getsize(remote)
+        local_sha = hashlib.sha256(open(item["path"], "rb").read()).hexdigest()
+        assert remote_sha == local_sha == item["sha256"]
+        assert remote_bytes == item["bytes"]
+        print(f"{arm}/{name}\t{remote_bytes}\t{remote_sha}")
+        count += 1
+assert count == 12
+print(f"PASS private={info.private} revision={revision} readback_files={count}")
+PY
+```
 
-Trusted `torch.load(..., map_location="cpu", weights_only=False)` was used only to inspect checkpoint metadata and tensor state. All 8 files deserialize; each saved head has 17 tensors, 267,179 parameters, the same recorded architecture shapes, and finite values. Artifact metadata confirms objectives, feature setting, frozen contract hash, seed 1337, fixed/best endpoint flags, epoch and successful-update counters. No model forward call or mutation occurred.
+### Explicit speaker and constants provenance correction
 
-| Arm | Objective | 4D features | Fixed checkpoint: epoch / successful / skipped | SELECT-best checkpoint: epoch / successful | Head params |
-|---|---|---:|---:|---:|---:|
-| C0 | `operation_ce` | no | 9 / 3,600 / 3 | 5 / 2,247 | 267,179 |
-| T1 | `class_focal` | no | 9 / 3,600 / 3 | 2 / 897 | 267,179 |
-| T2 | `operation_ce` | yes | 9 / 3,600 / 3 | 9 / 3,600 | 267,179 |
-| T3 | `class_focal` | yes | 9 / 3,600 / 3 | 5 / 2,247 | 267,179 |
+Frozen partition/speaker documentation identifies Fold-1 VAL speaker **NJS as Spanish L1, female** and **RRBI as Hindi L1, male** (`manifests/RQ1-STD-01/SPEAKER_SPLIT_PROTOCOL.md`; `manifests/RQ1-SPLIT-01/SPLIT_VALIDATION_REPORT.md`, sections 3 and 4). This is metadata-only; no audio or labels were inspected.
 
-All four `training_summary.json` files report terminal 3,600 successful updates, three skipped AMP attempts (3,603 attempts), nine epochs. The fixed endpoint checkpoint metadata agrees. A best checkpoint is a distinct SELECT-selected snapshot, not automatically the terminal checkpoint; its `successful_updates` is the actual snapshot counter shown above. The skipped-attempt value attached to a best snapshot is cumulative run metadata, not skipped attempts since that endpoint.
+`src/langfens_prep/trn04/features.py` defines frozen original constants `FIT_LOG_ENERGY_MEAN = -6.047091` and `FIT_LOG_ENERGY_STD = 2.544367`; code comments and `FACTORIAL_DESIGN_AND_CONTROLS.md` state these were derived from 1,799 FIT utterances. The reviewed receipts do not include a reproducible calculation artifact or independent empirical provenance for these values. Therefore describe them as frozen original constants whose FIT empirical derivation is asserted by source documentation but not independently verified here. This does not alter constants or evaluation code.
 
-### Split, CAL/VAL and sealing
+### Source revision and execution state
 
-The frozen contract records split manifest SHA-256 `7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b`; TRAIN 2,399 utterances and ordered-ID digest `2ebe54f2fc77e2a3ee9890ce3dc21f725897ebbe85f812d3c017c3b495f14b27`; VAL 300 and digest `6d34642b15bbf80cbd5bd102b5574ab36f5adac74be6d6d0ae7218b002eff065`. Partition metadata identifies FIT 1,799 (12 speakers), SELECT 300 (MBMPS/TLV), CAL 300 (NCC/THV), and VAL 300 (NJS/RRBI). TEST remains sealed: metadata only (900 utterances, speakers ABA/ASI/EBVS/HJK/LXC/PNV); no TEST IDs, payloads, or labels were accessed or exported. No CAL/VAL scoring, inference, calibration, or tuning was performed in this workstream.
-
-### Source identity limitation
-
-The arm training manifests identify objective, configuration, kernel slug, partitions, checkpoint hashes and terminal counters, but no immutable training-source commit. The serialized artifact metadata and summaries also omit a source commit. The reviewed `PROCESS_CHECKPOINT.md` has a “Base Pinned Commit” but that is not an artifact-level training source attestation. Current review checkout (`d332997...`) is not evidence of historical training source and is not substituted for it. Exact historical code equivalence/reproducibility therefore remains unverified; this is explicitly recorded as a provenance gap, not silently inferred from current source.
-
-No final benchmark metrics conclusion is made by this workstream. Parent/coordinator owns the integrated revision and final benchmark execution; runtime is pending.
-
-## Boundaries and restart
-
-This process performed no training, backward pass, optimizer step, checkpoint/model mutation, inference, VAL tuning, TEST payload access, publication, upload, or privacy change. Remote access was authenticated read-only and performed only after confirming the HF repo's private status. No weights or data were added to Git.
-
-Safe continuation: coordinator may consume `ARTIFACT_PROVENANCE_LEDGER.json` as a read-only artifact identity map, while preserving its exact pinned revision and two endpoint counters. Verify final integrated code/contract hash before authorized benchmark runtime. Do not treat missing historical source commit as resolved; report it as a provenance limitation. Benchmark runtime remains pending and is coordinator-owned.
+The reviewed existing checkpoint/summary/run-manifest and persisted-receipt evidence does not establish an immutable historical training source commit. This provenance gap remains unresolved; current review HEAD is not a substitute. No inference or training was performed by Workstream C. Corrected inference/runtime remains pending coordinator execution.

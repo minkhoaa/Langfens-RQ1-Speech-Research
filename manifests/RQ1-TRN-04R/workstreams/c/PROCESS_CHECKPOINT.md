@@ -31,3 +31,11 @@ Read required process index, RQ1-TRN-04 and P-SUP final-v2 checkpoints, frozen E
 ## Authorization and restart
 
 0 new training/backward/optimizer/model mutation; 0 inference; 0 VAL tuning; 0 TEST payload access; 0 upload; 0 publication/privacy changes. Weights/data were not staged in Git. Coordinator owns the integrated revision and any final benchmark run. Safe restart is to verify integrated contract/source identity then consume the ledger without treating historical source identity as recovered. Benchmark runtime remains pending coordinator.
+
+## Additive correction (follow-up)
+
+The master `PROCESS_CHECKPOINT.md` contains eight displayed endpoint checksum strings, each length 61. The six C0/T1/T3 strings conflict with the resolved digest before the displayed string ends; only T2 fixed and best are incomplete matching prefixes. Exact original strings and actual values are preserved side-by-side in the reconciliation report and ledger; no original was modified. The ledger now says 8 endpoint checkpoints + 4 summaries = 12 total remote readbacks and carries each remote SHA-256/byte count.
+
+Fold-1 VAL identity metadata is explicitly corrected to NJS = Spanish L1/female and RRBI = Hindi L1/male, cited from `manifests/RQ1-STD-01/SPEAKER_SPLIT_PROTOCOL.md` and `manifests/RQ1-SPLIT-01/SPLIT_VALIDATION_REPORT.md`; no audio/labels accessed. `features.py` constants `FIT_LOG_ENERGY_MEAN=-6.047091` and `FIT_LOG_ENERGY_STD=2.544367` remain frozen, but the FIT empirical derivation has no independent calculation receipt in inspected evidence. Historical source revision remains unresolved.
+
+Reproducible authenticated, private-first, pinned readback script and per-file outputs are in the appended section of `CHECKPOINT_AND_SOURCE_RECONCILIATION.md`. It checked all twelve payloads and printed matching sizes and SHA-256 values at revision `af6ac3620fb78873ff213c064dffe71fb8acadd4`. Corrected inference remains pending coordinator.
