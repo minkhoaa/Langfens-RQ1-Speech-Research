@@ -1,6 +1,8 @@
 # TRN-04R Genuine Z Inference Correction
 
-Status: **IMPLEMENTATION_READY_FOR_REVIEW; INFERENCE_NOT_EXECUTED**. This document corrects protocol/output semantics only; it reports no newly generated scores or benchmark results.
+Current coordinator status: **EXECUTED_ALL_EIGHT_ENDPOINTS_SHARED_CACHE; PRIVATE_READBACK_VERIFIED**. Frozen inference source `c60a84fb044f049dc30f61046f819ff0ac36dc72`; exact runtime/raw hashes are indexed in `PROTOCOL_Z_RUNTIME_MANIFEST.json` and `TRN04R_RAW_PREDICTION_HASHES.json`. Initial parallel results are preserved separately; final V2 uses a shared immutable feature cache. See `PROCESS_CHECKPOINT.md` and `FINAL_PRIVATE_STORAGE_RECEIPT.json`.
+
+Historical lane-delivery status: **IMPLEMENTATION_READY_FOR_REVIEW; INFERENCE_NOT_EXECUTED**. The implementation-stage account below did not assert scores or benchmark results; coordinator execution subsequently occurred.
 
 ## Correction
 

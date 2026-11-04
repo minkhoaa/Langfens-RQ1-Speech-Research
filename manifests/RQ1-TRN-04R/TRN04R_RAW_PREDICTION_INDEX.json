@@ -1,6 +1,9 @@
 {
   "schema_version": "trn04r-raw-prediction-index-v1",
-  "status": "NOT_EXECUTED",
+  "status": "EXECUTED_ALL_EIGHT_ENDPOINTS_PRIVATE_SHA256_READBACK_VERIFIED",
+  "historical_initial_status": "NOT_EXECUTED",
+  "final_private_storage_receipt": "FINAL_PRIVATE_STORAGE_RECEIPT.json",
+  "parallel_v1_preservation_receipt": "PARALLEL_V1_PRIVATE_STORAGE_RECEIPT.json",
   "run_output_policy": "Private raw prediction files remain outside Git under a new /home/khoa/.cache/langfens/trn04r/<unique-run> directory.",
   "cell_key": "<ARM>_<ENDPOINT>",
   "expected_cells": [
@@ -12,7 +15,7 @@
     "mismatched_runtime_Z.jsonl", "mismatched_tokens_Z.jsonl",
     "recognition_runtime_Z.jsonl", "recognition_Z.jsonl"
   ],
-  "hashes": null,
-  "execution_time": null,
-  "note": "Coordinator creates the actual hash-indexed run receipt after authorized execution; this source index contains no predictions or copied historical metrics."
+  "hashes": "TRN04R_RAW_PREDICTION_HASHES.json",
+  "execution_time": {"parallel_v1_seconds": 396.28230929374695, "final_shared_v2_seconds": 155.63740944862366},
+  "note": "Final V2 uses one shared immutable encoder cache for all eight heads. V1 preserved separately after failing cross-process feature hash parity; see VERSION_DIFFERENCE_LEDGER.json. Raw rows are losslessly compressed in private storage with both compressed and original-byte SHA-256 identities."
 }

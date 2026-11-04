@@ -1,6 +1,10 @@
 {
   "schema_version": "trn04r-protocol-z-runtime-v1",
-  "status": "IMPLEMENTATION_SPECIFICATION_ONLY_NOT_EXECUTED",
+  "status": "EXECUTED_ALL_EIGHT_ENDPOINTS_SHARED_CACHE_PRIVATE_READBACK_VERIFIED",
+  "historical_initial_status": "IMPLEMENTATION_SPECIFICATION_ONLY_NOT_EXECUTED",
+  "frozen_inference_revision": "c60a84fb044f049dc30f61046f819ff0ac36dc72",
+  "final_private_revision": "c1880ea3cbe292df55c2ed2d1ea09bc67910f97b",
+  "final_run_manifest": "predictions/RUN_MANIFEST.json in FINAL_PRIVATE_STORAGE_RECEIPT.json",
   "contract": {
     "name": "EVALUATION_CONTRACT_V1",
     "sha256": "4d99723e4b3f62f506165ced089eca82d4417279c76973b35470bd337cedfab2"
@@ -65,6 +69,6 @@
     "recognition_Z.jsonl"
   ],
   "run_manifest_and_source_hashes": "RUN_MANIFEST.json records command/interpreter/dependencies/hardware/source hashes, checkpoint counters, output hashes, and verifies source bytes unchanged.",
-  "execution_status": "PENDING_COORDINATOR_AFTER_FROZEN_INTEGRATED_REVISION",
-  "scores_or_results": null
+  "execution_status": "COMPLETED_CPU_FP32_EVALUATION_ONLY; REGISTERED_PRACTICAL_GATES_FAILED",
+  "scores_or_results": "CORRECTED_METRIC_SUMMARY.json; full-precision rows and metric JSON in verified private storage"
 }

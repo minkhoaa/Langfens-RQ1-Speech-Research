@@ -73,7 +73,11 @@ def main():
     report = json.loads(args.metrics.read_text())
     checks = []
     for arm in ('C0', 'T1', 'T2', 'T3'):
-        directory = args.root / 'arms' / arm / f'{arm}_{args.endpoint}'
+        candidates = [args.root / 'arms' / arm / f'{arm}_{args.endpoint}',
+                      args.root / f'{arm}_{args.endpoint}']
+        existing = [p for p in candidates if p.is_dir()]
+        assert len(existing) == 1, ('ambiguous/missing arm output', arm)
+        directory = existing[0]
         manifest_root = directory.parent
         freeze = json.loads((manifest_root / 'Z_RUNTIME_FREEZE.json').read_text())
         assert freeze['gold_reads_before_freeze'] == 0

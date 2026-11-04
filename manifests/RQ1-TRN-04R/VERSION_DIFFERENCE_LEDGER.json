@@ -1,0 +1,94 @@
+{
+  "parallel_v1_preserved": true,
+  "final_version": "v2_shared_cache",
+  "v1_T2_encoder_hash_mismatches": 464,
+  "v1_common_waveform_and_4D_features": true,
+  "feature_difference_cause": "UNRESOLVED",
+  "measured_comparison": {
+    "fixed_budget_3600": {
+      "C0": {
+        "AP_delta_v2_minus_v1": {
+          "binary": 5.102131147183275e-06,
+          "omission_dedicated": 6.38417008924641e-07,
+          "omission_legacy": -5.474790647636008e-07,
+          "substitution_dedicated": 7.932718734171562e-06,
+          "substitution_legacy": 6.095995884969341e-06
+        },
+        "primary_deployed_counts_and_rates_unchanged": true
+      },
+      "T1": {
+        "AP_delta_v2_minus_v1": {
+          "binary": -2.806663188303915e-06,
+          "omission_dedicated": 1.348160900069284e-07,
+          "omission_legacy": 1.8096612972723358e-06,
+          "substitution_dedicated": 1.2827680772042882e-06,
+          "substitution_legacy": -5.375538177920802e-06
+        },
+        "primary_deployed_counts_and_rates_unchanged": true
+      },
+      "T2": {
+        "AP_delta_v2_minus_v1": {
+          "binary": -1.5434993047014345e-06,
+          "omission_dedicated": -8.128691489361906e-08,
+          "omission_legacy": 3.1697103323666265e-07,
+          "substitution_dedicated": 4.588613385314577e-06,
+          "substitution_legacy": -2.0042747019277662e-06
+        },
+        "primary_deployed_counts_and_rates_unchanged": true
+      },
+      "T3": {
+        "AP_delta_v2_minus_v1": {
+          "binary": 1.060801509628062e-05,
+          "omission_dedicated": -9.861733787225324e-08,
+          "omission_legacy": 3.061704914979202e-07,
+          "substitution_dedicated": 3.714725661296825e-06,
+          "substitution_legacy": 1.1630032492992992e-05
+        },
+        "primary_deployed_counts_and_rates_unchanged": true
+      }
+    },
+    "best": {
+      "C0": {
+        "AP_delta_v2_minus_v1": {
+          "binary": -1.0921346610404115e-07,
+          "omission_dedicated": -9.425013169916951e-08,
+          "omission_legacy": 1.789755459113973e-08,
+          "substitution_dedicated": 1.6348586701075973e-07,
+          "substitution_legacy": -8.639845152647041e-07
+        },
+        "primary_deployed_counts_and_rates_unchanged": true
+      },
+      "T1": {
+        "AP_delta_v2_minus_v1": {
+          "binary": 6.925662098256069e-07,
+          "omission_dedicated": 2.535705255213294e-07,
+          "omission_legacy": -1.0680623381553733e-07,
+          "substitution_dedicated": 1.1140737764536723e-06,
+          "substitution_legacy": 8.682942347348899e-07
+        },
+        "primary_deployed_counts_and_rates_unchanged": true
+      },
+      "T2": {
+        "AP_delta_v2_minus_v1": {
+          "binary": -1.5434993047014345e-06,
+          "omission_dedicated": -8.128691489361906e-08,
+          "omission_legacy": 3.1697103323666265e-07,
+          "substitution_dedicated": 4.588613385314577e-06,
+          "substitution_legacy": -2.0042747019277662e-06
+        },
+        "primary_deployed_counts_and_rates_unchanged": true
+      },
+      "T3": {
+        "AP_delta_v2_minus_v1": {
+          "binary": 5.239151623870342e-06,
+          "omission_dedicated": -1.0051865428073459e-06,
+          "omission_legacy": -2.336646366916939e-07,
+          "substitution_dedicated": -1.64419664122617e-06,
+          "substitution_legacy": 6.1603792532172186e-06
+        },
+        "primary_deployed_counts_and_rates_unchanged": true
+      }
+    }
+  },
+  "interpretation": "All CAL15 omission counts/rates unchanged; AP differences measured, not assumed zero. Final inference uses one shared immutable encoder cache across all arms."
+}

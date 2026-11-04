@@ -24,4 +24,6 @@ One seed and two repeatedly used VAL speakers permit descriptive exploratory com
 
 ## Execution state
 
-Implementation/audit lanes in progress; no corrected inference, metrics or verdict is asserted by this pre-benchmark specification. See `PROCESS_CHECKPOINT.md` for current campaign state.
+Historical specification state: implementation/audit lanes in progress; no results were asserted when these settings were frozen.
+
+**Executed correction addendum:** all eight endpoints were evaluated at frozen source `c60a84fb044f049dc30f61046f819ff0ac36dc72`. Initial parallel V1 is preserved after a failed cross-process encoder-feature identity check. Final V2 shares one immutable 600-utterance encoder/acoustic cache across all eight heads; all runtime files are frozen before any annotation read. Independent implementations agree on saved-row metrics. Every VAL cell has 9,956 gold, 9,919 aligned, 37 abstentions and 37 extras; CAL has its separately counted 9,977 gold. Both versions are privately durable with SHA-256 readback. See `FINAL_PRIVATE_STORAGE_RECEIPT.json`, `VERSION_DIFFERENCE_LEDGER.json`, and `PROCESS_CHECKPOINT.md` for exact evidence and remaining provenance limits. Practical Level A/B gates fail for all four fixed-budget arms; this is not a blanket scientific PASS.

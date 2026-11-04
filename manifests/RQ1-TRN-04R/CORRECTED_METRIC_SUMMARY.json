@@ -1,0 +1,669 @@
+{
+  "factorial_effects": {
+    "PER": {
+      "direction": "lower_is_better",
+      "interaction_T3_minus_T2_minus_T1_plus_C0": 0.0,
+      "matched_contrasts": {
+        "T1_minus_C0": 0.00010120433154539588,
+        "T2_minus_C0": 0.0,
+        "T3_minus_C0": 0.00010120433154539588
+      },
+      "status": "computed",
+      "values": {
+        "C0": 0.23894342677866612,
+        "T1": 0.23904463111021151,
+        "T2": 0.23894342677866612,
+        "T3": 0.23904463111021151
+      }
+    },
+    "acoustic_gap_binary_ap": {
+      "direction": "higher_is_better",
+      "interaction_T3_minus_T2_minus_T1_plus_C0": 0.0023178429518306287,
+      "matched_contrasts": {
+        "T1_minus_C0": -0.005080167051890294,
+        "T2_minus_C0": 0.00408718442445366,
+        "T3_minus_C0": 0.001324860324393995
+      },
+      "status": "computed",
+      "values": {
+        "C0": 0.01681396721531364,
+        "T1": 0.011733800163423347,
+        "T2": 0.0209011516397673,
+        "T3": 0.018138827539707636
+      }
+    },
+    "binary_ap": {
+      "direction": "higher_is_better",
+      "interaction_T3_minus_T2_minus_T1_plus_C0": 0.0012933336101723647,
+      "matched_contrasts": {
+        "T1_minus_C0": -0.005555461250723259,
+        "T2_minus_C0": 0.0015987980056501594,
+        "T3_minus_C0": -0.002663329634900735
+      },
+      "status": "computed",
+      "values": {
+        "C0": 0.31656014550795514,
+        "T1": 0.3110046842572319,
+        "T2": 0.3181589435136053,
+        "T3": 0.3138968158730544
+      }
+    },
+    "omission_dedicated_ap": {
+      "direction": "higher_is_better",
+      "interaction_T3_minus_T2_minus_T1_plus_C0": 0.02000468908042838,
+      "matched_contrasts": {
+        "T1_minus_C0": -0.07476261259262176,
+        "T2_minus_C0": -0.018226784218388456,
+        "T3_minus_C0": -0.07298470773058184
+      },
+      "status": "computed",
+      "values": {
+        "C0": 0.10469025371998517,
+        "T1": 0.029927641127363395,
+        "T2": 0.08646346950159671,
+        "T3": 0.031705545989403325
+      }
+    },
+    "omission_fa_per_1000_cal15": {
+      "direction": "lower_is_better",
+      "interaction_T3_minus_T2_minus_T1_plus_C0": -1.305745279228617,
+      "matched_contrasts": {
+        "T1_minus_C0": -45.60064282844516,
+        "T2_minus_C0": -7.63358778625954,
+        "T3_minus_C0": -54.53997589393331
+      },
+      "status": "computed",
+      "values": {
+        "C0": 106.26757734029731,
+        "T1": 60.66693451185215,
+        "T2": 98.63398955403777,
+        "T3": 51.727601446364
+      }
+    },
+    "omission_precision_cal15": {
+      "direction": "higher_is_better",
+      "interaction_T3_minus_T2_minus_T1_plus_C0": 0.02002155841073132,
+      "matched_contrasts": {
+        "T1_minus_C0": -0.04292356848328424,
+        "T2_minus_C0": -0.006428417054655786,
+        "T3_minus_C0": -0.029330427127208708
+      },
+      "status": "computed",
+      "values": {
+        "C0": 0.070298769771529,
+        "T1": 0.027375201288244767,
+        "T2": 0.06387035271687322,
+        "T3": 0.040968342644320296
+      }
+    },
+    "omission_recall_all_gold_cal15": {
+      "direction": "higher_is_better",
+      "interaction_T3_minus_T2_minus_T1_plus_C0": 0.12413793103448278,
+      "matched_contrasts": {
+        "T1_minus_C0": -0.43448275862068964,
+        "T2_minus_C0": -0.08965517241379312,
+        "T3_minus_C0": -0.4
+      },
+      "status": "computed",
+      "values": {
+        "C0": 0.5517241379310345,
+        "T1": 0.11724137931034483,
+        "T2": 0.46206896551724136,
+        "T3": 0.15172413793103448
+      }
+    },
+    "substitution_dedicated_ap": {
+      "direction": "higher_is_better",
+      "interaction_T3_minus_T2_minus_T1_plus_C0": -0.004733132910538451,
+      "matched_contrasts": {
+        "T1_minus_C0": 0.007242094410593147,
+        "T2_minus_C0": 0.0015212795589830685,
+        "T3_minus_C0": 0.004030241059037765
+      },
+      "status": "computed",
+      "values": {
+        "C0": 0.33379514686611167,
+        "T1": 0.3410372412767048,
+        "T2": 0.33531642642509474,
+        "T3": 0.33782538792514943
+      }
+    },
+    "substitution_legacy_ap": {
+      "direction": "higher_is_better",
+      "interaction_T3_minus_T2_minus_T1_plus_C0": -0.0013675437177813055,
+      "matched_contrasts": {
+        "T1_minus_C0": 0.002114357216792484,
+        "T2_minus_C0": 0.0043384464942498036,
+        "T3_minus_C0": 0.005085259993260982
+      },
+      "status": "computed",
+      "values": {
+        "C0": 0.3065248068499293,
+        "T1": 0.30863916406672176,
+        "T2": 0.3108632533441791,
+        "T3": 0.31161006684319026
+      }
+    }
+  },
+  "gates": {
+    "C0": {
+      "Level_A": {
+        "checks": {
+          "PER": {
+            "operator": "<=",
+            "status": "pass",
+            "threshold": 0.24698,
+            "value": 0.23894342677866612
+          },
+          "binary_ap": {
+            "operator": ">=",
+            "status": "pass",
+            "threshold": 0.313619,
+            "value": 0.31656014550795514
+          },
+          "omission_fa_per_1000_cal15": {
+            "operator": "<=",
+            "status": "fail",
+            "threshold": 30,
+            "value": 106.26757734029731
+          },
+          "omission_precision_cal15": {
+            "operator": ">=",
+            "status": "fail",
+            "threshold": 0.25,
+            "value": 0.070298769771529
+          },
+          "omission_recall_all_gold_cal15": {
+            "operator": ">=",
+            "status": "pass",
+            "threshold": 0.3,
+            "value": 0.5517241379310345
+          },
+          "substitution_legacy_ap": {
+            "operator": ">=",
+            "status": "pass",
+            "threshold": 0.303974,
+            "value": 0.3065248068499293
+          }
+        },
+        "status": "fail"
+      },
+      "Level_B": {
+        "checks": {
+          "PER": {
+            "operator": "<=",
+            "status": "pass",
+            "threshold": 0.24698,
+            "value": 0.23894342677866612
+          },
+          "acoustic_gap_binary_ap": {
+            "operator": ">=",
+            "status": "pass",
+            "threshold": 0.01,
+            "value": 0.01681396721531364
+          },
+          "binary_ap": {
+            "operator": ">=",
+            "status": "pass",
+            "threshold": 0.313619,
+            "value": 0.31656014550795514
+          },
+          "omission_fa_per_1000_cal15": {
+            "operator": "<=",
+            "status": "fail",
+            "threshold": 15,
+            "value": 106.26757734029731
+          },
+          "omission_precision_cal15": {
+            "operator": ">=",
+            "status": "fail",
+            "threshold": 0.3,
+            "value": 0.070298769771529
+          },
+          "omission_recall_all_gold_cal15": {
+            "operator": ">=",
+            "status": "pass",
+            "threshold": 0.4,
+            "value": 0.5517241379310345
+          },
+          "substitution_legacy_ap": {
+            "operator": ">=",
+            "status": "pass",
+            "threshold": 0.303974,
+            "value": 0.3065248068499293
+          }
+        },
+        "status": "fail"
+      }
+    },
+    "T1": {
+      "Level_A": {
+        "checks": {
+          "PER": {
+            "operator": "<=",
+            "status": "pass",
+            "threshold": 0.24698,
+            "value": 0.23904463111021151
+          },
+          "binary_ap": {
+            "operator": ">=",
+            "status": "fail",
+            "threshold": 0.313619,
+            "value": 0.3110046842572319
+          },
+          "omission_fa_per_1000_cal15": {
+            "operator": "<=",
+            "status": "fail",
+            "threshold": 30,
+            "value": 60.66693451185215
+          },
+          "omission_precision_cal15": {
+            "operator": ">=",
+            "status": "fail",
+            "threshold": 0.25,
+            "value": 0.027375201288244767
+          },
+          "omission_recall_all_gold_cal15": {
+            "operator": ">=",
+            "status": "fail",
+            "threshold": 0.3,
+            "value": 0.11724137931034483
+          },
+          "substitution_legacy_ap": {
+            "operator": ">=",
+            "status": "pass",
+            "threshold": 0.303974,
+            "value": 0.30863916406672176
+          }
+        },
+        "status": "fail"
+      },
+      "Level_B": {
+        "checks": {
+          "PER": {
+            "operator": "<=",
+            "status": "pass",
+            "threshold": 0.24698,
+            "value": 0.23904463111021151
+          },
+          "acoustic_gap_binary_ap": {
+            "operator": ">=",
+            "status": "pass",
+            "threshold": 0.01,
+            "value": 0.011733800163423347
+          },
+          "binary_ap": {
+            "operator": ">=",
+            "status": "fail",
+            "threshold": 0.313619,
+            "value": 0.3110046842572319
+          },
+          "omission_fa_per_1000_cal15": {
+            "operator": "<=",
+            "status": "fail",
+            "threshold": 15,
+            "value": 60.66693451185215
+          },
+          "omission_precision_cal15": {
+            "operator": ">=",
+            "status": "fail",
+            "threshold": 0.3,
+            "value": 0.027375201288244767
+          },
+          "omission_recall_all_gold_cal15": {
+            "operator": ">=",
+            "status": "fail",
+            "threshold": 0.4,
+            "value": 0.11724137931034483
+          },
+          "substitution_legacy_ap": {
+            "operator": ">=",
+            "status": "pass",
+            "threshold": 0.303974,
+            "value": 0.30863916406672176
+          }
+        },
+        "status": "fail"
+      }
+    },
+    "T2": {
+      "Level_A": {
+        "checks": {
+          "PER": {
+            "operator": "<=",
+            "status": "pass",
+            "threshold": 0.24698,
+            "value": 0.23894342677866612
+          },
+          "binary_ap": {
+            "operator": ">=",
+            "status": "pass",
+            "threshold": 0.313619,
+            "value": 0.3181589435136053
+          },
+          "omission_fa_per_1000_cal15": {
+            "operator": "<=",
+            "status": "fail",
+            "threshold": 30,
+            "value": 98.63398955403777
+          },
+          "omission_precision_cal15": {
+            "operator": ">=",
+            "status": "fail",
+            "threshold": 0.25,
+            "value": 0.06387035271687322
+          },
+          "omission_recall_all_gold_cal15": {
+            "operator": ">=",
+            "status": "pass",
+            "threshold": 0.3,
+            "value": 0.46206896551724136
+          },
+          "substitution_legacy_ap": {
+            "operator": ">=",
+            "status": "pass",
+            "threshold": 0.303974,
+            "value": 0.3108632533441791
+          }
+        },
+        "status": "fail"
+      },
+      "Level_B": {
+        "checks": {
+          "PER": {
+            "operator": "<=",
+            "status": "pass",
+            "threshold": 0.24698,
+            "value": 0.23894342677866612
+          },
+          "acoustic_gap_binary_ap": {
+            "operator": ">=",
+            "status": "pass",
+            "threshold": 0.01,
+            "value": 0.0209011516397673
+          },
+          "binary_ap": {
+            "operator": ">=",
+            "status": "pass",
+            "threshold": 0.313619,
+            "value": 0.3181589435136053
+          },
+          "omission_fa_per_1000_cal15": {
+            "operator": "<=",
+            "status": "fail",
+            "threshold": 15,
+            "value": 98.63398955403777
+          },
+          "omission_precision_cal15": {
+            "operator": ">=",
+            "status": "fail",
+            "threshold": 0.3,
+            "value": 0.06387035271687322
+          },
+          "omission_recall_all_gold_cal15": {
+            "operator": ">=",
+            "status": "pass",
+            "threshold": 0.4,
+            "value": 0.46206896551724136
+          },
+          "substitution_legacy_ap": {
+            "operator": ">=",
+            "status": "pass",
+            "threshold": 0.303974,
+            "value": 0.3108632533441791
+          }
+        },
+        "status": "fail"
+      }
+    },
+    "T3": {
+      "Level_A": {
+        "checks": {
+          "PER": {
+            "operator": "<=",
+            "status": "pass",
+            "threshold": 0.24698,
+            "value": 0.23904463111021151
+          },
+          "binary_ap": {
+            "operator": ">=",
+            "status": "pass",
+            "threshold": 0.313619,
+            "value": 0.3138968158730544
+          },
+          "omission_fa_per_1000_cal15": {
+            "operator": "<=",
+            "status": "fail",
+            "threshold": 30,
+            "value": 51.727601446364
+          },
+          "omission_precision_cal15": {
+            "operator": ">=",
+            "status": "fail",
+            "threshold": 0.25,
+            "value": 0.040968342644320296
+          },
+          "omission_recall_all_gold_cal15": {
+            "operator": ">=",
+            "status": "fail",
+            "threshold": 0.3,
+            "value": 0.15172413793103448
+          },
+          "substitution_legacy_ap": {
+            "operator": ">=",
+            "status": "pass",
+            "threshold": 0.303974,
+            "value": 0.31161006684319026
+          }
+        },
+        "status": "fail"
+      },
+      "Level_B": {
+        "checks": {
+          "PER": {
+            "operator": "<=",
+            "status": "pass",
+            "threshold": 0.24698,
+            "value": 0.23904463111021151
+          },
+          "acoustic_gap_binary_ap": {
+            "operator": ">=",
+            "status": "pass",
+            "threshold": 0.01,
+            "value": 0.018138827539707636
+          },
+          "binary_ap": {
+            "operator": ">=",
+            "status": "pass",
+            "threshold": 0.313619,
+            "value": 0.3138968158730544
+          },
+          "omission_fa_per_1000_cal15": {
+            "operator": "<=",
+            "status": "fail",
+            "threshold": 15,
+            "value": 51.727601446364
+          },
+          "omission_precision_cal15": {
+            "operator": ">=",
+            "status": "fail",
+            "threshold": 0.3,
+            "value": 0.040968342644320296
+          },
+          "omission_recall_all_gold_cal15": {
+            "operator": ">=",
+            "status": "fail",
+            "threshold": 0.4,
+            "value": 0.15172413793103448
+          },
+          "substitution_legacy_ap": {
+            "operator": ">=",
+            "status": "pass",
+            "threshold": 0.303974,
+            "value": 0.31161006684319026
+          }
+        },
+        "status": "fail"
+      }
+    }
+  },
+  "inference_source_commit": "c60a84fb044f049dc30f61046f819ff0ac36dc72",
+  "limits": "One seed and two repeatedly used VAL speakers support exploratory descriptive contrasts only. No population-superiority, causal acoustic-localization, deployment, universal focal-loss/acoustic-feature invalidation, or new-training claim follows. Historical training-source commit, empirical FIT acoustic-normalization receipt, and frozen FIT-only prior control remain unverified/unrecovered.\n",
+  "metrics": {
+    "best": {
+      "cells": {
+        "C0": {
+          "FN": 85,
+          "FP_correct": 745,
+          "FP_sub": 37,
+          "TP": 60,
+          "acoustic_reliance_gap": 0.021636882356507903,
+          "aligned_omission_recall": 0.43795620437956206,
+          "all_gold_omission_recall": 0.41379310344827586,
+          "binary_ap": 0.30946171260621264,
+          "dedicated_omission_ap": 0.11094248775038876,
+          "dedicated_substitution_ap": 0.32335432799185815,
+          "false_alarms_per_1000_canonical": 78.54560064282845,
+          "greedy_per": 0.2493674729278413,
+          "legacy_omission_ap": 0.035882129896804386,
+          "legacy_substitution_ap": 0.29762524338818663,
+          "mismatched_audio_binary_ap": 0.28782483024970473,
+          "strict_deployed_omission_precision": 0.07125890736342043
+        },
+        "T1": {
+          "FN": 133,
+          "FP_correct": 362,
+          "FP_sub": 10,
+          "TP": 12,
+          "acoustic_reliance_gap": 0.021497837980288037,
+          "aligned_omission_recall": 0.08759124087591241,
+          "all_gold_omission_recall": 0.08275862068965517,
+          "binary_ap": 0.30814067105141246,
+          "dedicated_omission_ap": 0.025631732543235752,
+          "dedicated_substitution_ap": 0.3399920888745334,
+          "false_alarms_per_1000_canonical": 37.36440337484934,
+          "greedy_per": 0.2823600850116385,
+          "legacy_omission_ap": 0.023895988797492256,
+          "legacy_substitution_ap": 0.3063094355382062,
+          "mismatched_audio_binary_ap": 0.2866428330711244,
+          "strict_deployed_omission_precision": 0.03125
+        },
+        "T2": {
+          "FN": 78,
+          "FP_correct": 922,
+          "FP_sub": 60,
+          "TP": 67,
+          "acoustic_reliance_gap": 0.0209011516397673,
+          "aligned_omission_recall": 0.48905109489051096,
+          "all_gold_omission_recall": 0.46206896551724136,
+          "binary_ap": 0.3181589435136053,
+          "dedicated_omission_ap": 0.08646346950159671,
+          "dedicated_substitution_ap": 0.33531642642509474,
+          "false_alarms_per_1000_canonical": 98.63398955403777,
+          "greedy_per": 0.23894342677866612,
+          "legacy_omission_ap": 0.031205329125611664,
+          "legacy_substitution_ap": 0.3108632533441791,
+          "mismatched_audio_binary_ap": 0.297257791873838,
+          "strict_deployed_omission_precision": 0.06387035271687322
+        },
+        "T3": {
+          "FN": 130,
+          "FP_correct": 596,
+          "FP_sub": 24,
+          "TP": 15,
+          "acoustic_reliance_gap": 0.02144843759392767,
+          "aligned_omission_recall": 0.10948905109489052,
+          "all_gold_omission_recall": 0.10344827586206896,
+          "binary_ap": 0.2819122780539181,
+          "dedicated_omission_ap": 0.024483826029202127,
+          "dedicated_substitution_ap": 0.32551797030706686,
+          "false_alarms_per_1000_canonical": 62.274005624748895,
+          "greedy_per": 0.2494686772593867,
+          "legacy_omission_ap": 0.026971582616048796,
+          "legacy_substitution_ap": 0.273950379268931,
+          "mismatched_audio_binary_ap": 0.26046384045999044,
+          "strict_deployed_omission_precision": 0.023622047244094488
+        }
+      },
+      "sha256": "f41e763a6c5c02ef8dbb42bbc560d02bcb6d6c7ab5cb11c4bfc686058c778c34"
+    },
+    "fixed_budget_3600": {
+      "cells": {
+        "C0": {
+          "FN": 65,
+          "FP_correct": 999,
+          "FP_sub": 59,
+          "TP": 80,
+          "acoustic_reliance_gap": 0.01681396721531364,
+          "aligned_omission_recall": 0.583941605839416,
+          "all_gold_omission_recall": 0.5517241379310345,
+          "binary_ap": 0.31656014550795514,
+          "dedicated_omission_ap": 0.10469025371998517,
+          "dedicated_substitution_ap": 0.33379514686611167,
+          "false_alarms_per_1000_canonical": 106.26757734029731,
+          "greedy_per": 0.23894342677866612,
+          "legacy_omission_ap": 0.03376502201888351,
+          "legacy_substitution_ap": 0.3065248068499293,
+          "mismatched_audio_binary_ap": 0.2997461782926415,
+          "strict_deployed_omission_precision": 0.070298769771529
+        },
+        "T1": {
+          "FN": 128,
+          "FP_correct": 591,
+          "FP_sub": 13,
+          "TP": 17,
+          "acoustic_reliance_gap": 0.011733800163423347,
+          "aligned_omission_recall": 0.12408759124087591,
+          "all_gold_omission_recall": 0.11724137931034483,
+          "binary_ap": 0.3110046842572319,
+          "dedicated_omission_ap": 0.029927641127363395,
+          "dedicated_substitution_ap": 0.3410372412767048,
+          "false_alarms_per_1000_canonical": 60.66693451185215,
+          "greedy_per": 0.23904463111021151,
+          "legacy_omission_ap": 0.024291675478182017,
+          "legacy_substitution_ap": 0.30863916406672176,
+          "mismatched_audio_binary_ap": 0.29927088409380853,
+          "strict_deployed_omission_precision": 0.027375201288244767
+        },
+        "T2": {
+          "FN": 78,
+          "FP_correct": 922,
+          "FP_sub": 60,
+          "TP": 67,
+          "acoustic_reliance_gap": 0.0209011516397673,
+          "aligned_omission_recall": 0.48905109489051096,
+          "all_gold_omission_recall": 0.46206896551724136,
+          "binary_ap": 0.3181589435136053,
+          "dedicated_omission_ap": 0.08646346950159671,
+          "dedicated_substitution_ap": 0.33531642642509474,
+          "false_alarms_per_1000_canonical": 98.63398955403777,
+          "greedy_per": 0.23894342677866612,
+          "legacy_omission_ap": 0.031205329125611664,
+          "legacy_substitution_ap": 0.3108632533441791,
+          "mismatched_audio_binary_ap": 0.297257791873838,
+          "strict_deployed_omission_precision": 0.06387035271687322
+        },
+        "T3": {
+          "FN": 123,
+          "FP_correct": 493,
+          "FP_sub": 22,
+          "TP": 22,
+          "acoustic_reliance_gap": 0.018138827539707636,
+          "aligned_omission_recall": 0.16058394160583941,
+          "all_gold_omission_recall": 0.15172413793103448,
+          "binary_ap": 0.3138968158730544,
+          "dedicated_omission_ap": 0.031705545989403325,
+          "dedicated_substitution_ap": 0.33782538792514943,
+          "false_alarms_per_1000_canonical": 51.727601446364,
+          "greedy_per": 0.23904463111021151,
+          "legacy_omission_ap": 0.02501197116687181,
+          "legacy_substitution_ap": 0.31161006684319026,
+          "mismatched_audio_binary_ap": 0.29575798833334677,
+          "strict_deployed_omission_precision": 0.040968342644320296
+        }
+      },
+      "sha256": "ac9c1d476f5cce124d630570fd569effef161623255b4aeb7f05e45576c4c2e9"
+    }
+  },
+  "status": "EXECUTED_SHARED_CACHE_GENUINE_Z"
+}

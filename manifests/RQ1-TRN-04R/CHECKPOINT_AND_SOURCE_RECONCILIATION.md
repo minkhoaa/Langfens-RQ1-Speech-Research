@@ -56,4 +56,8 @@ Frozen partition/speaker documentation identifies Fold-1 VAL speaker **NJS as Sp
 
 ### Source revision and execution state
 
-The reviewed existing checkpoint/summary/run-manifest and persisted-receipt evidence does not establish an immutable historical training source commit. This provenance gap remains unresolved; current review HEAD is not a substitute. No inference or training was performed by Workstream C. Corrected inference/runtime remains pending coordinator execution.
+The reviewed existing checkpoint/summary/run-manifest and persisted-receipt evidence does not establish an immutable historical training source commit. This provenance gap remains unresolved; current review HEAD is not a substitute. No inference or training was performed by Workstream C. At C's delivery, corrected inference/runtime remained pending coordinator execution.
+
+## Coordinator executed-runtime addendum
+
+Final corrected inference subsequently executed at source `c60a84fb044f049dc30f61046f819ff0ac36dc72`, with clean source recorded during execution, CPU FP32 batch-one, four threads, all eight original checkpoint heads sharing one immutable encoder cache. Source hashes, command, interpreter, dependency versions, frozen input hashes, endpoint counters and before/after parameter fingerprints are in the privately preserved `predictions/RUN_MANIFEST.json`, indexed by `FINAL_PRIVATE_STORAGE_RECEIPT.json`. This establishes the evaluation source revision, not the unresolved historical training-source revision. Original checkpoint bytes were rehashed unchanged after execution. No new training, TEST access, model deployment or publication occurred.

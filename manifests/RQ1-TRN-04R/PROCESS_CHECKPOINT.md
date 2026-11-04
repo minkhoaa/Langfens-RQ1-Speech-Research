@@ -1,6 +1,12 @@
 # LANGFENS-RQ1-TRN-04R — corrective campaign checkpoint
 
-## State: IN_PROGRESS — implementation and independent audit lanes launched
+## Current state: EXECUTED_SHARED_CACHE_REBENCHMARK; PRIVATE_EVIDENCE_VERIFIED; FINAL_SYNTHESIS_IN_PROGRESS
+
+Corrected inference and two independent metric implementations completed for all eight endpoints. Four initial parallel arm runs are preserved; their T2 cross-process encoder-hash parity gate failed. Final shared-cache V2 resolved identical input tensors by construction, without changing frozen inference source `c60a84fb044f049dc30f61046f819ff0ac36dc72`. Fixed-budget Level A/B gates fail for every arm; original conclusions are partially supported, with important overturned claims. Final B report integration and documentation audit remain to close. No blanket scientific PASS.
+
+## Historical initial checkpoint — preserved
+
+Initial state: IN_PROGRESS — implementation and independent audit lanes launched
 
 - Original HEAD verified: `d332997e732315292d673a3bd42a03698182f5f6`, original branch `review/rq1-trn-04-factorial-training`; initially clean.
 - Corrective coordinator branch: `review/rq1-trn-04r-genuine-z-rebenchmark`.
@@ -26,6 +32,19 @@ All four lane follow-ups integrated. Coordinator corrected the raw-recognition p
 
 Safe next step: commit this corrected revision with a clean working tree, then execute four independent parallel CPU FP32 arm processes (2 threads each, fixed+best), each freezing its own CAL/VAL matched/mismatched runtime before annotation access. No source changes during inference. This per-process gold boundary is isolated: one process's offline join cannot influence another process's independent frozen model/runtime. Saved raw predictions and logs go outside Git; model-free B recomputation and independent standard-library audit follow. Final scientific verdict remains pending actual measurements and durability verification.
 
-## Safe restart
+## Executed evidence and safe finalization point
+
+- Parallel V1: four independent arm processes, two CPU threads each, fixed+best, all exit0, wall396.28230929374695s. Post-run mismatch: T2 encoder feature hashes differ on464/600 utterances; waveform/4D feature hashes agree. No cause established. This version is not final matched-factorial evidence.
+- Final V2: one process, all eight heads, four CPU threads, one shared immutable600utterance cache, CPUFP32 batch1; elapsed155.63740944862366s, exit0. All runtime predictions (CAL/VAL/mismatch and recognition) frozen before first gold read. Before/after model/backbone fingerprints and source hashes equal; git clean at frozen source during execution.
+- Every VAL cell:9956gold=9919aligned+37unmapped;37extra prompt positions. Labels8799/1012/145; aligned8774/1008/137. Every CAL cell:9977gold=9958aligned+19unmapped;24extras; labels8054/1462/461. All-gold omission FN=145-TP; maximum alignedTP137. All eight recognition references contain9881phones.
+- B model-free production recomputation and independent stdlib auditor agree for both endpoints on global/speaker/phone grouped AP, CAL-only thresholds, deployed counts and global/speaker PER. D independently re-executed auditor and inspected raw/source/freeze evidence. Scoped safe suite38passed; no inherited full suite/backward tests were run.
+- Private original checkpoint readback revision:af6ac3620fb78873ff213c064dffe71fb8acadd4. Historical successful counters: fixed3600each; best2247/897/3600/2247; historical skippedAMP3each. New training counts:0backward,0optimizerattempts,0updates,0skips. Last valid models remain unchanged original artifacts; no new weights.
+- Preserved private V1 revision:57f014b44b0358fadbe62bd6097bbc7e9b30dbe2 (92files,67733709packaged bytes). Final private V2 revision:c1880ea3cbe292df55c2ed2d1ea09bc67910f97b (78files,67124166bytes). Both private-before/after verification and every-file SHA256download readback succeeded. Lossless gzip preserves original JSONL byte identities and full precision; mapping/reproduction commands/source snapshots/logs/metricJSON included. Receipts are tracked; no raw data/weights/credentials in Git.
+- V1/V2 CAL15 omission counts/rates unchanged; measured scalar AP differences below1.17e-5, not assumed zero. Exact ledgers preserved.
+- Native D final audit commit95a86b0 integrated; B final retained run254d29f8-a09c-4db4-971f-814e264fd131 awaits report collection. Remaining scientific limitations: unknown immutable historical training source; unverified empirical FIT-normalization receipt; unavailable frozen FIT-only prior; one seed/two repeatedly used VAL speakers. Unsupported HT broad-event estimates disabled.
+
+Safe finalization: collect B's final V2 report, reconcile all reports with CORRECTED_METRIC_SUMMARY.json and final receipt, verify staged files are lightweight/no raw data, run scoped tests/JSON/whitespace/hash checks, append final status and update global index in the same reviewable commit. Do not rerun inference, refit a prior, start training, expose TEST, push, merge or publish. To reproduce metrics later, restore final private package, verify compressed and original-byte hashes, use NEW outputs and REPRODUCTION.md. Original TRN-04 files remain unchanged.
+
+## Historical restart instructions at launch — superseded by finalization above
 
 Read global index and lane checkpoints. Verify coordinator/lane HEADs and diffs; collect native completion artifacts rather than poll. Integrate only non-overlapping reviewed changes, run safe no-training tests, freeze corrected source in a reviewable commit, then execute benchmark into a new private cache directory. Independently recompute saved rows, verify immutable private SHA-256 readback, and only then finalize conclusions. Never reuse incomplete outputs as complete; do not overwrite original TRN-04 artifacts.
