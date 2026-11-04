@@ -1,0 +1,50 @@
+{
+  "timestamp_utc": "2026-11-04T09:26:20.424841+00:00",
+  "verification_parent_commit": "55e6006224af2b395378d6887f53e60e73b1ba5a",
+  "frozen_inference_commit": "c60a84fb044f049dc30f61046f819ff0ac36dc72",
+  "source_hashes_unchanged": true,
+  "raw_files_rehashed": 67,
+  "original_checkpoints_and_summaries_rehashed": 12,
+  "original_archive_and_contract_unchanged": true,
+  "B_independent_summary_matches_coordinator": true,
+  "finite_lightweight_JSON": true,
+  "only_existing_tracked_file_changed": "docs/process-checkpoints/INDEX.md",
+  "safe_tests": {
+    "command": ".venv/bin/python -m pytest -q tests/trn04/test_protocol_z_integrated.py tests/trn04/test_protocol_z_regression.py tests/trn04r",
+    "passed": 38,
+    "scope": "synthetic inference/metrics; no backward/optimizer; full suite intentionally not run"
+  },
+  "private_receipts": {
+    "FINAL_PRIVATE_STORAGE_RECEIPT.json": {
+      "revision": "c1880ea3cbe292df55c2ed2d1ea09bc67910f97b",
+      "files": 78,
+      "sha256": "235ea4529cdbdd02cf57db7dcac7b8193000abd815dcc95cd156425e6176380d",
+      "local_packaged_bytes_unchanged": true
+    },
+    "PARALLEL_V1_PRIVATE_STORAGE_RECEIPT.json": {
+      "revision": "57f014b44b0358fadbe62bd6097bbc7e9b30dbe2",
+      "files": 92,
+      "sha256": "566e699e392c0bc74e37c87ec3d6ee743635331c4d24d23232222863b2d9436f",
+      "local_packaged_bytes_unchanged": true
+    }
+  },
+  "scientific_acceptance": "ALL_FIXED_BUDGET_LEVEL_A_AND_B_GATES_FAIL",
+  "overall_research_PASS": false,
+  "limitations": [
+    "Historical immutable training-source revision unverified",
+    "Empirical FIT acoustic-normalization receipt unverified",
+    "Frozen FIT-only canonical prior unavailable",
+    "One seed/two repeatedly used VAL speakers",
+    "V1 T2 encoder hash anomaly cause unresolved; final V2 shared cache used"
+  ],
+  "authorization": {
+    "training": false,
+    "backward_passes": 0,
+    "optimizer_attempts": 0,
+    "updates": 0,
+    "skipped_updates": 0,
+    "TEST_payload_access": false,
+    "push": false,
+    "publication": false
+  }
+}

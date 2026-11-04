@@ -1,6 +1,6 @@
 # Registered scientific acceptance recovery
 
-All four fixed-budget arms fail both Level A and Level B. No arm reaches25%/30% strict omission precision at the primary operating point. C0/T2 meet recall gates; T1/T3 do not. All fail primary false-alarm limits. T1 also fails the external binary-AP floor. Fixed-budget PER and legacy substitution floors pass. Every acoustic mismatch gap exceeds.010, a sensitivity control, not causal localization.
+All four fixed-budget arms fail both Level A and Level B. No arm reaches 25%/30% strict omission precision at the primary operating point. C0/T2 meet recall gates; T1/T3 do not. All fail primary false-alarm limits. T1 also fails the external binary-AP floor. Fixed-budget PER and legacy substitution floors pass. Every acoustic mismatch gap exceeds.010, a sensitivity control, not causal localization.
 
 | Arm | Level | Metric | Value | Rule | Threshold | Result |
 |---|---|---|---|---|---|---|

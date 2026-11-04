@@ -1,6 +1,6 @@
 # Matching historical V2 genuine-Z reference
 
-Same9919aligned gold keys verified by hash for all8corrected cells, same frozen prompt/CMUdict/sub_first policy, same score-family/AP populations and CPUFP32 batch1. T-OP is an external architecture/training-run reference, NOT the matched factorial control C0. B-Control subtype AP remains unsupported/null. Separate CPU executions can produce small floating-point differences; no bitwise equality to old V2 encoder features is claimed.
+Same 9,919 aligned gold keys verified by hash for all 8 corrected cells, same frozen prompt/CMUdict/sub_first policy, same score-family/AP populations and CPU FP32, batch size 1. T-OP is an external architecture/training-run reference, NOT the matched factorial control C0. B-Control subtype AP remains unsupported/null. Separate CPU executions can produce small floating-point differences; no bitwise equality to old V2 encoder features is claimed.
 
 | Historical fixed3600 | Binary AP | Legacy omit AP | Dedicated omit AP | Legacy sub AP | Dedicated sub AP |
 |---|---|---|---|---|---|

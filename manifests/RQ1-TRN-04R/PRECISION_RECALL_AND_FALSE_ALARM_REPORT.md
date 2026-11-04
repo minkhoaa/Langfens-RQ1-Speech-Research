@@ -2,7 +2,7 @@
 
 Primary operating point: dedicated omission score, CAL-correct 15% FPR ceiling on NCC/THV; VAL NJS/RRBI never tunes thresholds. AP is finite aligned-only, not full-gold AP. Rates are fractions unless marked %. FA/1,000 uses 9,956 full gold positions. Extra-prompt alarms are separate and unlabelled.
 
-CAL5/CAL10 are secondary predeclared operating points, not VAL-selected substitutes for CAL15. None reaches25% precision at these three points. Abstentions are no-alarm; the eight unmapped omissions remain false negatives. No claim is made about every conceivable threshold.
+CAL5/CAL10 are secondary predeclared operating points, not VAL-selected substitutes for CAL15. None reaches 25% precision at these three points. Abstentions are no-alarm; the eight unmapped omissions remain false negatives. No claim is made about every conceivable threshold.
 
 | Arm | CAL ceiling | Threshold | CAL achieved FPR | TP | FP_correct | FP_sub | FN all | Precision | Recall all | Recall aligned | FA/1,000 | Extra-prompt alarms |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|

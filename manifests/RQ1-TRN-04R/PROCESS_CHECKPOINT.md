@@ -1,8 +1,8 @@
 # LANGFENS-RQ1-TRN-04R — corrective campaign checkpoint
 
-## Current state: EXECUTED_SHARED_CACHE_REBENCHMARK; PRIVATE_EVIDENCE_VERIFIED; FINAL_SYNTHESIS_IN_PROGRESS
+## Current state: CORRECTED_REBENCHMARK_AND_DECISION_PACKAGE_DELIVERED_WITH_ACCOUNTED_LIMITATIONS
 
-Corrected inference and two independent metric implementations completed for all eight endpoints. Four initial parallel arm runs are preserved; their T2 cross-process encoder-hash parity gate failed. Final shared-cache V2 resolved identical input tensors by construction, without changing frozen inference source `c60a84fb044f049dc30f61046f819ff0ac36dc72`. Fixed-budget Level A/B gates fail for every arm; original conclusions are partially supported, with important overturned claims. Final B report integration and documentation audit remain to close. No blanket scientific PASS.
+Corrected inference and two independent metric implementations completed for all eight endpoints. Four initial parallel arm runs are preserved; their T2 cross-process encoder-hash parity gate failed. Final shared-cache V2 resolved identical input tensors by construction, without changing frozen inference source `c60a84fb044f049dc30f61046f819ff0ac36dc72`. Fixed-budget Level A/B gates fail for every arm; original conclusions are partially supported, with important overturned claims. All four workstreams, final B/D independent recomputation reports, scientific synthesis and durable evidence are integrated. No blanket scientific PASS: model acceptance gates fail and provenance/generalization limitations remain explicit.
 
 ## Historical initial checkpoint — preserved
 
@@ -45,6 +45,14 @@ Safe next step: commit this corrected revision with a clean working tree, then e
 
 Safe finalization: collect B's final V2 report, reconcile all reports with CORRECTED_METRIC_SUMMARY.json and final receipt, verify staged files are lightweight/no raw data, run scoped tests/JSON/whitespace/hash checks, append final status and update global index in the same reviewable commit. Do not rerun inference, refit a prior, start training, expose TEST, push, merge or publish. To reproduce metrics later, restore final private package, verify compressed and original-byte hashes, use NEW outputs and REPRODUCTION.md. Original TRN-04 files remain unchanged.
 
-## Historical restart instructions at launch — superseded by finalization above
+## Final closure and authorized restart boundary
+
+B final V2 report chain through `fb27e1472a7c260bacb216ed236550f7f0ced3af` is integrated on the coordinator branch (coordinator integration tip `55e6006`). B independently recomputed both endpoints from final saved rows; output and audit JSON byte-match preserved private files. All four lanes are complete with scoped evidence, not an overall model/research PASS. The earlier B-pending finalization point above is superseded by this closure.
+
+All 13 minimum deliverables are present, with additional full-precision summary, exact source/raw hashes, historical comparisons, speaker/phone analysis, both private receipts, and version-difference ledger. `FINAL_VERIFICATION.json` records the final executed checks. Original TRN-04 source/results/checkpoints/gold remain unchanged. No benchmark or child process is left running. Source and lightweight evidence are committed on the review branch only; no push, merge into main, force-push, publication or deployment.
+
+Restart only for review or model-free reproduction: verify this branch commit, frozen inference revision `c60a84f`, final private revision `c1880ea3cbe292df55c2ed2d1ea09bc67910f97b`, receipt hashes and lossless uncompressed identities, then use new output paths and the private `REPRODUCTION.md`. Preserve both versions. No additional inference is needed to recompute the saved results. Do not fit a replacement prior, start training, access TEST, or promote any architecture without separate authorization. Unknown historical training-source/FIT-stat provenance and unavailable prior are open research limitations, not silently cleared gates.
+
+## Historical restart instructions at launch — superseded by closure above
 
 Read global index and lane checkpoints. Verify coordinator/lane HEADs and diffs; collect native completion artifacts rather than poll. Integrate only non-overlapping reviewed changes, run safe no-training tests, freeze corrected source in a reviewable commit, then execute benchmark into a new private cache directory. Independently recompute saved rows, verify immutable private SHA-256 readback, and only then finalize conclusions. Never reuse incomplete outputs as complete; do not overwrite original TRN-04 artifacts.

@@ -3,10 +3,10 @@
 **Disposition: limited negative result for these treatments; original scientific conclusions only partially supported.** Complete the reproducibility/provenance record and continue bounded research planning; do not deploy, unseal TEST, or automatically authorize additional training.
 
 1. All four fixed-budget checkpoints and all four existing SELECT-best snapshots were actually evaluated under genuine written-prompt Protocol Z.
-2. All9,956gold positions are accounted for in every cell.
-3. Each has9,919aligned+37gold abstentions+37extra prompt positions, exactly the frozen V2 policy.
+2. All 9,956 gold positions are accounted for in every cell.
+3. Each has 9,919 aligned + 37 gold abstentions + 37 extra prompt positions, exactly the frozen V2 policy.
 4. Every comparable historical scalar delta is in ORIGINAL_VS_CORRECTED_METRICS.md; original mislabelled focal score channels and unsupported adjudication are not valid same-estimand benchmarks.
-5. T1 does not reproduce the historical near-universal omission-alarm explosion. At primary CAL15 it makes621gold-linked alarms (17TP+604FP), fewer than C0's1138, but precision2.74% and recall11.72% remain poor. The extreme old alarm claim is overturned, not repaired by a new model.
+5. T1 does not reproduce the historical near-universal omission-alarm explosion. At primary CAL15 it makes 621 gold-linked alarms (17 TP + 604 FP), fewer than C0's 1,138, but precision 2.74% and recall 11.72% remain poor. The extreme old alarm claim is overturned, not repaired by a new model.
 6. T2 underperforms C0 on omission AP/precision/recall, but improves binary/substitution AP and reduces false alarms. Global underperformance or strict Pareto domination is unsupported.
 7. T3 has favorable descriptive omission interaction, but remains substantially worse than C0 and fails practical gates. This is not a confirmed generalizable beneficial interaction or architecture winner.
 8. C0 is the strongest fixed-budget internal omission control on primary omission AP/precision/recall, not the strongest model on every endpoint and not deployment-ready.

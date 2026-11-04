@@ -2,7 +2,7 @@
 
 Primary operating point: dedicated omission score, CAL-correct 15% FPR ceiling on NCC/THV; VAL NJS/RRBI never tunes thresholds. AP is finite aligned-only, not full-gold AP. Rates are fractions unless marked %. FA/1,000 uses 9,956 full gold positions. Extra-prompt alarms are separate and unlabelled.
 
-All endpoints are exactly3,600 successful updates; original bytes unchanged.
+All endpoints are exactly 3,600 successful updates; original bytes unchanged.
 
 | Arm | Dedicated omit AP | Legacy omit AP | Precision | Recall all | Recall aligned | FA/1,000 | Binary AP | Legacy sub AP | Dedicated sub AP | PER |
 |---|---|---|---|---|---|---|---|---|---|---|

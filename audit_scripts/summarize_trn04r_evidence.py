@@ -15,7 +15,10 @@ def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 def loadrows(p):return [json.loads(l) for l in p.read_text().splitlines() if l.strip()]
 def fmt(v):return 'NA' if v is None else (str(v) if isinstance(v,(str,int)) else f'{v:.9f}')
 def table(headers,records):return '\n'.join(['| '+' | '.join(headers)+' |','|'+'|'.join(['---']*len(headers))+'|']+['| '+' | '.join(fmt(v) for v in row)+' |' for row in records])+'\n'
-def write(p,s):p.write_text(s.rstrip()+'\n')
+def write(p,s):
+ for before,after in {'CPUFP32 batch1':'CPU FP32, batch size 1','in155.':'in 155.','seconds, all8endpoints':' seconds, all 8 endpoints','Earlier4parallel':'Earlier 4 parallel','immutable600utterancecache':'immutable 600-utterance cache','across allheads':'across all heads','all12explicit':'all 12 explicit','exactly3,600':'exactly 3,600','All9,956gold':'All 9,956 gold','has9,919aligned+37gold abstentions+37extra':'has 9,919 aligned + 37 gold abstentions + 37 extra','makes621gold-linked':'makes 621 gold-linked','(17TP+604FP)':'(17 TP + 604 FP)','C0\'s1138':'C0\'s 1,138','precision2.74%':'precision 2.74%','recall11.72%':'recall 11.72%','None reaches25%':'None reaches 25%','reaches25%/30%':'reaches 25%/30%','all8corrected':'all 8 corrected','Same9919aligned':'Same 9,919 aligned','all8endpoints':'all 8 endpoints','all12explicit':'all 12 explicit'}.items():
+  s=s.replace(before,after)
+ p.write_text(s.rstrip()+'\n')
 def jsonwrite(p,x):p.write_text(json.dumps(x,indent=2,sort_keys=True,allow_nan=False)+'\n')
 def scalar(r):
  m=r['metrics'];o=m['omission_dedicated']['cal_operating_points']['0.15']['counts']
