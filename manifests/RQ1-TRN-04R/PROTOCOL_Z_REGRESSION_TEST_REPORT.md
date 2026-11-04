@@ -20,6 +20,8 @@ Actual result summary and scientific limits, including the T2 feature-identity i
 
 Feature receipts: C0/T1/T3 share encoder feature cache hash `49e5ff48fba344f251ce3ba91c136ee6ab063b7e6388886a0eeb1469fd125d3a`; T2 hash differs (`33ef54dd5539aeb4916566875cb066d9963a19192e852d9d1a5cb7d019cd5840`) and encoder feature hashes differ for 464/600 utterances. Waveform hashes, acoustic feature hashes, shapes and frame counts match; backbone source weights/fingerprint match. Cause is unknown; T2 cannot be treated as a strictly matched feature ablation, and no causal acoustic claim is allowed. FIT feature-statistics receipt, FIT-only prior, and original source-training provenance remain unverified/unavailable. HT/event-horizon estimators were not independently validated. G=2, one seed, no population significance.
 
+V1 outputs and independent recomputations remain preserved as genuine artifacts, but scientific acceptance is blocked. Parent plans a distinct V2 run on unchanged source `c60a84fb044f049dc30f61046f819ff0ac36dc72`, with one process sharing an immutable encoder feature cache across all eight heads. This is a pending matched-input parity audit, not a known explanation for V1 T2 or a result. Await the new V2 root and audit it before any final PASS; do not overwrite V1.
+
 ## Commands and scope
 
 - Parent safe test command: `cd /home/khoa/Projects/KLTN/Dataset && .venv/bin/python -m pytest -q tests/trn04/test_protocol_z_integrated.py tests/trn04/test_protocol_z_regression.py tests/trn04r` — **38 passed**.
