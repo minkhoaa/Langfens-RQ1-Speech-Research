@@ -1,0 +1,14 @@
+{
+  "fixed_budget_3600.pt": {
+    "path": "checkpoints/RQ1-TRN-04/t2/fixed_budget_3600.pt",
+    "bytes": 3243408,
+    "sha256": "e8b00002aef9ee1587990a69162d5a5438b092e02c83d5654ae5aea0e1ec9c13",
+    "remote_url": "https://huggingface.co/minkhoaa/langfens-rq1-cross-fold-checkpoints/resolve/main/trn04/t2/fixed_budget_3600.pt"
+  },
+  "best.pt": {
+    "path": "checkpoints/RQ1-TRN-04/t2/best.pt",
+    "bytes": 3239591,
+    "sha256": "98d3fc1ecf6a5539d211028e32c9cbd2d5668b3942ad4d8fcae8226a99927fb1",
+    "remote_url": "https://huggingface.co/minkhoaa/langfens-rq1-cross-fold-checkpoints/resolve/main/trn04/t2/best.pt"
+  }
+}

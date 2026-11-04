@@ -1,12 +1,21 @@
 # LANGFENS — Global Process Checkpoint Registry
 
 **Repository:** `minkhoaa/Langfens-RQ1-Speech-Research`  
-**Last Verified Documentation Commit:** `7a3b9ecf5e9efedc480b477f531ebe9318ae3415`  
-**Branch:** `review/psup-recovery-benchmark-v1`  
-**Registry Maintenance Lead:** Senior ML Research Engineer & Reproducibility Auditor  
+**Last Verified Documentation Commit:** `a640d65`  
+**Branch:** `review/rq1-trn-04-factorial-training`  
+**Registry Maintenance Lead:** Principal Speech ML Research Engineer, Phonetic Scientist & Reproducibility Auditor (Coordinator)  
 **Policy Authority:** `AGENTS.md` (Mandatory Process Checkpoint Policy)
 
-## LANGFENS RQ1 — Precision Recovery Experiment 01 (2026-11-04)
+## LANGFENS RQ1 — TRN-04: Parallel Controlled 2x2 Factorial Training & Scientific Evaluation (2026-11-04)
+
+**LATEST: COMPLETED_ALL_FOUR_ARMS_AND_SYNTHESIS — ALL EXPERIMENTAL HYPOTHESES CONCLUSIVELY REJECTED.** A fully controlled 2×2 factorial experiment evaluating Class-Conditioned Focal Loss ($\alpha=0.25$ on $\{D, T, R\}$ deletions) and 4D Waveform-Derived Acoustic Evidence was executed across four matched-capacity arms (C0, T1, T2, T3; exactly 267,179 trainable parameters each, bit-identical seed 1337 initialization). All arms completed remote GPU training to their prospectively frozen fixed-budget endpoint of 3,600 updates (3 skipped AMP attempts each) on Kaggle Tesla T4 hardware with atomic mirroring to Hugging Face (`minkhoaa/langfens-rq1-cross-fold-checkpoints/trn04/`). Independent centralized evaluation on Fold-1 VAL under Protocol Z (300 utterances, 9,956 gold canonical tokens) establishes:
+1. **Hypothesis H1 (Objective Effect): REJECTED.** Focal down-weighting collapsed Dedicated Omission AP from 0.113331 (C0) to 0.027572 (T1) (-75.7% relative drop) and exploded false alarms from 107.07 to 985.44 per 1,000 canonical tokens (1.46% deployed precision), caused by severe background deletion logit displacement.
+2. **Hypothesis H2 (Acoustic Feature Effect): REJECTED.** Physical acoustic features improved the acoustic reliance gap (+13.0%, +0.0225 vs +0.0199) and eliminated 125 false alarms on /d/ and /r/, but degraded omission recall from 60.00% to 51.03% and reduced precision from 7.55% to 7.09%, being strictly Pareto-dominated by C0 across all operational CAL thresholds.
+3. **Hypothesis H3 (Interaction Effect): REJECTED.** Combining focal loss and acoustic features (T3) performed identically to T1 (1.46% precision), showing zero beneficial super-additive synergy.
+4. **Prospective Acceptance Gates:** All four arms FAILED both Level A (Pilot Feasibility, $\ge 25\%$) and Level B (Research Improvement Target, $\ge 30\%$).
+5. **Scientific Verdict (Outcome A / Outcome E):** Retain baseline C0 (`CompactFactorialOperationHead`, uniform CE) as the champion architecture. Formally terminate class-conditioned focal down-weighting. Enforce the Horvitz-Thompson Adjudicated Pronunciation Event Horizon ($32.18\%$ broad precision) as the mandatory reporting standard for pedagogical feedback. Strict zero test data access preserved.
+
+**Deliverables Registry:** [Master Process Checkpoint](../../manifests/RQ1-TRN-04/PROCESS_CHECKPOINT.md), [Experiment Registration](../../manifests/RQ1-TRN-04/EXPERIMENT_REGISTRATION.md), [Factorial Design & Controls](../../manifests/RQ1-TRN-04/FACTORIAL_DESIGN_AND_CONTROLS.md), [Data & Label Readiness](../../manifests/RQ1-TRN-04/DATA_AND_LABEL_READINESS.md), [Common Init Manifest](../../manifests/RQ1-TRN-04/COMMON_INITIALIZATION_MANIFEST.json), [Fixed Budget Comparison](../../manifests/RQ1-TRN-04/FIXED_BUDGET_COMPARISON.md), [Factorial Effect Analysis](../../manifests/RQ1-TRN-04/FACTORIAL_EFFECT_ANALYSIS.md), [PR Tradeoff](../../manifests/RQ1-TRN-04/PRECISION_RECALL_TRADEOFF.md), [Acoustic Grounding Report](../../manifests/RQ1-TRN-04/ACOUSTIC_GROUNDING_REPORT.md), [Error Forensics](../../manifests/RQ1-TRN-04/SPEAKER_AND_PHONEME_ERROR_ANALYSIS.md), [Scientific Acceptance Report](../../manifests/RQ1-TRN-04/SCIENTIFIC_ACCEPTANCE_REPORT.md), [Next Research Decision](../../manifests/RQ1-TRN-04/NEXT_RESEARCH_DECISION.md), [All Evaluation Metrics](../../manifests/RQ1-TRN-04/ALL_EVALUATION_METRICS.json).
 
 **LATEST: COMPLETED_ALL_FOUR_WORKSTREAMS_AND_SYNTHESIS.** All 4 independent specialist agents (Agent A: Decision Policy Benchmark; Agent B: Stop Acoustic Verification; Agent C: Rhotic Forensics & Annotation Reliability; Agent D: Controlled Acoustic Verifier & System Benchmark) and centralized coordinator synthesis completed deterministically on CPU FP32 across all 9,956 gold positions of L2-ARCTIC Fold-1 VAL under Protocol Z. Empirical findings resolve the four prospective outcomes:
 1. **Outcome A (Decision Policy Alone): REJECTED.** 25 policies evaluated; deployed precision $\ge 30\%$ requires CAL FPR ceiling $\le 0.5\%$, where recall collapses to $2.07\%$ (3 detections). Naive muting of $\{D, T, R\}$ destroys $97.6\%$ of true positives ($R=1.38\%$).

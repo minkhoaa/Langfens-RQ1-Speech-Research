@@ -64,6 +64,7 @@ runs/
 benchmark_outputs/
 bench_outputs/
 **/predictions.json.gz
+manifests/RQ1-TRN-04/*/*.jsonl
 .tensorboard/
 *.log
 

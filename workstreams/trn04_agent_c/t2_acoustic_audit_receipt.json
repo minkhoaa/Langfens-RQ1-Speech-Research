@@ -1,0 +1,79 @@
+{
+  "timestamp_utc": "2026-11-04T07:19:30.676951+00:00",
+  "agent": "Agent C \u2014 T2 Acoustic Intervention Lead",
+  "arm": "T2",
+  "objective": "operation_ce",
+  "features_enabled": true,
+  "parameters": {
+    "total_trainable_parameters": 267179,
+    "parameter_tensors_count": 17,
+    "quad_bit_identity": true,
+    "manifest_sha256_match": true,
+    "shared_acoustic_slot_bias": false,
+    "acoustic_weight_shape": [
+      128,
+      4
+    ],
+    "acoustic_weight_trainable": true
+  },
+  "acoustic_evidence_specification": {
+    "dimension": 4,
+    "window_size_samples": 400,
+    "window_duration_ms": 25.0,
+    "hop_size_samples": 320,
+    "hop_duration_ms": 20.0,
+    "frame_rate_hz": 50.0,
+    "alignment_mode": "wav2vec2_centered",
+    "features": [
+      "normalized_log_frame_energy",
+      "relative_rms_energy",
+      "delta_log_frame_energy",
+      "zero_crossing_rate"
+    ],
+    "pinned_fit_statistics": {
+      "mean": -6.047091,
+      "std": 2.544367
+    },
+    "zero_gold_leakage": true
+  },
+  "kaggle_deployment": {
+    "slug": "minkhoaa/langfens-rq1-trn-04-t2-ce-feat",
+    "kernel_worker_status": "minkhoaa/langfens-rq1-trn-04-t2-ce-feat has status \"KernelWorkerStatus.COMPLETE\"",
+    "machine_shape": "NvidiaTeslaT4",
+    "gpu_enabled": true,
+    "is_private": true,
+    "dataset_archive_sha256": "b750eb3bf3971afccd9ab9058a64fa6b3f5781399b9ef0f1294d29bf580784a9"
+  },
+  "training_execution": {
+    "total_successful_updates": 3600,
+    "max_updates_budget": 3600,
+    "total_epochs": 9,
+    "skipped_amp_attempts": 3,
+    "duration_seconds": 466.5444264411926,
+    "best_selection_ap": 0.4702171068789999,
+    "completed_at": "2026-11-04T07:00:46.168714+00:00"
+  },
+  "checkpoints": {
+    "fixed_budget_3600": {
+      "file": "fixed_budget_3600.pt",
+      "sha256": "e8b00002aef9ee1587990a69162d5a5438b092e02c83d5654ae5aea0e1ec9c13"
+    },
+    "best": {
+      "file": "best.pt",
+      "sha256": "98d3fc1ecf6a5539d211028e32c9cbd2d5668b3942ad4d8fcae8226a99927fb1"
+    }
+  },
+  "evaluation_metrics": {
+    "fixed_budget_3600": {
+      "binary_ap": 0.32157305852447754,
+      "acoustic_reliance_gap": 0.022485654273260325,
+      "dedicated_substitution_ap": 0.33759342092752714,
+      "legacy_substitution_ap": 0.31220945724952637,
+      "greedy_per": 0.23904463111021151,
+      "blank_fraction": 0.7900281319207518,
+      "speaker_njs_binary_ap": 0.41045250906912734,
+      "speaker_rrbi_binary_ap": 0.2558711864779697
+    }
+  },
+  "audit_status": "AUDIT_PASSED"
+}

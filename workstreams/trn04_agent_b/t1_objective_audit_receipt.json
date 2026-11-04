@@ -1,0 +1,64 @@
+{
+  "timestamp_utc": "2026-11-04T07:03:10.260150+00:00",
+  "agent": "Agent B (T1 Objective Intervention Lead)",
+  "arm": "T1",
+  "objective": "class_focal",
+  "description": "Class-Conditioned Focal Loss, Acoustic Features Disabled",
+  "audit_status": "PASSED",
+  "experimental_invariants": {
+    "total_trainable_parameters": 267179,
+    "parameter_census_match_c0": true,
+    "initialization_seed": 1337,
+    "manifest_hash_match": true,
+    "features_enabled": false,
+    "acoustic_slot_bias": false,
+    "zero_acoustic_invariance_verified": true
+  },
+  "objective_specification": {
+    "name": "class_focal",
+    "gamma": 2.0,
+    "alpha_coronal_del": 0.25,
+    "alpha_default": 1.0,
+    "coronal_rhotic_phone_ids": [
+      9,
+      28,
+      31
+    ],
+    "phone_names": {
+      "9": "D",
+      "28": "R",
+      "31": "T"
+    }
+  },
+  "fit_cohort_justification": {
+    "total_fit_utterances": 1799,
+    "total_deletions": 1503,
+    "d_deletions": 323,
+    "t_deletions": 273,
+    "r_deletions": 256,
+    "coronal_rhotic_sum": 852,
+    "coronal_rhotic_percentage": 56.6866
+  },
+  "remote_deployment": {
+    "kaggle_slug": "minkhoaa/langfens-rq1-trn-04-t1-focal-nofeat",
+    "remote_status": "minkhoaa/langfens-rq1-trn-04-t1-focal-nofeat has status \"KernelWorkerStatus.COMPLETE\"",
+    "target_hardware": "Tesla T4 (NvidiaTeslaT4)",
+    "precision": "CUDA FP16 AMP",
+    "dataset_source": "minkhoaa/langfens-rq1-fold1-staging",
+    "git_branch": "review/rq1-trn-04-factorial-training"
+  },
+  "remote_execution_metrics": {
+    "successful_updates": 3600,
+    "max_updates": 3600,
+    "skipped_amp_attempts_total": 3,
+    "total_epochs": 9,
+    "best_selection_ap": 0.46191769787543335,
+    "duration_seconds": 449.3663990497589,
+    "completed_at": "2026-11-04T06:51:21.324519+00:00",
+    "mirrored_checkpoints": [
+      "trn04/t1/best.pt",
+      "trn04/t1/fixed_budget_3600.pt",
+      "trn04/t1/training_summary.json"
+    ]
+  }
+}

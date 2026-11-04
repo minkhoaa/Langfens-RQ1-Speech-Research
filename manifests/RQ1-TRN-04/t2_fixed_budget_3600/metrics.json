@@ -1,0 +1,111 @@
+{
+  "run_id": "eval_fixed_budget_3600_T2",
+  "checkpoint": "/home/khoa/Projects/KLTN/Dataset/checkpoints/RQ1-TRN-04/t2/fixed_budget_3600.pt",
+  "checkpoint_sha256": "e8b00002aef9ee1587990a69162d5a5438b092e02c83d5654ae5aea0e1ec9c13",
+  "arm": "T2",
+  "objective": "operation_ce",
+  "features_enabled": true,
+  "contract_sha256": "4d99723e4b3f62f506165ced089eca82d4417279c76973b35470bd337cedfab2",
+  "metrics": {
+    "strict_deployed_omission_precision": 0.07094918504314478,
+    "all_gold_omission_recall": 0.5103448275862069,
+    "false_alarms_per_1000_canonical": 97.32824427480917,
+    "dedicated_omission_ap": 0.0962926594439768,
+    "legacy_omission_ap": 0.03502508443086503,
+    "binary_ap": 0.32157305852447754,
+    "legacy_substitution_ap": 0.31220945724952637,
+    "dedicated_substitution_ap": 0.33759342092752714,
+    "greedy_per": 0.23904463111021151,
+    "blank_fraction": 0.7900281319207518,
+    "word_final_consonant_omission_ap": 0.022751216970502766,
+    "mismatched_audio_binary_ap": 0.2990874042512172,
+    "acoustic_reliance_gap": 0.022485654273260325
+  },
+  "cal_operating_points": {
+    "CAL_5%": {
+      "ceiling": 0.05,
+      "threshold": 0.13261717557907107,
+      "tp": 18,
+      "fp_cor": 130,
+      "fp_sub": 7,
+      "tn": 8669,
+      "fn": 135,
+      "total_alarms": 155,
+      "deployed_precision": 0.11612903225806452,
+      "all_gold_recall": 0.12413793103448276,
+      "fa_per_1000_canonical": 13.760546404178385,
+      "adjudicated_broad_tp_est": 49.533,
+      "adjudicated_broad_precision_est": 0.3195677419354839,
+      "adjudicated_broad_recall_est": 0.11505923344947735
+    },
+    "CAL_10%": {
+      "ceiling": 0.1,
+      "threshold": 0.09232147037982942,
+      "tp": 49,
+      "fp_cor": 468,
+      "fp_sub": 28,
+      "tn": 8331,
+      "fn": 104,
+      "total_alarms": 545,
+      "deployed_precision": 0.08990825688073395,
+      "all_gold_recall": 0.33793103448275863,
+      "fa_per_1000_canonical": 49.81920449979912,
+      "adjudicated_broad_tp_est": 162.8548,
+      "adjudicated_broad_precision_est": 0.2988161467889908,
+      "adjudicated_broad_recall_est": 0.37829221835075494
+    },
+    "CAL_15%": {
+      "ceiling": 0.15,
+      "threshold": 0.061086650937795646,
+      "tp": 74,
+      "fp_cor": 914,
+      "fp_sub": 55,
+      "tn": 7885,
+      "fn": 79,
+      "total_alarms": 1043,
+      "deployed_precision": 0.07094918504314478,
+      "all_gold_recall": 0.5103448275862069,
+      "fa_per_1000_canonical": 97.32824427480917,
+      "adjudicated_broad_tp_est": 296.3954,
+      "adjudicated_broad_precision_est": 0.2841758389261745,
+      "adjudicated_broad_recall_est": 0.6884910569105691
+    }
+  },
+  "speaker_breakdown": {
+    "NJS": {
+      "binary_ap": 0.41045250906912734,
+      "per": 0.2365396249243799,
+      "tokens": 5011
+    },
+    "RRBI": {
+      "binary_ap": 0.2558711864779697,
+      "per": 0.2415684681023974,
+      "tokens": 4945
+    }
+  },
+  "acceptance_gates": {
+    "level_a_pilot_feasibility": {
+      "passed": false,
+      "gates": {
+        "precision_ge_25": false,
+        "recall_ge_30": true,
+        "fa_le_30": false,
+        "binary_ap_noninferior": true,
+        "sub_ap_noninferior": true,
+        "per_noninferior": true
+      }
+    },
+    "level_b_research_target": {
+      "passed": false,
+      "gates": {
+        "precision_ge_30": false,
+        "recall_ge_40": true,
+        "fa_le_15": false,
+        "binary_ap_noninferior": true,
+        "sub_ap_noninferior": true,
+        "per_noninferior": true,
+        "acoustic_gap_positive": true
+      }
+    }
+  }
+}

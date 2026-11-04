@@ -96,7 +96,7 @@ def validate_runtime_row(row):
 def operation_runtime_rows(*, logits, prompt_phone_ids, run_id, condition, speaker_id, utterance_id,
                            objective, failure_reason=None):
     """One output per prompt position, including nonfinite/missing-output failures."""
-    if objective not in {"operation_ce", "binary_collapsed"}:
+    if objective not in {"operation_ce", "binary_collapsed", "class_focal"}:
         raise ValueError("unregistered objective")
     if not prompt_phone_ids or any(type(p) is not int or not 1 <= p <= 39 for p in prompt_phone_ids):
         raise ValueError("invalid canonical prompt; use utterance failure ledger for empty/OOV prompt")

@@ -1,0 +1,173 @@
+{
+  "timestamp_utc": "2026-11-04T07:26:14.743592+00:00",
+  "agent": "Agent D \u2014 T3 Combined Intervention Lead",
+  "arm": "T3",
+  "objective": "class_focal",
+  "features_enabled": true,
+  "parameters": {
+    "total_trainable_parameters": 267179,
+    "parameter_tensors_count": 17,
+    "quad_bit_identity": true,
+    "manifest_sha256_match": true,
+    "shared_acoustic_slot_bias": false,
+    "acoustic_weight_shape": [
+      128,
+      4
+    ],
+    "acoustic_weight_trainable": true
+  },
+  "objective_specification": {
+    "name": "class_focal",
+    "gamma": 2.0,
+    "alpha_coronal_del": 0.25,
+    "alpha_default": 1.0,
+    "coronal_rhotic_phone_ids": [
+      9,
+      28,
+      31
+    ],
+    "phone_names": {
+      "9": "D",
+      "28": "R",
+      "31": "T"
+    }
+  },
+  "acoustic_evidence_specification": {
+    "dimension": 4,
+    "window_size_samples": 400,
+    "window_duration_ms": 25.0,
+    "hop_size_samples": 320,
+    "hop_duration_ms": 20.0,
+    "frame_rate_hz": 50.0,
+    "alignment_mode": "wav2vec2_centered",
+    "features": [
+      "normalized_log_frame_energy",
+      "relative_rms_energy",
+      "delta_log_frame_energy",
+      "zero_crossing_rate"
+    ],
+    "pinned_fit_statistics": {
+      "mean": -6.047091,
+      "std": 2.544367
+    },
+    "zero_gold_leakage": true
+  },
+  "kaggle_deployment": {
+    "slug": "minkhoaa/langfens-rq1-trn-04-t3-focal-feat",
+    "machine_shape": "NvidiaTeslaT4",
+    "gpu_enabled": true,
+    "is_private": true,
+    "dataset_sources": [
+      "minkhoaa/langfens-rq1-fold1-staging"
+    ],
+    "metadata_sha256": "e80188d008f398f313e3ecfdae8290b81a14b13514a6b0dc5848116860aa325a",
+    "notebook_sha256": "bda1793c75a857103904378cb5d32dbd02f0dad60cbbe0837b786c516f8cd28c"
+  },
+  "training_execution": {
+    "total_successful_updates": 3600,
+    "max_updates_budget": 3600,
+    "total_epochs": 9,
+    "skipped_amp_attempts": 3,
+    "duration_seconds": 493.4008662700653,
+    "best_selection_ap": 0.4670601353725024,
+    "completed_at": "2026-11-04T07:02:37.490077+00:00"
+  },
+  "checkpoints": {
+    "fixed_budget_3600": {
+      "file": "fixed_budget_3600.pt",
+      "sha256": "ca32da07eac20946af125539ca1ef7ca3835a35ce05e1ec4897d3a790e90eeb9"
+    },
+    "best": {
+      "file": "best.pt",
+      "sha256": "1feb311ec9f88569915fa43aefaa923e24c55f7fadb77a821a2b2c2c8dcf6107"
+    },
+    "training_summary": {
+      "file": "training_summary.json",
+      "sha256": "247bcaeb32fd44b6ff6c42790728faa626d5c7c259f09fa3479d11e87a0355f8"
+    }
+  },
+  "factorial_interaction_analysis": {
+    "algebraic_model": "Interaction = T3 - T2 - T1 + C0",
+    "effects_decomposition": {
+      "strict_deployed_omission_precision": {
+        "c0": 0.07545533391153512,
+        "t1": 0.014564081960626758,
+        "t2": 0.07094918504314478,
+        "t3": 0.014564081960626758,
+        "main_effect_objective_a": -0.05863817751671319,
+        "main_effect_acoustic_b": -0.0022530744341951736,
+        "interaction_axb": 0.004506148868390347
+      },
+      "all_gold_omission_recall": {
+        "c0": 0.6,
+        "t1": 1.0,
+        "t2": 0.5103448275862069,
+        "t3": 1.0,
+        "main_effect_objective_a": 0.44482758620689655,
+        "main_effect_acoustic_b": -0.04482758620689653,
+        "interaction_axb": 0.08965517241379306
+      },
+      "dedicated_omission_ap": {
+        "c0": 0.11333085900618593,
+        "t1": 0.02757236963840722,
+        "t2": 0.0962926594439768,
+        "t3": 0.02761094732201585,
+        "main_effect_objective_a": -0.07722010074486983,
+        "main_effect_acoustic_b": -0.00849981093930025,
+        "interaction_axb": 0.01707677724581777
+      },
+      "false_alarms_per_1000_canonical": {
+        "c0": 107.07111289674569,
+        "t1": 985.4359180393733,
+        "t2": 97.32824427480917,
+        "t3": 985.4359180393733,
+        "main_effect_objective_a": 883.2362394535958,
+        "main_effect_acoustic_b": -4.871434310968262,
+        "interaction_axb": 9.74286862193648
+      },
+      "binary_ap": {
+        "c0": 0.3216186686073087,
+        "t1": 0.3151711214655569,
+        "t2": 0.32157305852447754,
+        "t3": 0.31584678509036923,
+        "main_effect_objective_a": -0.006086910287930042,
+        "main_effect_acoustic_b": 0.00031502677099057297,
+        "interaction_axb": 0.0007212737076434661
+      },
+      "legacy_substitution_ap": {
+        "c0": 0.3100223643799133,
+        "t1": 0.3117666137202769,
+        "t2": 0.31220945724952637,
+        "t3": 0.3121871766393371,
+        "main_effect_objective_a": 0.000860984365087164,
+        "main_effect_acoustic_b": 0.0013038278943366122,
+        "interaction_axb": -0.0017665299505528753
+      },
+      "greedy_per": {
+        "c0": 0.23894342677866612,
+        "t1": 0.23904463111021151,
+        "t2": 0.23904463111021151,
+        "t3": 0.23904463111021151,
+        "main_effect_objective_a": 5.060216577269794e-05,
+        "main_effect_acoustic_b": 5.060216577269794e-05,
+        "interaction_axb": -0.00010120433154539588
+      },
+      "acoustic_reliance_gap": {
+        "c0": 0.01990129915470734,
+        "t1": 0.01410178290688524,
+        "t2": 0.022485654273260325,
+        "t3": 0.017230401381280236,
+        "main_effect_objective_a": -0.005527384569901095,
+        "main_effect_acoustic_b": 0.0028564867964739893,
+        "interaction_axb": 0.0005442633558420118
+      }
+    },
+    "scientific_interpretation": {
+      "hypothesis_h3_status": "REJECTED",
+      "floor_effect_confirmed": true,
+      "zero_super_additive_synergy": true,
+      "premature_winner_declaration_prohibited": true
+    }
+  },
+  "audit_status": "AUDIT_PASSED"
+}

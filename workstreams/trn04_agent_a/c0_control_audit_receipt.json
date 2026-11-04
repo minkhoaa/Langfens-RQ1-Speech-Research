@@ -1,0 +1,76 @@
+{
+  "parameter_census": {
+    "total_trainable": 267179,
+    "num_tensors": 17,
+    "all_trainable": true,
+    "tensor_hashes_match_manifest": true
+  },
+  "acoustic_slot": {
+    "has_bias": false,
+    "input_zeros_yields_exact_zeros": true
+  },
+  "loss_formulation": {
+    "task_ce_loss_finite": true,
+    "ctc_loss_finite": true,
+    "total_loss": 43.22064971923828
+  },
+  "partitions": {
+    "fit_utterances": 1799,
+    "fit_speakers": [
+      "BWC",
+      "ERMS",
+      "HKK",
+      "HQTV",
+      "SKA",
+      "SVBI",
+      "TNI",
+      "TXHC",
+      "YBAA",
+      "YDCK",
+      "YKWK",
+      "ZHAA"
+    ],
+    "selection_utterances": 300,
+    "selection_speakers": [
+      "MBMPS",
+      "TLV"
+    ],
+    "calibration_utterances": 300,
+    "calibration_speakers": [
+      "NCC",
+      "THV"
+    ],
+    "val_utterances": 300,
+    "val_speakers": [
+      "NJS",
+      "RRBI"
+    ],
+    "sealed_speakers": [
+      "ABA",
+      "ASI",
+      "EBVS",
+      "HJK",
+      "LXC",
+      "PNV"
+    ],
+    "sealed_test_fail_closed": true,
+    "contract_sha256": "4d99723e4b3f62f506165ced089eca82d4417279c76973b35470bd337cedfab2"
+  },
+  "deployment_package": {
+    "slug": "minkhoaa/langfens-rq1-trn-04-c0-ce-nofeat",
+    "machine_shape": "NvidiaTeslaT4",
+    "enable_gpu": true,
+    "is_private": true,
+    "dataset_sources": [
+      "minkhoaa/langfens-rq1-fold1-staging"
+    ],
+    "nb_num_cells": 6
+  },
+  "kaggle_status": "minkhoaa/langfens-rq1-trn-04-c0-ce-nofeat has status \"KernelWorkerStatus.RUNNING\"",
+  "hf_mirror_files": [
+    {
+      "path": "trn04/c0/best.pt",
+      "size": 3238631
+    }
+  ]
+}

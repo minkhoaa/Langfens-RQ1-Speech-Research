@@ -1,0 +1,46 @@
+{
+  "arm": "T3",
+  "description": "Combined Intervention: Class-Conditioned Focal Loss, 4D Waveform Acoustic Evidence Enabled",
+  "objective": "class_focal",
+  "features_enabled": true,
+  "kernel_slug": "minkhoaa/langfens-rq1-trn-04-t3-focal-feat",
+  "remote_gpu": "Tesla T4 (CUDA FP16 AMP)",
+  "seed": 1337,
+  "batch_size": 2,
+  "gradient_accumulation_steps": 2,
+  "effective_batch_size": 4,
+  "warmup_updates": 100,
+  "max_updates": 3600,
+  "lr": 0.001,
+  "weight_decay": 0.01,
+  "gradient_clip": 1.0,
+  "max_epochs": 25,
+  "partitions": {
+    "train": "FIT (1,799 utterances, 12 speakers)",
+    "select": "SELECT (300 utterances, MBMPS/TLV)",
+    "calibration": "CAL (300 utterances, NCC/THV)",
+    "val": "VAL (300 utterances, NJS/RRBI)",
+    "test": "SEALED (900 utterances, 6 speakers)"
+  },
+  "checkpoints": {
+    "fixed_budget_3600.pt": {
+      "path": "checkpoints/RQ1-TRN-04/t3/fixed_budget_3600.pt",
+      "bytes": 3243408,
+      "sha256": "ca32da07eac20946af125539ca1ef7ca3835a35ce05e1ec4897d3a790e90eeb9",
+      "remote_url": "https://huggingface.co/minkhoaa/langfens-rq1-cross-fold-checkpoints/resolve/main/trn04/t3/fixed_budget_3600.pt"
+    },
+    "best.pt": {
+      "path": "checkpoints/RQ1-TRN-04/t3/best.pt",
+      "bytes": 3239079,
+      "sha256": "1feb311ec9f88569915fa43aefaa923e24c55f7fadb77a821a2b2c2c8dcf6107",
+      "remote_url": "https://huggingface.co/minkhoaa/langfens-rq1-cross-fold-checkpoints/resolve/main/trn04/t3/best.pt"
+    }
+  },
+  "execution_summary": {
+    "successful_updates": 3600,
+    "skipped_amp": 3,
+    "total_epochs": 9,
+    "duration_seconds": 493.4008662700653,
+    "best_selection_ap": 0.4670601353725024
+  }
+}
