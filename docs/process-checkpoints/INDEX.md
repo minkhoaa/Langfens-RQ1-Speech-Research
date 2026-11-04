@@ -6,6 +6,10 @@
 **Registry Maintenance Lead:** Principal Speech ML Research Engineer, Phonetic Scientist & Reproducibility Auditor (Coordinator)  
 **Policy Authority:** `AGENTS.md` (Mandatory Process Checkpoint Policy)
 
+## LANGFENS RQ1 — TRN-04R: genuine Protocol Z correction (active)
+
+**IN_PROGRESS — NO CORRECTED SCIENTIFIC VERDICT YET.** Four isolated native parallel Luna workstreams launched from verified original `d332997`: runtime correction, independent metrics, artifact provenance, and protocol regression audit. Evaluation only; no new training or TEST access. Original TRN-04 claims below are preserved historical claims under correction, not accepted corrected evidence. [Corrective process checkpoint](../../manifests/RQ1-TRN-04R/PROCESS_CHECKPOINT.md). Coordinator branch `review/rq1-trn-04r-genuine-z-rebenchmark`.
+
 ## LANGFENS RQ1 — TRN-04: Parallel Controlled 2x2 Factorial Training & Scientific Evaluation (2026-11-04)
 
 **LATEST: COMPLETED_ALL_FOUR_ARMS_AND_SYNTHESIS — ALL EXPERIMENTAL HYPOTHESES CONCLUSIVELY REJECTED.** A fully controlled 2×2 factorial experiment evaluating Class-Conditioned Focal Loss ($\alpha=0.25$ on $\{D, T, R\}$ deletions) and 4D Waveform-Derived Acoustic Evidence was executed across four matched-capacity arms (C0, T1, T2, T3; exactly 267,179 trainable parameters each, bit-identical seed 1337 initialization). All arms completed remote GPU training to their prospectively frozen fixed-budget endpoint of 3,600 updates (3 skipped AMP attempts each) on Kaggle Tesla T4 hardware with atomic mirroring to Hugging Face (`minkhoaa/langfens-rq1-cross-fold-checkpoints/trn04/`). Independent centralized evaluation on Fold-1 VAL under Protocol Z (300 utterances, 9,956 gold canonical tokens) establishes:
