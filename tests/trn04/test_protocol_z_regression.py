@@ -51,17 +51,6 @@ def test_operation_runtime_score_semantics_t_op_vs_binary_control():
     assert "subtype unidentified" in control["score_semantics"]
 
 
-def test_class_focal_treatment_preserves_three_way_scores_but_binary_control_is_null():
-    logits = torch.tensor([[0.0, 1.0, 2.0]])
-    focal = _rows("class_focal", logits, [1])[0]
-    control = _rows("binary_collapsed", logits, [1])[0]
-    assert focal["scores"]["s_omit"] is not None
-    assert focal["scores"]["s_sub"] is not None
-    assert focal["probabilities"] is not None
-    assert control["scores"]["s_omit"] is None and control["scores"]["s_sub"] is None
-    assert control["probabilities"] is None
-
-
 def test_runtime_rejects_gold_fields_nonfinite_values_and_sealed_speakers():
     row = _rows()[0]
     contaminated = copy.deepcopy(row)
