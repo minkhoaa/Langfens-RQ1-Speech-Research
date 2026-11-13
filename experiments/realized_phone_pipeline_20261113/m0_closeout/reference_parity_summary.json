@@ -1,0 +1,17 @@
+{
+  "utterances": 1800,
+  "fully_covered_utterances": 1774,
+  "primary_exact_matches": 573,
+  "any_lexical_variant_exact_matches_oracle": 1534,
+  "legacy_utterances_with_silent_omissions": 34,
+  "utterances_with_apostrophes": 116,
+  "distinct_prompt_ids": 300,
+  "oov_token_counts": {
+    "PROMOTER'S": 12,
+    "NIGHTGLOW": 12,
+    "TOMFOOLERY": 2
+  },
+  "cmudict_sha256": "81917843c7f44ce2b094ac63873c2c7a4cf802040792c455ba3ca406891c3d22",
+  "lexicon_version": "LOCAL_CONTENT_PINNED_0.7b_VERSION_CLAIM_NOT_VERIFIED",
+  "policy": "no silent OOV; apostrophes retained; variants are candidates, not automatically accepted phones"
+}

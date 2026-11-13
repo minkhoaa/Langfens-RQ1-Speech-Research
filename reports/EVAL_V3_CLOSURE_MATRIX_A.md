@@ -1,0 +1,25 @@
+# Ma trận đóng yêu cầu EVAL-V3 — lane A (audit evaluator/test/acceptance)
+
+Nguồn được kiểm tra chỉ đọc: `/home/khoa/Projects/New-Method-Research` tại `cc4e33117a73974859c0dc2cdea66a823be40751`; chỉ các bản mirror trong lane A được sửa. Không chạy inference/model/training. Đánh giá này xác nhận implementation/test seams, không xác nhận toàn bộ replay/inventory do lane khác phụ trách.
+
+| Yêu cầu trong directive | Trạng thái | Bằng chứng / điều kiện còn thiếu |
+|---|---|---|
+| Một schema và evaluator canonical có version, exact identity, target N/gap N+1, duplicate/missing/extraneous handling | PASS (code/test) | `research/evaluation_v3/{schemas.py,evaluator.py,specification.md}` tại source; `test_evaluator_v3.py` kiểm topology, duplicate, prediction thiếu, gap exact ID, speaker/utterance disambiguation, shuffled rows. Kết quả legacy baseline ghi 69 passed tại `coordination/EVAL_V3_ACCEPTANCE_TESTS.log`. |
+| AP step-wise, score ties, raw score tách probability, simplex và binary MD không tự suy từ teacher scores | PASS (code/test) | `evaluator.py` dùng sklearn AP; trường `score_*` được ưu tiên riêng cho AP, `prob_*` cho reliability; binary MD AP chỉ dùng fused score hoặc `p_sub+p_omis` khi đủ simplex. `test_evaluator_v3.py` và `test_numerical_contract.py` có tie, AP-vs-PR-AUC, thiếu score/non-simplex tests. |
+| Exact warning/FWR, wrong-type tính đúng một lần, abstention giữ mẫu số/FN | PASS (code/test) | Evaluator xây cảnh báo từ lớp được dự đoán, cộng FP S/O/I một lần; `ABSTAIN` được giữ ledger và false negative; tests xác minh wrong-type, gap cross-utterance, coverage. |
+| Fit/calibration chỉ DEV_CAL, phân biệt in-sample và speaker-disjoint assessment | PARTIAL trước lane A / FIX ĐÃ ĐỀ XUẤT | Trước sửa, `fit_isotonic()` chấp nhận thiếu hoặc không đủ `speaker_ids`/`event_ids`, trong khi receipt vẫn có thể được coi là provenance. Bản lane A hiện bắt buộc một speaker ID và event ID không rỗng cho từng score, event ID duy nhất; `test_calibration_provenance.py` thêm regression. `validate_calibration_provenance()` vẫn là helper caller-supplied, không thể chứng minh các ID/phân split từ đầu vào ngoài receipt. |
+| Raw vs calibrated confidence provenance đầy đủ cho mọi frozen relevant model | PARTIAL | Schema và `calibration.py` hỗ trợ receipt/fit source, evaluator để trạng thái UNKNOWN nếu thiếu provenance; `tools/eval_v3_robustness.py` fit isotonic DEV_CAL và assess CAL/SEARCH. Chưa có chứng cứ trong lane A rằng mọi frozen historical model đều có đủ mapping+fit receipt và đã được chạy mọi policy; tránh khẳng định phủ đủ. |
+| Các confidence policies CAL được fit trước và có threshold arbitration riêng S/O/I; không dùng SEARCH oracle | PASS (API), PARTIAL (phủ inventory) | `policies.py` có ARGMAX, CAL_MAX_ERROR_MACRO_F1, CAL_CLASS_SPECIFIC_CONFIDENCE, CAL_RISK_BUDGETED, CAL_PRECISION_PRIORITY, LEGACY_REPLAY; chỉ select trên DEV_CAL và S/O conflict resolve ổn định. Quy trình các policy đã áp cho từng frozen model cần đối chiếu inventory/replay của lane khác. |
+| Robustness subtype/reference-phone/alignment reporting | PARTIAL | `tools/eval_v3_robustness.py` có strata speaker/reference phone và matched seed/bootstrap; evaluator hỗ trợ strata. Alignment-characteristic subtype coverage theo mọi model chưa được xác minh từ lane A, và ontology reference provenance có cảnh báo mismatch trong `independent_audit.py`. |
+| Provenance hoàn chỉnh: hashes, model/config, manifests, input type, waveform/reference lineage | PARTIAL / BLOCKED cho xác nhận đầy đủ | Reconciliation/independent audit lưu hashes và phân biệt cached vs WAV, nhưng `reports/EVAL_V3_FINAL_REVIEW.md`/`specification.md` ghi full-population intended-reference provenance UNVERIFIED; không thể cấp PASS cho genuine full cohort hay blind final validity. |
+| Threshold policy so với raw score ranking, deterministic/reproducible evaluation | PASS (unit contract) | AP tách decision thresholds; row-order invariance, finite-score validation và policy score non-mutation được test. Source evaluator version là `EVAL-V3.1`. |
+
+## Defect sửa cô lập trong lane A
+
+`fit_isotonic()` trước đó chỉ kiểm tra event ID khi caller có truyền, và không kiểm tra độ dài `speaker_ids`. Một receipt vì thế có thể thiếu linkage cấp event hoặc kê danh sách speaker không khớp số score. Bản mirror `research/evaluation_v3/calibration.py` từ chối các provenance vectors thiếu/không đầy đủ, ID rỗng, hoặc event trùng. Hai regression mới chứng minh fail-closed và speaker disjointness. Đây là hardening provenance, không tái fit hoặc sửa scores nguồn.
+
+## Giới hạn / việc cần tích hợp
+
+- Bản sửa chỉ tồn tại trong lane A; parent cần tích hợp có chọn lọc vào source và chạy lại full suite. Caller robustness hiện truyền đủ vectors.
+- Cần audit lane B/parent để khẳng định chính xác model nào đã có calibrated operating policies; không suy từ API tồn tại thành coverage.
+- Cần giữ nhãn `UNVERIFIED` với provenance waveform/reference full-population, alignment characteristics, DEV_SEARCH exposure; không sử dụng protected holdout.

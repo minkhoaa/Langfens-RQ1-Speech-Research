@@ -1,0 +1,11 @@
+{
+  "utterances": 1800,
+  "supplied_reference_topology_parity": 1800,
+  "text_corpus_exact_matches": 573,
+  "text_explicit_reference_required": 26,
+  "fit_only_unanimous_catalog_available": 470,
+  "fit_only_catalog_exact_matches": 274,
+  "gold_remapped": false,
+  "held_lexical_variant_selection": false,
+  "decision": "Supplied-reference benchmark parity established. Text uses separate reference profile; mismatch is explicit, not repaired with held gold."
+}

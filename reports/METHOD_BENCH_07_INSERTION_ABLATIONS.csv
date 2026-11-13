@@ -1,0 +1,16 @@
+experiment_id,method,fold,held_out_speakers,n_gaps,n_positive,AP_I,precision_at_560,precision_at_5pct,device,seed,provenance
+RQ1-MB03-C-SPEAKER-GRL-GROUPCV-S101,neural_PLAIN,F0,ABA|ASI|BWC,15266,134,0.188792,0.119643,0.092932,historical,101,verified historical grouped OOF; source NPZ + producer-order audit
+RQ1-MB03-C-SPEAKER-GRL-GROUPCV-S101,neural_PLAIN,F1,EBVS|HJK|HKK,15298,127,0.102708,0.082143,0.069281,historical,101,verified historical grouped OOF; source NPZ + producer-order audit
+RQ1-MB03-C-SPEAKER-GRL-GROUPCV-S101,neural_PLAIN,F2,HQTV|LXC|NJS,15439,150,0.109449,0.103571,0.081606,historical,101,verified historical grouped OOF; source NPZ + producer-order audit
+RQ1-MB03-C-SPEAKER-GRL-GROUPCV-S101,neural_PLAIN,F3,PNV|SKA|SVBI,15359,149,0.251541,0.126786,0.100260,historical,101,verified historical grouped OOF; source NPZ + producer-order audit
+RQ1-MB03-C-SPEAKER-GRL-GROUPCV-S101,neural_PLAIN,POOLED,12_TRAIN_speakers,61362,560,0.162125,0.242857,0.086022,historical,101,verified historical grouped OOF; source NPZ + producer-order audit
+RQ1-MB07-B-SEQACOUSTIC-S101,temporal_Conv1d,F0,ABA|ASI|BWC,15266,134,0.011852,0.016071,0.014398,cuda,101,MB07 receipt + scores.npz; rank-warped continuous h6 window
+RQ1-MB07-B-SEQACOUSTIC-S101,temporal_Conv1d,F1,EBVS|HJK|HKK,15298,127,0.010431,0.014286,0.013072,cuda,101,MB07 receipt + scores.npz; rank-warped continuous h6 window
+RQ1-MB07-B-SEQACOUSTIC-S101,temporal_Conv1d,F2,HQTV|LXC|NJS,15439,150,0.015074,0.010714,0.010363,cuda,101,MB07 receipt + scores.npz; rank-warped continuous h6 window
+RQ1-MB07-B-SEQACOUSTIC-S101,temporal_Conv1d,F3,PNV|SKA|SVBI,15359,149,0.015844,0.017857,0.020833,cuda,101,MB07 receipt + scores.npz; rank-warped continuous h6 window
+RQ1-MB07-B-SEQACOUSTIC-S101,temporal_Conv1d,POOLED,12_TRAIN_speakers,61362,560,0.012828,0.019643,0.015640,cuda,101,MB07 receipt + scores.npz; predictions concatenated in manifest order
+RQ1-MB07-B-SEQACOUSTIC-S101,static_local,F0,ABA|ASI|BWC,15266,134,0.017313,0.021429,0.019634,cuda,101,matched windows; local mean std endpoint delta + logistic regression
+RQ1-MB07-B-SEQACOUSTIC-S101,static_local,F1,EBVS|HJK|HKK,15298,127,0.009209,0.012500,0.009150,cuda,101,matched windows; local mean std endpoint delta + logistic regression
+RQ1-MB07-B-SEQACOUSTIC-S101,static_local,F2,HQTV|LXC|NJS,15439,150,0.011194,0.007143,0.011658,cuda,101,matched windows; local mean std endpoint delta + logistic regression
+RQ1-MB07-B-SEQACOUSTIC-S101,static_local,F3,PNV|SKA|SVBI,15359,149,0.012924,0.023214,0.018229,cuda,101,matched windows; local mean std endpoint delta + logistic regression
+RQ1-MB07-B-SEQACOUSTIC-S101,static_local,POOLED,12_TRAIN_speakers,61362,560,0.011473,0.021429,0.014989,cuda,101,MB07 receipt + scores.npz

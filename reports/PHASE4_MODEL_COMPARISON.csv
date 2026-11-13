@@ -1,0 +1,8 @@
+model,kind,ap_s,ap_o,ap_i_exact_gap,macro3_error_ap,macro3_error_f1_cal_max,macro4_f1_cal_max,binary_md_ap,policy_fwr_cal_max,parameters,split,evidence_status,notes
+EXP-24,standalone neural,0.357737,0.225092,0.247628,0.276819,0.305855,0.450294,,,533272,DEV_SEARCH,canonical replay; exploratory population,best O AP; reference independence unverified
+EXP-29,6-source composition,0.378062,0.196539,0.272068,0.282223,0.342914,0.482871,,,2999732,DEV_SEARCH,canonical composition replay; exploratory population,best CAL_MAX_ERROR M3/M4 F1 among listed controls
+EXP-36,7-source composition,0.387088,0.204687,0.275924,0.289233,0.331090,0.470515,,,3535372,DEV_SEARCH,canonical composition replay; exploratory population,best macro3 AP among listed controls; raw probabilities not posthoc calibrated
+EXP-43,9-source composition,0.363453,0.205771,0.285056,0.284760,0.332231,0.472479,0.387222,,4626882,DEV_SEARCH,canonical composition replay; exploratory population,best exact-gap insertion AP and reported binary AP
+EXP-24+34,historical 2-source composition,,,,0.292012,,,,,,DEV_SEARCH,EXPLORATORY only,legacy weights/selection lineage not independently reconstructed; possible posthoc SEARCH discovery
+STU-01-GOLD-ONLY,GRU student,,,,,,,,,78661,DEV_SEARCH,historical Phase 3 control,not Phase 4 retraining; do not compare as matched run
+STU-05-KD-ALL,GRU student,,,,,0.236510,,,,,DEV_SEARCH,historical Phase 3 control,not Phase 4 retraining; macro3 AP reported prior TMCI

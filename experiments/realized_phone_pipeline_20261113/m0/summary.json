@@ -1,0 +1,19 @@
+{
+  "protocol": "REALIZED-MDD-M0-20261113-v1",
+  "raw_train_annotation_verified": 1800,
+  "source_parity_failures": 0,
+  "train_utterances": 1800,
+  "strict_exact_sequence_eligible": 1243,
+  "sequence_issue_counts_overlapping": {
+    "deviation_marker_requires_explicit_supervision_policy": 462,
+    "unresolved_symbols:ERR": 126,
+    "unresolved_symbols:ER)": 1,
+    "unresolved_symbols:D_": 1,
+    "unresolved_symbols:SPN": 1,
+    "unresolved_symbols:Z_": 1
+  },
+  "archive_prompt_only_utterances": 11491,
+  "protected_manifests_and_audio_opened": [],
+  "new_human_labels_created": 0,
+  "m0_status": "AUDIT_EXECUTED_PRODUCT_ACCEPTANCE_AND_ADJUDICATION_PENDING"
+}

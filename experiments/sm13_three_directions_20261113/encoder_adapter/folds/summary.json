@@ -1,0 +1,409 @@
+[
+  {
+    "fold": 3,
+    "seed": 202,
+    "control": {
+      "tag": "encoder_adapter_control",
+      "seed": 202,
+      "fold": 3,
+      "fit_speakers": [
+        "EBVS",
+        "HJK",
+        "HKK",
+        "HQTV",
+        "LXC",
+        "NJS"
+      ],
+      "calibration_speakers": [
+        "ABA",
+        "ASI",
+        "BWC"
+      ],
+      "held_speakers": [
+        "PNV",
+        "SKA",
+        "SVBI"
+      ],
+      "n_fit_targets": 29837,
+      "n_cal_targets": 14816,
+      "n_held_targets": 14909,
+      "n_fit_gaps": 30737,
+      "n_cal_gaps": 15266,
+      "n_held_gaps": 15359,
+      "n_cal_utterances": 450,
+      "target_threshold": 0.9483287334442139,
+      "target_tie_cutoff": 17027289634078809776,
+      "target_cal_selected": 154,
+      "target_cal_false_warnings": 72,
+      "target_cal_false_budget": 72,
+      "gap_threshold": 0.7623101472854614,
+      "gap_tie_cutoff": 9095459788576555785,
+      "gap_cal_selected": 24,
+      "gap_cal_false_warnings": 18,
+      "gap_cal_false_budget": 18,
+      "oracle_fixed_precision_diagnostics_only": {
+        "held_oracle_substitution_recall_at_precision_0.75": [
+          0.0036477331943720686,
+          0.7777777777777778,
+          9
+        ],
+        "held_oracle_substitution_recall_at_precision_0.80": [
+          0.0036477331943720686,
+          0.875,
+          8
+        ],
+        "held_oracle_omission_recall_at_precision_0.75": [
+          0.02284263959390863,
+          0.75,
+          12
+        ],
+        "held_oracle_omission_recall_at_precision_0.80": [
+          0.02284263959390863,
+          0.8181818181818182,
+          11
+        ]
+      },
+      "metrics": {
+        "total_utterances": 450,
+        "total_targets": 14909,
+        "total_gaps": 15359,
+        "missing_target_predictions": 0,
+        "missing_gap_predictions": 0,
+        "target_coverage": 1.0,
+        "gap_coverage": 1.0,
+        "simplex_violations": 0,
+        "macro3_error_f1": 0.10411199828110813,
+        "macro3_target_f1": 0.3705309718581256,
+        "macro4_mixed_domain_f1": 0.3073099935994766,
+        "macro_4_f1": 0.3073099935994766,
+        "macro_4_warning": "mixed target and gap domains; not a four-way softmax",
+        "binary_md_precision": 0.6608695652173913,
+        "binary_md_recall": 0.03285776048421963,
+        "binary_md_f1": 0.06260296540362438,
+        "binary_md_ap": 0.3516417067734784,
+        "binary_md_ap_status": "ESTIMABLE",
+        "binary_md_score_semantics": "p_substitution+p_omission from validated target simplex",
+        "ap_substitution": 0.2937528926188388,
+        "ap_omission": 0.2648249598910393,
+        "ap_insertion_exact_gap": 0.11123979975722745,
+        "macro3_error_ap": 0.22327255075570185,
+        "macro3_error_ap_status": "ESTIMABLE",
+        "binary_md_roc_auc": 0.7315454833896857,
+        "joint_fwr": 0.13111111111111112,
+        "false_warning_count": 59,
+        "false_alarms_on_gold_correct_only": 39,
+        "wrong_type_error_false_warnings": 9,
+        "per_class_false_positives": {
+          "SUBSTITUTION": 20,
+          "OMISSION": 28,
+          "INSERTION": 11
+        },
+        "false_warnings_per_utterance_histogram": {
+          "0": 395,
+          "1": 52,
+          "2": 2,
+          "3": 1
+        },
+        "correct_precision": 0.8487900500202785,
+        "correct_recall": 0.9969037789774532,
+        "correct_f1": 0.9169039795545819,
+        "correct_metrics_secondary_due_to_prevalence": true,
+        "fraction_utterances_with_fp": 0.12222222222222222,
+        "false_alerts_per_1000_eligible_positions": 1.9492533368574072,
+        "fwr_reference_0_20_exceeded": false,
+        "topology": {
+          "target_events": 14909,
+          "gap_events": 15359,
+          "missing_event_count": 0
+        }
+      },
+      "classes": {
+        "CORRECT": {
+          "TP": 12557,
+          "FP": 2237,
+          "FN": 39,
+          "TN": 76,
+          "precision": 0.8487900500202785,
+          "recall": 0.9969037789774532,
+          "f1": 0.9169039795545819,
+          "support": 12596,
+          "precision_status": "ESTIMABLE",
+          "recall_status": "ESTIMABLE",
+          "ap": 0.9302959826218951,
+          "ap_status": "ESTIMABLE",
+          "roc_auc": 0.7315455520367091,
+          "prevalence": 0.8448588101146958,
+          "normalized_lift": 1.1011259768902695
+        },
+        "SUBSTITUTION": {
+          "TP": 29,
+          "FP": 20,
+          "FN": 1890,
+          "TN": 12970,
+          "precision": 0.5918367346938775,
+          "recall": 0.015112037519541427,
+          "f1": 0.029471544715447155,
+          "support": 1919,
+          "precision_status": "ESTIMABLE",
+          "recall_status": "ESTIMABLE",
+          "ap": 0.2937528926188388,
+          "ap_status": "ESTIMABLE",
+          "roc_auc": 0.7200177231774472,
+          "prevalence": 0.12871419947682608,
+          "normalized_lift": 2.2822104617270806
+        },
+        "OMISSION": {
+          "TP": 38,
+          "FP": 28,
+          "FN": 356,
+          "TN": 14487,
+          "precision": 0.5757575757575758,
+          "recall": 0.09644670050761421,
+          "f1": 0.16521739130434782,
+          "support": 394,
+          "precision_status": "ESTIMABLE",
+          "recall_status": "ESTIMABLE",
+          "ap": 0.2648249598910393,
+          "ap_status": "ESTIMABLE",
+          "roc_auc": 0.8584301903684443,
+          "prevalence": 0.0264269904084781,
+          "normalized_lift": 10.021003368059658
+        },
+        "INSERTION": {
+          "TP": 10,
+          "FP": 11,
+          "FN": 139,
+          "TN": 15199,
+          "precision": 0.47619047619047616,
+          "recall": 0.06711409395973154,
+          "f1": 0.11764705882352941,
+          "support": 149,
+          "precision_status": "ESTIMABLE",
+          "recall_status": "ESTIMABLE",
+          "ap": 0.11123979975722745,
+          "ap_status": "ESTIMABLE",
+          "roc_auc": 0.7806781126863729,
+          "prevalence": 0.009701152418777264,
+          "normalized_lift": 11.466658285041989
+        }
+      },
+      "gap_probability_source": "/home/khoa/Projects/New-Method-Research/experiments/sm13_three_directions_20261113/shared/baseline/sm13_scalar_mix_seed202_fold3_scores.npz",
+      "gap_model": "shared canonical all13-layer SM13 gap model; identical for both paired arms",
+      "training": {
+        "training_seconds": 3.6662092529986694,
+        "gradient_check": {
+          "lora_A_grad_norm": 0.0,
+          "lora_B_grad_norm": 0.0,
+          "mix_grad_norm": 0.0
+        },
+        "fit_utterances": 900,
+        "epochs": 2,
+        "trainable_parameter_count": 633352,
+        "peak_cuda_memory_allocated_bytes": 77712384,
+        "optimizer_updates_per_epoch": 113,
+        "objective": "target_only; shared all13 gap probabilities used during evaluation"
+      }
+    },
+    "lora": {
+      "tag": "encoder_adapter_lora",
+      "seed": 202,
+      "fold": 3,
+      "fit_speakers": [
+        "EBVS",
+        "HJK",
+        "HKK",
+        "HQTV",
+        "LXC",
+        "NJS"
+      ],
+      "calibration_speakers": [
+        "ABA",
+        "ASI",
+        "BWC"
+      ],
+      "held_speakers": [
+        "PNV",
+        "SKA",
+        "SVBI"
+      ],
+      "n_fit_targets": 29837,
+      "n_cal_targets": 14816,
+      "n_held_targets": 14909,
+      "n_fit_gaps": 30737,
+      "n_cal_gaps": 15266,
+      "n_held_gaps": 15359,
+      "n_cal_utterances": 450,
+      "target_threshold": 0.9467266798019409,
+      "target_tie_cutoff": 5749927861007051869,
+      "target_cal_selected": 162,
+      "target_cal_false_warnings": 72,
+      "target_cal_false_budget": 72,
+      "gap_threshold": 0.7623101472854614,
+      "gap_tie_cutoff": 9095459788576555785,
+      "gap_cal_selected": 24,
+      "gap_cal_false_warnings": 18,
+      "gap_cal_false_budget": 18,
+      "oracle_fixed_precision_diagnostics_only": {
+        "held_oracle_substitution_recall_at_precision_0.75": [
+          0.014069828035435123,
+          0.75,
+          36
+        ],
+        "held_oracle_substitution_recall_at_precision_0.80": [
+          0.0020844189682126106,
+          0.8,
+          5
+        ],
+        "held_oracle_omission_recall_at_precision_0.75": [
+          0.017766497461928935,
+          0.7777777777777778,
+          9
+        ],
+        "held_oracle_omission_recall_at_precision_0.80": [
+          0.005076142131979695,
+          1.0,
+          2
+        ]
+      },
+      "metrics": {
+        "total_utterances": 450,
+        "total_targets": 14909,
+        "total_gaps": 15359,
+        "missing_target_predictions": 0,
+        "missing_gap_predictions": 0,
+        "target_coverage": 1.0,
+        "gap_coverage": 1.0,
+        "simplex_violations": 0,
+        "macro3_error_f1": 0.09995999748744548,
+        "macro3_target_f1": 0.3663708785442726,
+        "macro4_mixed_domain_f1": 0.3041899236140868,
+        "macro_4_f1": 0.3041899236140868,
+        "macro_4_warning": "mixed target and gap domains; not a four-way softmax",
+        "binary_md_precision": 0.6504065040650406,
+        "binary_md_recall": 0.03458711629917856,
+        "binary_md_f1": 0.06568144499178982,
+        "binary_md_ap": 0.34924551049073327,
+        "binary_md_ap_status": "ESTIMABLE",
+        "binary_md_score_semantics": "p_substitution+p_omission from validated target simplex",
+        "ap_substitution": 0.2922682886342267,
+        "ap_omission": 0.25753665807370496,
+        "ap_insertion_exact_gap": 0.11123979975722745,
+        "macro3_error_ap": 0.2203482488217197,
+        "macro3_error_ap_status": "ESTIMABLE",
+        "binary_md_roc_auc": 0.7300332924334368,
+        "joint_fwr": 0.14,
+        "false_warning_count": 63,
+        "false_alarms_on_gold_correct_only": 43,
+        "wrong_type_error_false_warnings": 9,
+        "per_class_false_positives": {
+          "SUBSTITUTION": 20,
+          "OMISSION": 32,
+          "INSERTION": 11
+        },
+        "false_warnings_per_utterance_histogram": {
+          "0": 389,
+          "1": 59,
+          "2": 2
+        },
+        "correct_precision": 0.8489787636953875,
+        "correct_recall": 0.9965862178469356,
+        "correct_f1": 0.9168797019940107,
+        "correct_metrics_secondary_due_to_prevalence": true,
+        "fraction_utterances_with_fp": 0.13555555555555557,
+        "false_alerts_per_1000_eligible_positions": 2.0814061054579094,
+        "fwr_reference_0_20_exceeded": false,
+        "topology": {
+          "target_events": 14909,
+          "gap_events": 15359,
+          "missing_event_count": 0
+        }
+      },
+      "classes": {
+        "CORRECT": {
+          "TP": 12553,
+          "FP": 2233,
+          "FN": 43,
+          "TN": 80,
+          "precision": 0.8489787636953875,
+          "recall": 0.9965862178469356,
+          "f1": 0.9168797019940107,
+          "support": 12596,
+          "precision_status": "ESTIMABLE",
+          "recall_status": "ESTIMABLE",
+          "ap": 0.929614082686556,
+          "ap_status": "ESTIMABLE",
+          "roc_auc": 0.7300334297274838,
+          "prevalence": 0.8448588101146958,
+          "normalized_lift": 1.100318859858198
+        },
+        "SUBSTITUTION": {
+          "TP": 38,
+          "FP": 20,
+          "FN": 1881,
+          "TN": 12970,
+          "precision": 0.6551724137931034,
+          "recall": 0.019801980198019802,
+          "f1": 0.03844208396560445,
+          "support": 1919,
+          "precision_status": "ESTIMABLE",
+          "recall_status": "ESTIMABLE",
+          "ap": 0.2922682886342267,
+          "ap_status": "ESTIMABLE",
+          "roc_auc": 0.7180621963983198,
+          "prevalence": 0.12871419947682608,
+          "normalized_lift": 2.270676349790352
+        },
+        "OMISSION": {
+          "TP": 33,
+          "FP": 32,
+          "FN": 361,
+          "TN": 14483,
+          "precision": 0.5076923076923077,
+          "recall": 0.08375634517766498,
+          "f1": 0.1437908496732026,
+          "support": 394,
+          "precision_status": "ESTIMABLE",
+          "recall_status": "ESTIMABLE",
+          "ap": 0.25753665807370496,
+          "ap_status": "ESTIMABLE",
+          "roc_auc": 0.8570963697627694,
+          "prevalence": 0.0264269904084781,
+          "normalized_lift": 9.745213287362608
+        },
+        "INSERTION": {
+          "TP": 10,
+          "FP": 11,
+          "FN": 139,
+          "TN": 15199,
+          "precision": 0.47619047619047616,
+          "recall": 0.06711409395973154,
+          "f1": 0.11764705882352941,
+          "support": 149,
+          "precision_status": "ESTIMABLE",
+          "recall_status": "ESTIMABLE",
+          "ap": 0.11123979975722745,
+          "ap_status": "ESTIMABLE",
+          "roc_auc": 0.7806781126863729,
+          "prevalence": 0.009701152418777264,
+          "normalized_lift": 11.466658285041989
+        }
+      },
+      "gap_probability_source": "/home/khoa/Projects/New-Method-Research/experiments/sm13_three_directions_20261113/shared/baseline/sm13_scalar_mix_seed202_fold3_scores.npz",
+      "gap_model": "shared canonical all13-layer SM13 gap model; identical for both paired arms",
+      "training": {
+        "training_seconds": 59.24383256299916,
+        "gradient_check": {
+          "lora_A_grad_norm": 4.1586498468859645e-05,
+          "lora_B_grad_norm": 0.09263501467648894,
+          "mix_grad_norm": 0.004047328140586615
+        },
+        "fit_utterances": 900,
+        "epochs": 2,
+        "trainable_parameter_count": 756232,
+        "peak_cuda_memory_allocated_bytes": 608409088,
+        "optimizer_updates_per_epoch": 113,
+        "objective": "target_only; shared all13 gap probabilities used during evaluation"
+      }
+    }
+  }
+]

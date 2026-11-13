@@ -1,0 +1,215 @@
+{
+  "schema_version": "LANGFENS-FROZEN-ASYMMETRIC-POLICY-V1.0",
+  "provenance": {
+    "model_name": "LANGFENS-SM13-ASYMMETRIC-ROUTING-V1",
+    "policy_role": "PRIMARY_DEVELOPMENT_SELECTED_CANDIDATE",
+    "freeze_status": "FROZEN_PRETEST",
+    "primary_seed": 101,
+    "model_train_regime": "Full-TRAIN 12 Speakers (1,800 utterances)",
+    "evaluator_contract": "EVAL-V3.1 (UnifiedEvaluatorV3, N targets, N+1 gaps)",
+    "freeze_timestamp": "2026-11-11T19:00:00Z",
+    "author": "Lead Systems Auditor & Senior Speech ML Research Scientist",
+    "checkpoint_hashes": {
+      "target_checkpoint": "experiments/rq1_sm13_formal_train_01/checkpoints/target_sm13_seed101_fulltrain.pt",
+      "target_checkpoint_sha256": "551c5f6079109e8decd49d6fe92ed16ec394a41177b1b87af9e64c95618f6ba6",
+      "gap_checkpoint": "experiments/rq1_sm13_formal_train_01/checkpoints/gap_sm13_seed101_fulltrain.pt",
+      "gap_checkpoint_sha256": "34de5bbfc2003176730bfdacbf23b1cfb54ffb861f42d8b0181295ed912b4f98",
+      "ctc_checkpoint": "experiments/rq1_sm13_formal_train_01/checkpoints/ctc_registered_seed101.pt",
+      "ctc_checkpoint_sha256": "63d3d6147db237a38ec673b5142ba4f4f29ac43991b6124aead745b2a05b015a"
+    },
+    "prespecified_baseline_reference": {
+      "policy_file": "experiments/rq1_sm13_dev_calibration_01/FROZEN_CALIBRATED_POLICY.json",
+      "policy_file_sha256": "dc7da3bcbc28918fcf39bdb1beba4ab990219d4467e56cdabbaebb0ac35e88e1",
+      "model_name": "LANGFENS-SM13-FUSION-V1 (Fixed 50/50 Baseline)",
+      "target_threshold": 0.848521411895752,
+      "gap_threshold": 0.8736369609832764,
+      "arbitration_rule": "NONE (argmax on shared 50/50 target simplex)"
+    },
+    "firewall_confirmation": {
+      "test_sealed_accessed": false,
+      "test_sealed_sha256_verified": "a5636249f747a62e3340dded63161149644e83dd13aa2560e312d044c825b4b6",
+      "test_sealed_inferred": false,
+      "test_sealed_evaluated": false
+    },
+    "dev_exposure_disclosure": {
+      "status": "POST_DEV_EXPOSURE_ACOUSTIC_SCALE_SELECTION",
+      "rationale": "Nominal TRAIN OOF thresholds derived at B=0.20 caused realized FWR to inflate to 0.3000 on DEV_CAL and 0.2922 on DEV_SEARCH due to acoustic distribution shift across non-native L2 accents. Budget B=0.12 (allocating 0.02 S, 0.08 O, 0.02 I on TRAIN OOF) was chosen after observing DEV performance as the required acoustic scale factor to achieve realized FWR <= 0.20 (0.1867 on DEV_CAL, 0.1853 on DEV_SEARCH). This choice is explicitly disclosed and pre-registered here to preclude retrospective threshold selection on TEST labels."
+    }
+  },
+  "operating_parameters": {
+    "routing_semantics": {
+      "substitution_score": "p_neural_S from ScalarMixingTargetHead probs_target_neural[:, 1]",
+      "omission_score": "p_fixed_O from 50/50 fused target simplex probs_target_fixed[:, 2]",
+      "insertion_score": "p_gap_I from ScalarMixingGapHead probs_gap"
+    },
+    "arbitration_rule": "score_margin",
+    "arbitration_semantics": "Target event flags warning if p_neural_S >= tau_S or p_fixed_O >= tau_O. If both trigger: margin_S = p_neural_S - tau_S, margin_O = p_fixed_O - tau_O. If margin_S > margin_O -> SUBSTITUTION; if margin_O > margin_S -> OMISSION; if margin_S == margin_O -> tie_hash(event_id) % 2 == 1 ? SUBSTITUTION : OMISSION. If neither triggers -> CORRECT (label 0). Gap event flags INSERTION if p_gap_I >= tau_I (tie_hash >= cutoff if equal).",
+    "tie_hash_specification": "uint64_be(sha256(\"LANGFENS-MB07-warning-tie-v1:\" + str(event_id))[:8])",
+    "nominal_joint_budget": 0.12,
+    "nominal_budget_allocation": {
+      "substitution": 0.02,
+      "omission": 0.08,
+      "insertion": 0.02
+    },
+    "thresholds": {
+      "tau_substitution": 0.9493744373321533,
+      "tie_cutoff_substitution": 12445346866078397902,
+      "tau_omission": 0.8574540615081787,
+      "tie_cutoff_omission": 2357324174070838657,
+      "tau_insertion": 0.8866584300994873,
+      "tie_cutoff_insertion": 9157070711166496197
+    }
+  },
+  "verified_development_performance": {
+    "train_oof_seed101": {
+      "utterances": 1800,
+      "joint_fwr": 0.12,
+      "false_warnings": 216,
+      "correct_fa": 143,
+      "wrong_type_warnings": 37,
+      "macro3_error_f1": 0.127348,
+      "macro3_error_ap": 0.321472,
+      "ap_substitution": 0.413593,
+      "ap_omission": 0.382372,
+      "ap_insertion": 0.168452,
+      "recall_substitution": 0.018697,
+      "precision_substitution": 0.793103,
+      "recall_omission": 0.123288,
+      "precision_omission": 0.609756,
+      "recall_insertion": 0.080357,
+      "precision_insertion": 0.555556
+    },
+    "dev_cal_diagnostic": {
+      "utterances": 300,
+      "joint_fwr": 0.186667,
+      "false_warnings": 56,
+      "correct_fa": 40,
+      "wrong_type_warnings": 7,
+      "macro3_error_f1": 0.198055,
+      "macro3_error_ap": 0.453854,
+      "ap_substitution": 0.547192,
+      "ap_omission": 0.572058,
+      "ap_insertion": 0.242311,
+      "recall_substitution": 0.046042,
+      "precision_substitution": 0.891304,
+      "recall_omission": 0.188312,
+      "precision_omission": 0.701613,
+      "recall_insertion": 0.127451,
+      "precision_insertion": 0.590909
+    },
+    "dev_search_diagnostic": {
+      "utterances": 599,
+      "joint_fwr": 0.185309,
+      "false_warnings": 111,
+      "correct_fa": 79,
+      "wrong_type_warnings": 5,
+      "macro3_error_f1": 0.137118,
+      "macro3_error_ap": 0.244363,
+      "ap_substitution": 0.371078,
+      "ap_omission": 0.199899,
+      "ap_insertion": 0.162113,
+      "recall_substitution": 0.029412,
+      "precision_substitution": 0.58427,
+      "recall_omission": 0.110048,
+      "precision_omission": 0.328571,
+      "recall_insertion": 0.128,
+      "precision_insertion": 0.372093
+    }
+  },
+  "per_speaker_performance_dev": {
+    "dev_cal": {
+      "ERMS": {
+        "utterances": 150,
+        "false_warnings": 29,
+        "joint_fwr": 0.193333,
+        "macro3_error_f1": 0.193049,
+        "sub_tp": 28,
+        "sub_recall": 0.032672,
+        "sub_precision": 0.933333,
+        "omi_tp": 10,
+        "omi_recall": 0.178571,
+        "omi_precision": 0.555556,
+        "ins_tp": 8,
+        "ins_recall": 0.190476,
+        "ins_precision": 0.533333
+      },
+      "THV": {
+        "utterances": 150,
+        "false_warnings": 27,
+        "joint_fwr": 0.18,
+        "macro3_error_f1": 0.188319,
+        "sub_tp": 54,
+        "sub_recall": 0.058315,
+        "sub_precision": 0.870968,
+        "omi_tp": 77,
+        "omi_recall": 0.189655,
+        "omi_precision": 0.726415,
+        "ins_tp": 5,
+        "ins_recall": 0.083333,
+        "ins_precision": 0.714286
+      }
+    },
+    "dev_search": {
+      "NCC": {
+        "utterances": 150,
+        "false_warnings": 37,
+        "joint_fwr": 0.246667,
+        "macro3_error_f1": 0.133107,
+        "sub_tp": 8,
+        "sub_recall": 0.014925,
+        "sub_precision": 0.666667,
+        "omi_tp": 8,
+        "omi_recall": 0.145455,
+        "omi_precision": 0.380952,
+        "ins_tp": 4,
+        "ins_recall": 0.137931,
+        "ins_precision": 0.444444
+      },
+      "RRBI": {
+        "utterances": 150,
+        "false_warnings": 24,
+        "joint_fwr": 0.16,
+        "macro3_error_f1": 0.104576,
+        "sub_tp": 17,
+        "sub_recall": 0.037694,
+        "sub_precision": 0.548387,
+        "omi_tp": 8,
+        "omi_recall": 0.123077,
+        "omi_precision": 0.444444,
+        "ins_tp": 1,
+        "ins_recall": 0.022727,
+        "ins_precision": 0.25
+      },
+      "YBAA": {
+        "utterances": 149,
+        "false_warnings": 19,
+        "joint_fwr": 0.127517,
+        "macro3_error_f1": 0.144828,
+        "sub_tp": 6,
+        "sub_recall": 0.018127,
+        "sub_precision": 0.352941,
+        "omi_tp": 0,
+        "omi_recall": 0.0,
+        "omi_precision": 0.0,
+        "ins_tp": 9,
+        "ins_recall": 0.3,
+        "ins_precision": 0.692308
+      },
+      "YDCK": {
+        "utterances": 150,
+        "false_warnings": 31,
+        "joint_fwr": 0.206667,
+        "macro3_error_f1": 0.130588,
+        "sub_tp": 21,
+        "sub_recall": 0.046667,
+        "sub_precision": 0.724138,
+        "omi_tp": 7,
+        "omi_recall": 0.12069,
+        "omi_precision": 0.368421,
+        "ins_tp": 2,
+        "ins_recall": 0.090909,
+        "ins_precision": 0.25
+      }
+    }
+  }
+}

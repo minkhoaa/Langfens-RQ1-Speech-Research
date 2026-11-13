@@ -1,0 +1,7 @@
+experiment_id,method,population,split,AP_S,AP_O,AP_I,macro3_AP,device,execution_status,comparison_status,notes
+RQ1-MB03-C-SPEAKER-GRL-GROUPCV-S101,Neural direct target+gap head,TRAIN,4-fold speaker-grouped OOF,0.423209,0.276706,0.162125,0.287347,CPU,VERIFIED_HISTORICAL,reference,"59,562 targets; 61,362 gaps; class supports 7381/1825/560"
+MB06-A-E4-MEAN-S101,E4 event-conditioned CTC evidence,TRAIN,matched grouped OOF,0.319722,0.259362,,,CPU-analysis,VERIFIED_HISTORICAL_RECOVERED,matched diagnostic,"Exact utterance_id+slot_idx; E4 seed101 mean"
+MB06-A-RANKMEAN-EXPLORATORY,Pooled percentile-rank mean neural+E4,TRAIN,pooled grouped OOF,0.445475,0.357081,,,CPU-analysis,MEASURED_EXPLORATORY,NOT_CONFIRMATORY,"Pooled normalization uses all OOF score population; no nested/meta fit"
+RQ1-MB06-C-MIXGOP-ADAPT-GROUPED-S101,Phone-conditional diagonal GMM K4,TRAIN,4-fold speaker-grouped OOF,0.193067,0.126490,,,CPU,VERIFIED,negative,"Non-CTC adaptation; target S/O only; below neural; runtime 4.34s"
+RQ1-MB06-B-GROUPED-TEMPORAL-LOGREG-S101,Predicted-alignment local CTC-frame-logit pooling six features,TRAIN,4-fold speaker-grouped OOF,,,0.022198,,CPU,VERIFIED,negative,"Static matched control AP-I 0.035567; MB03 direct neural AP-I 0.162125; runtime 15.13s; one seed"
+MB05-T2-LOCAL-MAX,Predicted Viterbi-boundary local maximum,TRAIN HJK/HKK diagnostic subset,10139 gaps / 46 positives,,,0.004263,,CPU,VERIFIED_HISTORICAL,negative historical,"Not MB06; E3 0.009966 and E4 mean 0.038718 on same subset"

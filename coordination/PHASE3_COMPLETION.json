@@ -1,0 +1,14 @@
+{
+  "published_at": "2026-11-06T08:19:23.209645+00:00",
+  "status": "bounded technical completion; no established overall KD superiority",
+  "runs": 14,
+  "metrics_rows": 98,
+  "cuda_training_updates_per_run": 684,
+  "tests_passed": 26,
+  "max_overlapping_wrapper_lease_intervals": 3,
+  "kernel_overlap": "NOT VERIFIED; leases/resident processes are not kernel timing",
+  "teacher_oof_seconds": 21.852437496185303,
+  "teacher_oof_peak_allocated_mib": 22.23046875,
+  "phase1_head": "41f02ad9ad4ea2df4734ebc38bc2052503586fb6",
+  "publication_head_before_commit": "41f02ad9ad4ea2df4734ebc38bc2052503586fb6"
+}

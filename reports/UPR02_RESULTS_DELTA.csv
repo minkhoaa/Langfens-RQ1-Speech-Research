@@ -1,0 +1,7 @@
+candidate_id,baseline_id,eval_cohort,n_utts,delta_macro3_f1,delta_macro4_f1,delta_subs_f1,delta_omis_f1,delta_ins_f1,delta_fwr,statistical_significance,pedagogical_safety_delta
+UPR02_A1_L6_RAW,UPR02_A0_BASELINE,DEV_SEARCH,599,-0.0146,-0.0109,-0.0138,-0.0206,0.0000,+0.7162,p=0.0012 (Wilcoxon),REGRESSION (Excess false omissions)
+UPR02_B1_L6_GATED,UPR02_A0_BASELINE,DEV_SEARCH,599,+0.0046,+0.0035,-0.0015,+0.0165,0.0000,+0.0918,p=0.0384 (Wilcoxon),NEUTRAL (Improved precision and omission recall)
+UPR02_B2_WHITENED,UPR02_A0_BASELINE,DEV_SEARCH,599,0.0000,0.0000,+0.0013,0.0000,0.0000,+0.0851,p=0.4510 (Wilcoxon),NEUTRAL (Bounded margin preserves precision)
+UPR02_B3_AGBV,UPR02_A0_BASELINE,DEV_SEARCH,599,+0.0042,+0.0238,+0.0032,+0.0111,+0.0823,-0.6828,p=0.0001 (Wilcoxon),POSITIVE (Exact-gap insertion F1 doubled)
+UPR02_CHAMPION_CERTIFIED,UPR02_A0_BASELINE,DEV_SEARCH,599,-0.0744,-0.0700,-0.1715,-0.0852,-0.0569,-3.6444,p=6.26e-93 (Wilcoxon),PEDAGOGICALLY CERTIFIED (FWR <= 0.20 strictly satisfied: 0.1703)
+UPR02_SYNTHESIS_CHAMPION,UPR02_A0_BASELINE,DEV_SEARCH,599,-0.0397,-0.0340,-0.0755,-0.0790,-0.0171,-3.6177,p=8.14e-92 (Wilcoxon),PEDAGOGICALLY CERTIFIED (FWR <= 0.20 strictly satisfied: 0.1970; Macro-3=0.3685, Macro-4=0.2900)

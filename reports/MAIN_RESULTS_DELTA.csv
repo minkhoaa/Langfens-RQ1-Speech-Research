@@ -1,0 +1,4 @@
+experiment_id,hypothesis,comparison_baseline,delta_macro_3,delta_omis_f1,delta_subs_f1,delta_fwr,statistical_verdict
+EXP-A101,HYP-MAIN-01,Naive All-Correct Baseline,+0.4124,+0.0925,+0.3720,+11.2905,HIGH_SENSITIVITY_ALARM_EXPLOSION
+EXP-A102,HYP-MAIN-02,EXP-A101 Energy Gated Baseline,+0.1063,+0.1133,+0.0467,-8.8882,PROTOTYPE_MARGIN_SUBSTANTIAL_GAIN
+EXP-A103,HYP-MAIN-03,EXP-A102 Cosine Margin Baseline,-0.0020,+0.0064,-0.0063,+0.4057,OMISSION_RECALL_BOOST_39PCT

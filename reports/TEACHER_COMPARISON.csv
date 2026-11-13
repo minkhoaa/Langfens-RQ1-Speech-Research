@@ -1,0 +1,5 @@
+teacher_id,role,candidate_name,baseline_experiment_id,baseline_precision,baseline_recall,baseline_f1,specialist_precision,specialist_recall,specialist_f1,specialist_auprc,delta_f1,delta_f1_pct,fwr_per_utt,pedagogical_safe,verdict
+TEACHER_S,Phoneme Substitution,TEACHER_S_CHAMPION,EXP-A102,0.4018,0.4372,0.4187,0.3939,0.5187,0.4478,0.3833,+0.0291,+6.94%,2.3556,False,CONFIRMED_SUPERIOR
+TEACHER_O,Phoneme Omission,TEACHER_O_CHAMPION,EXP-A102,0.1652,0.2727,0.2058,0.1655,0.3254,0.2194,0.1415,+0.0136,+6.59%,0.5726,False,CONFIRMED_SUPERIOR
+TEACHER_I,Exact-Gap Insertion (I-F1),TEACHER_I_EXP01,EXP-B102,0.3810,0.0640,0.1096,0.1609,0.1120,0.1321,0.0348,+0.0225,+20.51%,0.1219,False,CONFIRMED_SUPERIOR_F1
+TEACHER_I,Exact-Gap Insertion (I-Precision),TEACHER_I_CHAMPION,EXP-B102,0.3810,0.0640,0.1096,0.2157,0.0880,0.1250,0.0276,+0.0154,+14.05%,0.0668,True,CONFIRMED_SUPERIOR_PRECISION

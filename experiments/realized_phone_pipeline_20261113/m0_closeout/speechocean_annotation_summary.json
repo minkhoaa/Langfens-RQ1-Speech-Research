@@ -1,0 +1,18 @@
+{
+  "utterances": 5000,
+  "word_records": 31816,
+  "annotator_word_records": 159080,
+  "word_notation_disagreements": 12658,
+  "score0_parenthesis_markers": 27493,
+  "score1_brace_markers": 9996,
+  "insertion_bracket_markers": 2653,
+  "words_with_any_insertion_annotation": 1777,
+  "words_with_five_matching_nonempty_insertion_lists": 13,
+  "notation_disagreement_fraction": 0.3978501382951974,
+  "source_sha256": "8a90ff40558fe8032d9bfa919429dcae267c0ec3fbdedf1dca30c0515ea989e1",
+  "readme_sha256": "56c13c6f53ffe4f62dec8bf1320214f2a35a7c63de36a7f45b41a91f6df3d95e",
+  "agreement_metric": "literal string disagreement, not C/S/O/I inter-rater reliability",
+  "new_human_labels": 0,
+  "allowed_now": "quality auxiliary; source insertion/uncertainty audits; no new training in this closeout",
+  "mapping_gate": "expert-reviewed notation-to-events and adjudication before using full CSOI/realized sequence supervision"
+}

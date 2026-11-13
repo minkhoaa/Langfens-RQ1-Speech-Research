@@ -2,11 +2,9 @@
 # Langfens RQ1 — Git Ignore Specification
 # Prevents large speech datasets, audio archives, checkpoints and temporary data
 # from contaminating the GitHub repository.
-# ==============================================================================
 
 # ------------------------------------------------------------------------------
 # 1. Datasets & Raw Corpus Audio Archives (Strictly Prohibited from Git)
-# ------------------------------------------------------------------------------
 datasets/
 *.zip
 *.tar.gz
@@ -15,7 +13,6 @@ datasets/
 *.rar
 *.7z
 *.bz2
-
 # Raw Audio Formats
 *.wav
 *.WAV
@@ -25,7 +22,6 @@ datasets/
 *.m4a
 *.sph
 *.TextGrid.gz
-
 # Local Ephemeral Audio Staging & Temp Caches
 staged_audio/
 data_stage/
@@ -33,10 +29,7 @@ audio_stage/
 tmp/
 *.tmp
 *.temp
-
-# ------------------------------------------------------------------------------
 # 2. Machine Learning Checkpoints, Model Weights & Large Artifacts
-# ------------------------------------------------------------------------------
 checkpoints/
 models/
 artifacts/
@@ -48,18 +41,12 @@ artifacts/
 *.onnx
 *.h5
 *.pkl
-
-# ------------------------------------------------------------------------------
 # 3. Experiment Tracking & Logging
-# ------------------------------------------------------------------------------
 wandb/
 runs/
 .tensorboard/
 *.log
-
-# ------------------------------------------------------------------------------
 # 4. Python Environment, Build & Caches
-# ------------------------------------------------------------------------------
 .venv/
 .venv*/
 venv/
@@ -74,19 +61,13 @@ htmlcov/
 dist/
 build/
 *.egg-info/
-
-# ------------------------------------------------------------------------------
 # 5. Jupyter Notebooks & IDE Configurations
-# ------------------------------------------------------------------------------
 .ipynb_checkpoints/
 .vscode/
 .idea/
 *.swp
 *.swo
-
-# ------------------------------------------------------------------------------
 # 6. Operating System Files & Credentials / Secrets
-# ------------------------------------------------------------------------------
 .DS_Store
 Thumbs.db
 *.token
@@ -95,3 +76,22 @@ Thumbs.db
 .env
 .env.*
 !.env.example
+*.pyc
+*.joblib
+datasets/audio_16k/
+.cache/
+quarantine_historical_EXP001_100/
+*.npz
+*.npy
+*.csv.gz
+*.lock
+*.before-metadata-fix
+data/derived/l2arctic/wavs_16k/
+data/original_sources/
+Pronunciation-*/
+experiments/evaluation_v3/PR_CURVES.csv
+experiments/evaluation_v3/RISK_COVERAGE.csv
+experiments/rq1_train_phase_01/preflight/agent_b/results/joint_policy_raw_keyed.csv
+experiments/rq1_method_bench_01/agent_b/soft_phone_recognition/results.json
+experiments/rq1_method_bench_08/agent_b/legacy_total_warning_budget_predictions.jsonl.gz
+research/long_running_method_discovery/cycle_02/h003_insertion/linear_probe/RESULTS.json

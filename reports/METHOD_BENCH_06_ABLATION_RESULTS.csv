@@ -1,0 +1,23 @@
+experiment_id,ablation_or_control,metric,class,score,population,status,interpretation
+MB06-A-DIAG,neural direct head,AP,S,0.423209,pooled TRAIN OOF,VERIFIED,matched reference
+MB06-A-DIAG,E4 mean,AP,S,0.319722,pooled TRAIN OOF,VERIFIED,matched exact IDs
+MB06-A-DIAG,pooled percentile rank mean,AP,S,0.445475,pooled TRAIN OOF,EXPLORATORY,not nested; pooled score normalization
+MB06-A-DIAG,neural direct head,AP,O,0.276706,pooled TRAIN OOF,VERIFIED,matched reference
+MB06-A-DIAG,E4 mean,AP,O,0.259362,pooled TRAIN OOF,VERIFIED,matched exact IDs
+MB06-A-DIAG,pooled percentile rank mean,AP,O,0.357081,pooled TRAIN OOF,EXPLORATORY,not nested; pooled score normalization
+MB06-A-CONTROL,phone-prevalence-only,AP,S,0.336082,pooled descriptive,RETROSPECTIVE_CONTROL,labels used globally; not deployable
+MB06-A-CONTROL,within-phone E4 rank,AP,S,0.221677,pooled descriptive,EXPLORATORY,phone identity conditioned post hoc
+MB06-A-CONTROL,phone-prevalence-only,AP,O,0.102404,pooled descriptive,RETROSPECTIVE_CONTROL,labels used globally; not deployable
+MB06-A-CONTROL,within-phone E4 rank,AP,O,0.203507,pooled descriptive,EXPLORATORY,phone identity conditioned post hoc
+MB06-C-GMM,K1 phone-conditional diagonal GMM,AP,S,0.191704,pooled 4-fold OOF,VERIFIED,one seed schedule
+MB06-C-GMM,K4 phone-conditional diagonal GMM,AP,S,0.193067,pooled 4-fold OOF,VERIFIED,one seed schedule
+MB06-C-GMM,K1 phone-conditional diagonal GMM,AP,O,0.115085,pooled 4-fold OOF,VERIFIED,one seed schedule
+MB06-C-GMM,K4 phone-conditional diagonal GMM,AP,O,0.126490,pooled 4-fold OOF,VERIFIED,one seed schedule
+MB05-T2,local-max around predicted boundary,AP,I,0.004263,10139 gaps/46 positives,VERIFIED_HISTORICAL,lower than E3 .009966 and E4 .038718
+RQ1-MB06-B-GROUPED-TEMPORAL-LOGREG-S101,six-feature temporal pooling,AP,I,0.022198,pooled 4-fold OOF,VERIFIED,below static matched control .035567 and neural .162125
+RQ1-MB06-B-GROUPED-TEMPORAL-LOGREG-S101,six-feature temporal pooling,AP,I,0.020037,Fold 0 held-out,VERIFIED,static .035686; neural .188792
+RQ1-MB06-B-GROUPED-TEMPORAL-LOGREG-S101,six-feature temporal pooling,AP,I,0.030676,Fold 1 held-out,VERIFIED,static .039133; neural .102708
+RQ1-MB06-B-GROUPED-TEMPORAL-LOGREG-S101,six-feature temporal pooling,AP,I,0.019819,Fold 2 held-out,VERIFIED,static .054449; neural .109449
+RQ1-MB06-B-GROUPED-TEMPORAL-LOGREG-S101,six-feature temporal pooling,AP,I,0.026212,Fold 3 held-out,VERIFIED,static .018792; neural .251541
+RQ1-MB06-B-GROUPED-TEMPORAL-LOGREG-S101,temporal score,precision@5%,I,0.031281,pooled OOF,VERIFIED,primary AP remains low
+RQ1-MB06-B-GROUPED-TEMPORAL-LOGREG-S101,temporal score,train-fit AP,I,0.023632,pooled outer-training partitions,VERIFIED,not held-out performance

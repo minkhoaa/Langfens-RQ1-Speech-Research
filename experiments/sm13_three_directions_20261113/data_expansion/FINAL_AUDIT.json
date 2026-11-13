@@ -1,0 +1,83 @@
+{
+  "status": "PASS",
+  "paired_fold_seeds": 8,
+  "pooled_seed_systems": 4,
+  "pooled_topology": {
+    "utterances": 1800,
+    "target_events_N": 59562,
+    "insertion_events_N_plus_1": 61362
+  },
+  "all_insertions_unchanged": true,
+  "unique_extra_utterances_across_12_speakers": 600,
+  "candidate_pooled_realized_fwr": {
+    "101": 0.2127777777777778,
+    "202": 0.25555555555555554
+  },
+  "candidate_exceeds_B02_both_seeds": true,
+  "folds": [
+    {
+      "fold": 0,
+      "seed": 101,
+      "updates": 708,
+      "pseudo_target_rows": 4859,
+      "insertion_unchanged": true,
+      "candidate_fwr": 0.24444444444444444
+    },
+    {
+      "fold": 0,
+      "seed": 202,
+      "updates": 708,
+      "pseudo_target_rows": 4381,
+      "insertion_unchanged": true,
+      "candidate_fwr": 0.2777777777777778
+    },
+    {
+      "fold": 1,
+      "seed": 101,
+      "updates": 708,
+      "pseudo_target_rows": 4807,
+      "insertion_unchanged": true,
+      "candidate_fwr": 0.2111111111111111
+    },
+    {
+      "fold": 1,
+      "seed": 202,
+      "updates": 708,
+      "pseudo_target_rows": 4999,
+      "insertion_unchanged": true,
+      "candidate_fwr": 0.2733333333333333
+    },
+    {
+      "fold": 2,
+      "seed": 101,
+      "updates": 696,
+      "pseudo_target_rows": 4510,
+      "insertion_unchanged": true,
+      "candidate_fwr": 0.2088888888888889
+    },
+    {
+      "fold": 2,
+      "seed": 202,
+      "updates": 696,
+      "pseudo_target_rows": 5336,
+      "insertion_unchanged": true,
+      "candidate_fwr": 0.3022222222222222
+    },
+    {
+      "fold": 3,
+      "seed": 101,
+      "updates": 708,
+      "pseudo_target_rows": 5150,
+      "insertion_unchanged": true,
+      "candidate_fwr": 0.18666666666666668
+    },
+    {
+      "fold": 3,
+      "seed": 202,
+      "updates": 708,
+      "pseudo_target_rows": 5725,
+      "insertion_unchanged": true,
+      "candidate_fwr": 0.1688888888888889
+    }
+  ]
+}

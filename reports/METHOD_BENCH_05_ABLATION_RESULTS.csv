@@ -1,0 +1,16 @@
+experiment_id,population,seed,component_or_control,setting,AP_S,AP_O,AP_I,Macro3_AP,support_positive,support_total,notes
+RQ1-MB05-B-OOF-S101,TRAIN_four_fold_OOF,101,method,E1,.166856,.050837,.012710,.076801,"7381/1825/560","59562/59562/61362",raw AP
+RQ1-MB05-B-OOF-S101,TRAIN_four_fold_OOF,101,method,E3,.238877,.092052,.034624,.121851,"7381/1825/560","59562/59562/61362",raw AP
+RQ1-MB05-B-OOF-S101,TRAIN_four_fold_OOF,101,method,E4_mean,.319722,.259362,.031588,.203557,"7381/1825/560","59562/59562/61362",canonical E4
+RQ1-MB05-B-OOF-S101,TRAIN_four_fold_OOF,101,aggregation,E4_max,.329350,.259362,.037090,.208600,"7381/1825/560","59562/59562/61362",sensitivity only
+RQ1-MB05-B-OOF-S202,TRAIN_four_fold_OOF,202,method,E1,.173474,.052171,.015756,.080467,"7381/1825/560","59562/59562/61362",raw AP
+RQ1-MB05-B-OOF-S202,TRAIN_four_fold_OOF,202,method,E3,.248593,.105679,.037171,.130481,"7381/1825/560","59562/59562/61362",raw AP
+RQ1-MB05-B-OOF-S202,TRAIN_four_fold_OOF,202,method,E4_mean,.328290,.271569,.037428,.212429,"7381/1825/560","59562/59562/61362",canonical E4
+RQ1-MB05-C-ABLATION-S101,TRAIN_four_fold_target_OOF,101,input,full_acoustic_plus_reference,.383021,.274103,,,"7381/1825","59562/59562",direct C/S/O; no I output
+RQ1-MB05-C-ABLATION-S101,TRAIN_four_fold_target_OOF,101,input,acoustic_only,.299152,.180029,,,"7381/1825","59562/59562",reference one-hot removed
+RQ1-MB05-C-ABLATION-S101,TRAIN_four_fold_target_OOF,101,input,reference_only,.309662,.089453,,,"7381/1825","59562/59562",all acoustic features removed
+RQ1-MB05-A4-CANDIDATES,TRAIN_HJK_HKK_holdout,101,insertion_candidates,top8_max,,,0.036681,,46,10139,coverage 23/46; 81112 sequence scores
+RQ1-MB05-A4-CANDIDATES,TRAIN_HJK_HKK_holdout,101,insertion_candidates,full42_max,,,0.034919,,46,10139,coverage 46/46; 425838 sequence scores
+RQ1-MB05-A-TEMPORAL,TRAIN_HJK_HKK_holdout,101,localization,E4_mean,,,0.038718,,46,10139,frozen posterior matched T0
+RQ1-MB05-A-TEMPORAL,TRAIN_HJK_HKK_holdout,101,localization,E3,,,0.009966,,46,10139,frozen posterior matched T1
+RQ1-MB05-A-TEMPORAL,TRAIN_HJK_HKK_holdout,101,localization,Viterbi_local_max,,,0.004263,,46,10139,frozen posterior matched T2; plus/minus 2 frames

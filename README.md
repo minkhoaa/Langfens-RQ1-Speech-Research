@@ -1,5 +1,15 @@
 # Project Langfens — RQ1 Speech Research
 
+## Autonomous Research Lab
+
+An independent, autonomous, evidence-driven scientific research project discovering, designing, testing, and continuously improving English L2 phoneme-level pronunciation assessment methods.
+
+## Core Capabilities
+- Phone-level diagnosis: `CORRECT`, `OMISSION`, `SUBSTITUTION`, `INSERTION`.
+- Target-conditioned deployment inference without oracle boundaries or labels.
+- Continuous auto-research loop powered by Pi / OMP native subagents.
+- Rigorous zero-leakage speaker-disjoint evaluation and weighted utility scoring.
+
 **Phoneme-Level Mispronunciation Detection & Diagnosis (MDD) Pipeline, Reproducibility Audit, and Modeling Readiness**
 
 [![CI / Regression Tests](https://img.shields.io/badge/pytest-passing-brightgreen)](tests/)

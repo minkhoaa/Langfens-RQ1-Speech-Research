@@ -1,0 +1,4 @@
+experiment_id,hypothesis,comparison_baseline,delta_fwr,safe_target_met,delta_macro_3,delta_ece,abstention_rate,statistical_verdict
+EXP-C101,HYP-RECOVERY-01,Unconstrained Baseline,-11.1236,TRUE,+0.3685,+0.0498,0.0000,PEDAGOGICAL_SAFETY_GATE_PASSED
+EXP-C102,HYP-RECOVERY-02,EXP-C101 Global Neyman-Pearson,+0.0268,TRUE,+0.0138,-0.0004,0.0000,FAMILY_STRATIFICATION_F1_BOOST_SAFE
+EXP-C103,HYP-RECOVERY-03,EXP-C102 Family Stratified,-0.0201,TRUE,-0.0063,+0.0002,0.0000,SAFETY_MARGIN_EXPANDED_UNDER_18_FWR

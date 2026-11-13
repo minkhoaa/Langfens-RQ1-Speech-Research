@@ -1,0 +1,19 @@
+experiment,component_or_variant,selection_split,evaluation_split,outcome,status,interpretation,artifact
+A1,EXP-29 frozen weighted composition,DEV_CAL,DEV_SEARCH,Macro3AP=0.282223; recomposition max delta 0,VERIFIED arithmetic only,not causal attribution or independent generalization,experiments/phase4/composition/official_recomposition_audit.json
+A2,EXP-36 frozen weighted composition,DEV_CAL,DEV_SEARCH,Macro3AP=0.289233; recomposition max delta 0,VERIFIED arithmetic only,not causal attribution or independent generalization,experiments/phase4/composition/official_recomposition_audit.json
+A3,EXP-43 frozen weighted composition,DEV_CAL,DEV_SEARCH,Macro3AP=0.284760; recomposition max delta 0,VERIFIED arithmetic only,not causal attribution or independent generalization,experiments/phase4/composition/official_recomposition_audit.json
+A4,EXP-24 + EXP-34 historical mixture,unknown/search history,DEV_SEARCH reported,Macro3AP=0.292012; AP-O=0.242612,EXPLORATORY; legacy provenance incomplete,do not promote; weights and selection lineage not independently audited,reports/PHASE4_A_COMPOSITION_VALIDATION.md
+B0,reference-only baseline,,,,NOT RUN,registered experiment; scores absent,reports/PHASE4_B_ACOUSTIC_DEPENDENCE.md
+B1,full audio + intended reference,,,,NOT RUN,canonical replay exists but Phase 4 matched inference not rerun,reports/PHASE4_B_ACOUSTIC_DEPENDENCE.md
+B2,lexical prior neutralization,,,,NOT RUN,causal/acoustic contribution unresolved,reports/PHASE4_B_ACOUSTIC_DEPENDENCE.md
+B3,prosodic energy neutralization,,,,NOT RUN,causal/acoustic contribution unresolved,reports/PHASE4_B_ACOUSTIC_DEPENDENCE.md
+B4,acoustic-only versus lexical-only,,,,NOT RUN,no score evidence,reports/PHASE4_B_ACOUSTIC_DEPENDENCE.md
+B5,mismatched/perturbed sensitivity,,,,NOT RUN,diagnostic only; must not reuse gold as valid changed-utterance outcomes,reports/PHASE4_B_ACOUSTIC_DEPENDENCE.md
+B6,phone/speaker contribution and CTC omission audit,,,,NOT RUN,alignment topology/omission ambiguity unresolved,reports/PHASE4_B_ACOUSTIC_DEPENDENCE.md
+D0,Gold-Only GRU input/mask audit,,,,PARTIAL,existing Phase 3 receipts are historical; Phase 4 matched run absent,reports/PHASE4_D_UNIFIED_STUDENT.md
+D1,EXP24 training reproduction,,,,BLOCKED,primary training/preprocessing contract incomplete,reports/PHASE4_D_UNIFIED_STUDENT.md
+D2,unified target/gap student,,,,NOT RUN,no neural training; CUDA lease not acquired,reports/PHASE4_D_UNIFIED_STUDENT.md
+D3,plus lexical prior,,,,GATED,wait for B-source/provenance validation,reports/PHASE4_D_UNIFIED_STUDENT.md
+D4,plus prosody,,,,GATED,wait for B-source/provenance validation,reports/PHASE4_D_UNIFIED_STUDENT.md
+D5,combined acoustic lexical prosodic,,,,GATED,component validity gates absent,reports/PHASE4_D_UNIFIED_STUDENT.md
+D6,teacher distillation,,,,GATED,not justified until validated component evidence,reports/PHASE4_D_UNIFIED_STUDENT.md

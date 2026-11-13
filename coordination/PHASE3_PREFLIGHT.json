@@ -1,0 +1,138 @@
+{
+  "head": "41f02ad9ad4ea2df4734ebc38bc2052503586fb6",
+  "splits": {
+    "train": {
+      "utterances": 1800,
+      "speaker_count": 12,
+      "speakers": [
+        "ABA",
+        "ASI",
+        "BWC",
+        "EBVS",
+        "HJK",
+        "HKK",
+        "HQTV",
+        "LXC",
+        "NJS",
+        "PNV",
+        "SKA",
+        "SVBI"
+      ],
+      "targets": 59562,
+      "gaps": 61362,
+      "target_shape": [
+        59562,
+        51
+      ],
+      "gap_shape": [
+        61362,
+        6
+      ],
+      "target_class_counts": [
+        50356,
+        7381,
+        1825
+      ],
+      "gap_class_counts": [
+        60802,
+        560
+      ],
+      "canonical_order_and_labels_verified": true
+    },
+    "dev_cal": {
+      "utterances": 300,
+      "speaker_count": 2,
+      "speakers": [
+        "ERMS",
+        "THV"
+      ],
+      "targets": 10043,
+      "gaps": 10343,
+      "target_shape": [
+        10043,
+        51
+      ],
+      "gap_shape": [
+        10343,
+        6
+      ],
+      "target_class_counts": [
+        7800,
+        1781,
+        462
+      ],
+      "gap_class_counts": [
+        10241,
+        102
+      ],
+      "canonical_order_and_labels_verified": true
+    },
+    "dev_search": {
+      "utterances": 599,
+      "speaker_count": 4,
+      "speakers": [
+        "NCC",
+        "RRBI",
+        "YBAA",
+        "YDCK"
+      ],
+      "targets": 19755,
+      "gaps": 20354,
+      "target_shape": [
+        19755,
+        51
+      ],
+      "gap_shape": [
+        20354,
+        6
+      ],
+      "target_class_counts": [
+        17778,
+        1768,
+        209
+      ],
+      "gap_class_counts": [
+        20229,
+        125
+      ],
+      "canonical_order_and_labels_verified": true
+    }
+  },
+  "hashes": {
+    "data/derived/l2arctic/manifests/train.jsonl": "1f4da8518d9b184fb737b93c7887ecd7c3e73d6e83260e54651074831f61bcff",
+    "data/derived/l2arctic/features/train_features.npz": "e85cc2844c5b5b785e9f3b8b9b424ec60c5979829a1511a6fd804d1761ec9fd1",
+    "data/derived/l2arctic/manifests/dev_cal.jsonl": "87fa9e2af6a2ad14d36e7680b977b1789fd20cfbfb56f239d5f840befce21ad6",
+    "data/derived/l2arctic/features/dev_cal_features.npz": "29af1e5781c8c36dc854232739beeb072516d88e45fd8bac9a11ce4508c710be",
+    "data/derived/l2arctic/manifests/dev_search.jsonl": "a4ab6c7df7bd65b5d213d306c2fdfde6c316cbf7768a3eb63d056775351f99d2",
+    "data/derived/l2arctic/features/dev_search_features.npz": "8d6a208e6778ae3448aa4ef5b550cd56f3db2af6ef3511a5f0bd3417128e27e3",
+    "tools/extract_acoustic_features.py": "bdb57112fcde159e981333c9b9191708d3be353779c07942747d5226130eb872",
+    "evaluator/unified_evaluator.py": "953719eb2d59a2821385c37c370e267ad7ec0067c9ca7be6afa4b312dc0d4c63",
+    "models/teachers/TEACHER_I_CHAMPION_checkpoint.pt": "301a3fc7e8f627a058c165be53cd024a9aaa3e60b0f598e36170322e1d0f31bd",
+    "models/teachers/TEACHER_I_EXP01_checkpoint.pt": "98da8bb5ff756df026e7ec17e17b4c5c60b8149c6cdba8c269005831238c6220",
+    "models/teachers/TEACHER_I_EXP02_checkpoint.pt": "9207a8d15012bbd5a6f150c4187981402e9a6e2dedcd43391907aa07899625a1",
+    "models/teachers/TEACHER_O_CHAMPION_checkpoint.pt": "80618baaefe59eff0da3db0a9a64941fb2bdb1a10146c60ee93b286f9634db76",
+    "models/teachers/TEACHER_O_EXP01_checkpoint.pt": "846420dbcf52263d917a9c3af2e9b7a7dcfcd8784a5c3f4e735b3499f8bc8ce1",
+    "models/teachers/TEACHER_O_EXP02_checkpoint.pt": "61db10130cfd64d66b896661a0b21dd05e41711859d1fc971cb9d1fd662e8859",
+    "models/teachers/TEACHER_S_CHAMPION_checkpoint.pt": "47e804011f6fa744bf09dbd13896cfcd9ef874534d9eaa9f403e37265b000510",
+    "models/teachers/TEACHER_S_EXP01_checkpoint.pt": "0ff85b2a6c53d809c5fa62c468e4c5e5e948f01a2928d9852fe5eb88b001266d",
+    "models/teachers/TEACHER_S_EXP02_checkpoint.pt": "2e6fd08d7060c5bc162a90874aaee66ef9e18c6d793c52b22145d124bbff17a0"
+  },
+  "gpu": {
+    "name": "NVIDIA GeForce GTX 1650",
+    "torch": "2.6.0+cu124",
+    "cuda": "12.4",
+    "capability": [
+      7,
+      5
+    ],
+    "bf16_api_default": true,
+    "bf16_native": false,
+    "fp32_backward_finite_verified": true,
+    "fp16_backward_finite_verified": true
+  },
+  "notes": [
+    "No native BF16 support on capability7.5; default torch API includes emulation.",
+    "No frame-level hidden-state cache was assumed.",
+    "Preflight CUDA forward/backward completed before job wrapper was created."
+  ]
+}

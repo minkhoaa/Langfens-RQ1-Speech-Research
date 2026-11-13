@@ -1,0 +1,4 @@
+seed,role,epochs_target,epochs_gap,target_scale,gap_scale,peak_target_layer,peak_target_weight,peak_gap_layer,peak_gap_weight,insample_macro3_ap,insample_ap_s,insample_ap_o,insample_ap_i,insample_macro3_f1,insample_fwr,insample_p_at_560,historical_dev_macro3_ap
+101,PRIMARY_PREDETERMINED,12,5,0.8813,1.0315,6,0.1105,7,0.079,0.58063,0.605548,0.741877,0.394465,0.417067,0.776111,0.444643,0.324357
+202,CONFIRMATORY_REPLICATION,12,5,0.8667,1.0291,6,0.1113,9,0.079,0.593743,0.604322,0.760571,0.416336,0.459214,0.496667,0.442857,0.320912
+303,CONFIRMATORY_REPLICATION,12,5,0.8911,1.0278,6,0.1116,7,0.0789,0.589308,0.599183,0.768703,0.400038,0.449221,0.55,0.430357,0.33663
