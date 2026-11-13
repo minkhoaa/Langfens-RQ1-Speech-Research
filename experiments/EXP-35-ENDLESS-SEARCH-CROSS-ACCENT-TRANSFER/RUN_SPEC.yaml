@@ -1,0 +1,24 @@
+run_id: "EXP-35-ENDLESS-SEARCH-CROSS-ACCENT-TRANSFER"
+hypothesis_id: "H30-cross-accent-generalization"
+method_id: "M35-cross-accent-generalizer"
+experiment_type: "6_L1_COHORT_CROSS_ACCENT_AUDIT"
+date: "2026-11-05"
+hardware:
+  device: "cuda"
+  gpu_name: "NVIDIA GeForce GTX 1650"
+  vram_allocated_mb: 202
+inputs:
+  champion_model: "Hexad-Pareto (EXP-29)"
+  total_utterances_audited: 1199
+  speakers_evaluated: ["YBAA", "NCC", "TXHC", "ERMS", "RRBI", "YDCK", "YKWK", "THV"]
+  l1_cohorts: ["Arabic", "Chinese", "Spanish", "Hindi", "Korean", "Vietnamese"]
+evaluation:
+  protocol: "PROTOCOL_ALPHA_TARGET_MONOTONIC_V1"
+  mean_utility: 0.4292
+  mean_macro_f1: 0.5678
+  mean_macro_precision: 0.5859
+  l1_invariance_std: 0.0725
+  vietnamese_omission_f1: 0.6568
+  vietnamese_omission_ap: 0.7496
+  korean_macro_f1: 0.6114
+  status: "LOCAL_REPRODUCED"

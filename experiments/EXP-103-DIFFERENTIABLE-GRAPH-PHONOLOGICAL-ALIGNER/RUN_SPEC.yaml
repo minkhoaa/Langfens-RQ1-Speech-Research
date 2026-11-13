@@ -1,0 +1,42 @@
+experiment_id: EXP-103-DIFFERENTIABLE-GRAPH-PHONOLOGICAL-ALIGNER
+hypothesis_id: H98-differentiable-graph-alignment
+method_id: M103-graph-aligner-trainer
+protocol: PROTOCOL_ALPHA_TARGET_MONOTONIC_V1
+split:
+  train: 1800
+  dev_search: 599
+  dev_cal: 300
+  dev_replication: 300
+  test_sealed: 600
+device: cuda
+model:
+  name: DSGA-Net
+  in_acoustic_dim: 72
+  in_prompt_dim: 47
+  in_gap_dim: 13
+  cross_attention_heads: 4
+  proj_dim: 128
+  lstm_hidden: 96
+  disentangled_subspaces:
+    manner: 32
+    place: 32
+    voicing: 16
+    timbre: 48
+  lattice_anti_concurrence_loss: true
+  orthogonality_penalty: true
+  reconstruction_mse: true
+  interlanguage_priors: true
+  triad_gap_categories: 3
+  epochs: 10
+  lr: 0.001
+calibration_split: dev_cal
+evaluation_splits:
+  - dev_search
+  - dev_replication
+tags:
+  - differentiable_sequence_to_graph_aligner
+  - dsga_net
+  - lattice_anti_concurrence_loss
+  - trellis_path_conservation
+  - phase_2_frontier
+  - zero_leakage_enforced

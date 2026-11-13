@@ -1,0 +1,54 @@
+{
+  "run_id": "EXP-43-CONTINUOUS-AUTONOMOUS-FRONTIER-EXPANSION",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "started_at": "2026-11-05T04:50:00Z",
+  "completed_at": "2026-11-05T04:51:35Z",
+  "duration_seconds": 95.0,
+  "device": "cuda",
+  "dev_cal_pareto_score": 3.0505,
+  "optimal_weights": {
+    "target": [0.07, 0.10, 0.08, 0.08, 0.12, 0.13, 0.14, 0.18, 0.10],
+    "gap": [0.06, 0.08, 0.08, 0.12, 0.10, 0.14, 0.16, 0.14, 0.12]
+  },
+  "optimal_thresholds": {
+    "theta_subs": 0.55,
+    "theta_omis": 0.55,
+    "theta_ins": 0.55
+  },
+  "metrics_summary": {
+    "dev_search": {
+      "utility": 0.3892,
+      "macro_ap": 0.5372,
+      "macro_precision": 0.5531,
+      "macro_f1": 0.5314,
+      "omission_ap": 0.2273,
+      "substitution_ap": 0.4034,
+      "insertion_ap": 0.2851,
+      "fwr": 1.377
+    },
+    "dev_replication": {
+      "utility": 0.4400,
+      "macro_ap": 0.5965,
+      "macro_precision": 0.6338,
+      "macro_f1": 0.5547,
+      "omission_ap": 0.4000,
+      "substitution_ap": 0.4161,
+      "substitution_precision": 0.5367,
+      "insertion_ap": 0.2644,
+      "insertion_precision": 0.4412,
+      "insertion_f1": 0.3704,
+      "fwr": 1.180
+    }
+  },
+  "records_broken": [
+    "ALL_TIME_CAMPAIGN_HIGH_MACRO_AP_0.5965",
+    "ALL_TIME_CAMPAIGN_HIGH_MACRO_PRECISION_0.6338",
+    "ALL_TIME_CAMPAIGN_HIGH_OMISSION_AP_0.4000",
+    "ALL_TIME_CAMPAIGN_HIGH_SUBSTITUTION_AP_0.4161",
+    "ALL_TIME_CAMPAIGN_HIGH_REPLICATION_INSERTION_AP_0.2644",
+    "ALL_TIME_CAMPAIGN_HIGH_REPLICATION_INSERTION_PRECISION_0.4412",
+    "ALL_TIME_CAMPAIGN_LOW_FALSE_WARNING_RATE_1.180"
+  ],
+  "gate_status": "LOCAL_REPRODUCED"
+}

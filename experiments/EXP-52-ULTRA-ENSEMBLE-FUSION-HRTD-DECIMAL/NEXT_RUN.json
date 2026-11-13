@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-53-CROSS-DIALECT-PHONETIC-ADAPTATION",
+  "hypothesis_id": "H48-dialect-invariant-adaptation",
+  "method_id": "M53-dialect-adapter",
+  "description": "Continuous auto-research loop: L1-accent invariant dynamic adapter mitigating phonetic transfer blindspots across Arabic, Chinese, Hindi, Korean, Spanish, and Vietnamese speakers",
+  "prerequisites_met": true,
+  "resource_lease": "cuda"
+}

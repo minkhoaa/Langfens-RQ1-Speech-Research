@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-35-ENDLESS-SEARCH-CROSS-ACCENT-TRANSFER",
+  "hypothesis_id": "H30-cross-accent-generalization",
+  "method_id": "M35-cross-accent-generalizer",
+  "description": "Continuous auto-research loop: Detailed cross-accent generalization breakdown across all 6 L1 native language cohorts (Arabic, Mandarin, Spanish, Hindi, Korean, Vietnamese) for the Hexad-Pareto and PNC-Net models",
+  "prerequisites_met": true,
+  "resource_lease": "cuda"
+}

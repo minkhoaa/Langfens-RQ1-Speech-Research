@@ -1,0 +1,42 @@
+run_id: "EXP-52-ULTRA-ENSEMBLE-FUSION-HRTD-DECIMAL"
+hypothesis_id: "H47-undecim-super-ensemble"
+method_id: "M52-undecim-ensemble-sweeper"
+experiment_type: "11_MODEL_UNDECIM_SUPER_ENSEMBLE"
+date: "2026-11-05"
+hardware:
+  device: "cuda"
+  gpu_name: "NVIDIA GeForce GTX 1650"
+  vram_allocated_mb: 260
+models_fused:
+  model_1: "PSC-Net (EXP-22)"
+  model_2: "SRAD-Net (EXP-17)"
+  model_3: "NNA-Adapter (EXP-21)"
+  model_4: "Conformer (EXP-10)"
+  model_5: "JSAC-Net (EXP-24)"
+  model_6: "APED-Net (EXP-28)"
+  model_7: "PNC-Net (EXP-34)"
+  model_8: "HTC-Net (EXP-38)"
+  model_9: "VTLN-HTC-Net (EXP-42)"
+  model_10: "DMCT-Net (EXP-44)"
+  model_11: "HRTD-Net (EXP-48: 5ms Sub-frame Dynamics)"
+optimal_weights:
+  target_mixture: [0.04, 0.05, 0.04, 0.04, 0.06, 0.08, 0.08, 0.10, 0.05, 0.16, 0.30]
+  gap_mixture: [0.04, 0.06, 0.06, 0.07, 0.06, 0.09, 0.12, 0.10, 0.08, 0.12, 0.20]
+operating_thresholds:
+  dev_cal_pareto_score: 3.1413
+  theta_subs: 0.50
+  theta_omis: 0.52
+  theta_ins: 0.60
+evaluation:
+  protocol: "PROTOCOL_ALPHA_TARGET_MONOTONIC_V1"
+  search_utility: 0.4241
+  rep_utility: 0.4792
+  rep_macro_ap: 0.6244
+  rep_macro_f1: 0.6129
+  rep_macro_precision: 0.6382
+  rep_omission_ap: 0.4503
+  rep_substitution_ap: 0.4481
+  rep_substitution_f1: 0.4678
+  rep_insertion_ap: 0.2816
+  rep_insertion_precision: 0.4643
+  status: "LOCAL_REPRODUCED"

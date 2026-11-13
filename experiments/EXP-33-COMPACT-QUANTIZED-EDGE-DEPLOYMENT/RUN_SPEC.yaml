@@ -1,0 +1,32 @@
+run_id: "EXP-33-COMPACT-QUANTIZED-EDGE-DEPLOYMENT"
+hypothesis_id: "H28-quantized-edge-efficiency"
+method_id: "M33-int8-quantization-profiler"
+experiment_type: "POST_TRAINING_INT8_DYNAMIC_QUANTIZATION"
+date: "2026-11-05"
+hardware:
+  device: "cpu"
+  cpu_name: "12th Gen Intel Core i5-12450H"
+  vram_allocated_mb: 0
+inputs:
+  fp32_checkpoint: "experiments/EXP-28-PROSODIC-ENERGY-DYNAMICS/CHECKPOINTS/aped_net.pt"
+  eval_cohort: "DEV_REPLICATION (300 utts)"
+profiling:
+  fp32_size_mb: 2.05
+  int8_size_mb: 0.55
+  footprint_reduction_pct: 73.2
+  mean_latency_ms: 6.36
+  p95_latency_ms: 9.00
+  rtf_cpu: 0.00164
+  throughput_utts_sec: 154.9
+evaluation:
+  protocol: "PROTOCOL_ALPHA_TARGET_MONOTONIC_V1"
+  int8_utility: 0.4244
+  int8_macro_f1: 0.5752
+  int8_macro_precision: 0.5841
+  int8_substitution_f1: 0.4414
+  int8_omission_f1: 0.3567
+  int8_insertion_f1: 0.3523
+  delta_macro_f1: 0.0027
+  delta_utility: 0.0007
+  parity_maintained: true
+  status: "PRODUCTION_CERTIFIED"

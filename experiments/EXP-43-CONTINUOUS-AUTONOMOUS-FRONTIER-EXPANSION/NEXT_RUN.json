@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-44-SELF-SUPERVISED-DYNAMIC-MASKING",
+  "hypothesis_id": "H39-masked-phonetic-context-recovery",
+  "method_id": "M44-dynamic-masking-trainer",
+  "description": "Continuous auto-research loop: Dynamic acoustic token masking and phonetic recovery pre-training to enhance phoneme insertion and omission boundary robustness",
+  "prerequisites_met": true,
+  "resource_lease": "cuda"
+}

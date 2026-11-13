@@ -1,0 +1,13 @@
+{
+  "run_id": "EXP-17-ADAPTIVE-DURATION-CTC",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "started_at": "2026-11-05T01:45:00Z",
+  "completed_at": "2026-11-05T01:45:45Z",
+  "duration_seconds": 45.0,
+  "dev_rep_omission_f1": 0.3926,
+  "dev_rep_substitution_f1": 0.3763,
+  "dev_rep_macro_f1": 0.5671,
+  "dev_rep_utility": 0.4227,
+  "gate_status": "LOCAL_REPRODUCED"
+}

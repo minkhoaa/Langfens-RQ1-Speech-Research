@@ -1,0 +1,47 @@
+{
+  "run_id": "EXP-85-ADAPTIVE-DURATION-WARPED-ALIGNER",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "start_time": "2026-11-05T11:45:00Z",
+  "end_time": "2026-11-05T11:49:00Z",
+  "duration_seconds": 240.0,
+  "device": "cuda",
+  "epochs": 10,
+  "operating_thresholds": {
+    "theta_subs": 0.54,
+    "theta_omis": 0.54,
+    "theta_ins": 0.60
+  },
+  "metrics": {
+    "dev_replication": {
+      "utility": 0.48011465542302106,
+      "macro_ap": 0.5980450195305987,
+      "macro_precision": 0.578084048106022,
+      "macro_recall": 0.6523805897697084,
+      "macro_f1": 0.6081095474656785,
+      "correct_ap": 0.9723328218176537,
+      "omission_ap": 0.3878397421942836,
+      "omission_f1": 0.447900466562986,
+      "omission_recall": 0.5603112840466926,
+      "substitution_ap": 0.433962494579859,
+      "substitution_f1": 0.4554744525547445,
+      "substitution_recall": 0.49056603773584906,
+      "insertion_ap": 0.23573376630176418,
+      "insertion_f1": 0.32,
+      "insertion_recall": 0.2978723404255319,
+      "overall_ece": 0.01919486801292951,
+      "false_warning_rate_per_utt": 3.0933333333333333
+    },
+    "dev_search": {
+      "utility": 0.41915024021678116,
+      "macro_ap": 0.5518631912140674,
+      "omission_ap": 0.257553540616818,
+      "omission_recall": 0.507177033492823,
+      "substitution_ap": 0.41858153411051197,
+      "insertion_ap": 0.22407484952703388,
+      "false_warning_rate_per_utt": 3.614357262103506
+    }
+  },
+  "gate_status": "LOCAL_REPRODUCED",
+  "hypothesis_verdict": "CONFIRMED_OMISSION_RECALL_RECORD"
+}

@@ -1,0 +1,143 @@
+{
+  "best_config": {
+    "theta_subs": 0.55,
+    "theta_omis": 0.55,
+    "theta_ins": 0.6
+  },
+  "dev_search": {
+    "counts": {
+      "total_utterances": 599,
+      "total_target_phones": 19755,
+      "total_gaps": 20354,
+      "false_omissions": 346,
+      "false_substitutions": 722,
+      "false_insertions": 125,
+      "total_false_warnings": 1193
+    },
+    "classes": {
+      "CORRECT": {
+        "ap": 0.9779048840297906,
+        "precision": 0.9305293530129841,
+        "recall": 0.9433007087411407,
+        "f1": 0.9368715083798883
+      },
+      "OMISSION": {
+        "ap": 0.22509157986760872,
+        "precision": 0.19907407407407407,
+        "recall": 0.41148325358851673,
+        "f1": 0.26833073322932915
+      },
+      "SUBSTITUTION": {
+        "ap": 0.3577367124429055,
+        "precision": 0.44504227517294387,
+        "recall": 0.32748868778280543,
+        "f1": 0.37732160312805474
+      },
+      "INSERTION": {
+        "ap": 0.24762796622024727,
+        "precision": 0.23780487804878048,
+        "recall": 0.312,
+        "f1": 0.2698961937716263
+      }
+    },
+    "macro": {
+      "precision": 0.524881900753334,
+      "recall": 0.5607575500374876,
+      "f1": 0.5275079482457574,
+      "ap": 0.5202443921134349
+    },
+    "diagnostics": {
+      "coverage": 1.0,
+      "target_ece": 0.14077243604288314,
+      "gap_ece": 0.010242402949713892,
+      "overall_ece": 0.07550741949629852,
+      "false_warning_rate_per_utt": 1.991652754590985
+    },
+    "utility": {
+      "score": 0.3801648383560223,
+      "components": {
+        "omission_ap": 0.22509157986760872,
+        "omission_f1": 0.26833073322932915,
+        "substitution_ap_f1": 0.3675291577854801,
+        "insertion_ap_f1": 0.2587620799959368,
+        "correct_ap_f1": 0.9573881962048394,
+        "macro_balance": 0.5422269585193443,
+        "coverage_risk": 0.0,
+        "calibration": 0.6224629025185073
+      }
+    },
+    "gates": {
+      "milestone_60": false,
+      "outstanding_80": false,
+      "status": "EXPLORATORY"
+    }
+  },
+  "dev_replication": {
+    "counts": {
+      "total_utterances": 300,
+      "total_target_phones": 9863,
+      "total_gaps": 10163,
+      "false_omissions": 162,
+      "false_substitutions": 299,
+      "false_insertions": 75,
+      "total_false_warnings": 536
+    },
+    "classes": {
+      "CORRECT": {
+        "ap": 0.9689727555581641,
+        "precision": 0.9127107364685004,
+        "recall": 0.9511095700416089,
+        "f1": 0.9315146026714964
+      },
+      "OMISSION": {
+        "ap": 0.32045844547696256,
+        "precision": 0.35968379446640314,
+        "recall": 0.3540856031128405,
+        "f1": 0.3568627450980392
+      },
+      "SUBSTITUTION": {
+        "ap": 0.3740281779605348,
+        "precision": 0.49663299663299665,
+        "recall": 0.30922431865828093,
+        "f1": 0.38113695090439276
+      },
+      "INSERTION": {
+        "ap": 0.2070426990044735,
+        "precision": 0.2647058823529412,
+        "recall": 0.2872340425531915,
+        "f1": 0.2755102040816326
+      }
+    },
+    "macro": {
+      "precision": 0.5896758425226334,
+      "recall": 0.5381398306042434,
+      "f1": 0.5565047662246428,
+      "ap": 0.5544864596652205
+    },
+    "diagnostics": {
+      "coverage": 1.0,
+      "target_ece": 0.13062508025493774,
+      "gap_ece": 0.012265490555764862,
+      "overall_ece": 0.0714452854053513,
+      "false_warning_rate_per_utt": 1.7866666666666666
+    },
+    "utility": {
+      "score": 0.41000179185983804,
+      "components": {
+        "omission_ap": 0.32045844547696256,
+        "omission_f1": 0.3568627450980392,
+        "substitution_ap_f1": 0.37758256443246374,
+        "insertion_ap_f1": 0.24127645154305305,
+        "correct_ap_f1": 0.9502436791148303,
+        "macro_balance": 0.5627303566845284,
+        "coverage_risk": 0.0,
+        "calibration": 0.6427735729732434
+      }
+    },
+    "gates": {
+      "milestone_60": false,
+      "outstanding_80": false,
+      "status": "EXPLORATORY"
+    }
+  }
+}

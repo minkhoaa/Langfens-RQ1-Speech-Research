@@ -1,0 +1,75 @@
+{
+  "counts": {
+    "total_utterances": 599,
+    "total_target_phones": 19755,
+    "total_gaps": 20354,
+    "false_omissions": 338,
+    "false_substitutions": 772,
+    "false_insertions": 50,
+    "total_false_warnings": 1160
+  },
+  "classes": {
+    "CORRECT": {
+      "ap": 0.9805755671717966,
+      "precision": 0.9397976391231029,
+      "recall": 0.9404319946000675,
+      "f1": 0.940114709851552
+    },
+    "OMISSION": {
+      "ap": 0.292306657330422,
+      "precision": 0.2318181818181818,
+      "recall": 0.4880382775119617,
+      "f1": 0.31432973805855163
+    },
+    "SUBSTITUTION": {
+      "ap": 0.4338250305645385,
+      "precision": 0.4937704918032787,
+      "recall": 0.4259049773755656,
+      "f1": 0.45733373823261464
+    },
+    "INSERTION": {
+      "ap": 0.2525214730414576,
+      "precision": 0.4186046511627907,
+      "recall": 0.288,
+      "f1": 0.3412322274881517
+    }
+  },
+  "macro": {
+    "precision": 0.5551287709148545,
+    "recall": 0.6181250831625316,
+    "f1": 0.5705927287142395,
+    "ap": 0.5689024183555857
+  },
+  "diagnostics": {
+    "coverage": 1.0,
+    "target_ece": 0.06167950845386143,
+    "gap_ece": 0.011796152601803934,
+    "overall_ece": 0.03673783052783268,
+    "false_warning_rate_per_utt": 1.9365609348914858
+  },
+  "utility": {
+    "score": 0.4385230606201807,
+    "components": {
+      "omission_ap": 0.292306657330422,
+      "omission_f1": 0.31432973805855163,
+      "substitution_ap_f1": 0.4455793843985766,
+      "insertion_ap_f1": 0.29687685026480465,
+      "correct_ap_f1": 0.9603451385116744,
+      "macro_balance": 0.5849356752507636,
+      "coverage_risk": 0.0,
+      "calibration": 0.8163108473608366
+    }
+  },
+  "gates": {
+    "milestone_60": false,
+    "outstanding_80": false,
+    "status": "EXPLORATORY"
+  },
+  "efficiency": {
+    "tier1_target_exit_rate": 0.6765375854214123,
+    "tier1_gap_exit_rate": 0.9397170089417314,
+    "overall_early_exit_rate": 0.810092497943105,
+    "effective_cpu_latency_ms": 21.6,
+    "effective_cpu_speedup": 4.4
+  }
+}

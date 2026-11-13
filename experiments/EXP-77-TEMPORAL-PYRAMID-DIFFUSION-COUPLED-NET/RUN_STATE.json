@@ -1,0 +1,48 @@
+{
+  "run_id": "EXP-77-TEMPORAL-PYRAMID-DIFFUSION-COUPLED-NET",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "start_time": "2026-11-05T09:50:00Z",
+  "end_time": "2026-11-05T09:55:00Z",
+  "duration_seconds": 300.0,
+  "device": "cuda",
+  "epochs": 10,
+  "ddim_steps": 4,
+  "operating_thresholds": {
+    "theta_subs": 0.54,
+    "theta_omis": 0.54,
+    "theta_ins": 0.60
+  },
+  "metrics": {
+    "dev_replication": {
+      "utility": 0.4884183622489423,
+      "macro_ap": 0.601312524317239,
+      "macro_precision": 0.5825451385619228,
+      "macro_recall": 0.6637076504904451,
+      "macro_f1": 0.6155948653661293,
+      "correct_ap": 0.9727161561670692,
+      "omission_ap": 0.3986272976798332,
+      "omission_f1": 0.44657097288676234,
+      "omission_recall": 0.5447470817120622,
+      "substitution_ap": 0.4325941191048146,
+      "substitution_f1": 0.47996315062183326,
+      "substitution_recall": 0.5461215932914046,
+      "insertion_ap": 0.26436533772691645,
+      "insertion_f1": 0.3502824858757062,
+      "insertion_recall": 0.32978723404255317,
+      "overall_ece": 0.019196889645958122,
+      "false_warning_rate_per_utt": 3.26
+    },
+    "dev_search": {
+      "utility": 0.4282004198424374,
+      "macro_ap": 0.559007634121451,
+      "macro_recall": 0.6657524536239471,
+      "omission_ap": 0.28319341200404313,
+      "substitution_ap": 0.4153828502552075,
+      "insertion_ap": 0.21771870261615592,
+      "false_warning_rate_per_utt": 3.9065108514190316
+    }
+  },
+  "gate_status": "LOCAL_REPRODUCED",
+  "hypothesis_verdict": "CONFIRMED_MACRO_RECALL_PEAK"
+}

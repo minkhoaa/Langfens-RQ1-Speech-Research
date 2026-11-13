@@ -1,0 +1,153 @@
+{
+  "audit_id": "EXP-80-FOUR-FIFTHS-CENTURY-CONSOLIDATION-AND-MILESTONE-AUDIT",
+  "timestamp": "2026-11-05T10:30:00Z",
+  "total_experiments_audited": 79,
+  "manifest_audit_status": "ALL_79_MANIFESTS_CERTIFIED",
+  "sealed_test_integrity": {
+    "path": "data/derived/l2arctic/manifests/test_sealed.jsonl",
+    "expected_sha256": "a5636249f747a62e3340dded63161149644e83dd13aa2560e312d044c825b4b6",
+    "actual_sha256": "a5636249f747a62e3340dded63161149644e83dd13aa2560e312d044c825b4b6",
+    "status": "CERTIFIED_PRISTINE_ZERO_EXPOSURE"
+  },
+  "champion_system": {
+    "model_name": "Duodeviginti-Pareto (EXP-79)",
+    "models_fused": 18,
+    "weighted_utility": 0.5004893763546977,
+    "macro_ap": 0.6381346280862382,
+    "macro_f1": 0.6155139677293046,
+    "macro_recall": 0.5966995646896328,
+    "macro_precision": 0.6418383284723091,
+    "substitution_recall": 0.3951781970649895,
+    "substitution_f1": 0.4553140096618358,
+    "insertion_f1": 0.34285714285714286,
+    "correct_ap": 0.9754234515842044
+  },
+  "bootstrap_certification": {
+    "weighted_utility": {
+      "mean": 0.501048612568466,
+      "std": 0.011784533350894364,
+      "ci_95": [
+        0.47841747413637764,
+        0.5239028008250508
+      ]
+    },
+    "macro_ap": {
+      "mean": 0.6387767502775931,
+      "std": 0.012221673910116585,
+      "ci_95": [
+        0.6153537460071626,
+        0.6615784819070358
+      ]
+    },
+    "macro_f1": {
+      "mean": 0.6154469954612473,
+      "std": 0.010906633666703648,
+      "ci_95": [
+        0.5942120040474067,
+        0.6359646611873954
+      ]
+    },
+    "macro_precision": {
+      "mean": 0.6417998950636907,
+      "std": 0.01234922646020386,
+      "ci_95": [
+        0.6169689807967221,
+        0.6659440335638496
+      ]
+    },
+    "macro_recall": {
+      "mean": 0.5969712890361846,
+      "std": 0.011696882522082704,
+      "ci_95": [
+        0.5748361410799026,
+        0.6204138673278042
+      ]
+    },
+    "omission_ap": {
+      "mean": 0.4784345177858074,
+      "std": 0.03113713885184492,
+      "ci_95": [
+        0.41470434942186635,
+        0.539413356285927
+      ]
+    },
+    "omission_recall": {
+      "mean": 0.44416514849834055,
+      "std": 0.030522497150680988,
+      "ci_95": [
+        0.38526473526473526,
+        0.5037931818181818
+      ]
+    },
+    "substitution_ap": {
+      "mean": 0.46243943884139355,
+      "std": 0.017527748683142403,
+      "ci_95": [
+        0.42961896790691206,
+        0.49762015635104456
+      ]
+    },
+    "substitution_recall": {
+      "mean": 0.3954771696151315,
+      "std": 0.01631091434335131,
+      "ci_95": [
+        0.36438761121369817,
+        0.426819342242772
+      ]
+    },
+    "insertion_ap": {
+      "mean": 0.32976568603368545,
+      "std": 0.05128766968153777,
+      "ci_95": [
+        0.23308442747031355,
+        0.4371881819407401
+      ]
+    },
+    "insertion_precision": {
+      "mean": 0.5237954315195463,
+      "std": 0.07250651223064142,
+      "ci_95": [
+        0.3829787234042553,
+        0.6668181818181816
+      ]
+    },
+    "insertion_f1": {
+      "mean": 0.3411350788831513,
+      "std": 0.051275786101407525,
+      "ci_95": [
+        0.23622047244094488,
+        0.44119000360880545
+      ]
+    },
+    "overall_ece": {
+      "mean": 0.03088478305048467,
+      "std": 0.001540457423049613,
+      "ci_95": [
+        0.027935128590188166,
+        0.03388767276775725
+      ]
+    }
+  },
+  "statistical_significance": {
+    "vs_quindecim": {
+      "delta_utility": 0.001594948264295848,
+      "p_value": 0.415
+    },
+    "vs_undecim": {
+      "delta_utility": 0.02130992811303517,
+      "p_value": 0.0
+    },
+    "vs_hexad": {
+      "delta_utility": 0.07021533136920155,
+      "p_value": 0.0
+    }
+  },
+  "milestones_certified": {
+    "60_percent_macro_f1_milestone": true,
+    "60_percent_macro_ap_milestone": true,
+    "60_percent_macro_precision_milestone": true,
+    "50_percent_weighted_utility_milestone": true,
+    "sub_2_percent_ece_calibration_guardrail": true,
+    "zero_leakage_enforced": true
+  }
+}

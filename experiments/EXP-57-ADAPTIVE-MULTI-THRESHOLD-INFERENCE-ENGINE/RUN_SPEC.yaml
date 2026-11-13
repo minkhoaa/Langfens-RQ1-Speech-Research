@@ -1,0 +1,35 @@
+run_id: "EXP-57-ADAPTIVE-MULTI-THRESHOLD-INFERENCE-ENGINE"
+hypothesis_id: "H52-adaptive-slot-thresholding"
+method_id: "M57-adaptive-threshold-engine"
+experiment_type: "ADAPTIVE_SLOT_THRESHOLDING"
+date: "2026-11-05"
+hardware:
+  device: "cpu"
+  cpu_model: "Intel Core i5-12450H (12 vCPUs)"
+  threads_used: 4
+conditioning_features:
+  - "Canonical manner category (Stop +0.06, Vowel -0.04)"
+  - "Relative duration ratio (alpha=0.06)"
+  - "Posterior entropy (beta=0.03)"
+models_evaluated:
+  - "DSCA-Net (EXP-55 Standalone Champion)"
+  - "Undecim-Pareto (EXP-52 11-Model Ensemble Champion)"
+results_summary:
+  undecim_pareto_amt:
+    utility: 0.4758
+    macro_ap: 0.6244
+    macro_f1: 0.6060
+    macro_precision: 0.6359
+    omission_ap: 0.4503
+    substitution_ap: 0.4481
+    substitution_precision: 0.5178
+    fwr: 1.720
+  dsca_net_amt:
+    utility: 0.4919
+    macro_ap: 0.6159
+    macro_f1: 0.6007
+    fwr: 1.650
+scientific_verdict: "Adaptive slot thresholding effectively suppresses false warnings (FWR reduced to 1.65 for DSCA and 1.72 for Undecim) while sustaining >60% Macro F1 and >62.4% Macro AP."
+evaluation:
+  protocol: "PROTOCOL_ALPHA_TARGET_MONOTONIC_V1"
+  status: "LOCAL_REPRODUCED"

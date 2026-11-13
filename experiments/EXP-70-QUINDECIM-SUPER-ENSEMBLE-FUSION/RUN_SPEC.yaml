@@ -1,0 +1,43 @@
+experiment_id: EXP-70-QUINDECIM-SUPER-ENSEMBLE-FUSION
+hypothesis_id: H65-quindecim-super-ensemble
+method_id: M70-quindecim-ensemble-sweeper
+protocol: PROTOCOL_ALPHA_TARGET_MONOTONIC_V1
+split:
+  train: 1800
+  dev_search: 599
+  dev_cal: 300
+  dev_replication: 300
+  test_sealed: 600
+device: cuda
+model_roster:
+  - PSC-Net (EXP-22)
+  - SRAD-Net (EXP-17)
+  - NNA-Adapter (EXP-21)
+  - ConformerScorer (EXP-10)
+  - JSAC-Net (EXP-24)
+  - APED-Net (EXP-28)
+  - PNC-Net (EXP-34)
+  - HTC-Net (EXP-38)
+  - VTLN-HTC-Net (EXP-42)
+  - DMCT-Net (EXP-44)
+  - HRTD-Net (EXP-48)
+  - DSCA-Net (EXP-55)
+  - TDIS-Net (EXP-63)
+  - P-ALDS-Net (EXP-65)
+  - IPTM-Net (EXP-69)
+features:
+  target_acoustic_dim: 67
+  prompt_dim: 47
+  gap_dim: 13
+  manner_conditioning: true
+  interlanguage_priors: true
+  triad_gap_categories: true
+calibration_split: dev_cal
+evaluation_splits:
+  - dev_search
+  - dev_replication
+tags:
+  - 15_model_quindecim_super_ensemble
+  - convex_pareto_sweeper
+  - bayesian_mixture
+  - zero_leakage_enforced

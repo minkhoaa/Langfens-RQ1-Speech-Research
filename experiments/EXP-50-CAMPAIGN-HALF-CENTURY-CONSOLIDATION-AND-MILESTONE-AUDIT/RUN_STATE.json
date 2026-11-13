@@ -1,0 +1,33 @@
+{
+  "run_id": "EXP-50-CAMPAIGN-HALF-CENTURY-CONSOLIDATION-AND-MILESTONE-AUDIT",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "started_at": "2026-11-05T05:38:00Z",
+  "completed_at": "2026-11-05T05:40:20Z",
+  "duration_seconds": 140.0,
+  "device": "cpu",
+  "audit_summary": {
+    "prior_experiments_audited": 49,
+    "manifests_verified": 49,
+    "sealed_test_sha256": "a5636249f747a62e3340dded63161149644e83dd13aa2560e312d044c825b4b6",
+    "leakage_detected": false
+  },
+  "bootstrap_metrics": {
+    "macro_ap_mean": 0.6207,
+    "macro_ap_ci95": [0.5960, 0.6448],
+    "macro_f1_mean": 0.6046,
+    "macro_f1_ci95": [0.5834, 0.6253],
+    "utility_mean": 0.4849,
+    "utility_ci95": [0.4614, 0.5072],
+    "substitution_ap_mean": 0.4494,
+    "omission_ap_mean": 0.4383,
+    "overall_ece_mean": 0.0122
+  },
+  "hypothesis_testing": {
+    "p_value_vs_dmct": 0.0001,
+    "p_value_vs_hexad": 0.00001,
+    "statistically_significant": true
+  },
+  "receipt_sealed": true,
+  "gate_status": "AUDIT_CERTIFIED"
+}

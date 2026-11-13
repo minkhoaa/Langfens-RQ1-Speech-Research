@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-41-ZERO-SHOT-L2-ARCTIC-TRANSFER-BENCHMARK",
+  "hypothesis_id": "H36-unsupervised-cross-corpus-transfer",
+  "method_id": "M41-unsupervised-transfer-evaluator",
+  "description": "Continuous auto-research loop: High-resolution phoneme-level diagnostic transfer across divergent non-native corpora without task-specific adaptation",
+  "prerequisites_met": true,
+  "resource_lease": "cuda"
+}

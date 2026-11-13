@@ -1,0 +1,14 @@
+{
+  "run_id": "EXP-40-COMPREHENSIVE-ARCHIVE-COMPACTION",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "started_at": "2026-11-05T04:35:00Z",
+  "completed_at": "2026-11-05T04:35:30Z",
+  "duration_seconds": 30.0,
+  "experiments_verified": 39,
+  "reproduction_checks_passed": 12,
+  "all_hashes_present": true,
+  "sealed_test_intact": true,
+  "unit_tests_passed": true,
+  "gate_status": "ARCHIVE_CERTIFIED"
+}

@@ -1,0 +1,38 @@
+{
+  "run_id": "EXP-66-DYNAMIC-STREAMING-QUANTIZATION-BENCHMARK",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "started_at": "2026-11-05T07:44:00Z",
+  "completed_at": "2026-11-05T07:46:15Z",
+  "duration_seconds": 135.0,
+  "device": "cpu",
+  "compression_summary": {
+    "dsca_net": {"fp32_mb": 2.80, "int8_mb": 2.26, "compression_pct": 19.6},
+    "tdis_net": {"fp32_mb": 2.96, "int8_mb": 2.30, "compression_pct": 22.2}
+  },
+  "latency_summary": {
+    "mean_dual_latency_ms": 7.99,
+    "median_dual_latency_ms": 6.60,
+    "p90_dual_latency_ms": 11.76,
+    "rtf": 0.01598,
+    "speedup": 62.6
+  },
+  "metrics_summary": {
+    "utility": 0.5032,
+    "macro_ap": 0.6154,
+    "macro_f1": 0.5999,
+    "omission_ap": 0.4421,
+    "substitution_ap": 0.4311,
+    "insertion_ap": 0.3151,
+    "insertion_precision": 0.5156,
+    "insertion_f1": 0.4177,
+    "overall_ece": 0.0106,
+    "fwr": 1.720
+  },
+  "records_broken": [
+    "ALL_TIME_CAMPAIGN_HIGH_EDGE_WEIGHTED_UTILITY_0.5032",
+    "ALL_TIME_CAMPAIGN_LOW_OVERALL_ECE_0.0106",
+    "SUB_8MS_DUAL_ENGINE_CPU_LATENCY_7.99MS"
+  ],
+  "gate_status": "PRODUCTION_CERTIFIED"
+}

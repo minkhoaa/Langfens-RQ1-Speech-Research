@@ -1,0 +1,17 @@
+run_id: "EXP-01-PRIOR"
+hypothesis_id: "H01-gop-acoustic-evidence"
+method_id: "M01-prior-baseline"
+experiment_type: "NEGATIVE_CONTROL_TEXT_PRIOR"
+operating_split: "DEV_SEARCH"
+date: "2026-11-04"
+hardware:
+  device: "cpu"
+  vram_allocated_mb: 0
+inputs:
+  train_manifest: "data/derived/l2arctic/manifests/train.jsonl"
+  dev_manifest: "data/derived/l2arctic/manifests/dev_search.jsonl"
+  audio_used: false
+hyperparameters:
+  strategy: "class_frequency_prior"
+  threshold_correct: 0.50
+  threshold_insertion: 0.50

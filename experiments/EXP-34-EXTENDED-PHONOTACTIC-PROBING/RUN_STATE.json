@@ -1,0 +1,45 @@
+{
+  "run_id": "EXP-34-EXTENDED-PHONOTACTIC-PROBING",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "started_at": "2026-11-05T04:00:00Z",
+  "completed_at": "2026-11-05T04:01:10Z",
+  "duration_seconds": 70.0,
+  "device": "cuda",
+  "dev_cal_pareto_score": 2.7441,
+  "optimal_thresholds": {
+    "theta_subs": 0.55,
+    "theta_omis": 0.55,
+    "theta_ins": 0.60
+  },
+  "metrics_summary": {
+    "dev_search": {
+      "utility": 0.3681,
+      "macro_ap": 0.5167,
+      "macro_precision": 0.5228,
+      "macro_f1": 0.5223,
+      "omission_ap": 0.1965,
+      "substitution_ap": 0.3746,
+      "substitution_f1": 0.3926,
+      "insertion_f1": 0.2403
+    },
+    "dev_replication": {
+      "utility": 0.4255,
+      "macro_ap": 0.5565,
+      "macro_precision": 0.5951,
+      "macro_f1": 0.5669,
+      "omission_ap": 0.3188,
+      "omission_f1": 0.3799,
+      "substitution_ap": 0.3818,
+      "substitution_precision": 0.5067,
+      "insertion_f1": 0.3692,
+      "insertion_precision": 0.3564,
+      "insertion_recall": 0.3830
+    }
+  },
+  "records_broken": [
+    "ALL_TIME_CAMPAIGN_HIGH_INSERTION_F1_0.3692",
+    "STANDALONE_MODEL_SUBSTITUTION_PRECISION_0.5067"
+  ],
+  "gate_status": "LOCAL_REPRODUCED"
+}

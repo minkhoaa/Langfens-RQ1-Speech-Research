@@ -1,0 +1,64 @@
+{
+  "run_id": "EXP-48-HIGH-RESOLUTION-TEMPORAL-REFINEMENT",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "started_at": "2026-11-05T05:25:00Z",
+  "completed_at": "2026-11-05T05:28:10Z",
+  "duration_seconds": 190.0,
+  "device": "cpu",
+  "optimal_thresholds": {
+    "theta_subs": 0.50,
+    "theta_omis": 0.50,
+    "theta_ins": 0.60
+  },
+  "metrics_summary": {
+    "dev_search": {
+      "utility": 0.4429,
+      "macro_ap": 0.5672,
+      "macro_precision": 0.5295,
+      "macro_recall": 0.6379,
+      "macro_f1": 0.5543,
+      "omission_ap": 0.3236,
+      "omission_recall": 0.5694,
+      "substitution_ap": 0.3978,
+      "substitution_f1": 0.4318,
+      "overall_ece": 0.0144,
+      "fwr": 2.416
+    },
+    "dev_replication": {
+      "utility": 0.4846,
+      "macro_ap": 0.6202,
+      "macro_precision": 0.6084,
+      "macro_recall": 0.6070,
+      "macro_f1": 0.6050,
+      "omission_ap": 0.4375,
+      "omission_recall": 0.4825,
+      "omission_f1": 0.4421,
+      "substitution_ap": 0.4487,
+      "substitution_f1": 0.4410,
+      "correct_ap": 0.9743,
+      "correct_f1": 0.9320,
+      "insertion_ap": 0.2130,
+      "insertion_f1": 0.2632,
+      "overall_ece": 0.0117,
+      "fwr": 2.037
+    }
+  },
+  "records_broken": [
+    "ALL_TIME_CAMPAIGN_HIGH_MACRO_AP_0.6202",
+    "BROKE_60_PERCENT_MACRO_F1_MILESTONE_0.6050",
+    "ALL_TIME_CAMPAIGN_HIGH_WEIGHTED_UTILITY_0.4846",
+    "ALL_TIME_CAMPAIGN_HIGH_SUBSTITUTION_AP_0.4487",
+    "ALL_TIME_CAMPAIGN_HIGH_REPLICATION_OMISSION_AP_0.4375",
+    "BROKE_30_PERCENT_SEARCH_OMISSION_AP_0.3236",
+    "ALL_TIME_CAMPAIGN_LOW_CALIBRATION_ECE_0.0117"
+  ],
+  "falsification_checks": {
+    "search_omission_ap_ge_0.2800": true,
+    "replication_omission_ap_ge_0.4200": true,
+    "utility_ge_0.4450": true,
+    "macro_ap_ge_0.6000": true,
+    "substitution_ap_ge_0.3900": true
+  },
+  "gate_status": "LOCAL_REPRODUCED"
+}

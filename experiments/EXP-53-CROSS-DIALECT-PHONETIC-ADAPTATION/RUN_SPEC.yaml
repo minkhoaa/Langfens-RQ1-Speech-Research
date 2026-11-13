@@ -1,0 +1,35 @@
+run_id: "EXP-53-CROSS-DIALECT-PHONETIC-ADAPTATION"
+hypothesis_id: "H48-dialect-invariant-adaptation"
+method_id: "M53-dialect-adapter"
+experiment_type: "CROSS_DIALECT_FILM_ADAPTATION"
+date: "2026-11-05"
+hardware:
+  device: "cpu"
+  cpu_model: "Intel Core i5-12450H (12 vCPUs)"
+  threads_used: 4
+dialect_modulation:
+  vector_dimension: 16
+  modulation_type: "Feature-wise Linear Modulation (FiLM)"
+  conditioned_layer: "Post-LayerNorm before Monotonic Attention"
+cross_l1_consistency:
+  mean_macro_f1: 0.5681
+  sigma_l1_f1: 0.0580
+  mean_macro_ap: 0.5875
+  sigma_l1_ap: 0.0596
+  variance_reduction_vs_exp35: "Reduced from 0.0725 to 0.0580 (20.0% relative variance reduction)"
+results_summary:
+  dev_replication:
+    utility: 0.4639
+    macro_ap: 0.5969
+    macro_precision: 0.5936
+    macro_recall: 0.5804
+    macro_f1: 0.5821
+    omission_ap: 0.4093
+    omission_f1: 0.4365
+    substitution_ap: 0.4103
+    substitution_f1: 0.3798
+    overall_ece: 0.0235
+    fwr: 1.977
+evaluation:
+  protocol: "PROTOCOL_ALPHA_TARGET_MONOTONIC_V1"
+  status: "LOCAL_REPRODUCED"

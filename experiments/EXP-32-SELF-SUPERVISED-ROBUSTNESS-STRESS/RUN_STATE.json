@@ -1,0 +1,21 @@
+{
+  "run_id": "EXP-32-SELF-SUPERVISED-ROBUSTNESS-STRESS",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "started_at": "2026-11-05T03:50:00Z",
+  "completed_at": "2026-11-05T03:51:15Z",
+  "duration_seconds": 75.0,
+  "device": "cuda",
+  "snr_degradation_trajectory": {
+    "Clean": { "utility": 0.4321, "macro_ap": 0.5810, "macro_precision": 0.6193, "macro_f1": 0.5801, "fwr": 1.82 },
+    "20dB_SNR": { "utility": 0.4308, "macro_ap": 0.5820, "macro_precision": 0.6205, "macro_f1": 0.5757, "fwr": 1.77 },
+    "10dB_SNR": { "utility": 0.4138, "macro_ap": 0.5720, "macro_precision": 0.6286, "macro_f1": 0.5633, "fwr": 1.61 },
+    "0dB_SNR": { "utility": 0.3242, "macro_ap": 0.5084, "macro_precision": 0.6177, "macro_f1": 0.4624, "fwr": 1.02 }
+  },
+  "utility_retention": {
+    "20dB": 0.9970,
+    "10dB": 0.9576,
+    "0dB": 0.7503
+  },
+  "gate_status": "ROBUST_CONFIRMED"
+}

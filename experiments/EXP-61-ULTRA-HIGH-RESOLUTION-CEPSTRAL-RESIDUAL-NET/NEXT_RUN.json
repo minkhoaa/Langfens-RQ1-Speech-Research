@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-62-CROSS-DATASET-MULTI-HEAD-ZERO-SHOT-ADAPTER",
+  "hypothesis_id": "H57-multi-head-zero-shot-adapter",
+  "method_id": "M62-zero-shot-adapter",
+  "description": "Continuous auto-research loop: Cross-dataset multi-head zero-shot adapter bridging SpeechOcean762 and L2-ARCTIC to evaluate unsupervised representation transfer under domain-specific articulatory priors",
+  "prerequisites_met": true,
+  "resource_lease": "cpu"
+}

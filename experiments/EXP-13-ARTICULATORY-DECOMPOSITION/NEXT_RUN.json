@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-14-CROSS-VALIDATION-SWEEP",
+  "hypothesis_id": "H09-l1-accent-invariance-cross-validation",
+  "method_id": "M14-l1-group-cross-validation",
+  "description": "Nested Group Cross-Validation across all 6 L1 native language cohorts (Arabic, Chinese, Hindi, Korean, Spanish, Vietnamese) to assess accent invariance and subgroup uncertainty",
+  "prerequisites_met": true,
+  "resource_lease": "cuda"
+}

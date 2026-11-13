@@ -1,0 +1,45 @@
+run_id: "EXP-38-ENDLESS-SEARCH-HIERARCHICAL-REFINEMENT"
+hypothesis_id: "H33-hierarchical-phonetic-decision-tree"
+method_id: "M38-hierarchical-tree-refiner"
+experiment_type: "HIERARCHICAL_TWO_STAGE_CASCADED_DIAGNOSIS"
+date: "2026-11-05"
+hardware:
+  device: "cuda"
+  gpu_name: "NVIDIA GeForce GTX 1650"
+  vram_allocated_mb: 68
+inputs:
+  train_features: "data/derived/l2arctic/features/train_features.npz"
+  cal_features: "data/derived/l2arctic/features/dev_cal_features.npz"
+  search_features: "data/derived/l2arctic/features/dev_search_features.npz"
+  rep_features: "data/derived/l2arctic/features/dev_replication_features.npz"
+  lexicon: "data/original_sources/cmudict/cmudict.dict"
+hyperparameters:
+  in_target_dim: 63
+  in_gap_dim: 11
+  lstm_hidden: 96
+  proj_dim: 128
+  local_attn_sigma: 3.0
+  alpha_vowel: [1.0, 2.5, 1.5]
+  alpha_cons: [1.0, 1.5, 2.5]
+  focal_gamma: 1.5
+  optimizer: "AdamW"
+  lr: 0.0008
+  weight_decay: 0.0001
+  epochs: 30
+  batch_size: 32
+operating_thresholds:
+  dev_cal_pareto_score: 2.8322
+  theta_subs: 0.60
+  theta_omis: 0.55
+  theta_ins: 0.60
+evaluation:
+  protocol: "PROTOCOL_ALPHA_TARGET_MONOTONIC_V1"
+  search_utility: 0.3943
+  rep_utility: 0.4405
+  search_omission_ap: 0.2748
+  search_omission_recall: 0.4545
+  rep_omission_ap: 0.3923
+  rep_omission_f1: 0.4209
+  rep_omission_recall: 0.4553
+  overall_ece: 0.0504
+  status: "LOCAL_REPRODUCED"

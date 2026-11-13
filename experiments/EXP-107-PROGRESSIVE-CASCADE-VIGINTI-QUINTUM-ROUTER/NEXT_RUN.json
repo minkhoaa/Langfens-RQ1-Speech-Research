@@ -1,0 +1,11 @@
+{
+  "next_run_id": "EXP-108-CROSS-ATTENTION-SPECTRAL-NORMALIZED-RESIDUALS",
+  "hypothesis": "H103-spectral-normalized-residuals",
+  "method": "M108-spectral-residual-trainer",
+  "target": "Train a Formant-Bandwidth Normalized Spectral Residual Cross-Attention Network (FBNR-Net) coupling vocal tract formant bandwidths with cepstral residuals to resolve vowel substitutions without inflating false alarms",
+  "resource_reservation": "GPU:0",
+  "prerequisites": [
+    "EXP-101-VOCAL-TRACT-AREA-FUNCTION-INVERSION",
+    "EXP-107-PROGRESSIVE-CASCADE-VIGINTI-QUINTUM-ROUTER"
+  ]
+}

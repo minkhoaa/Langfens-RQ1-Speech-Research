@@ -1,0 +1,33 @@
+{
+  "experiment_id": "EXP-97-MULTI-SCALE-TEMPORAL-RESIDUAL-CASCADE",
+  "status": "COMPLETED",
+  "start_time": "2026-11-05T14:20:00Z",
+  "end_time": "2026-11-05T14:25:00Z",
+  "exit_code": 0,
+  "metrics": {
+    "dev_replication": {
+      "macro_f1": 0.6063212560033252,
+      "macro_ap": 0.5947414193671287,
+      "macro_precision": 0.590592025613145,
+      "macro_recall": 0.6249288019516458,
+      "weighted_utility": 0.4846151222807061,
+      "overall_ece": 0.026548049880987964,
+      "false_warning_rate_per_utt": 2.94,
+      "classes": {
+        "CORRECT": { "ap": 0.971500775291026, "precision": 0.9333963155408597, "recall": 0.9135460009246417, "f1": 0.9233644859813084 },
+        "OMISSION": { "ap": 0.38359866415382166, "precision": 0.4041095890410959, "recall": 0.4591439688715953, "f1": 0.42987249544626593 },
+        "SUBSTITUTION": { "ap": 0.42912481865653823, "precision": 0.4342701722574796, "recall": 0.5020964360587002, "f1": 0.4657267865824016 },
+        "INSERTION": { "ap": 0.31405422707241826, "precision": 0.34375, "recall": 0.46808510638297873, "f1": 0.3963963963963964 }
+      }
+    },
+    "dev_search": {
+      "macro_f1": 0.543744188937491,
+      "macro_ap": 0.5443383753577553,
+      "macro_precision": 0.5054568230493083,
+      "macro_recall": 0.6297206060520165,
+      "weighted_utility": 0.4216662031968626,
+      "overall_ece": 0.031179168029298706,
+      "false_warning_rate_per_utt": 3.4507512520868113
+    }
+  }
+}

@@ -1,0 +1,42 @@
+run_id: "EXP-50-CAMPAIGN-HALF-CENTURY-CONSOLIDATION-AND-MILESTONE-AUDIT"
+hypothesis_id: "H45-half-century-audit-consolidation"
+method_id: "M50-half-century-auditor"
+experiment_type: "HALF_CENTURY_MILESTONE_AUDIT"
+date: "2026-11-05"
+hardware:
+  device: "cpu"
+  cpu_model: "Intel Core i5-12450H (12 vCPUs)"
+audit_coverage:
+  experiments_audited: 49
+  sealed_test_file: "data/derived/l2arctic/manifests/test_sealed.jsonl"
+  sealed_test_sha256: "a5636249f747a62e3340dded63161149644e83dd13aa2560e312d044c825b4b6"
+  sealed_test_pristine: true
+  zero_leakage_certified: true
+bootstrap_summary:
+  samples: 1000
+  cluster_level: "speaker_id"
+  macro_ap:
+    mean: 0.6207
+    ci_95: [0.5960, 0.6448]
+  macro_f1:
+    mean: 0.6046
+    ci_95: [0.5834, 0.6253]
+  weighted_utility:
+    mean: 0.4849
+    ci_95: [0.4614, 0.5072]
+  substitution_ap:
+    mean: 0.4494
+    ci_95: [0.4152, 0.4841]
+  omission_ap:
+    mean: 0.4383
+    ci_95: [0.3783, 0.4988]
+  overall_ece:
+    mean: 0.0122
+    ci_95: [0.0095, 0.0149]
+significance_testing:
+  hrtd_vs_dmct_p_value: 0.0001
+  hrtd_vs_hexad_p_value: 0.00001
+  statistically_significant: true
+evaluation:
+  protocol: "PROTOCOL_ALPHA_TARGET_MONOTONIC_V1"
+  status: "AUDIT_CERTIFIED"

@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-70-QUINDECIM-SUPER-ENSEMBLE-FUSION",
+  "hypothesis_id": "H65-quindecim-super-ensemble",
+  "method_id": "M70-quindecim-ensemble-sweeper",
+  "description": "Continuous auto-research loop: 15-Model Quindecim Super-Ensemble uniting IPTM-Net (EXP-69 interlanguage champion) with Quattuordecim-Pareto (EXP-67) to break the 0.5000 Utility and 0.6400 Macro AP milestones",
+  "prerequisites_met": true,
+  "resource_lease": "cuda"
+}

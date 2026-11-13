@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-16-SUPER-ENSEMBLE-HMADN-HSAME",
+  "hypothesis_id": "H11-unified-multi-task-ensemble",
+  "method_id": "M16-unified-super-ensemble",
+  "description": "Unified Super-Ensemble fusing HM-ADN (Articulatory features) with H-SAME (BiLSTM + Conformer) on DEV_REPLICATION to break past 0.45 utility and push closer to Milestone 60",
+  "prerequisites_met": true,
+  "resource_lease": "cuda"
+}

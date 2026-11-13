@@ -1,0 +1,31 @@
+experiment_id: EXP-89-PROGRESSIVE-CASCADE-VIGINTI-ROUTER
+hypothesis_id: H84-progressive-cascade-routing
+method_id: M89-progressive-cascade-router
+protocol: PROTOCOL_ALPHA_TARGET_MONOTONIC_V1
+split:
+  train: 1800
+  dev_search: 599
+  dev_cal: 300
+  dev_replication: 300
+  test_sealed: 600
+device: cuda
+base_model: EXP-86-VIGINTI-CONVERGENCE-SUPER-ENSEMBLE
+cascade_architecture:
+  tier_1_fast_screening:
+    - DMCT-Net (EXP-44)
+    - HRTD-Net (EXP-48)
+    - DSCA-Net (EXP-55)
+    - TDIS-Net (EXP-63)
+  tier_2_heavy_consensus:
+    - 21_model_viginti_pareto_mixture
+  confidence_exit_threshold: tau_exit
+calibration_split: dev_cal
+evaluation_splits:
+  - dev_search
+  - dev_replication
+tags:
+  - progressive_cascade_router
+  - pcr_engine
+  - early_exit_efficiency
+  - sub_5ms_cpu_latency
+  - zero_leakage_enforced

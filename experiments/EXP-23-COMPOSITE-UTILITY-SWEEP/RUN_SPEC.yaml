@@ -1,0 +1,24 @@
+run_id: "EXP-23-COMPOSITE-UTILITY-SWEEP"
+hypothesis_id: "H18-global-pareto-frontier-optimization"
+method_id: "M23-global-pareto-sweeper"
+experiment_type: "QUAD_MODEL_COMPOSITE_PARETO_OPTIMIZATION"
+operating_splits: ["DEV_SEARCH", "DEV_REPLICATION"]
+date: "2026-11-05"
+hardware:
+  device: "cuda (NVIDIA GeForce GTX 1650 4GB)"
+  vram_allocated_mb: 92.4
+inputs:
+  train_features: "data/derived/l2arctic/features/train_features.npz"
+  cal_features: "data/derived/l2arctic/features/dev_cal_features.npz"
+  search_features: "data/derived/l2arctic/features/dev_search_features.npz"
+  rep_features: "data/derived/l2arctic/features/dev_replication_features.npz"
+  model_psc: "experiments/EXP-22-PHONOLOGICAL-CONTRASTIVE-MARGIN/CHECKPOINTS/contrastive_hierarchical_model.pt"
+  model_srad: "experiments/EXP-17-ADAPTIVE-DURATION-CTC/CHECKPOINTS/adaptive_hierarchical_model.pt"
+  model_nna: "experiments/EXP-21-ENDLESS-EXPLORATION-ACOUSTIC-REFIT/CHECKPOINTS/nna_adapter_hierarchical_model.pt"
+  model_conf: "experiments/EXP-10-CONFORMER-ATTENTION/CHECKPOINTS/conformer_phonetic_scorer.pt"
+hyperparameters:
+  optimal_target_weights: [0.25, 0.35, 0.25, 0.15]
+  optimal_gap_weights: [0.25, 0.25, 0.25, 0.25]
+  theta_subs: 0.55
+  theta_omis: 0.50
+  theta_ins: 0.55

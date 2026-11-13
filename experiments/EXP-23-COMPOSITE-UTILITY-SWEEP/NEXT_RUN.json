@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-24-FINAL-ROADMAP-EXPANSION",
+  "hypothesis_id": "H19-integrated-ctc-attention-decoder",
+  "method_id": "M24-ctc-attention-joint-decoder",
+  "description": "Exploration of joint CTC-Attention sequence decoding for alignment-free pronunciation diagnosis and continuous research roadmap expansion",
+  "prerequisites_met": true,
+  "resource_lease": "cuda"
+}

@@ -1,0 +1,9 @@
+{
+  "dsca_fp32_macro_ap": 0.6159148434890704,
+  "dsca_int8_macro_ap": 0.6154041731745612,
+  "delta_macro_ap": -0.0005106703145092428,
+  "tdis_fp32_ins_f1": 0.43209876543209874,
+  "tdis_int8_ins_f1": 0.4177215189873418,
+  "delta_ins_f1": -0.014377246444756964,
+  "parity_loss_passed": true
+}

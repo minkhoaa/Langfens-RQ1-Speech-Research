@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-26-ENDLESS-SEARCH-CONTRASTIVE-ADAPTER",
+  "hypothesis_id": "H21-contrastive-acoustic-adapter",
+  "method_id": "M26-contrastive-adapter-model",
+  "description": "Continuous auto-research loop: End-to-end integration of Contrastive Prototype Margin and NNA-Adapter for unified phonetic acoustic refitting",
+  "prerequisites_met": true,
+  "resource_lease": "cuda"
+}

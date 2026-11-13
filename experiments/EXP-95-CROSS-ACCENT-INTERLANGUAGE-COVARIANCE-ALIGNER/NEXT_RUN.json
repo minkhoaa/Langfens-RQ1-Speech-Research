@@ -1,0 +1,11 @@
+{
+  "next_run_id": "EXP-96-PROGRESSIVE-CONFIDENCE-DYNAMIC-QUANTIZER",
+  "hypothesis": "H91-progressive-dynamic-quantization",
+  "method": "M96-progressive-quantizer-profiler",
+  "target": "Dynamic INT8 post-training quantization and streaming runtime profiling for the ADAE-Net champion architecture, targeting sub-5ms CPU latency with zero parity loss toward EXP-100",
+  "resource_reservation": "CPU:1",
+  "prerequisites": [
+    "EXP-94-ARTICULATORY-DISENTANGLED-AUTOENCODER",
+    "EXP-95-CROSS-ACCENT-INTERLANGUAGE-COVARIANCE-ALIGNER"
+  ]
+}

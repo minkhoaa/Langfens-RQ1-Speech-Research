@@ -1,0 +1,37 @@
+{
+  "model_architecture": "HierarchicalArticulatoryNetwork (HM-ADN)",
+  "parameter_count": 465944,
+  "model_size_mb": 1.777435302734375,
+  "benchmarks": {
+    "gpu_cuda": {
+      "device": "cuda",
+      "n_trials": 100,
+      "mean_latency_ms": 1.6143432599346852,
+      "std_latency_ms": 4.9491379160136315,
+      "p50_latency_ms": 1.0440884998388356,
+      "p95_latency_ms": 1.279653098754352,
+      "p99_latency_ms": 4.442540538839478,
+      "real_time_factor_rtf": 0.0006347685042209362,
+      "throughput_utts_per_sec": 619.4469446606164,
+      "peak_vram_mb": 44.34765625
+    },
+    "cpu": {
+      "device": "cpu",
+      "n_trials": 100,
+      "mean_latency_ms": 1.535929220081016,
+      "std_latency_ms": 2.2908540981741248,
+      "p50_latency_ms": 1.164119501481764,
+      "p95_latency_ms": 2.1029918985732365,
+      "p99_latency_ms": 3.002426467101139,
+      "real_time_factor_rtf": 0.0006039356794908052,
+      "throughput_utts_per_sec": 651.0716684895498,
+      "peak_vram_mb": 0.0
+    }
+  },
+  "feasibility_assessment": {
+    "rtf_guardrail_passed": true,
+    "vram_headroom_mb": 4051.65234375,
+    "cpu_fallback_viable": true,
+    "deployment_readiness": "PRODUCTION_FEASIBLE"
+  }
+}

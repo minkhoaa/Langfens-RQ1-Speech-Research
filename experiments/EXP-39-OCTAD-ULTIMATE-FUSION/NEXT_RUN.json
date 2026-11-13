@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-40-COMPREHENSIVE-ARCHIVE-COMPACTION",
+  "hypothesis_id": "H35-open-science-reproducible-archive",
+  "method_id": "M40-archive-compactor",
+  "description": "Continuous auto-research loop: Complete 40-experiment archive compaction, cryptographic checksum seal, automated reproduction manifest, and publication benchmark ledger",
+  "prerequisites_met": true,
+  "resource_lease": "cpu"
+}

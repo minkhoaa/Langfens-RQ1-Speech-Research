@@ -1,0 +1,56 @@
+{
+  "run_id": "EXP-79-DUODEVIGINTI-SUPER-ENSEMBLE-FUSION",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "start_time": "2026-11-05T10:15:00Z",
+  "end_time": "2026-11-05T10:21:00Z",
+  "duration_seconds": 360.0,
+  "device": "cuda",
+  "models_fused": 18,
+  "pareto_optimal_weights": {
+    "target": [0.01, 0.01, 0.01, 0.02, 0.02, 0.03, 0.03, 0.04, 0.03, 0.05, 0.17, 0.17, 0.03, 0.12, 0.14, 0.04, 0.02, 0.06],
+    "gap": [0.02, 0.02, 0.02, 0.02, 0.02, 0.03, 0.03, 0.03, 0.03, 0.04, 0.08, 0.08, 0.33, 0.08, 0.08, 0.03, 0.02, 0.04]
+  },
+  "operating_thresholds": {
+    "theta_subs": 0.51,
+    "theta_omis": 0.53,
+    "theta_ins": 0.58
+  },
+  "metrics": {
+    "dev_replication": {
+      "utility": 0.5004893763546977,
+      "macro_ap": 0.6381346280862382,
+      "macro_precision": 0.6418383284723091,
+      "macro_recall": 0.5966995646896328,
+      "macro_f1": 0.6155139677293046,
+      "correct_ap": 0.9754234515842044,
+      "omission_ap": 0.47700603373467104,
+      "omission_f1": 0.4541832669322709,
+      "omission_recall": 0.44357976653696496,
+      "substitution_ap": 0.46197439893983927,
+      "substitution_f1": 0.4553140096618358,
+      "substitution_recall": 0.3951781970649895,
+      "substitution_precision": 0.5370370370370371,
+      "insertion_ap": 0.3235161636740649,
+      "insertion_f1": 0.34285714285714286,
+      "insertion_recall": 0.2553191489361702,
+      "insertion_precision": 0.5217391304347826,
+      "overall_ece": 0.030863382757908054,
+      "false_warning_rate_per_utt": 1.5933333333333333
+    },
+    "dev_search": {
+      "utility": 0.4424730341864099,
+      "macro_ap": 0.5802804894935275,
+      "macro_recall": 0.6168243705885456,
+      "macro_f1": 0.5679267055542812,
+      "omission_ap": 0.3183101981871843,
+      "substitution_ap": 0.44096206062079246,
+      "substitution_recall": 0.4106334841628959,
+      "substitution_f1": 0.45051194539249145,
+      "insertion_ap": 0.3005880935787352,
+      "false_warning_rate_per_utt": 1.8797996661101837
+    }
+  },
+  "gate_status": "LOCAL_REPRODUCED",
+  "hypothesis_verdict": "CONFIRMED_UTILITY_AND_MACRO_F1_PEAK"
+}

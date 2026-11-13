@@ -1,0 +1,11 @@
+{
+  "next_run_id": "EXP-103-DIFFERENTIABLE-GRAPH-PHONOLOGICAL-ALIGNER",
+  "hypothesis": "H98-differentiable-graph-alignment",
+  "method": "M103-graph-aligner-trainer",
+  "target": "Train a Differentiable Sequence-to-Graph Phonological Aligner (DSGA-Net) modeling pronunciation realization as an explicit directed acyclic phonological graph with deletion, substitution, and insertion transitions decoded jointly",
+  "resource_reservation": "GPU:0",
+  "prerequisites": [
+    "EXP-101-VOCAL-TRACT-AREA-FUNCTION-INVERSION",
+    "EXP-102-NON-NATIVE-SELF-SUPERVISED-ADAPTATION"
+  ]
+}

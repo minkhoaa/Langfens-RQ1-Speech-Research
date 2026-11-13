@@ -1,0 +1,24 @@
+run_id: "EXP-10-CONFORMER-ATTENTION"
+hypothesis_id: "H06-multi-head-conformer-attention"
+method_id: "M10-conformer-attention-scorer"
+experiment_type: "MULTI_HEAD_CONFORMER_ATTENTION_MODEL"
+operating_split: "DEV_SEARCH"
+date: "2026-11-05"
+hardware:
+  device: "cuda (NVIDIA GeForce GTX 1650 4GB)"
+  vram_allocated_mb: 52.4
+inputs:
+  train_features: "data/derived/l2arctic/features/train_features.npz"
+  cal_features: "data/derived/l2arctic/features/dev_cal_features.npz"
+  search_features: "data/derived/l2arctic/features/dev_search_features.npz"
+hyperparameters:
+  model_type: "ConformerPhoneticScorer"
+  num_layers: 2
+  nhead: 4
+  d_model: 128
+  dim_feedforward: 256
+  kernel_size: 5
+  epochs: 30
+  calibrated_theta_subs: 0.60
+  calibrated_theta_omis: 0.45
+  calibrated_theta_ins: 0.60

@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-39-OCTAD-ULTIMATE-FUSION",
+  "hypothesis_id": "H34-octad-cascaded-super-ensemble",
+  "method_id": "M39-octad-ensemble-sweeper",
+  "description": "Continuous auto-research loop: 8-Model Octad Super-Ensemble uniting Septad-Pareto (EXP-36) with HTC-Net cascaded broad-category routing (EXP-38) to push overall utility past 0.4450",
+  "prerequisites_met": true,
+  "resource_lease": "cuda"
+}

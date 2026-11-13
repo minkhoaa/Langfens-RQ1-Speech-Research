@@ -1,0 +1,56 @@
+run_id: "EXP-66-DYNAMIC-STREAMING-QUANTIZATION-BENCHMARK"
+hypothesis_id: "H61-streaming-quantization-benchmark"
+method_id: "M66-streaming-quantizer"
+experiment_type: "DUAL_ENGINE_INT8_QUANTIZATION"
+date: "2026-11-05"
+hardware:
+  device: "cpu"
+  cpu_model: "Intel Core i5-12450H (12 vCPUs)"
+  threads_used: 4
+models_quantized:
+  dsca_net:
+    fp32_size_mb: 2.80
+    int8_size_mb: 2.26
+    compression_percent: 19.6
+  tdis_net:
+    fp32_size_mb: 2.96
+    int8_size_mb: 2.30
+    compression_percent: 22.2
+latency_profile:
+  mean_dsca_ms: 3.96
+  mean_tdis_ms: 4.03
+  mean_dual_engine_ms: 7.99
+  median_dual_engine_ms: 6.60
+  p90_dual_engine_ms: 11.76
+  p99_dual_engine_ms: 15.24
+  real_time_factor_rtf: 0.01598
+  real_time_speedup: 62.6
+results_summary:
+  dev_replication:
+    utility: 0.5032
+    macro_ap: 0.6154
+    macro_precision: 0.6178
+    macro_recall: 0.5901
+    macro_f1: 0.5999
+    omission_ap: 0.4421
+    omission_f1: 0.4462
+    substitution_ap: 0.4311
+    substitution_f1: 0.4190
+    insertion_ap: 0.3151
+    insertion_precision: 0.5156
+    insertion_f1: 0.4177
+    correct_ap: 0.9730
+    correct_f1: 0.9348
+    overall_ece: 0.0106
+    fwr: 1.720
+parity_audit:
+  delta_macro_ap: -0.0005
+  delta_utility: 0.0104
+  parity_loss_passed: true
+records_broken:
+  - "ALL_TIME_CAMPAIGN_HIGH_EDGE_WEIGHTED_UTILITY_0.5032 (BROKE 50% UTILITY MILESTONE ON EDGE!)"
+  - "ALL_TIME_CAMPAIGN_LOW_OVERALL_ECE_0.0106"
+  - "SUB_8MS_DUAL_ENGINE_CPU_LATENCY_7.99MS"
+evaluation:
+  protocol: "PROTOCOL_ALPHA_TARGET_MONOTONIC_V1"
+  status: "PRODUCTION_CERTIFIED"

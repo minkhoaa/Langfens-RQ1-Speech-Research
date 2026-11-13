@@ -1,0 +1,29 @@
+{
+  "experiment_id": "EXP-105-CROSS-CORPUS-FULL-TRAINING-EXPANSION",
+  "status": "COMPLETED",
+  "start_time": "2026-11-05T16:00:00Z",
+  "end_time": "2026-11-05T16:05:00Z",
+  "exit_code": 0,
+  "metrics": {
+    "dev_replication": {
+      "macro_f1": 0.5230826182335133,
+      "macro_ap": 0.6089054473896044,
+      "macro_precision": 0.675982717409434,
+      "macro_recall": 0.4767860128318672,
+      "weighted_utility": 0.4569367823392628,
+      "overall_ece": 0.013180740455222165,
+      "false_warning_rate_per_utt": 1.0366666666666666,
+      "classes": {
+        "CORRECT": { "ap": 0.9723868339901429, "precision": 0.9091105354058722, "recall": 0.973416551086454, "f1": 0.9401652154498772 },
+        "OMISSION": { "ap": 0.4041206653097077, "precision": 0.546875, "recall": 0.13618677042801555, "f1": 0.21806853582554517 },
+        "SUBSTITUTION": { "ap": 0.4502088428689626, "precision": 0.5719626168224299, "recall": 0.32075471698113206, "f1": 0.4110141034251175 },
+        "INSERTION": { "ap": 0.310016615903775, "precision": 0.4175824175824176, "recall": 0.40425531914893614, "f1": 0.41081081081081083 }
+      }
+    },
+    "speechocean_transfer": {
+      "pearson_r": -0.0636,
+      "spearman_rho": -0.0807,
+      "tested_phonemes": 4272
+    }
+  }
+}

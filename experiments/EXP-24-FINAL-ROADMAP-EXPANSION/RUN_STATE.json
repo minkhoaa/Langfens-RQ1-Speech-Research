@@ -1,0 +1,13 @@
+{
+  "run_id": "EXP-24-FINAL-ROADMAP-EXPANSION",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "started_at": "2026-11-05T03:00:00Z",
+  "completed_at": "2026-11-05T03:00:50Z",
+  "duration_seconds": 50.0,
+  "dev_search_omission_ap": 0.2251,
+  "dev_search_utility": 0.3802,
+  "dev_rep_substitution_f1": 0.3811,
+  "dev_rep_utility": 0.4100,
+  "gate_status": "LOCAL_REPRODUCED"
+}

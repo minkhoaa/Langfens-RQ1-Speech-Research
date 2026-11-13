@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-30-COMPREHENSIVE-PORTFOLIO-AUDIT",
+  "hypothesis_id": "H25-milestone-statistical-certification",
+  "method_id": "M30-milestone-portfolio-auditor",
+  "description": "Continuous auto-research loop: Comprehensive 30-experiment portfolio audit, cross-model ablation ledger, bootstrap confidence interval estimation, and scientific synthesis update",
+  "prerequisites_met": true,
+  "resource_lease": "cpu"
+}

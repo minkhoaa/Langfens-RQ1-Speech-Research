@@ -1,0 +1,21 @@
+run_id: "EXP-11-ENSEMBLE-FUSION"
+hypothesis_id: "H07-hybrid-bilstm-conformer-fusion"
+method_id: "M11-hybrid-context-ensemble"
+experiment_type: "BAYESIAN_MODEL_ENSEMBLE_FUSION"
+operating_split: "DEV_SEARCH"
+date: "2026-11-05"
+hardware:
+  device: "cuda (NVIDIA GeForce GTX 1650 4GB)"
+  vram_allocated_mb: 68.5
+inputs:
+  train_features: "data/derived/l2arctic/features/train_features.npz"
+  cal_features: "data/derived/l2arctic/features/dev_cal_features.npz"
+  search_features: "data/derived/l2arctic/features/dev_search_features.npz"
+  model_lstm: "experiments/EXP-08-PHONOTACTIC-CONTEXT/CHECKPOINTS/bilstm_context_model.pt"
+  model_conformer: "experiments/EXP-10-CONFORMER-ATTENTION/CHECKPOINTS/conformer_phonetic_scorer.pt"
+hyperparameters:
+  mixture_weight_target: 0.60
+  mixture_weight_gap: 0.50
+  calibrated_theta_subs: 0.55
+  calibrated_theta_omis: 0.50
+  calibrated_theta_ins: 0.50

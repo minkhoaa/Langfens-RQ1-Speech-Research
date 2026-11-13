@@ -1,0 +1,57 @@
+{
+  "run_id": "EXP-58-DUODECIM-SUPER-ENSEMBLE-FUSION",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "started_at": "2026-11-05T06:38:00Z",
+  "completed_at": "2026-11-05T06:40:15Z",
+  "duration_seconds": 135.0,
+  "device": "cuda",
+  "dev_cal_pareto_score": 3.1486,
+  "optimal_thresholds": {
+    "theta_subs": 0.50,
+    "theta_omis": 0.52,
+    "theta_ins": 0.55
+  },
+  "metrics_summary": {
+    "dev_search": {
+      "utility": 0.4392,
+      "macro_ap": 0.5714,
+      "macro_precision": 0.5588,
+      "macro_recall": 0.6213,
+      "macro_f1": 0.5737,
+      "omission_ap": 0.3059,
+      "substitution_ap": 0.4269,
+      "insertion_ap": 0.3139,
+      "correct_ap": 0.9815,
+      "fwr": 1.885
+    },
+    "dev_replication": {
+      "utility": 0.4885,
+      "macro_ap": 0.6341,
+      "macro_precision": 0.6367,
+      "macro_recall": 0.5823,
+      "macro_f1": 0.6055,
+      "omission_ap": 0.4733,
+      "omission_f1": 0.4357,
+      "substitution_ap": 0.4540,
+      "substitution_precision": 0.5226,
+      "substitution_f1": 0.4452,
+      "insertion_ap": 0.2865,
+      "insertion_precision": 0.4746,
+      "insertion_f1": 0.3660,
+      "correct_ap": 0.9751,
+      "correct_f1": 0.9355,
+      "overall_ece": 0.0412,
+      "fwr": 1.630
+    }
+  },
+  "records_broken": [
+    "ALL_TIME_CAMPAIGN_HIGH_MACRO_AP_0.6341",
+    "ALL_TIME_CAMPAIGN_HIGH_OMISSION_AP_0.4733",
+    "ALL_TIME_CAMPAIGN_HIGH_SUBSTITUTION_AP_0.4540",
+    "ALL_TIME_CAMPAIGN_HIGH_INSERTION_PRECISION_0.4746",
+    "ALL_TIME_CAMPAIGN_HIGH_INSERTION_AP_0.2865",
+    "SUSTAINED_60_PERCENT_MACRO_F1_0.6055"
+  ],
+  "gate_status": "LOCAL_REPRODUCED"
+}

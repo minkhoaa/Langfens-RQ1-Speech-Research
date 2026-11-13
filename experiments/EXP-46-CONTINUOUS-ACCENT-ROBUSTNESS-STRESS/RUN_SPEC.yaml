@@ -1,0 +1,34 @@
+run_id: "EXP-46-CONTINUOUS-ACCENT-ROBUSTNESS-STRESS"
+hypothesis_id: "H41-stress-transfer-synthesis"
+method_id: "M46-stress-transfer-synthesizer"
+experiment_type: "MULTI_STRESS_ROBUSTNESS_BENCHMARK"
+date: "2026-11-05"
+hardware:
+  device: "cuda"
+  gpu_name: "NVIDIA GeForce GTX 1650"
+  vram_allocated_mb: 254
+models_evaluated:
+  model_1: "DMCT-Net (EXP-44 Standalone Masked Context Training)"
+  model_2: "Decimal-Pareto (EXP-45 10-Model Super-Ensemble)"
+  model_3: "HTC-Net (EXP-38 Cascaded Baseline Control)"
+stress_conditions:
+  cond_1: "CLEAN (Unperturbed 16kHz WAV audio)"
+  cond_2: "TEMPO_JITTER (+/- 15% syllabic duration warping)"
+  cond_3: "PITCH_SPECTRAL_SHIFT (+/- 12% centroid and tilt shift)"
+  cond_4: "COMBINED_SEVERE_STRESS (Tempo + Spectral + Saturation + Additive noise)"
+retention_results:
+  dmct_net_retention: 0.9899
+  decimal_pareto_retention: 1.0026
+  htc_net_retention: 0.9942
+severe_stress_performance:
+  decimal_pareto:
+    utility: 0.4396
+    macro_ap: 0.6069
+    macro_precision: 0.6422
+    fwr: 1.09
+  dmct_net:
+    utility: 0.4489
+    macro_ap: 0.6058
+    macro_precision: 0.6429
+    fwr: 1.40
+status: "ROBUST_CONFIRMED"

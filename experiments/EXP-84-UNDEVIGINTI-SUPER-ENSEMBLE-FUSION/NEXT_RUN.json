@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-85-ADAPTIVE-DURATION-WARPED-ALIGNER",
+  "hypothesis_id": "H80-adaptive-duration-warping",
+  "method_id": "M85-adaptive-duration-trainer",
+  "objective": "Continuous non-linear temporal speaking rate normalization with duration-ratio attention gating to eliminate speaking-rate mismatch across slow and fast L2 learners",
+  "device": "cuda",
+  "prerequisites_met": true
+}

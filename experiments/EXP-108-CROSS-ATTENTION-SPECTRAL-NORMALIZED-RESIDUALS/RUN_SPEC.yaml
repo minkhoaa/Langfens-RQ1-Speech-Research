@@ -1,0 +1,42 @@
+experiment_id: EXP-108-CROSS-ATTENTION-SPECTRAL-NORMALIZED-RESIDUALS
+hypothesis_id: H103-spectral-normalized-residuals
+method_id: M108-spectral-residual-trainer
+protocol: PROTOCOL_ALPHA_TARGET_MONOTONIC_V1
+split:
+  train: 1800
+  dev_search: 599
+  dev_cal: 300
+  dev_replication: 300
+  test_sealed: 600
+device: cuda
+model:
+  name: FBNR-Net
+  in_acoustic_dim: 80
+  in_prompt_dim: 47
+  in_gap_dim: 13
+  cross_attention_heads: 4
+  proj_dim: 128
+  lstm_hidden: 96
+  formant_bandwidth_normalized_residuals: 8
+  disentangled_subspaces:
+    manner: 32
+    place: 32
+    voicing: 16
+    timbre: 48
+  orthogonality_penalty: true
+  reconstruction_mse: true
+  interlanguage_priors: true
+  triad_gap_categories: 3
+  epochs: 10
+  lr: 0.001
+calibration_split: dev_cal
+evaluation_splits:
+  - dev_search
+  - dev_replication
+tags:
+  - formant_bandwidth_normalized_residuals
+  - fbnr_net
+  - breathiness_decoupling
+  - physical_acoustic_residuals
+  - phase_2_frontier
+  - zero_leakage_enforced

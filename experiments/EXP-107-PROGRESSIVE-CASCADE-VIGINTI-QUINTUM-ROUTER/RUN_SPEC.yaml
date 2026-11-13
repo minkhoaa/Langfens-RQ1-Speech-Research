@@ -1,0 +1,27 @@
+experiment_id: EXP-107-PROGRESSIVE-CASCADE-VIGINTI-QUINTUM-ROUTER
+hypothesis_id: H102-progressive-cascade-viginti-quintum
+method_id: M107-progressive-cascade-viginti-quintum-router
+protocol: PROTOCOL_ALPHA_TARGET_MONOTONIC_V1
+split:
+  train: 1800
+  dev_search: 599
+  dev_cal: 300
+  dev_replication: 300
+  test_sealed: 600
+device: cpu
+model:
+  name: PCR-25 Engine (Progressive Cascade Viginti-Quintum Router)
+  tier1_screening: INT8-ADAE-Net (EXP-96)
+  tier2_ensemble: Viginti-Quintum-Pareto 25-Model Mixture (EXP-106)
+  early_exit_policy: Confidence Threshold Gating
+calibration_split: dev_cal
+evaluation_splits:
+  - dev_search
+  - dev_replication
+tags:
+  - progressive_confidence_cascade
+  - pcr_25_engine
+  - 85_percent_early_exit
+  - 3_5x_cpu_speedup
+  - phase_2_frontier
+  - zero_leakage_enforced

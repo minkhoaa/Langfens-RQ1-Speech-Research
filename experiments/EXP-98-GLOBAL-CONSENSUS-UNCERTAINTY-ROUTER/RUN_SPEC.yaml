@@ -1,0 +1,30 @@
+experiment_id: EXP-98-GLOBAL-CONSENSUS-UNCERTAINTY-ROUTER
+hypothesis_id: H93-global-uncertainty-routing
+method_id: M98-uncertainty-router-evaluator
+protocol: PROTOCOL_ALPHA_TARGET_MONOTONIC_V1
+split:
+  train: 1800
+  dev_search: 599
+  dev_cal: 300
+  dev_replication: 300
+  test_sealed: 600
+device: cpu
+model:
+  name: GCUR-Engine
+  champions_fused:
+    - Viginti-Pareto (EXP-86)
+    - ADAE-Net (EXP-94)
+    - CICA-Net (EXP-95)
+    - MTRC-Net (EXP-97)
+  uncertainty_metric: Shannon Epistemic Consensus Entropy
+  abstention_threshold: 0.72
+calibration_split: dev_cal
+evaluation_splits:
+  - dev_search
+  - dev_replication
+tags:
+  - global_consensus_uncertainty_router
+  - gcur_engine
+  - epistemic_entropy_abstention
+  - trustworthy_diagnostic_feedback
+  - zero_leakage_enforced

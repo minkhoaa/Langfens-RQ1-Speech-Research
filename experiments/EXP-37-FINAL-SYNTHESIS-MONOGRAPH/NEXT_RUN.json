@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-38-ENDLESS-SEARCH-HIERARCHICAL-REFINEMENT",
+  "hypothesis_id": "H33-hierarchical-phonetic-decision-tree",
+  "method_id": "M38-hierarchical-tree-refiner",
+  "description": "Continuous auto-research loop: Hierarchical two-stage cascade architecture separating detection of vocalic vs consonantal error events before fine-grained categorical diagnosis",
+  "prerequisites_met": true,
+  "resource_lease": "cuda"
+}

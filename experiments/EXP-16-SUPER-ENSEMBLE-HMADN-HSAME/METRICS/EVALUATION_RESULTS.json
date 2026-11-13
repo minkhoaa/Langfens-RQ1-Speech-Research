@@ -1,0 +1,155 @@
+{
+  "best_config": {
+    "target_weights": [
+      0.4,
+      0.3,
+      0.3
+    ],
+    "gap_weights": [
+      0.5,
+      0.25,
+      0.25
+    ],
+    "thresholds": {
+      "theta_subs": 0.55,
+      "theta_omis": 0.5,
+      "theta_ins": 0.55
+    }
+  },
+  "dev_search": {
+    "counts": {
+      "total_utterances": 599,
+      "total_target_phones": 19755,
+      "total_gaps": 20354,
+      "false_omissions": 273,
+      "false_substitutions": 631,
+      "false_insertions": 63,
+      "total_false_warnings": 967
+    },
+    "classes": {
+      "CORRECT": {
+        "ap": 0.9791260450932211,
+        "precision": 0.9276903678526397,
+        "recall": 0.9518506018674766,
+        "f1": 0.9396152030872595
+      },
+      "OMISSION": {
+        "ap": 0.17266490906035478,
+        "precision": 0.19230769230769232,
+        "recall": 0.31100478468899523,
+        "f1": 0.2376599634369287
+      },
+      "SUBSTITUTION": {
+        "ap": 0.37217425162959733,
+        "precision": 0.46343537414965985,
+        "recall": 0.3082579185520362,
+        "f1": 0.3702445652173913
+      },
+      "INSERTION": {
+        "ap": 0.2581508957664162,
+        "precision": 0.35714285714285715,
+        "recall": 0.28,
+        "f1": 0.31390134529147984
+      }
+    },
+    "macro": {
+      "precision": 0.5278111447699972,
+      "recall": 0.5237044350361694,
+      "f1": 0.5158399105805266,
+      "ap": 0.5079884019277244
+    },
+    "diagnostics": {
+      "coverage": 1.0,
+      "target_ece": 0.1217146265766223,
+      "gap_ece": 0.00696899266877981,
+      "overall_ece": 0.06434180962270106,
+      "false_warning_rate_per_utt": 1.6143572621035058
+    },
+    "utility": {
+      "score": 0.3764751948646439,
+      "components": {
+        "omission_ap": 0.17266490906035478,
+        "omission_f1": 0.2376599634369287,
+        "substitution_ap_f1": 0.3712094084234943,
+        "insertion_ap_f1": 0.28602612052894805,
+        "correct_ap_f1": 0.9593706240902403,
+        "macro_balance": 0.5257497704951155,
+        "coverage_risk": 0.0,
+        "calibration": 0.6782909518864947
+      }
+    },
+    "gates": {
+      "milestone_60": false,
+      "outstanding_80": false,
+      "status": "EXPLORATORY"
+    }
+  },
+  "dev_replication": {
+    "counts": {
+      "total_utterances": 300,
+      "total_target_phones": 9863,
+      "total_gaps": 10163,
+      "false_omissions": 101,
+      "false_substitutions": 245,
+      "false_insertions": 40,
+      "total_false_warnings": 386
+    },
+    "classes": {
+      "CORRECT": {
+        "ap": 0.9697454287678792,
+        "precision": 0.9081098757357751,
+        "recall": 0.9628987517337032,
+        "f1": 0.9347021204981488
+      },
+      "OMISSION": {
+        "ap": 0.3641411662457819,
+        "precision": 0.4540540540540541,
+        "recall": 0.32684824902723736,
+        "f1": 0.38009049773755654
+      },
+      "SUBSTITUTION": {
+        "ap": 0.3821663485691202,
+        "precision": 0.5138888888888888,
+        "recall": 0.27148846960167716,
+        "f1": 0.355281207133059
+      },
+      "INSERTION": {
+        "ap": 0.20982954179673638,
+        "precision": 0.3220338983050847,
+        "recall": 0.20212765957446807,
+        "f1": 0.24836601307189543
+      }
+    },
+    "macro": {
+      "precision": 0.6253509395595727,
+      "recall": 0.5204118234542059,
+      "f1": 0.5566912751229215,
+      "ap": 0.572017647860927
+    },
+    "diagnostics": {
+      "coverage": 1.0,
+      "target_ece": 0.11396215731433111,
+      "gap_ece": 0.007864421701193405,
+      "overall_ece": 0.06091328950776226,
+      "false_warning_rate_per_utt": 1.2866666666666666
+    },
+    "utility": {
+      "score": 0.4228812910002399,
+      "components": {
+        "omission_ap": 0.3641411662457819,
+        "omission_f1": 0.38009049773755654,
+        "substitution_ap_f1": 0.36872377785108956,
+        "insertion_ap_f1": 0.22909777743431592,
+        "correct_ap_f1": 0.952223774633014,
+        "macro_balance": 0.5680757540050801,
+        "coverage_risk": 0.0,
+        "calibration": 0.6954335524611888
+      }
+    },
+    "gates": {
+      "milestone_60": false,
+      "outstanding_80": false,
+      "status": "EXPLORATORY"
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-84-UNDEVIGINTI-SUPER-ENSEMBLE-FUSION",
+  "hypothesis_id": "H79-undeviginti-super-ensemble",
+  "method_id": "M84-undeviginti-ensemble-sweeper",
+  "objective": "19-Model Undeviginti Super-Ensemble fusing IP-ALDS-Net (EXP-82) and CCSP-Net (EXP-83) into Duodeviginti-Pareto (EXP-79) to target >0.6400 Macro AP and >0.5020 Weighted Utility",
+  "device": "cuda",
+  "prerequisites_met": true
+}

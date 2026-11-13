@@ -1,0 +1,33 @@
+{
+  "experiment_id": "EXP-101-VOCAL-TRACT-AREA-FUNCTION-INVERSION",
+  "status": "COMPLETED",
+  "start_time": "2026-11-05T15:05:00Z",
+  "end_time": "2026-11-05T15:10:00Z",
+  "exit_code": 0,
+  "metrics": {
+    "dev_replication": {
+      "macro_f1": 0.6063978827718908,
+      "macro_ap": 0.6000350768245224,
+      "macro_precision": 0.5796623904618081,
+      "macro_recall": 0.6428568967793096,
+      "weighted_utility": 0.4889569518394927,
+      "overall_ece": 0.01961679101694317,
+      "false_warning_rate_per_utt": 3.066666666666667,
+      "classes": {
+        "CORRECT": { "ap": 0.9722606615687396, "precision": 0.9359035569348293, "recall": 0.9062644475265834, "f1": 0.9208455666470934 },
+        "OMISSION": { "ap": 0.3924162438303988, "precision": 0.37110481586402266, "recall": 0.5097276264591439, "f1": 0.42950819672131146 },
+        "SUBSTITUTION": { "ap": 0.4354283250744287, "precision": 0.43197879858657245, "recall": 0.5125786163522013, "f1": 0.46883988494726747 },
+        "INSERTION": { "ap": 0.295998835812962, "precision": 0.40217391304347827, "recall": 0.39361702127659576, "f1": 0.3978494623655914 }
+      }
+    },
+    "dev_search": {
+      "macro_f1": 0.5511700630964422,
+      "macro_ap": 0.5619153290161352,
+      "macro_precision": 0.5070312600359733,
+      "macro_recall": 0.6689833294193415,
+      "weighted_utility": 0.4318320200362448,
+      "overall_ece": 0.02788143255289549,
+      "false_warning_rate_per_utt": 3.681135225375626
+    }
+  }
+}

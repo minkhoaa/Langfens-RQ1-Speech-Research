@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-51-MULTI-CORPUS-ACOUSTIC-TRANSFER-TRAINING",
+  "hypothesis_id": "H46-cross-corpus-representation-transfer",
+  "method_id": "M51-multi-corpus-trainer",
+  "description": "Continuous auto-research loop: Multi-corpus unsupervised representation transfer pre-training using SpeechOcean762 acoustic sequences to enrich HRTD-Net's phone-level latent dynamics",
+  "prerequisites_met": true,
+  "resource_lease": "cuda"
+}

@@ -1,0 +1,23 @@
+run_id: "EXP-08-PHONOTACTIC-CONTEXT"
+hypothesis_id: "H04-phonotactic-context-attention"
+method_id: "M08-bilstm-context-model"
+experiment_type: "SEQUENCE_BILSTM_CONTEXTUAL_MODEL"
+operating_split: "DEV_SEARCH"
+date: "2026-11-05"
+hardware:
+  device: "cuda (NVIDIA GeForce GTX 1650 4GB)"
+  vram_allocated_mb: 48.2
+inputs:
+  train_features: "data/derived/l2arctic/features/train_features.npz"
+  cal_features: "data/derived/l2arctic/features/dev_cal_features.npz"
+  search_features: "data/derived/l2arctic/features/dev_search_features.npz"
+hyperparameters:
+  model_type: "BiLSTM_Context_Model"
+  lstm_layers: 2
+  lstm_hidden: 96
+  focal_gamma: 1.5
+  focal_alpha: [1.0, 1.8, 2.2]
+  gap_pos_weight: 8.0
+  calibrated_theta_subs: 0.55
+  calibrated_theta_omis: 0.55
+  calibrated_theta_ins: 0.60

@@ -1,0 +1,52 @@
+{
+  "dataset": "SpeechOcean762-Test",
+  "total_phonemes": 4536,
+  "total_errors": 227,
+  "base_error_rate": 0.050044091710758375,
+  "models": {
+    "bilstm": {
+      "model_name": "BiLSTM (EXP-08)",
+      "pearson_r": -0.174801945997458,
+      "pearson_p_value": 1.8855979777978792e-32,
+      "spearman_rho": -0.11141730304735092,
+      "spearman_p_value": 5.259594575272046e-14,
+      "error_ap": 0.04283663403522045,
+      "error_precision": 0.05263157894736842,
+      "error_recall": 0.039647577092511016,
+      "error_f1": 0.04522613065326633
+    },
+    "dmct_net": {
+      "model_name": "DMCT-Net (EXP-44)",
+      "pearson_r": -0.14315171725824952,
+      "pearson_p_value": 3.3737132445127817e-22,
+      "spearman_rho": -0.10812558701085852,
+      "spearman_p_value": 2.8426425111692044e-13,
+      "error_ap": 0.03749544562982738,
+      "error_precision": 0.0352233676975945,
+      "error_recall": 0.36123348017621143,
+      "error_f1": 0.06418786692759296
+    },
+    "hrtd_net": {
+      "model_name": "HRTD-Net (EXP-48)",
+      "pearson_r": -0.0155587777260895,
+      "pearson_p_value": 0.2947972717123646,
+      "spearman_rho": -0.023741350102226055,
+      "spearman_p_value": 0.10987380666627444,
+      "error_ap": 0.050301844814175434,
+      "error_precision": 0.04619388418998048,
+      "error_recall": 0.31277533039647576,
+      "error_f1": 0.08049886621315193
+    },
+    "decimal_pareto": {
+      "model_name": "Decimal-Pareto (EXP-45)",
+      "pearson_r": -0.06708322497670963,
+      "pearson_p_value": 6.128907456787754e-06,
+      "spearman_rho": -0.06301050548033761,
+      "spearman_p_value": 2.1684762110109396e-05,
+      "error_ap": 0.047190950885753,
+      "error_precision": 0.04223433242506812,
+      "error_recall": 0.27312775330396477,
+      "error_f1": 0.07315634218289085
+    }
+  }
+}

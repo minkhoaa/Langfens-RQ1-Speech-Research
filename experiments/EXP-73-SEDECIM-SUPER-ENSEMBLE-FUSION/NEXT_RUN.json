@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-74-VTLN-WARPED-CEPSTRAL-ADAPTER",
+  "hypothesis_id": "H69-vtln-warped-cepstral-adaptation",
+  "method_id": "M74-vtln-cepstral-trainer",
+  "objective": "Normalize spectral cepstral residuals using speaker-specific VTLN warping factors alpha_spk before dual-stream prompt cross-attention to eliminate vocal tract length false alarms and break >0.6250 standalone Macro AP",
+  "device": "cuda",
+  "prerequisites_met": true
+}

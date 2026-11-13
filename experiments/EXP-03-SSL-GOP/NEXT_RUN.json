@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-04-SKIP-ALIGNED-GOP",
+  "hypothesis_id": "H01-gop-acoustic-evidence",
+  "method_id": "M04-skip-viterbi-calibrated",
+  "description": "Skip-Enabled Viterbi Alignment allowing direct zero-duration omissions + MarginLogit temperature calibration on DEV_CAL to suppress false warnings",
+  "prerequisites_met": true,
+  "resource_lease": "gpu"
+}

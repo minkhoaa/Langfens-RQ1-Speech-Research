@@ -1,0 +1,50 @@
+{
+  "run_id": "EXP-63-TRIAD-DECOUPLED-INSERTION-SPECIALIZER",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "started_at": "2026-11-05T07:18:00Z",
+  "completed_at": "2026-11-05T07:21:40Z",
+  "duration_seconds": 220.0,
+  "device": "cpu",
+  "optimal_thresholds": {
+    "theta_subs": 0.50,
+    "theta_omis": 0.52,
+    "theta_ins": 0.60
+  },
+  "metrics_summary": {
+    "dev_search": {
+      "utility": 0.4210,
+      "macro_ap": 0.5456,
+      "omission_recall": 0.5598,
+      "insertion_ap": 0.2134,
+      "fwr": 2.945
+    },
+    "dev_replication": {
+      "utility": 0.4863,
+      "macro_ap": 0.5847,
+      "macro_precision": 0.5832,
+      "macro_recall": 0.5993,
+      "macro_f1": 0.5855,
+      "insertion_ap": 0.3151,
+      "insertion_precision": 0.5147,
+      "insertion_recall": 0.3723,
+      "insertion_f1": 0.4321,
+      "omission_ap": 0.4058,
+      "omission_recall": 0.5331,
+      "omission_f1": 0.4544,
+      "substitution_ap": 0.3788,
+      "correct_ap": 0.9696,
+      "correct_f1": 0.9271,
+      "overall_ece": 0.0185,
+      "gap_ece": 0.0072,
+      "fwr": 2.177
+    }
+  },
+  "records_broken": [
+    "ALL_TIME_CAMPAIGN_HIGH_INSERTION_F1_0.4321",
+    "ALL_TIME_CAMPAIGN_HIGH_INSERTION_AP_0.3151",
+    "ALL_TIME_CAMPAIGN_HIGH_STANDALONE_INSERTION_RECALL_0.3723",
+    "SUSTAINED_51_PERCENT_INSERTION_PRECISION_0.5147"
+  ],
+  "gate_status": "LOCAL_REPRODUCED"
+}

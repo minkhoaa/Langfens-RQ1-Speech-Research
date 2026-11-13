@@ -1,0 +1,35 @@
+experiment_id: EXP-97-MULTI-SCALE-TEMPORAL-RESIDUAL-CASCADE
+hypothesis_id: H92-temporal-residual-cascade
+method_id: M97-temporal-cascade-trainer
+protocol: PROTOCOL_ALPHA_TARGET_MONOTONIC_V1
+split:
+  train: 1800
+  dev_search: 599
+  dev_cal: 300
+  dev_replication: 300
+  test_sealed: 600
+device: cuda
+model:
+  name: MTRC-Net
+  in_acoustic_dim: 72
+  in_prompt_dim: 47
+  in_gap_dim: 13
+  cross_attention_heads: 4
+  proj_dim: 128
+  lstm_hidden: 96
+  temporal_residual_cascade: true
+  learned_scale_gating: true
+  interlanguage_priors: true
+  triad_gap_categories: 3
+  epochs: 10
+  lr: 0.001
+calibration_split: dev_cal
+evaluation_splits:
+  - dev_search
+  - dev_replication
+tags:
+  - multi_scale_temporal_residual_cascade
+  - mtrc_net
+  - learned_scale_gating
+  - plosive_micro_burst_routing
+  - zero_leakage_enforced

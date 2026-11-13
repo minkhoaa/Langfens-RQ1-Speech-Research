@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-32-SELF-SUPERVISED-ROBUSTNESS-STRESS",
+  "hypothesis_id": "H27-environmental-noise-robustness",
+  "method_id": "M32-acoustic-noise-stress-tester",
+  "description": "Continuous auto-research loop: Acoustic noise robustness and SNR stress testing (+20dB to 0dB additive Gaussian and babble noise) across champion models",
+  "prerequisites_met": true,
+  "resource_lease": "cuda"
+}

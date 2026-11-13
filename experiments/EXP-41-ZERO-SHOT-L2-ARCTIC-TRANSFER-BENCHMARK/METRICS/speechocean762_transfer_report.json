@@ -1,0 +1,31 @@
+{
+  "dataset": "SpeechOcean762-Test",
+  "total_phonemes_evaluated": 4536,
+  "total_utterances_evaluated": 300,
+  "error_threshold_human": "< 1.5",
+  "error_count": 227,
+  "error_prevalence_pct": 5.004409171075838,
+  "bilstm_baseline": {
+    "pearson_r": 0.2690001685614385,
+    "pearson_p": 4.906802295956882e-76,
+    "spearman_rho": 0.31318813041043525,
+    "error_ap": 0.12584640452995613,
+    "error_recall": 0.6387665198237885,
+    "error_precision": 0.1125776397515528,
+    "error_f1": 0.19141914191419143
+  },
+  "htc_net_champion": {
+    "pearson_r": 0.16099847068255155,
+    "pearson_p": 1.0158563065962004e-27,
+    "spearman_rho": 0.27168734284241236,
+    "error_ap": 0.10672430514683598,
+    "error_recall": 0.15859030837004406,
+    "error_precision": 0.08181818181818182,
+    "error_f1": 0.10794602698650675
+  },
+  "transfer_delta": {
+    "delta_pearson_r": -0.10800169787888694,
+    "delta_error_ap": -0.01912209938312015,
+    "delta_error_recall": -0.48017621145374445
+  }
+}

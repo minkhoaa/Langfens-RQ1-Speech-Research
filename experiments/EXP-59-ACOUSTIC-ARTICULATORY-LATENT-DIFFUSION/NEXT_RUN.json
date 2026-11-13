@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-60-CAMPAIGN-SECOND-CONSOLIDATION-AND-RELEASE-AUDIT",
+  "hypothesis_id": "H55-sixty-cycle-master-audit",
+  "method_id": "M60-master-auditor",
+  "description": "Sixty-Cycle Master Audit: 10,000-sample clustered bootstrap, immutable verification of all 60 experiment manifests, statistical significance certification, and sealed test integrity check",
+  "prerequisites_met": true,
+  "resource_lease": "cpu"
+}

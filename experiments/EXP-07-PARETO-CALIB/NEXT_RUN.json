@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-08-PHONOTACTIC-CONTEXT",
+  "hypothesis_id": "H04-phonotactic-context-attention",
+  "method_id": "M08-bilstm-context-model",
+  "description": "Sequence-level BiLSTM / Transformer contextual phone scorer over target prompt sequence to model coarticulation and reduce allophonic substitution errors",
+  "prerequisites_met": true,
+  "resource_lease": "cuda"
+}

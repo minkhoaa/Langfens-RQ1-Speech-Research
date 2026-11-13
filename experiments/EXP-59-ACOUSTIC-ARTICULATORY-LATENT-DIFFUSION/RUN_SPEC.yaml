@@ -1,0 +1,45 @@
+run_id: "EXP-59-ACOUSTIC-ARTICULATORY-LATENT-DIFFUSION"
+hypothesis_id: "H54-diffusion-posterior-sampler"
+method_id: "M59-diffusion-posterior-sampler"
+experiment_type: "LATENT_SCORE_DIFFUSION_SAMPLING"
+date: "2026-11-05"
+hardware:
+  device: "cpu"
+  cpu_model: "Intel Core i5-12450H (12 vCPUs)"
+  threads_used: 4
+diffusion_module:
+  latent_dim: 128
+  time_dim: 64
+  beta_schedule: "Linear (0.0001 to 0.02, 50 steps)"
+  sampler: "4-step DDIM deterministic reverse trajectory"
+results_summary:
+  dev_replication:
+    utility: 0.4722
+    macro_ap: 0.5865
+    macro_precision: 0.6093
+    macro_recall: 0.5654
+    macro_f1: 0.5820
+    omission_ap: 0.3944
+    omission_f1: 0.4409
+    substitution_ap: 0.3957
+    substitution_precision: 0.4661
+    substitution_f1: 0.3726
+    insertion_ap: 0.2825
+    insertion_precision: 0.5455
+    insertion_f1: 0.2835
+    correct_ap: 0.9696
+    correct_f1: 0.9326
+    overall_ece: 0.0138
+    gap_ece: 0.0036
+    fwr: 1.643
+  dev_search:
+    utility: 0.4300
+    macro_ap: 0.5460
+    insertion_precision: 0.4615
+    overall_ece: 0.0094
+records_broken:
+  - "ALL_TIME_CAMPAIGN_HIGH_STANDALONE_INSERTION_PRECISION_0.5455"
+  - "ALL_TIME_CAMPAIGN_LOW_GAP_ECE_0.0036"
+evaluation:
+  protocol: "PROTOCOL_ALPHA_TARGET_MONOTONIC_V1"
+  status: "LOCAL_REPRODUCED"

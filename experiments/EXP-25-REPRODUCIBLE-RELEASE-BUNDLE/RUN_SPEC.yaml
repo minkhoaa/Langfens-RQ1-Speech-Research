@@ -1,0 +1,14 @@
+run_id: "EXP-25-REPRODUCIBLE-RELEASE-BUNDLE"
+hypothesis_id: "H20-reproducibility-artifact-verification"
+method_id: "M25-release-bundle-generator"
+experiment_type: "REPRODUCIBLE_RELEASE_BUNDLE_VERIFICATION"
+date: "2026-11-05"
+hardware:
+  device: "cpu"
+  vram_allocated_mb: 0
+inputs:
+  total_audited_experiments: 24
+  protocol_lock: "evaluation/PRIMARY_PROTOCOL_LOCK.json"
+  raw_registry: "data/raw_registry.jsonl"
+hyperparameters:
+  sha256_verification_strict: true

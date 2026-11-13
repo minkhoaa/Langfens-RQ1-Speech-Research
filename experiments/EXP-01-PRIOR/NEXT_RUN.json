@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-02-MISMATCH",
+  "hypothesis_id": "H01-gop-acoustic-evidence",
+  "method_id": "M02-mismatch-control",
+  "description": "Negative control with audio-transcript mismatch to verify zero oracle leakage",
+  "prerequisites_met": true,
+  "resource_lease": "cpu"
+}

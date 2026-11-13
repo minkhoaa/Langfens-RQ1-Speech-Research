@@ -1,0 +1,17 @@
+run_id: "EXP-05-CONF-CALIB"
+hypothesis_id: "H02-learned-phonetic-diagnostic-network"
+method_id: "M05-confidence-gated-lpdn"
+experiment_type: "CONFIDENCE_GATED_CALIBRATION"
+operating_split: "DEV_SEARCH"
+date: "2026-11-04"
+hardware:
+  device: "cuda (NVIDIA GeForce GTX 1650 4GB)"
+  vram_allocated_mb: 24.5
+inputs:
+  cal_features: "data/derived/l2arctic/features/dev_cal_features.npz"
+  search_features: "data/derived/l2arctic/features/dev_search_features.npz"
+  checkpoints: "experiments/EXP-04-LPDN/CHECKPOINTS"
+hyperparameters:
+  theta_subs: 0.50
+  theta_omis: 0.50
+  theta_ins: 0.65

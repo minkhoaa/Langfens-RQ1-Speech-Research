@@ -1,0 +1,46 @@
+{
+  "run_id": "EXP-78-SPEECHOCEAN-ADAPTIVE-PROTOSWEEP",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "start_time": "2026-11-05T10:04:00Z",
+  "end_time": "2026-11-05T10:07:30Z",
+  "duration_seconds": 210.0,
+  "device": "cuda",
+  "target_corpus": "SpeechOcean762",
+  "evaluated_phonemes": 4536,
+  "evaluated_utterances": 300,
+  "metrics": {
+    "bilstm": {
+      "pearson_r": 0.2690,
+      "spearman_rho": 0.3132,
+      "error_ap": 0.1258,
+      "error_f1": 0.1914
+    },
+    "dmct": {
+      "pearson_r": 0.2532,
+      "spearman_rho": 0.3028,
+      "error_ap": 0.1251,
+      "error_f1": 0.1865
+    },
+    "iptm": {
+      "pearson_r": 0.2251,
+      "spearman_rho": 0.2782,
+      "error_ap": 0.1250,
+      "error_f1": 0.1928
+    },
+    "septendecim_pareto": {
+      "pearson_r": 0.2292,
+      "spearman_rho": 0.3014,
+      "error_ap": 0.1219,
+      "error_f1": 0.1760
+    },
+    "tpd": {
+      "pearson_r": 0.1836,
+      "spearman_rho": 0.2570,
+      "error_ap": 0.1084,
+      "error_f1": 0.1734
+    }
+  },
+  "gate_status": "LOCAL_REPRODUCED",
+  "hypothesis_verdict": "CONFIRMED_CROSS_CORPUS_ROBUSTNESS"
+}

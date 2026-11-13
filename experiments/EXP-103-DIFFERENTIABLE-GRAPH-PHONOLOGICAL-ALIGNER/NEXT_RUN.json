@@ -1,0 +1,11 @@
+{
+  "next_run_id": "EXP-104-MULTI-ANNOTATOR-BLENDED-ADJUDICATION",
+  "hypothesis": "H99-soft-gold-adjudication",
+  "method": "M104-soft-adjudicator-evaluator",
+  "target": "Train a Soft-Gold Adjudication Network (SGAN-Net) modeling human annotator label ambiguity as continuous Dirichlet distributions to resolve annotator disagreement and boost Macro Precision past 0.6500",
+  "resource_reservation": "GPU:0",
+  "prerequisites": [
+    "EXP-94-ARTICULATORY-DISENTANGLED-AUTOENCODER",
+    "EXP-103-DIFFERENTIABLE-GRAPH-PHONOLOGICAL-ALIGNER"
+  ]
+}

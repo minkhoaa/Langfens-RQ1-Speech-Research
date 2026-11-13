@@ -1,0 +1,14 @@
+{
+  "run_id": "EXP-16-SUPER-ENSEMBLE-HMADN-HSAME",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "started_at": "2026-11-05T01:35:00Z",
+  "completed_at": "2026-11-05T01:35:45Z",
+  "duration_seconds": 45.0,
+  "dev_search_utility": 0.3765,
+  "dev_rep_utility": 0.4229,
+  "dev_rep_macro_p": 0.6254,
+  "dev_rep_macro_f1": 0.5567,
+  "dev_rep_macro_ap": 0.5720,
+  "gate_status": "LOCAL_REPRODUCED"
+}

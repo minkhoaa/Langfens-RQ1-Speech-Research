@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-34-EXTENDED-PHONOTACTIC-PROBING",
+  "hypothesis_id": "H29-phonotactic-ngram-conditioning",
+  "method_id": "M34-phonotactic-ngram-prober",
+  "description": "Continuous auto-research loop: Explicit English phonotactic n-gram transition probability conditioning to prune acoustically improbable substitution and insertion hypotheses",
+  "prerequisites_met": true,
+  "resource_lease": "cuda"
+}

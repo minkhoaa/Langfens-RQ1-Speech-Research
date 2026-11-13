@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-76-SEPTENDECIM-SUPER-ENSEMBLE-FUSION",
+  "hypothesis_id": "H71-septendecim-super-ensemble",
+  "method_id": "M76-septendecim-ensemble-sweeper",
+  "objective": "17-Model Septendecim Super-Ensemble fusing V-CASR-Net (EXP-74 VTLN-warped diversity) into Sedecim-Pareto (EXP-73) to target >0.6410 Macro AP and >0.5010 Utility",
+  "device": "cuda",
+  "prerequisites_met": true
+}

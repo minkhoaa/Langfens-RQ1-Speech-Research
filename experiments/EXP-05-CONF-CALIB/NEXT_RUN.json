@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-06-CALIB-TRAIN",
+  "hypothesis_id": "H03-calibrated-cost-sensitive-network",
+  "method_id": "M06-cost-sensitive-calibrated-lpdn",
+  "description": "Balanced Margin-Regularized Network trained on TRAIN with cost-sensitive calibration strictly satisfying FWR <= 0.20 on DEV_CAL",
+  "prerequisites_met": true,
+  "resource_lease": "cuda"
+}

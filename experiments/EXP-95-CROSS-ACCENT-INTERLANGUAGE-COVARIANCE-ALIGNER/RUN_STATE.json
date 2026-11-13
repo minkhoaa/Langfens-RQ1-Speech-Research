@@ -1,0 +1,33 @@
+{
+  "experiment_id": "EXP-95-CROSS-ACCENT-INTERLANGUAGE-COVARIANCE-ALIGNER",
+  "status": "COMPLETED",
+  "start_time": "2026-11-05T14:00:00Z",
+  "end_time": "2026-11-05T14:05:00Z",
+  "exit_code": 0,
+  "metrics": {
+    "dev_replication": {
+      "macro_f1": 0.6203257104819903,
+      "macro_ap": 0.6112015669279725,
+      "macro_precision": 0.5976757770012951,
+      "macro_recall": 0.6489900171861135,
+      "weighted_utility": 0.4990947090392008,
+      "overall_ece": 0.020104446287915217,
+      "false_warning_rate_per_utt": 2.97,
+      "classes": {
+        "CORRECT": { "ap": 0.9724925936281822, "precision": 0.9378948623197044, "recall": 0.9093851132686084, "f1": 0.9234199870899595 },
+        "OMISSION": { "ap": 0.41300091370959613, "precision": 0.4161290322580645, "recall": 0.5019455252918288, "f1": 0.455026455026455 },
+        "SUBSTITUTION": { "ap": 0.4481111934461391, "precision": 0.43900343642611683, "recall": 0.5356394129979035, "f1": 0.4825306893295562 },
+        "INSERTION": { "ap": 0.3099249242119457, "precision": 0.3870967741935484, "recall": 0.3829787234042553, "f1": 0.3850267379679144 }
+      }
+    },
+    "dev_search": {
+      "macro_f1": 0.5440230480639897,
+      "macro_ap": 0.5636934001394742,
+      "macro_precision": 0.5015082030934147,
+      "macro_recall": 0.6540548714884876,
+      "weighted_utility": 0.4263928466817418,
+      "overall_ece": 0.02573214920120831,
+      "false_warning_rate_per_utt": 3.8263772954924873
+    }
+  }
+}

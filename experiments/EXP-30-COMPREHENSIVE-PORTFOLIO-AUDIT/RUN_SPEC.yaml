@@ -1,0 +1,21 @@
+run_id: "EXP-30-COMPREHENSIVE-PORTFOLIO-AUDIT"
+hypothesis_id: "H25-milestone-statistical-certification"
+method_id: "M30-milestone-portfolio-auditor"
+experiment_type: "PORTFOLIO_BOOTSTRAP_AUDIT_AND_CERTIFICATION"
+date: "2026-11-05"
+hardware:
+  device: "cpu"
+  vram_allocated_mb: 0
+inputs:
+  total_audited_experiments: 29
+  bootstrap_resamples: 1000
+  replication_utterances: 300
+  sealed_test_manifest: "data/derived/l2arctic/manifests/test_sealed.jsonl"
+evaluation:
+  protocol: "PROTOCOL_ALPHA_TARGET_MONOTONIC_V1"
+  hexad_pareto_macro_ap_mean: 0.5823
+  hexad_pareto_macro_f1_mean: 0.5799
+  hexad_pareto_utility_mean: 0.4328
+  paired_p_value_vs_pentad: 0.0000
+  sealed_test_intact: true
+  gate: "STATISTICALLY_CONFIRMED"

@@ -1,0 +1,12 @@
+{
+  "next_run_id": "EXP-109-EPENTHESIS-CODA-CLUSTERING-SPECIALIZER",
+  "hypothesis": "H104-epenthesis-coda-clustering",
+  "method": "M109-epenthesis-specializer-trainer",
+  "target": "Train a Coda Release & Epenthesis Clustering Specializer (CREC-Net) modeling sub-frame acoustic energy dynamics and sonority sequencing across coda consonant releases to push Insertion Recall past 48% and Insertion F1 past 45%",
+  "resource_reservation": "GPU:0",
+  "prerequisites": [
+    "EXP-63-TRIAD-DECOUPLED-INSERTION-SPECIALIZER",
+    "EXP-83-CROSS-LINGUISTIC-CONSONANT-CLUSTER-PARADIGM",
+    "EXP-108-CROSS-ATTENTION-SPECTRAL-NORMALIZED-RESIDUALS"
+  ]
+}

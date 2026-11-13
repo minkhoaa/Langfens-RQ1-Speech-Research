@@ -1,0 +1,47 @@
+{
+  "run_id": "EXP-56-CONFORMER-HRTD-HYBRID-ATTENTION",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "started_at": "2026-11-05T06:24:00Z",
+  "completed_at": "2026-11-05T06:27:00Z",
+  "duration_seconds": 180.0,
+  "device": "cuda",
+  "optimal_thresholds": {
+    "theta_subs": 0.50,
+    "theta_omis": 0.52,
+    "theta_ins": 0.55
+  },
+  "metrics_summary": {
+    "dev_search": {
+      "utility": 0.4180,
+      "macro_ap": 0.5419,
+      "omission_ap": 0.2821,
+      "omission_recall": 0.5837,
+      "substitution_ap": 0.3675,
+      "overall_ece": 0.0152,
+      "fwr": 4.334
+    },
+    "dev_replication": {
+      "utility": 0.4537,
+      "macro_ap": 0.5792,
+      "macro_precision": 0.5619,
+      "macro_recall": 0.6413,
+      "macro_f1": 0.5933,
+      "omission_ap": 0.3753,
+      "omission_recall": 0.5331,
+      "omission_f1": 0.4190,
+      "substitution_ap": 0.3941,
+      "substitution_recall": 0.4927,
+      "substitution_f1": 0.4447,
+      "correct_ap": 0.9683,
+      "correct_f1": 0.9164,
+      "overall_ece": 0.0111,
+      "fwr": 3.223
+    }
+  },
+  "records_broken": [
+    "ALL_TIME_CAMPAIGN_LOW_OVERALL_ECE_0.0111",
+    "ALL_TIME_CAMPAIGN_LOW_GAP_ECE_0.0049"
+  ],
+  "gate_status": "LOCAL_REPRODUCED"
+}

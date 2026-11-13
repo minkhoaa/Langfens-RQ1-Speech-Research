@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-91-BOUNDARY-AWARE-PHONOTACTIC-POSTERIOR-MAPPER",
+  "hypothesis_id": "H86-boundary-phonotactic-posterior-mapping",
+  "method_id": "M91-boundary-posterior-trainer",
+  "objective": "Boundary-aware posterior re-estimation weighting phonotactic transitions by local acoustic certainty to target >0.6300 standalone Macro F1 and >0.4950 standalone Utility",
+  "device": "cuda",
+  "prerequisites_met": true
+}

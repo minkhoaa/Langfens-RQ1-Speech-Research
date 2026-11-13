@@ -1,0 +1,12 @@
+{
+  "dataset": "SpeechOcean762-Test",
+  "total_phonemes": 4536,
+  "total_errors": 227,
+  "pearson_r": 0.21104799871191024,
+  "pearson_p_value": 7.721978123646205e-47,
+  "spearman_rho": 0.2637083923374121,
+  "error_ap": 0.11063851991323012,
+  "error_recall": 0.2422907488986784,
+  "error_precision": 0.13580246913580246,
+  "error_f1": 0.17405063291139242
+}

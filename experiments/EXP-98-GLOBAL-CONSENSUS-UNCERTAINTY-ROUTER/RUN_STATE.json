@@ -1,0 +1,35 @@
+{
+  "experiment_id": "EXP-98-GLOBAL-CONSENSUS-UNCERTAINTY-ROUTER",
+  "status": "COMPLETED",
+  "start_time": "2026-11-05T14:30:00Z",
+  "end_time": "2026-11-05T14:35:00Z",
+  "exit_code": 0,
+  "metrics": {
+    "dev_replication": {
+      "macro_f1": 0.5912656997353111,
+      "macro_ap": 0.6261060243576967,
+      "macro_precision": 0.6484362852204427,
+      "macro_recall": 0.5597138146100592,
+      "weighted_utility": 0.48798669754130797,
+      "overall_ece": 0.03392598472278584,
+      "false_warning_rate_per_utt": 1.7933333333333332,
+      "abstention_coverage": 0.8871540099361249,
+      "classes": {
+        "CORRECT": { "ap": 0.9747072143280242, "precision": 0.9226250988365525, "recall": 0.9440591770688858, "f1": 0.9332190802627821 },
+        "OMISSION": { "ap": 0.44680818932080485, "precision": 0.5255474452554745, "recall": 0.2801556420233463, "f1": 0.36548223350253806 },
+        "SUBSTITUTION": { "ap": 0.456802669424261, "precision": 0.49713631156930127, "recall": 0.4549266247379455, "f1": 0.47509578544061304 },
+        "INSERTION": { "ap": 0.3213244395285399, "precision": 0.5211267605633803, "recall": 0.39361702127659576, "f1": 0.4484848484848485 }
+      }
+    },
+    "dev_search": {
+      "macro_f1": 0.5618592059990771,
+      "macro_ap": 0.5736764538804325,
+      "macro_precision": 0.5594777829959022,
+      "macro_recall": 0.5650256533360482,
+      "weighted_utility": 0.4346409763884808,
+      "overall_ece": 0.04315903452351307,
+      "false_warning_rate_per_utt": 2.1686143572621037,
+      "abstention_coverage": 0.876183244748165
+    }
+  }
+}

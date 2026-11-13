@@ -1,0 +1,10 @@
+{
+  "next_run_id": "EXP-92-CONTINUOUS-RESONANCE-CONVERGENCE-STUDY",
+  "hypothesis": "H87-continuous-resonance-tracking",
+  "method": "M92-resonance-convergence-evaluator",
+  "target": "Investigate continuous vowel formant resonance dynamics (F1-F3 trajectories) to resolve vowel substitutions and omissions toward EXP-100 Scientific Review Checkpoint",
+  "resource_reservation": "GPU:0",
+  "prerequisites": [
+    "EXP-91-BOUNDARY-AWARE-PHONOTACTIC-POSTERIOR-MAPPER"
+  ]
+}

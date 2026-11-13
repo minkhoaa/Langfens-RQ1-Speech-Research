@@ -1,0 +1,49 @@
+run_id: "EXP-69-CROSS-ACCENT-INTERLANGUAGE-PHONOTACTIC-MAPPER"
+hypothesis_id: "H64-interlanguage-phonotactics"
+method_id: "M69-interlanguage-mapper"
+experiment_type: "INTERLANGUAGE_PHONOTACTIC_PRIOR_MAPPING"
+date: "2026-11-05"
+hardware:
+  device: "cpu"
+  cpu_model: "Intel Core i5-12450H (12 vCPUs)"
+  threads_used: 4
+interlanguage_priors:
+  source: "Computed strictly on train.jsonl (1,800 utts, 12 speakers, 6 L1s)"
+  smoothing: "Laplace (alpha=1.0)"
+  phoneme_count: 43
+  features: "P(CORRECT|p), P(SUBSTITUTION|p), P(OMISSION|p)"
+prompt_stream_dims: 47
+acoustic_stream_dims: 67
+gap_dims: 13
+results_summary:
+  dev_replication:
+    utility: 0.4854
+    macro_ap: 0.6186
+    macro_precision: 0.6173
+    macro_recall: 0.6358
+    macro_f1: 0.6205
+    omission_ap: 0.4369
+    omission_recall: 0.5564
+    omission_f1: 0.4681
+    substitution_ap: 0.4452
+    substitution_precision: 0.5198
+    substitution_f1: 0.4596
+    insertion_ap: 0.1991
+    correct_ap: 0.9738
+    correct_f1: 0.9336
+    overall_ece: 0.0119
+    fwr: 1.997
+  dev_search:
+    utility: 0.4328
+    macro_ap: 0.5740
+    omission_ap: 0.3178
+    omission_recall: 0.5837
+    substitution_ap: 0.4247
+records_broken:
+  - "ALL_TIME_CAMPAIGN_HIGH_STANDALONE_MACRO_F1_0.6205 (BROKE 62% MILESTONE)"
+  - "ALL_TIME_CAMPAIGN_HIGH_STANDALONE_OMISSION_RECALL_0.5564 (BROKE 55% MILESTONE)"
+  - "ALL_TIME_CAMPAIGN_HIGH_STANDALONE_OMISSION_F1_0.4681"
+  - "SOLIDLY_SUSTAINED_61_PERCENT_MACRO_AP_0.6186"
+evaluation:
+  protocol: "PROTOCOL_ALPHA_TARGET_MONOTONIC_V1"
+  status: "LOCAL_REPRODUCED"

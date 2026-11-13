@@ -1,0 +1,48 @@
+run_id: "EXP-65-SELF-SUPERVISED-PHONOTACTIC-DIFFUSION"
+hypothesis_id: "H60-diffusion-phonotactic-prior"
+method_id: "M65-phonotactic-diffusion-trainer"
+experiment_type: "PHONOTACTIC_LATENT_SCORE_DIFFUSION"
+date: "2026-11-05"
+hardware:
+  device: "cpu"
+  cpu_model: "Intel Core i5-12450H (12 vCPUs)"
+  threads_used: 4
+conditioning_architecture:
+  acoustic_stream_dims: 67
+  prompt_stream_dims: 44
+  phonotactic_priors: "CMUDict forward and backward bigram log-probabilities"
+  gap_routing: "Triad Decoupled Gating (cluster, coda, pause)"
+  diffusion_sampler: "4-step DDIM deterministic reverse trajectory"
+results_summary:
+  dev_replication:
+    utility: 0.4864
+    macro_ap: 0.6118
+    macro_precision: 0.6232
+    macro_recall: 0.6067
+    macro_f1: 0.6046
+    substitution_ap: 0.4485
+    substitution_precision: 0.5583
+    substitution_f1: 0.4351
+    omission_ap: 0.4166
+    omission_recall: 0.5136
+    omission_f1: 0.4430
+    insertion_ap: 0.2445
+    insertion_precision: 0.5000
+    insertion_f1: 0.2985
+    correct_ap: 0.9702
+    correct_f1: 0.9357
+    overall_ece: 0.0126
+    fwr: 1.653
+  dev_search:
+    utility: 0.4300
+    macro_ap: 0.5618
+    substitution_precision: 0.5044
+    omission_recall: 0.5120
+    fwr: 1.883
+records_broken:
+  - "ALL_TIME_CAMPAIGN_HIGH_STANDALONE_SUBSTITUTION_PRECISION_0.5583"
+  - "RESOLVED_DIFFUSION_OVER_DENOISING_FAILURE_MODE"
+  - "SUSTAINED_60_PERCENT_MACRO_F1_0.6046"
+evaluation:
+  protocol: "PROTOCOL_ALPHA_TARGET_MONOTONIC_V1"
+  status: "LOCAL_REPRODUCED"

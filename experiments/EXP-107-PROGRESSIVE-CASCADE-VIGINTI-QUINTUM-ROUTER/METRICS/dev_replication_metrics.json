@@ -1,0 +1,75 @@
+{
+  "counts": {
+    "total_utterances": 300,
+    "total_target_phones": 9863,
+    "total_gaps": 10163,
+    "false_omissions": 136,
+    "false_substitutions": 341,
+    "false_insertions": 32,
+    "total_false_warnings": 509
+  },
+  "classes": {
+    "CORRECT": {
+      "ap": 0.9742178009458755,
+      "precision": 0.9248704663212435,
+      "recall": 0.9490291262135923,
+      "f1": 0.9367940673131774
+    },
+    "OMISSION": {
+      "ap": 0.45029093536725406,
+      "precision": 0.4708171206225681,
+      "recall": 0.4708171206225681,
+      "f1": 0.4708171206225681
+    },
+    "SUBSTITUTION": {
+      "ap": 0.4498798320743879,
+      "precision": 0.5315934065934066,
+      "recall": 0.4056603773584906,
+      "f1": 0.460166468489893
+    },
+    "INSERTION": {
+      "ap": 0.2938554920367313,
+      "precision": 0.5151515151515151,
+      "recall": 0.3617021276595745,
+      "f1": 0.425
+    }
+  },
+  "macro": {
+    "precision": 0.6424269978457394,
+    "recall": 0.6085022080648836,
+    "f1": 0.6225925521418795,
+    "ap": 0.6247961894625059
+  },
+  "diagnostics": {
+    "coverage": 1.0,
+    "target_ece": 0.04488953126276415,
+    "gap_ece": 0.008802421414253359,
+    "overall_ece": 0.026845976338508753,
+    "false_warning_rate_per_utt": 1.6966666666666668
+  },
+  "utility": {
+    "score": 0.5049619069241734,
+    "components": {
+      "omission_ap": 0.45029093536725406,
+      "omission_f1": 0.4708171206225681,
+      "substitution_ap_f1": 0.45502315028214046,
+      "insertion_ap_f1": 0.35942774601836563,
+      "correct_ap_f1": 0.9555059341295264,
+      "macro_balance": 0.6250045883692593,
+      "coverage_risk": 0.0,
+      "calibration": 0.8657701183074562
+    }
+  },
+  "gates": {
+    "milestone_60": false,
+    "outstanding_80": false,
+    "status": "EXPLORATORY"
+  },
+  "efficiency": {
+    "tier1_target_exit_rate": 0.7115482104836257,
+    "tier1_gap_exit_rate": 0.9475548558496507,
+    "overall_early_exit_rate": 0.8313192849295915,
+    "effective_cpu_latency_ms": 19.58,
+    "effective_cpu_speedup": 4.85
+  }
+}

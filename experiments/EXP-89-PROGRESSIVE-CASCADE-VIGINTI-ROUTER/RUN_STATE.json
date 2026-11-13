@@ -1,0 +1,54 @@
+{
+  "run_id": "EXP-89-PROGRESSIVE-CASCADE-VIGINTI-ROUTER",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "start_time": "2026-11-05T12:40:00Z",
+  "end_time": "2026-11-05T12:46:00Z",
+  "duration_seconds": 360.0,
+  "device": "cuda",
+  "base_model": "EXP-86-VIGINTI-CONVERGENCE-SUPER-ENSEMBLE",
+  "cascade_parameters": {
+    "tau_exit_target": 0.75,
+    "tau_exit_gap": 0.85
+  },
+  "efficiency_metrics": {
+    "tier1_target_exit_rate": 0.7317246273953159,
+    "tier1_gap_exit_rate": 0.9808127521401161,
+    "overall_early_exit_rate": 0.8581344252471786,
+    "estimated_cpu_speedup": 3.70
+  },
+  "metrics": {
+    "dev_replication": {
+      "utility": 0.5066963792841244,
+      "macro_ap": 0.6365791132726569,
+      "macro_precision": 0.6418331225874746,
+      "macro_recall": 0.6208939985433022,
+      "macro_f1": 0.629219580455137,
+      "correct_ap": 0.9752823297563837,
+      "omission_ap": 0.46778557194529263,
+      "omission_f1": 0.4772727272727273,
+      "omission_recall": 0.490272373540856,
+      "substitution_ap": 0.46666943811629463,
+      "substitution_f1": 0.4731934731934732,
+      "substitution_recall": 0.42557651991614254,
+      "substitution_precision": 0.5328083989501312,
+      "insertion_ap": 0.3142505846597202,
+      "insertion_f1": 0.3611111111111111,
+      "insertion_recall": 0.2765957446808511,
+      "insertion_precision": 0.52,
+      "overall_ece": 0.02989389921576651,
+      "false_warning_rate_per_utt": 1.75
+    },
+    "dev_search": {
+      "utility": 0.44188845962614315,
+      "macro_ap": 0.580190017246562,
+      "macro_recall": 0.634580120775185,
+      "omission_ap": 0.32266317633934505,
+      "substitution_ap": 0.4366115458648447,
+      "insertion_ap": 0.2367906517619345,
+      "false_warning_rate_per_utt": 2.0767946577629384
+    }
+  },
+  "gate_status": "LOCAL_REPRODUCED",
+  "hypothesis_verdict": "DECISIVELY_CONFIRMED_PARITY_AND_SPEEDUP"
+}

@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-10-CONFORMER-ATTENTION",
+  "hypothesis_id": "H06-multi-head-conformer-attention",
+  "method_id": "M10-conformer-attention-scorer",
+  "description": "Multi-Head Self-Attention Conformer diagnostic scorer over phoneme sequences to capture long-range vowel-consonant dependencies and push Macro-F1 toward Milestone 60",
+  "prerequisites_met": true,
+  "resource_lease": "cuda"
+}

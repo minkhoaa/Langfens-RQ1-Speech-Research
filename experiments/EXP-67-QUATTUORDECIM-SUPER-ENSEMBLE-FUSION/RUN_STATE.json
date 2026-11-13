@@ -1,0 +1,54 @@
+{
+  "run_id": "EXP-67-QUATTUORDECIM-SUPER-ENSEMBLE-FUSION",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "started_at": "2026-11-05T07:52:00Z",
+  "completed_at": "2026-11-05T07:55:40Z",
+  "duration_seconds": 220.0,
+  "device": "cpu",
+  "dev_cal_pareto_score": 3.1225,
+  "optimal_thresholds": {
+    "theta_subs": 0.52,
+    "theta_omis": 0.52,
+    "theta_ins": 0.60
+  },
+  "metrics_summary": {
+    "dev_search": {
+      "utility": 0.4406,
+      "macro_ap": 0.5767,
+      "omission_ap": 0.3148,
+      "substitution_ap": 0.4338,
+      "insertion_ap": 0.2982,
+      "fwr": 1.658
+    },
+    "dev_replication": {
+      "utility": 0.4935,
+      "macro_ap": 0.6377,
+      "macro_precision": 0.6412,
+      "macro_recall": 0.5747,
+      "macro_f1": 0.6000,
+      "omission_ap": 0.4780,
+      "omission_f1": 0.4431,
+      "substitution_ap": 0.4601,
+      "substitution_precision": 0.5423,
+      "substitution_f1": 0.4200,
+      "insertion_ap": 0.3262,
+      "insertion_precision": 0.5333,
+      "insertion_f1": 0.3453,
+      "correct_ap": 0.9750,
+      "correct_f1": 0.9369,
+      "overall_ece": 0.0345,
+      "gap_ece": 0.0063,
+      "fwr": 1.410
+    }
+  },
+  "records_broken": [
+    "ALL_TIME_CAMPAIGN_HIGH_MACRO_AP_0.6377",
+    "ALL_TIME_CAMPAIGN_HIGH_SUBSTITUTION_AP_0.4601",
+    "ALL_TIME_CAMPAIGN_HIGH_OMISSION_AP_0.4780",
+    "ALL_TIME_CAMPAIGN_HIGH_ENSEMBLE_INSERTION_AP_0.3262",
+    "ALL_TIME_CAMPAIGN_HIGH_ENSEMBLE_INSERTION_PRECISION_0.5333",
+    "ALL_TIME_CAMPAIGN_HIGH_ENSEMBLE_WEIGHTED_UTILITY_0.4935"
+  ],
+  "gate_status": "LOCAL_REPRODUCED"
+}

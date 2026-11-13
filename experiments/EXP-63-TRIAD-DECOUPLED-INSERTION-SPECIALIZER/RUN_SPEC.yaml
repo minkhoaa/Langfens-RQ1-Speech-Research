@@ -1,0 +1,48 @@
+run_id: "EXP-63-TRIAD-DECOUPLED-INSERTION-SPECIALIZER"
+hypothesis_id: "H58-triad-insertion-specializer"
+method_id: "M63-insertion-specializer"
+experiment_type: "TRIAD_DECOUPLED_INSERTION_SPECIALIZATION"
+date: "2026-11-05"
+hardware:
+  device: "cpu"
+  cpu_model: "Intel Core i5-12450H (12 vCPUs)"
+  threads_used: 4
+architecture:
+  backbone: "DSCA-Net (67-dim acoustic + 42-dim prompt stream with bidirectional MHCA)"
+  gap_routing:
+    regime_1: "Consonant-consonant cluster epenthesis (cluster_head)"
+    regime_2: "Word-final coda intrusive release (coda_head)"
+    regime_3: "Inter-word pause silence / breathing (pause_head)"
+results_summary:
+  dev_replication:
+    utility: 0.4863
+    macro_ap: 0.5847
+    macro_precision: 0.5832
+    macro_recall: 0.5993
+    macro_f1: 0.5855
+    insertion_ap: 0.3151
+    insertion_precision: 0.5147
+    insertion_recall: 0.3723
+    insertion_f1: 0.4321
+    omission_ap: 0.4058
+    omission_recall: 0.5331
+    omission_f1: 0.4544
+    substitution_ap: 0.3788
+    correct_ap: 0.9696
+    correct_f1: 0.9271
+    overall_ece: 0.0185
+    gap_ece: 0.0072
+    fwr: 2.177
+  dev_search:
+    utility: 0.4210
+    macro_ap: 0.5456
+    omission_recall: 0.5598
+    insertion_ap: 0.2134
+records_broken:
+  - "ALL_TIME_CAMPAIGN_HIGH_INSERTION_F1_0.4321 (BROKE 43% MILESTONE)"
+  - "ALL_TIME_CAMPAIGN_HIGH_INSERTION_AP_0.3151 (BROKE 31.5% MILESTONE)"
+  - "ALL_TIME_CAMPAIGN_HIGH_STANDALONE_INSERTION_RECALL_0.3723"
+  - "SUSTAINED_51_PERCENT_INSERTION_PRECISION_0.5147"
+evaluation:
+  protocol: "PROTOCOL_ALPHA_TARGET_MONOTONIC_V1"
+  status: "LOCAL_REPRODUCED"

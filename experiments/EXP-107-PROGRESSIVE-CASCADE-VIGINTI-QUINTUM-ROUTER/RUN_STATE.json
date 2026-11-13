@@ -1,0 +1,36 @@
+{
+  "experiment_id": "EXP-107-PROGRESSIVE-CASCADE-VIGINTI-QUINTUM-ROUTER",
+  "status": "COMPLETED",
+  "start_time": "2026-11-05T16:25:00Z",
+  "end_time": "2026-11-05T16:30:00Z",
+  "exit_code": 0,
+  "metrics": {
+    "dev_replication": {
+      "macro_f1": 0.6225925521418795,
+      "macro_ap": 0.6247961894625059,
+      "macro_precision": 0.6424269978457394,
+      "macro_recall": 0.6085022080648836,
+      "weighted_utility": 0.5049619069241734,
+      "overall_ece": 0.026845976338508753,
+      "false_warning_rate_per_utt": 1.6966666666666668,
+      "early_exit_rate": 0.8313192849295915,
+      "cpu_speedup": 4.85,
+      "effective_latency_ms": 19.58,
+      "classes": {
+        "CORRECT": { "ap": 0.9742178009458755, "precision": 0.9248704663212435, "recall": 0.9490291262135923, "f1": 0.9367940673131774 },
+        "OMISSION": { "ap": 0.45029093536725406, "precision": 0.4708171206225681, "recall": 0.4708171206225681, "f1": 0.4708171206225681 },
+        "SUBSTITUTION": { "ap": 0.4498798320743879, "precision": 0.5315934065934066, "recall": 0.4056603773584906, "f1": 0.460166468489893 },
+        "INSERTION": { "ap": 0.2938554920367313, "precision": 0.5151515151515151, "recall": 0.3617021276595745, "f1": 0.425 }
+      }
+    },
+    "dev_search": {
+      "macro_f1": 0.5705927287142395,
+      "macro_ap": 0.5689024183555857,
+      "macro_precision": 0.5551287709148545,
+      "macro_recall": 0.6181250831625316,
+      "weighted_utility": 0.4385230606201807,
+      "overall_ece": 0.03673783052783268,
+      "false_warning_rate_per_utt": 1.9365609348914858
+    }
+  }
+}

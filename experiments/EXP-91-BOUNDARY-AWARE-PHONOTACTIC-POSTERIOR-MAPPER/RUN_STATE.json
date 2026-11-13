@@ -1,0 +1,33 @@
+{
+  "experiment_id": "EXP-91-BOUNDARY-AWARE-PHONOTACTIC-POSTERIOR-MAPPER",
+  "status": "COMPLETED",
+  "start_time": "2026-11-05T13:10:00Z",
+  "end_time": "2026-11-05T13:15:00Z",
+  "exit_code": 0,
+  "metrics": {
+    "dev_replication": {
+      "macro_f1": 0.6133024708084237,
+      "macro_ap": 0.6110418706045085,
+      "macro_precision": 0.6048157645165051,
+      "macro_recall": 0.6233456286264165,
+      "weighted_utility": 0.48125986403463283,
+      "overall_ece": 0.02572140803554247,
+      "false_warning_rate_per_utt": 2.71,
+      "classes": {
+        "CORRECT": { "ap": 0.972853847365807, "precision": 0.9339522858150194, "recall": 0.9185159500693482, "f1": 0.9261698036244974 },
+        "OMISSION": { "ap": 0.41014625272332134, "precision": 0.4307692307692308, "recall": 0.4357976653696498, "f1": 0.4332688588007737 },
+        "SUBSTITUTION": { "ap": 0.45012551172439746, "precision": 0.44972577696526506, "recall": 0.5157232704402516, "f1": 0.48046875 },
+        "INSERTION": { "ap": 0.24108481552093036, "precision": 0.31521739130434784, "recall": 0.30851063829787234, "f1": 0.3118279569892473 }
+      }
+    },
+    "dev_search": {
+      "macro_f1": 0.5592133501413555,
+      "macro_ap": 0.5555091268541017,
+      "macro_precision": 0.519832396466478,
+      "macro_recall": 0.6416046889670758,
+      "weighted_utility": 0.42246006782822276,
+      "overall_ece": 0.03238798867134194,
+      "false_warning_rate_per_utt": 3.1969949916527547
+    }
+  }
+}

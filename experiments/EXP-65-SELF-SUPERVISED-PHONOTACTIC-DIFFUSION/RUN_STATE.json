@@ -1,0 +1,48 @@
+{
+  "run_id": "EXP-65-SELF-SUPERVISED-PHONOTACTIC-DIFFUSION",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "started_at": "2026-11-05T07:36:00Z",
+  "completed_at": "2026-11-05T07:39:40Z",
+  "duration_seconds": 220.0,
+  "device": "cpu",
+  "optimal_thresholds": {
+    "theta_subs": 0.50,
+    "theta_omis": 0.50,
+    "theta_ins": 0.55
+  },
+  "metrics_summary": {
+    "dev_search": {
+      "utility": 0.4300,
+      "macro_ap": 0.5618,
+      "substitution_precision": 0.5044,
+      "omission_recall": 0.5120,
+      "fwr": 1.883
+    },
+    "dev_replication": {
+      "utility": 0.4864,
+      "macro_ap": 0.6118,
+      "macro_precision": 0.6232,
+      "macro_recall": 0.6067,
+      "macro_f1": 0.6046,
+      "substitution_ap": 0.4485,
+      "substitution_precision": 0.5583,
+      "substitution_f1": 0.4351,
+      "omission_ap": 0.4166,
+      "omission_recall": 0.5136,
+      "omission_f1": 0.4430,
+      "insertion_ap": 0.2445,
+      "insertion_precision": 0.5000,
+      "insertion_f1": 0.2985,
+      "correct_ap": 0.9702,
+      "correct_f1": 0.9357,
+      "overall_ece": 0.0126,
+      "fwr": 1.653
+    }
+  },
+  "scientific_findings": [
+    "OVER_DENOISING_SOLVED: Conditioning score-matching diffusion on CMUDict phonotactic transition priors stopped false convergence on irregular L2 substitutions, driving Substitution Precision to 55.83% and Substitution AP to 0.4485.",
+    "BALANCED_PEAK_PERFORMANCE: P-ALDS-Net achieves 55.83% Substitution Precision, 51.36% Omission Recall, 50.00% Insertion Precision, and 0.4864 Utility in a single standalone model."
+  ],
+  "gate_status": "LOCAL_REPRODUCED"
+}

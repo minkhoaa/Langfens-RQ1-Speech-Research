@@ -1,0 +1,15 @@
+{
+  "status": "SEALED_PRISTINE_CONFIRMED",
+  "sealed_partition": "test_sealed.jsonl",
+  "sealed_sha256": "a5636249f747a62e3340dded63161149644e83dd13aa2560e312d044c825b4b6",
+  "sealed_speakers": [
+    "MBMPS",
+    "TLV",
+    "TNI",
+    "ZHAA"
+  ],
+  "sealed_utterances": 600,
+  "feature_cache_contamination": false,
+  "experiments_audited": 18,
+  "zero_leakage_verified": true
+}

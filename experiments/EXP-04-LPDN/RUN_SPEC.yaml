@@ -1,0 +1,23 @@
+run_id: "EXP-04-LPDN"
+hypothesis_id: "H02-learned-phonetic-diagnostic-network"
+method_id: "M04-lpdn-neural-head"
+experiment_type: "LEARNED_NEURAL_DIAGNOSTIC_HEAD"
+operating_split: "DEV_SEARCH"
+date: "2026-11-04"
+hardware:
+  device: "cuda (NVIDIA GeForce GTX 1650 4GB)"
+  vram_allocated_mb: 24.5
+inputs:
+  train_features: "data/derived/l2arctic/features/train_features.npz"
+  cal_features: "data/derived/l2arctic/features/dev_cal_features.npz"
+  search_features: "data/derived/l2arctic/features/dev_search_features.npz"
+hyperparameters:
+  classifier_type: "Residual_MLP"
+  hidden_dim: 128
+  epochs_target: 20
+  epochs_gap: 15
+  focal_gamma: 2.0
+  focal_alpha: [0.2, 1.0, 3.0]
+  gap_pos_weight: 15.0
+  calibrated_weights: [1.0, 1.2, 1.0]
+  calibrated_ins_threshold: 0.60

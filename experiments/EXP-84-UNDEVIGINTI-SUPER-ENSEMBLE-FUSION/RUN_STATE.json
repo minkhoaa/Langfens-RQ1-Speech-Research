@@ -1,0 +1,56 @@
+{
+  "run_id": "EXP-84-UNDEVIGINTI-SUPER-ENSEMBLE-FUSION",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "start_time": "2026-11-05T11:28:00Z",
+  "end_time": "2026-11-05T11:35:00Z",
+  "duration_seconds": 420.0,
+  "device": "cuda",
+  "models_fused": 20,
+  "pareto_optimal_weights": {
+    "target": [0.01, 0.01, 0.01, 0.02, 0.02, 0.03, 0.03, 0.04, 0.03, 0.04, 0.17, 0.17, 0.03, 0.11, 0.13, 0.03, 0.02, 0.04, 0.04, 0.03],
+    "gap": [0.01, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.03, 0.07, 0.07, 0.31, 0.07, 0.07, 0.02, 0.02, 0.03, 0.10, 0.08]
+  },
+  "operating_thresholds": {
+    "theta_subs": 0.52,
+    "theta_omis": 0.53,
+    "theta_ins": 0.60
+  },
+  "metrics": {
+    "dev_replication": {
+      "utility": 0.5021272613173041,
+      "macro_ap": 0.6371666539704647,
+      "macro_precision": 0.6416421032271354,
+      "macro_recall": 0.6002262362287537,
+      "macro_f1": 0.6173278059417204,
+      "correct_ap": 0.9753495312556795,
+      "omission_ap": 0.4751528657777454,
+      "omission_f1": 0.4566929133858268,
+      "omission_recall": 0.45136186770428016,
+      "substitution_ap": 0.46099756487796906,
+      "substitution_f1": 0.45810729355033153,
+      "substitution_recall": 0.39832285115303984,
+      "substitution_precision": 0.5390070921985816,
+      "insertion_ap": 0.32105134771349475,
+      "insertion_f1": 0.3404255319148936,
+      "insertion_recall": 0.2553191489361702,
+      "insertion_precision": 0.5106382978723404,
+      "overall_ece": 0.027688459541047067,
+      "false_warning_rate_per_utt": 1.61
+    },
+    "dev_search": {
+      "utility": 0.44571743166049255,
+      "macro_ap": 0.5802678076344839,
+      "macro_recall": 0.6218934239590705,
+      "macro_f1": 0.5690286697398329,
+      "omission_ap": 0.3182987641636091,
+      "substitution_ap": 0.44091027275935357,
+      "substitution_recall": 0.4123303167420814,
+      "substitution_f1": 0.45125348189415043,
+      "insertion_ap": 0.3051141902201813,
+      "false_warning_rate_per_utt": 1.8981636060100167
+    }
+  },
+  "gate_status": "LOCAL_REPRODUCED",
+  "hypothesis_verdict": "CONFIRMED_UTILITY_0.5020_RECORD"
+}

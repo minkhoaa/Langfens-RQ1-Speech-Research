@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-65-SELF-SUPERVISED-PHONOTACTIC-DIFFUSION",
+  "hypothesis_id": "H60-diffusion-phonotactic-prior",
+  "method_id": "M65-phonotactic-diffusion-trainer",
+  "description": "Continuous auto-research loop: Phonotactic score-based diffusion modeling conditioned on CMUDict n-gram transition priors and 5ms sub-frame dynamics to break 0.5000 Utility in a single model",
+  "prerequisites_met": true,
+  "resource_lease": "cpu"
+}

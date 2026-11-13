@@ -1,0 +1,15 @@
+{
+  "run_id": "EXP-23-COMPOSITE-UTILITY-SWEEP",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "started_at": "2026-11-05T02:50:00Z",
+  "completed_at": "2026-11-05T02:50:55Z",
+  "duration_seconds": 55.0,
+  "dev_rep_omission_f1": 0.4057,
+  "dev_rep_substitution_ap": 0.3940,
+  "dev_rep_substitution_precision": 0.5199,
+  "dev_rep_utility": 0.4310,
+  "dev_rep_macro_ap": 0.5749,
+  "dev_rep_macro_precision": 0.6182,
+  "gate_status": "LOCAL_REPRODUCED"
+}

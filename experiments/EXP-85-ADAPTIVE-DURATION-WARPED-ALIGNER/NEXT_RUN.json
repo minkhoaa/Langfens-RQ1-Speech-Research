@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-86-VIGINTI-CONVERGENCE-SUPER-ENSEMBLE",
+  "hypothesis_id": "H81-viginti-convergence-ensemble",
+  "method_id": "M86-viginti-ensemble-sweeper",
+  "objective": "20-Model Viginti Convergence Super-Ensemble uniting all 20 breakthrough paradigms into a single unified Bayesian Pareto mixture to target >0.6400 Macro AP and >0.5035 Weighted Utility",
+  "device": "cuda",
+  "prerequisites_met": true
+}

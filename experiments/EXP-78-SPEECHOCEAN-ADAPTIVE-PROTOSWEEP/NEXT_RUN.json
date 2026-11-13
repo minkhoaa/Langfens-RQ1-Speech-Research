@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-79-DUODEVIGINTI-SUPER-ENSEMBLE-FUSION",
+  "hypothesis_id": "H74-duodeviginti-super-ensemble",
+  "method_id": "M79-duodeviginti-ensemble-sweeper",
+  "objective": "18-Model Duodeviginti Super-Ensemble fusing TPD-Net (EXP-77 recall champion) into Septendecim-Pareto (EXP-76) to shatter the 0.6400 Macro AP and 0.5000 Utility barriers",
+  "device": "cuda",
+  "prerequisites_met": true
+}

@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-09-CROSS-CORPUS-SPEECHOX",
+  "hypothesis_id": "H05-cross-dataset-robustness",
+  "method_id": "M09-cross-corpus-evaluator",
+  "description": "Cross-dataset generalization of BiLSTM-CPN on SpeechOcean762 test partition to evaluate domain shift and score correlation",
+  "prerequisites_met": true,
+  "resource_lease": "cuda"
+}

@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-29-PROSODIC-PENTAD-FUSION",
+  "hypothesis_id": "H24-prosodic-super-ensemble-fusion",
+  "method_id": "M29-prosodic-ensemble-sweeper",
+  "description": "Continuous auto-research loop: Integration of APED-Net physical prosodic energy representations into the Pentad Super-Ensemble (Hexad-Pareto), uniting all 6 breakthrough architectures to break the 60% Macro F1 milestone",
+  "prerequisites_met": true,
+  "resource_lease": "cuda"
+}

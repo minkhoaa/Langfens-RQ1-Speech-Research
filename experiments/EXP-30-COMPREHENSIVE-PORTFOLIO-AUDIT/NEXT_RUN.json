@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-31-ENDLESS-SEARCH-BOUNDARY-REFINER",
+  "hypothesis_id": "H26-boundary-energy-refiner",
+  "method_id": "M31-boundary-refiner-model",
+  "description": "Continuous auto-research loop: Sub-frame boundary energy refiner to detect ultra-short unreleased stop omissions and affricate release bursts",
+  "prerequisites_met": true,
+  "resource_lease": "cuda"
+}

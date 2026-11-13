@@ -1,0 +1,42 @@
+run_id: "EXP-42-AGE-INVARIANT-FRONTEND-NORMALIZATION"
+hypothesis_id: "H37-vocal-tract-length-normalization"
+method_id: "M42-vtln-acoustic-normalizer"
+experiment_type: "VOCAL_TRACT_LENGTH_NORMALIZATION_CASCADED_TRAINING"
+date: "2026-11-05"
+hardware:
+  device: "cuda"
+  gpu_name: "NVIDIA GeForce GTX 1650"
+  vram_allocated_mb: 68
+inputs:
+  train_features: "data/derived/l2arctic/features/train_features.npz"
+  cal_features: "data/derived/l2arctic/features/dev_cal_features.npz"
+  search_features: "data/derived/l2arctic/features/dev_search_features.npz"
+  rep_features: "data/derived/l2arctic/features/dev_replication_features.npz"
+hyperparameters:
+  in_target_dim: 66
+  in_gap_dim: 11
+  lstm_hidden: 96
+  proj_dim: 128
+  local_attn_sigma: 3.0
+  vtln_ref_centroid_hz: 1850.0
+  alpha_vowel: [1.0, 2.5, 1.5]
+  alpha_cons: [1.0, 1.5, 2.5]
+  focal_gamma: 1.5
+  optimizer: "AdamW"
+  lr: 0.0008
+  weight_decay: 0.0001
+  epochs: 30
+  batch_size: 32
+operating_thresholds:
+  dev_cal_pareto_score: 2.6483
+  theta_subs: 0.60
+  theta_omis: 0.55
+  theta_ins: 0.45
+evaluation:
+  protocol: "PROTOCOL_ALPHA_TARGET_MONOTONIC_V1"
+  search_utility: 0.3716
+  rep_utility: 0.4277
+  rep_insertion_ap: 0.2640
+  rep_insertion_recall: 0.3936
+  rep_omission_recall: 0.4125
+  status: "LOCAL_REPRODUCED"

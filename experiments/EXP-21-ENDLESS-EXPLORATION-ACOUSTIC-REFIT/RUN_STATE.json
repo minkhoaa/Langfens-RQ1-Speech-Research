@@ -1,0 +1,12 @@
+{
+  "run_id": "EXP-21-ENDLESS-EXPLORATION-ACOUSTIC-REFIT",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "started_at": "2026-11-05T02:30:00Z",
+  "completed_at": "2026-11-05T02:30:50Z",
+  "duration_seconds": 50.0,
+  "dev_search_omission_recall": 0.4498,
+  "dev_rep_omission_recall": 0.4086,
+  "dev_rep_utility": 0.4135,
+  "gate_status": "LOCAL_REPRODUCED"
+}

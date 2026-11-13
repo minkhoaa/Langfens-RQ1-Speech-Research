@@ -1,0 +1,41 @@
+run_id: "EXP-28-PROSODIC-ENERGY-DYNAMICS"
+hypothesis_id: "H23-prosodic-energy-acoustic-dynamics"
+method_id: "M28-prosodic-energy-model"
+experiment_type: "ACOUSTIC_PROSODIC_ENERGY_DYNAMICS_TRAINING"
+date: "2026-11-05"
+hardware:
+  device: "cuda"
+  gpu_name: "NVIDIA GeForce GTX 1650"
+  vram_allocated_mb: 68
+inputs:
+  train_features: "data/derived/l2arctic/features/train_features.npz"
+  cal_features: "data/derived/l2arctic/features/dev_cal_features.npz"
+  search_features: "data/derived/l2arctic/features/dev_search_features.npz"
+  rep_features: "data/derived/l2arctic/features/dev_replication_features.npz"
+  audio_waveforms: "data/derived/l2arctic/wavs_16k/"
+hyperparameters:
+  in_target_dim: 60
+  in_gap_dim: 9
+  lstm_hidden: 96
+  proj_dim: 128
+  local_attn_sigma: 3.0
+  focal_gamma: 1.5
+  optimizer: "AdamW"
+  lr: 0.0008
+  weight_decay: 0.0001
+  epochs: 30
+  batch_size: 32
+operating_thresholds:
+  dev_cal_pareto_score: 2.7233
+  theta_subs: 0.50
+  theta_omis: 0.55
+  theta_ins: 0.50
+evaluation:
+  protocol: "PROTOCOL_ALPHA_TARGET_MONOTONIC_V1"
+  search_utility: 0.3795
+  rep_utility: 0.4237
+  rep_macro_f1: 0.5725
+  rep_substitution_f1: 0.4461
+  rep_insertion_f1: 0.3579
+  rep_insertion_ap: 0.2589
+  status: "LOCAL_REPRODUCED"

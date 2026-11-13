@@ -1,0 +1,29 @@
+experiment_id: EXP-99-CENTURY-CONVERGENCE-MASTER-SUPER-ENSEMBLE
+hypothesis_id: H94-century-convergence-ensemble
+method_id: M99-century-ensemble-sweeper
+protocol: PROTOCOL_ALPHA_TARGET_MONOTONIC_V1
+split:
+  train: 1800
+  dev_search: 599
+  dev_cal: 300
+  dev_replication: 300
+  test_sealed: 600
+device: cuda
+model:
+  name: Centum-Pareto (Grand Century Convergence Super-Ensemble)
+  paradigms_fused:
+    - Viginti-Pareto (EXP-86: 21 Models)
+    - ADAE-Net (EXP-94: Articulatory Disentanglement Champion)
+    - CICA-Net (EXP-95: Structured Covariance Aligner)
+    - MTRC-Net (EXP-97: Multi-Scale Residual Cascade)
+    - BAPM-Net (EXP-91: Boundary-Aware Posterior Mapper)
+  calibration: DEV_CAL Dirichlet Grid Optimization
+calibration_split: dev_cal
+evaluation_splits:
+  - dev_search
+  - dev_replication
+tags:
+  - century_convergence_master_super_ensemble
+  - centum_pareto
+  - grand_century_super_mixture
+  - zero_leakage_enforced

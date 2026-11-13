@@ -1,0 +1,48 @@
+{
+  "run_id": "EXP-70-QUINDECIM-SUPER-ENSEMBLE-FUSION",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "start_time": "2026-11-05T08:25:00Z",
+  "end_time": "2026-11-05T08:29:30Z",
+  "duration_seconds": 270.0,
+  "device": "cuda",
+  "models_fused": 15,
+  "pareto_optimal_weights": {
+    "target": [0.01, 0.01, 0.01, 0.02, 0.02, 0.03, 0.03, 0.04, 0.03, 0.05, 0.20, 0.20, 0.03, 0.16, 0.16],
+    "gap": [0.02, 0.02, 0.02, 0.02, 0.02, 0.03, 0.04, 0.03, 0.03, 0.05, 0.08, 0.08, 0.34, 0.11, 0.11]
+  },
+  "operating_thresholds": {
+    "theta_subs": 0.52,
+    "theta_omis": 0.52,
+    "theta_ins": 0.60
+  },
+  "metrics": {
+    "dev_replication": {
+      "utility": 0.49889442809040185,
+      "macro_ap": 0.6389557362537591,
+      "macro_precision": 0.646686079813865,
+      "macro_recall": 0.586257557309538,
+      "macro_f1": 0.6090079651730644,
+      "correct_ap": 0.9750752108611382,
+      "omission_ap": 0.47962047511827516,
+      "omission_f1": 0.4572564612326044,
+      "substitution_ap": 0.46217152278186385,
+      "substitution_f1": 0.4319488817891374,
+      "substitution_precision": 0.5531914893617021,
+      "insertion_ap": 0.3233351862894442,
+      "insertion_f1": 0.3235294117647059,
+      "insertion_precision": 0.5238095238095238,
+      "overall_ece": 0.028709545396614074,
+      "false_warning_rate_per_utt": 1.4133333333333333
+    },
+    "dev_search": {
+      "utility": 0.4439271451534852,
+      "macro_ap": 0.5819802406567832,
+      "omission_ap": 0.32823306619823633,
+      "substitution_ap": 0.43644810436761067,
+      "insertion_ap": 0.29324188376639243,
+      "false_warning_rate_per_utt": 1.689482470784641
+    }
+  },
+  "gate_status": "LOCAL_REPRODUCED"
+}

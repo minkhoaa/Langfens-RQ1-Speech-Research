@@ -1,0 +1,33 @@
+{
+  "experiment_id": "EXP-108-CROSS-ATTENTION-SPECTRAL-NORMALIZED-RESIDUALS",
+  "status": "COMPLETED",
+  "start_time": "2026-11-05T16:40:00Z",
+  "end_time": "2026-11-05T16:45:00Z",
+  "exit_code": 0,
+  "metrics": {
+    "dev_replication": {
+      "macro_f1": 0.6164542926710264,
+      "macro_ap": 0.6132034416797684,
+      "macro_precision": 0.6013303339566772,
+      "macro_recall": 0.634159469040895,
+      "weighted_utility": 0.48070848405641775,
+      "overall_ece": 0.029143394283801353,
+      "false_warning_rate_per_utt": 2.74,
+      "classes": {
+        "CORRECT": { "ap": 0.9733770513063418, "precision": 0.9360622861861507, "recall": 0.9171289875173371, "f1": 0.9264989199603012 },
+        "OMISSION": { "ap": 0.4136628834183232, "precision": 0.41114982578397213, "recall": 0.4591439688715953, "f1": 0.4338235294117647 },
+        "SUBSTITUTION": { "ap": 0.4525703903146403, "precision": 0.456778889899909, "recall": 0.5262054507337526, "f1": 0.48904042864101316 },
+        "INSERTION": { "ap": 0.23907172796087175, "precision": 0.3253012048192771, "recall": 0.2872340425531915, "f1": 0.3050847457627119 }
+      }
+    },
+    "dev_search": {
+      "macro_f1": 0.5477190129535344,
+      "macro_ap": 0.5576611101330764,
+      "macro_precision": 0.5049968604794812,
+      "macro_recall": 0.6629681770586259,
+      "weighted_utility": 0.4199511280776054,
+      "overall_ece": 0.03468373778507647,
+      "false_warning_rate_per_utt": 3.689482470784641
+    }
+  }
+}

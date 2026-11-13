@@ -1,0 +1,38 @@
+{
+  "run_id": "EXP-31-ENDLESS-SEARCH-BOUNDARY-REFINER",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "started_at": "2026-11-05T03:45:00Z",
+  "completed_at": "2026-11-05T03:46:10Z",
+  "duration_seconds": 70.0,
+  "device": "cuda",
+  "dev_cal_pareto_score": 2.7205,
+  "optimal_thresholds": {
+    "theta_subs": 0.55,
+    "theta_omis": 0.55,
+    "theta_ins": 0.55
+  },
+  "metrics_summary": {
+    "dev_search": {
+      "utility": 0.3705,
+      "macro_ap": 0.5014,
+      "macro_precision": 0.5313,
+      "macro_f1": 0.5298,
+      "omission_recall": 0.4402,
+      "omission_f1": 0.2682,
+      "substitution_f1": 0.3830,
+      "insertion_f1": 0.2825
+    },
+    "dev_replication": {
+      "utility": 0.4109,
+      "macro_ap": 0.5445,
+      "macro_precision": 0.5869,
+      "macro_f1": 0.5542,
+      "omission_recall": 0.3969,
+      "omission_f1": 0.3792,
+      "substitution_ap": 0.3724,
+      "insertion_f1": 0.2971
+    }
+  },
+  "gate_status": "LOCAL_REPRODUCED"
+}

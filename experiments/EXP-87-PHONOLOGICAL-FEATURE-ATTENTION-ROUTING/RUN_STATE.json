@@ -1,0 +1,49 @@
+{
+  "run_id": "EXP-87-PHONOLOGICAL-FEATURE-ATTENTION-ROUTING",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "start_time": "2026-11-05T12:12:00Z",
+  "end_time": "2026-11-05T12:17:00Z",
+  "duration_seconds": 300.0,
+  "device": "cuda",
+  "epochs": 10,
+  "operating_thresholds": {
+    "theta_subs": 0.54,
+    "theta_omis": 0.54,
+    "theta_ins": 0.60
+  },
+  "metrics": {
+    "dev_replication": {
+      "utility": 0.48376866968308074,
+      "macro_ap": 0.5962019735497049,
+      "macro_precision": 0.5710547362135073,
+      "macro_recall": 0.6487661184139281,
+      "macro_f1": 0.60261675491736,
+      "correct_ap": 0.9716827783057965,
+      "omission_ap": 0.39688587195963776,
+      "omission_f1": 0.4386252045826514,
+      "omission_recall": 0.5214007782101168,
+      "substitution_ap": 0.4200372703836806,
+      "substitution_f1": 0.45548098434004475,
+      "substitution_recall": 0.5335429769392034,
+      "insertion_ap": 0.2440806967433254,
+      "insertion_f1": 0.35359116022099446,
+      "insertion_recall": 0.3404255319148936,
+      "overall_ece": 0.014124193698782046,
+      "false_warning_rate_per_utt": 3.49
+    },
+    "dev_search": {
+      "utility": 0.42194746823930307,
+      "macro_ap": 0.5425151521937892,
+      "macro_recall": 0.6702994620710955,
+      "omission_ap": 0.24362127581949028,
+      "omission_recall": 0.5550239234449761,
+      "substitution_ap": 0.40405682597752757,
+      "substitution_recall": 0.5871040723981901,
+      "insertion_ap": 0.24971368730361604,
+      "false_warning_rate_per_utt": 4.242070116861436
+    }
+  },
+  "gate_status": "LOCAL_REPRODUCED",
+  "hypothesis_verdict": "CONFIRMED_HIGH_RECALL_FALSIFIED_AP"
+}

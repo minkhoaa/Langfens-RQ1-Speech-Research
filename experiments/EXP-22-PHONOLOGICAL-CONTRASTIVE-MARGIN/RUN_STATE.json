@@ -1,0 +1,13 @@
+{
+  "run_id": "EXP-22-PHONOLOGICAL-CONTRASTIVE-MARGIN",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "started_at": "2026-11-05T02:40:00Z",
+  "completed_at": "2026-11-05T02:40:50Z",
+  "duration_seconds": 50.0,
+  "dev_rep_subs_ap": 0.3874,
+  "dev_rep_subs_precision": 0.5129,
+  "dev_rep_insertion_f1": 0.3060,
+  "dev_rep_utility": 0.4108,
+  "gate_status": "LOCAL_REPRODUCED"
+}

@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-07-PARETO-CALIB",
+  "hypothesis_id": "H03-calibrated-cost-sensitive-network",
+  "method_id": "M07-pareto-optimal-calibrated-lpdn",
+  "description": "Pareto-Optimal Threshold Calibration jointly maximizing Macro-F1 across all 4 classes while controlling false alarm risk",
+  "prerequisites_met": true,
+  "resource_lease": "cpu"
+}

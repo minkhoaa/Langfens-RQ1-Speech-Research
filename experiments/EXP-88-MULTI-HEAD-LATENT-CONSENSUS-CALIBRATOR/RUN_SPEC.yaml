@@ -1,0 +1,26 @@
+experiment_id: EXP-88-MULTI-HEAD-LATENT-CONSENSUS-CALIBRATOR
+hypothesis_id: H83-multi-head-consensus-calibration
+method_id: M88-latent-consensus-calibrator
+protocol: PROTOCOL_ALPHA_TARGET_MONOTONIC_V1
+split:
+  train: 1800
+  dev_search: 599
+  dev_cal: 300
+  dev_replication: 300
+  test_sealed: 600
+device: cuda
+base_model: EXP-86-VIGINTI-CONVERGENCE-SUPER-ENSEMBLE
+calibration:
+  type: epistemic_entropy_gated_threshold_scaling
+  target_entropy: shannon_entropy_over_fused_p
+  gap_entropy: binary_entropy_over_fused_g
+calibration_split: dev_cal
+evaluation_splits:
+  - dev_search
+  - dev_replication
+tags:
+  - latent_consensus_calibrator
+  - lcc_engine
+  - epistemic_disagreement_entropy
+  - dynamic_threshold_modulation
+  - zero_leakage_enforced

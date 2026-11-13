@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-63-TRIAD-DECOUPLED-INSERTION-SPECIALIZER",
+  "hypothesis_id": "H58-triad-insertion-specializer",
+  "method_id": "M63-insertion-specializer",
+  "description": "Continuous auto-research loop: Triad decoupled insertion specializer network separating pre-coda, inter-word, and intra-cluster gaps with boundary energy ratios to drive Insertion F1 past the 0.60 milestone",
+  "prerequisites_met": true,
+  "resource_lease": "cpu"
+}

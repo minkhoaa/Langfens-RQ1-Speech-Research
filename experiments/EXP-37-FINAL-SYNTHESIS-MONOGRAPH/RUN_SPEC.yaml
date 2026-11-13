@@ -1,0 +1,19 @@
+run_id: "EXP-37-FINAL-SYNTHESIS-MONOGRAPH"
+hypothesis_id: "H32-monograph-scientific-synthesis"
+method_id: "M37-monograph-compiler"
+experiment_type: "SCIENTIFIC_MONOGRAPH_COMPILATION_AND_VERIFICATION"
+date: "2026-11-05"
+hardware:
+  device: "cpu"
+  vram_allocated_mb: 0
+inputs:
+  total_audited_experiments: 36
+  sealed_test_manifest: "data/derived/l2arctic/manifests/test_sealed.jsonl"
+  test_suite: "evaluation/tests/"
+evaluation:
+  protocol: "PROTOCOL_ALPHA_TARGET_MONOTONIC_V1"
+  experiments_verified: 36
+  all_hashes_present: true
+  sealed_test_intact: true
+  unit_tests_passed: true
+  status: "SYNTHESIS_PUBLISHED"

@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-22-PHONOLOGICAL-CONTRASTIVE-MARGIN",
+  "hypothesis_id": "H17-phonological-contrastive-loss",
+  "method_id": "M22-contrastive-margin-model",
+  "description": "Phonological Supervised Contrastive Loss pulling target phone embeddings towards phonemic cluster prototypes while pushing allophonic competitors away",
+  "prerequisites_met": true,
+  "resource_lease": "cuda"
+}

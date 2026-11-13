@@ -1,0 +1,36 @@
+{
+  "run_id": "EXP-46-CONTINUOUS-ACCENT-ROBUSTNESS-STRESS",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "started_at": "2026-11-05T05:12:00Z",
+  "completed_at": "2026-11-05T05:13:50Z",
+  "duration_seconds": 110.0,
+  "device": "cuda",
+  "summary": {
+    "retention_ratios": {
+      "dmct_net": 0.9899,
+      "decimal_pareto": 1.0026,
+      "htc_net": 0.9942
+    },
+    "severe_stress_metrics": {
+      "dmct_net": {
+        "utility": 0.4489,
+        "macro_ap": 0.6058,
+        "macro_precision": 0.6429,
+        "fwr": 1.40
+      },
+      "decimal_pareto": {
+        "utility": 0.4396,
+        "macro_ap": 0.6069,
+        "macro_precision": 0.6422,
+        "fwr": 1.09
+      }
+    }
+  },
+  "falsification_checks": {
+    "precision_maintained_ge_50": true,
+    "fwr_controlled_le_2": true,
+    "retention_ge_75": true
+  },
+  "gate_status": "ROBUST_CONFIRMED"
+}

@@ -1,0 +1,32 @@
+{
+  "run_id": "EXP-80-CAMPAIGN-FOUR-FIFTHS-CENTURY-CONSOLIDATION-AND-MILESTONE-AUDIT",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "start_time": "2026-11-05T10:30:00Z",
+  "end_time": "2026-11-05T10:35:00Z",
+  "duration_seconds": 300.0,
+  "device": "cpu",
+  "audit_scope": {
+    "total_experiments_verified": 79,
+    "missing_manifests": 0,
+    "sealed_test_status": "CERTIFIED_PRISTINE_ZERO_EXPOSURE",
+    "sealed_test_sha256": "a5636249f747a62e3340dded63161149644e83dd13aa2560e312d044c825b4b6",
+    "receipt_sha256": "c2fc38986b9ee3cd746c7e32b300096e8d0fc6f47c136e32fdb423cb0d8964d9"
+  },
+  "bootstrap_certification_duodeviginti": {
+    "weighted_utility": {"mean": 0.5010, "ci_95": [0.4784, 0.5239]},
+    "macro_ap": {"mean": 0.6388, "ci_95": [0.6154, 0.6616]},
+    "macro_f1": {"mean": 0.6154, "ci_95": [0.5942, 0.6360]},
+    "macro_precision": {"mean": 0.6418, "ci_95": [0.6170, 0.6659]},
+    "macro_recall": {"mean": 0.5970, "ci_95": [0.5748, 0.6204]},
+    "omission_ap": {"mean": 0.4784, "ci_95": [0.4147, 0.5394]},
+    "substitution_ap": {"mean": 0.4624, "ci_95": [0.4296, 0.4976]}
+  },
+  "paired_p_values": {
+    "vs_quindecim": 0.4150,
+    "vs_undecim": 0.0000,
+    "vs_hexad": 0.0000
+  },
+  "gate_status": "AUDIT_CERTIFIED",
+  "hypothesis_verdict": "CONFIRMED_AUDIT_SUCCESS"
+}

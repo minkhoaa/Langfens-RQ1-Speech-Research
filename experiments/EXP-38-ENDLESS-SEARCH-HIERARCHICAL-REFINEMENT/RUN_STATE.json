@@ -1,0 +1,49 @@
+{
+  "run_id": "EXP-38-ENDLESS-SEARCH-HIERARCHICAL-REFINEMENT",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "started_at": "2026-11-05T04:25:00Z",
+  "completed_at": "2026-11-05T04:26:15Z",
+  "duration_seconds": 75.0,
+  "device": "cuda",
+  "dev_cal_pareto_score": 2.8322,
+  "optimal_thresholds": {
+    "theta_subs": 0.60,
+    "theta_omis": 0.55,
+    "theta_ins": 0.60
+  },
+  "metrics_summary": {
+    "dev_search": {
+      "utility": 0.3943,
+      "macro_ap": 0.5388,
+      "macro_precision": 0.5222,
+      "macro_f1": 0.5131,
+      "omission_ap": 0.2748,
+      "omission_recall": 0.4545,
+      "omission_f1": 0.2782,
+      "substitution_ap": 0.3654,
+      "insertion_ap": 0.2386,
+      "overall_ece": 0.0593
+    },
+    "dev_replication": {
+      "utility": 0.4405,
+      "macro_ap": 0.5801,
+      "macro_precision": 0.5936,
+      "macro_f1": 0.5433,
+      "omission_ap": 0.3923,
+      "omission_recall": 0.4553,
+      "omission_f1": 0.4209,
+      "substitution_ap": 0.3807,
+      "insertion_f1": 0.3636,
+      "overall_ece": 0.0504
+    }
+  },
+  "records_broken": [
+    "ALL_TIME_CAMPAIGN_HIGH_WEIGHTED_UTILITY_0.4405",
+    "ALL_TIME_CAMPAIGN_HIGH_DEV_SEARCH_OMISSION_AP_0.2748",
+    "ALL_TIME_CAMPAIGN_HIGH_REPLICATION_OMISSION_AP_0.3923",
+    "ALL_TIME_CAMPAIGN_HIGH_REPLICATION_OMISSION_F1_0.4209",
+    "ALL_TIME_CAMPAIGN_LOW_CALIBRATION_ECE_0.0504"
+  ],
+  "gate_status": "LOCAL_REPRODUCED"
+}

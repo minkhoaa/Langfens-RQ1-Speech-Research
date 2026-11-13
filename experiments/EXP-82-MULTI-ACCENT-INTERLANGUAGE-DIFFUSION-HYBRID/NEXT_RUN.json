@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-83-CROSS-LINGUISTIC-CONSONANT-CLUSTER-PARADIGM",
+  "hypothesis_id": "H78-consonant-cluster-specialization",
+  "method_id": "M83-consonant-cluster-trainer",
+  "objective": "Consonant cluster onset/coda transition dynamics modeling with phonological sonority sequencing constraint to target >0.4400 Insertion F1 and >0.3400 Insertion AP",
+  "device": "cuda",
+  "prerequisites_met": true
+}

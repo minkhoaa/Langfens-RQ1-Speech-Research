@@ -1,0 +1,44 @@
+{
+  "run_id": "EXP-62-CROSS-DATASET-MULTI-HEAD-ZERO-SHOT-ADAPTER",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "started_at": "2026-11-05T07:08:00Z",
+  "completed_at": "2026-11-05T07:12:00Z",
+  "duration_seconds": 240.0,
+  "device": "cpu",
+  "optimal_thresholds": {
+    "theta_subs": 0.50,
+    "theta_omis": 0.50,
+    "theta_ins": 0.55
+  },
+  "metrics_summary": {
+    "dev_replication": {
+      "utility": 0.4662,
+      "macro_ap": 0.5978,
+      "macro_precision": 0.6149,
+      "macro_recall": 0.5670,
+      "macro_f1": 0.5881,
+      "omission_ap": 0.4139,
+      "substitution_ap": 0.4378,
+      "substitution_precision": 0.5105,
+      "substitution_f1": 0.4534,
+      "insertion_ap": 0.2525,
+      "overall_ece": 0.0155,
+      "fwr": 1.747
+    },
+    "speechocean762_transfer": {
+      "total_phonemes": 4536,
+      "pearson_r": 0.2110,
+      "pearson_p_value": 7.72e-47,
+      "spearman_rho": 0.2637,
+      "error_ap": 0.1106,
+      "error_recall": 0.2423,
+      "error_f1": 0.1741
+    }
+  },
+  "scientific_findings": [
+    "VTLN_TRANSFER_IMPROVEMENT: Integrating VTLN formant warping with dual-stream cross-attention improved zero-shot Pearson correlation on SpeechOcean762 from 0.1610 (HTC-Net) to 0.2110 (DAMH-Net), mitigating adolescent/child vocal tract length shift.",
+    "STANDALONE_CHAMPIONS: DSCA-Net (EXP-55) remains the primary standalone champion on L2-ARCTIC (Utility=0.4928), and Duodecim-Pareto (EXP-58) remains the ensemble champion (Macro AP=0.6341)."
+  ],
+  "gate_status": "LOCAL_REPRODUCED"
+}

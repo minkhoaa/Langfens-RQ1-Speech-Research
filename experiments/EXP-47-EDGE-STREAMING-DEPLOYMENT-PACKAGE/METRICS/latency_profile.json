@@ -1,0 +1,11 @@
+{
+  "mean_latency_ms": 2.021692296754433,
+  "median_latency_ms": 1.8155644993385067,
+  "p90_latency_ms": 2.9424234977341257,
+  "p99_latency_ms": 4.320429541039629,
+  "min_latency_ms": 1.2875149986939505,
+  "max_latency_ms": 5.647252997732721,
+  "overall_rtf": 0.004043384566552969,
+  "speedup_realtime_factor": 247.25640787723123,
+  "total_evaluated_utterances": 300
+}

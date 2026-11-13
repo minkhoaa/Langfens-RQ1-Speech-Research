@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-18-MULTI-SEED-CERTIFICATION",
+  "hypothesis_id": "H13-multi-seed-statistical-stability",
+  "method_id": "M18-multi-seed-auditor",
+  "description": "5-seed randomized initialization sweep (seeds 101, 202, 303, 404, 505) on DEV_REPLICATION to certify statistical stability and confirm LOCAL_REPRODUCED",
+  "prerequisites_met": true,
+  "resource_lease": "cuda"
+}

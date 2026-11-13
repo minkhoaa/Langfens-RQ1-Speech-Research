@@ -1,0 +1,13 @@
+{
+  "next_run_id": "EXP-98-GLOBAL-CONSENSUS-UNCERTAINTY-ROUTER",
+  "hypothesis": "H93-global-uncertainty-routing",
+  "method": "M98-uncertainty-router-evaluator",
+  "target": "Global epistemic uncertainty quantification across diverse backbones (ADAE-Net, CICA-Net, BAPM-Net, Viginti-Pareto) to provide trustworthy abstention feedback and error diagnosis toward EXP-100",
+  "resource_reservation": "CPU:1",
+  "prerequisites": [
+    "EXP-86-VIGINTI-CONVERGENCE-SUPER-ENSEMBLE",
+    "EXP-94-ARTICULATORY-DISENTANGLED-AUTOENCODER",
+    "EXP-95-CROSS-ACCENT-INTERLANGUAGE-COVARIANCE-ALIGNER",
+    "EXP-97-MULTI-SCALE-TEMPORAL-RESIDUAL-CASCADE"
+  ]
+}

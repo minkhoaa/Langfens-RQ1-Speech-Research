@@ -1,0 +1,46 @@
+run_id: "EXP-61-ULTRA-HIGH-RESOLUTION-CEPSTRAL-RESIDUAL-NET"
+hypothesis_id: "H56-cepstral-residual-dynamics"
+method_id: "M61-cepstral-residual-trainer"
+experiment_type: "SPECTRAL_CEPSTRAL_RESIDUAL_MODELING"
+date: "2026-11-05"
+hardware:
+  device: "cpu"
+  cpu_model: "Intel Core i5-12450H (12 vCPUs)"
+  threads_used: 4
+cepstral_residual_features:
+  dimension: 8
+  acoustic_stream_total_dims: 75
+  prompt_stream_dims: 42
+  gap_dims: 13
+results_summary:
+  dev_replication:
+    utility: 0.4726
+    macro_ap: 0.5953
+    macro_precision: 0.6163
+    macro_recall: 0.5374
+    macro_f1: 0.5647
+    omission_ap: 0.4101
+    omission_f1: 0.4175
+    substitution_ap: 0.4038
+    substitution_f1: 0.3420
+    insertion_ap: 0.2945
+    insertion_precision: 0.3511
+    insertion_recall: 0.3511
+    insertion_f1: 0.3511
+    correct_ap: 0.9720
+    correct_f1: 0.9345
+    overall_ece: 0.0173
+    target_ece: 0.0110
+    fwr: 1.487
+  dev_search:
+    utility: 0.4167
+    macro_ap: 0.5608
+    omission_ap: 0.3011
+    substitution_ap: 0.4022
+    fwr: 1.907
+records_broken:
+  - "ALL_TIME_CAMPAIGN_HIGH_STANDALONE_INSERTION_AP_0.2945"
+  - "ALL_TIME_CAMPAIGN_LOW_TARGET_ECE_0.0110"
+evaluation:
+  protocol: "PROTOCOL_ALPHA_TARGET_MONOTONIC_V1"
+  status: "LOCAL_REPRODUCED"

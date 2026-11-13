@@ -1,0 +1,22 @@
+run_id: "EXP-24-FINAL-ROADMAP-EXPANSION"
+hypothesis_id: "H19-integrated-ctc-attention-decoder"
+method_id: "M24-ctc-attention-joint-decoder"
+experiment_type: "MONOTONIC_LOCAL_ATTENTION_NETWORK"
+operating_splits: ["DEV_SEARCH", "DEV_REPLICATION"]
+date: "2026-11-05"
+hardware:
+  device: "cuda (NVIDIA GeForce GTX 1650 4GB)"
+  vram_allocated_mb: 62.4
+inputs:
+  train_features: "data/derived/l2arctic/features/train_features.npz"
+  cal_features: "data/derived/l2arctic/features/dev_cal_features.npz"
+  search_features: "data/derived/l2arctic/features/dev_search_features.npz"
+  rep_features: "data/derived/l2arctic/features/dev_replication_features.npz"
+hyperparameters:
+  attention_type: "MonotonicLocalAttention"
+  gaussian_sigma: 3.0
+  nhead: 4
+  epochs: 30
+  calibrated_theta_subs: 0.55
+  calibrated_theta_omis: 0.55
+  calibrated_theta_ins: 0.60

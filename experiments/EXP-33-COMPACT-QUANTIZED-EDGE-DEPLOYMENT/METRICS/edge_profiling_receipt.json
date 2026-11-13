@@ -1,0 +1,87 @@
+{
+  "model_id": "APED-Net-INT8-Dynamic",
+  "checkpoint_fp32_mb": 2.052875518798828,
+  "checkpoint_int8_mb": 0.5501327514648438,
+  "compression_ratio_pct": 73.20184558551628,
+  "edge_cpu_mean_latency_ms": 6.359362602233887,
+  "edge_cpu_p95_latency_ms": 8.995413780212402,
+  "edge_cpu_rtf": 0.001636642944062893,
+  "throughput_utts_per_sec": 154.87347131688296,
+  "diagnostic_parity": {
+    "fp32_macro_f1": 0.5724766976309917,
+    "int8_macro_f1": 0.5752160995947277,
+    "delta_macro_f1": 0.00273940196373601,
+    "fp32_utility": 0.4237059224948764,
+    "int8_utility": 0.424388587965244,
+    "delta_utility": 0.0006826654703676049,
+    "parity_within_threshold": true
+  },
+  "evaluation_metrics": {
+    "counts": {
+      "total_utterances": 300,
+      "total_target_phones": 9863,
+      "total_gaps": 10163,
+      "false_omissions": 153,
+      "false_substitutions": 469,
+      "false_insertions": 65,
+      "total_false_warnings": 687
+    },
+    "classes": {
+      "CORRECT": {
+        "ap": 0.9690100508407749,
+        "precision": 0.9223911304149046,
+        "recall": 0.9327323162274619,
+        "f1": 0.9275329004080225
+      },
+      "OMISSION": {
+        "ap": 0.2960662863570594,
+        "precision": 0.3677685950413223,
+        "recall": 0.3463035019455253,
+        "f1": 0.35671342685370744
+      },
+      "SUBSTITUTION": {
+        "ap": 0.3875776186666231,
+        "precision": 0.46215596330275227,
+        "recall": 0.4224318658280922,
+        "f1": 0.4414019715224535
+      },
+      "INSERTION": {
+        "ap": 0.2545746094503831,
+        "precision": 0.3434343434343434,
+        "recall": 0.3617021276595745,
+        "f1": 0.35233160621761656
+      }
+    },
+    "macro": {
+      "precision": 0.5841052295863264,
+      "recall": 0.5671558946670264,
+      "f1": 0.5752160995947277,
+      "ap": 0.5508846519548191
+    },
+    "diagnostics": {
+      "coverage": 1.0,
+      "target_ece": 0.12403309661609874,
+      "gap_ece": 0.010357029305276398,
+      "overall_ece": 0.06719506296068757,
+      "false_warning_rate_per_utt": 2.29
+    },
+    "utility": {
+      "score": 0.424388587965244,
+      "components": {
+        "omission_ap": 0.2960662863570594,
+        "omission_f1": 0.35671342685370744,
+        "substitution_ap_f1": 0.4144897950945383,
+        "insertion_ap_f1": 0.3034531078339998,
+        "correct_ap_f1": 0.9482714756243986,
+        "macro_balance": 0.5755057946225217,
+        "coverage_risk": 0.0,
+        "calibration": 0.6640246851965621
+      }
+    },
+    "gates": {
+      "milestone_60": false,
+      "outstanding_80": false,
+      "status": "EXPLORATORY"
+    }
+  }
+}

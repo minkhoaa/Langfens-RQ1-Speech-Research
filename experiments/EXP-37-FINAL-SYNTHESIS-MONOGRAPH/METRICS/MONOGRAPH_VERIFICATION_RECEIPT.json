@@ -1,0 +1,199 @@
+{
+  "monograph_id": "EXP-37-SCIENTIFIC-SYNTHESIS-MONOGRAPH",
+  "total_experiments_verified": 36,
+  "all_artifact_hashes_present": true,
+  "sealed_test_set_intact": true,
+  "sealed_test_sha256": "a5636249f747a62e3340dded63161149644e83dd13aa2560e312d044c825b4b6",
+  "unit_and_leakage_tests_passed": true,
+  "breakthrough_milestones": {
+    "champion_super_ensemble": "EXP-36 (Septad-Pareto: Macro AP=0.5835, Macro Prec=0.6320, Subs AP=0.4041, Ins Prec=42.25%, FWR=1.187)",
+    "champion_standalone_model": "EXP-34 (PNC-Net: Insertion F1=0.3692, Standalone Subs Prec=50.67%, Utility=0.4255)",
+    "champion_physical_energy_model": "EXP-28 (APED-Net: Standalone Macro F1=0.5725, Subs F1=0.4461, Ins F1=0.3579)",
+    "champion_edge_compact_model": "EXP-33 (INT8 APED-Net: 576 KB, RTF=0.00164, 611x faster than real-time, zero parity loss)",
+    "statistical_certification": "EXP-30 (B=1,000 Clustered Bootstrap: Paired p=0.0000 vs Pentad-Pareto)",
+    "noise_robustness_certification": "EXP-32 (95.8% Utility retention under +10dB SNR classroom noise)",
+    "cross_accent_6_l1_certification": "EXP-35 (sigma_L1=0.0725 <= 0.0800, Vietnamese Omis F1=0.6568)"
+  },
+  "experiments": [
+    {
+      "run_id": "EXP-01-PRIOR",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-02-MISMATCH",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-03-SSL-GOP",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-04-LPDN",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-05-CONF-CALIB",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-06-CALIB-TRAIN",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-07-PARETO-CALIB",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-08-PHONOTACTIC-CONTEXT",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-09-CROSS-CORPUS-SPEECHOX",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-10-CONFORMER-ATTENTION",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-11-ENSEMBLE-FUSION",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-12-REPLICATION-DEV-REP",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-13-ARTICULATORY-DECOMPOSITION",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-14-CROSS-VALIDATION-SWEEP",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-15-STREAMING-EFFICIENCY-BENCHMARK",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-16-SUPER-ENSEMBLE-HMADN-HSAME",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-17-ADAPTIVE-DURATION-CTC",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-18-MULTI-SEED-CERTIFICATION",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-19-TEST-SEALED-INTEGRITY-AUDIT",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-20-COMPREHENSIVE-SCIENTIFIC-SYNTHESIS",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-21-ENDLESS-EXPLORATION-ACOUSTIC-REFIT",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-22-PHONOLOGICAL-CONTRASTIVE-MARGIN",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-23-COMPOSITE-UTILITY-SWEEP",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-24-FINAL-ROADMAP-EXPANSION",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-25-REPRODUCIBLE-RELEASE-BUNDLE",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-26-ENDLESS-SEARCH-CONTRASTIVE-ADAPTER",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-27-PENTAD-SUPER-ENSEMBLE",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-28-PROSODIC-ENERGY-DYNAMICS",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-29-PROSODIC-PENTAD-FUSION",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-30-COMPREHENSIVE-PORTFOLIO-AUDIT",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-31-ENDLESS-SEARCH-BOUNDARY-REFINER",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-32-SELF-SUPERVISED-ROBUSTNESS-STRESS",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-33-COMPACT-QUANTIZED-EDGE-DEPLOYMENT",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-34-EXTENDED-PHONOTACTIC-PROBING",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-35-ENDLESS-SEARCH-CROSS-ACCENT-TRANSFER",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-36-FINAL-HEXAD-PNC-SUPER-FUSION",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    }
+  ]
+}

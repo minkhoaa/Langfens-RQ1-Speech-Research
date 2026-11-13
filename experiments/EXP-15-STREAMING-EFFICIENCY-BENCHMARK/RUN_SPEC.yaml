@@ -1,0 +1,14 @@
+run_id: "EXP-15-STREAMING-EFFICIENCY-BENCHMARK"
+hypothesis_id: "H10-real-time-streaming-efficiency"
+method_id: "M15-streaming-inference-engine"
+experiment_type: "SYSTEM_LATENCY_AND_MEMORY_PROFILING"
+date: "2026-11-05"
+hardware:
+  gpu: "NVIDIA GeForce GTX 1650 (4096 MB VRAM)"
+  cpu: "12th Gen Intel Core i5-12450H (12 vCPUs)"
+inputs:
+  model_checkpoint: "experiments/EXP-13-ARTICULATORY-DECOMPOSITION/CHECKPOINTS/hierarchical_articulatory_model.pt"
+  test_sequences: 100
+hyperparameters:
+  n_trials: 100
+  latency_percentiles: [50, 95, 99]

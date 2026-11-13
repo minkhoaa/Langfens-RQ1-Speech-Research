@@ -1,0 +1,12 @@
+{
+  "run_id": "EXP-13-ARTICULATORY-DECOMPOSITION",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "started_at": "2026-11-05T01:00:00Z",
+  "completed_at": "2026-11-05T01:00:45Z",
+  "duration_seconds": 45.0,
+  "weighted_utility": 0.3777,
+  "milestone_60_passed": false,
+  "outstanding_80_passed": false,
+  "gate_status": "EXPLORATORY"
+}

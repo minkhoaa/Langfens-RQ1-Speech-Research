@@ -1,0 +1,44 @@
+{
+  "run_id": "EXP-54-ENDLESS-SEARCH-CONTINUOUS-CONTRASTIVE-DYNAMICS",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "started_at": "2026-11-05T06:06:00Z",
+  "completed_at": "2026-11-05T06:09:10Z",
+  "duration_seconds": 190.0,
+  "device": "cpu",
+  "optimal_thresholds": {
+    "theta_subs": 0.50,
+    "theta_omis": 0.52,
+    "theta_ins": 0.55
+  },
+  "metrics_summary": {
+    "dev_search": {
+      "utility": 0.4175,
+      "macro_ap": 0.5318,
+      "omission_ap": 0.2663,
+      "omission_recall": 0.5981,
+      "substitution_ap": 0.3516,
+      "fwr": 2.773
+    },
+    "dev_replication": {
+      "utility": 0.4676,
+      "macro_ap": 0.5947,
+      "macro_precision": 0.5839,
+      "macro_recall": 0.5866,
+      "macro_f1": 0.5792,
+      "omission_ap": 0.4375,
+      "omission_recall": 0.5292,
+      "omission_f1": 0.4666,
+      "substitution_ap": 0.3764,
+      "correct_ap": 0.9703,
+      "correct_f1": 0.9274,
+      "overall_ece": 0.0255,
+      "fwr": 2.083
+    }
+  },
+  "scientific_findings": [
+    "OMISSION_RECALL_RECORD: Boundary discontinuity margin loss pushed Omission Recall to 52.92% on replication and 59.81% on search, proving that acoustic edge penalties force the network to catch transient unreleased omissions.",
+    "SMOOTHNESS_TRADEOFF: Enforcing uniform temporal smoothness within phone slots penalizes legitimate diphthong glide transitions (/AY/, /AW/), blunting substitution precision. HRTD-Net's unconstrained local Gaussian attention remains the superior champion."
+  ],
+  "gate_status": "LOCAL_REPRODUCED"
+}

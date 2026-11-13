@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-89-PROGRESSIVE-CASCADE-VIGINTI-ROUTER",
+  "hypothesis_id": "H84-progressive-cascade-routing",
+  "method_id": "M89-progressive-cascade-router",
+  "objective": "Design and benchmark a progressive confidence-cascaded routing engine dispatching high-confidence tokens early to save compute while maintaining >0.5050 Utility and <5ms CPU latency",
+  "device": "cuda",
+  "prerequisites_met": true
+}

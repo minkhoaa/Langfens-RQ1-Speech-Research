@@ -1,0 +1,17 @@
+run_id: "EXP-18-MULTI-SEED-CERTIFICATION"
+hypothesis_id: "H13-multi-seed-statistical-stability"
+method_id: "M18-multi-seed-auditor"
+experiment_type: "MULTI_SEED_STATISTICAL_CERTIFICATION"
+operating_split: "DEV_REPLICATION"
+date: "2026-11-05"
+hardware:
+  device: "cuda (NVIDIA GeForce GTX 1650 4GB)"
+  vram_allocated_mb: 58.2
+inputs:
+  replication_features: "data/derived/l2arctic/features/dev_replication_features.npz"
+  seeds: [101, 202, 303, 404, 505]
+hyperparameters:
+  epochs_per_seed: 20
+  frozen_theta_subs: 0.55
+  frozen_theta_omis: 0.55
+  frozen_theta_ins: 0.60

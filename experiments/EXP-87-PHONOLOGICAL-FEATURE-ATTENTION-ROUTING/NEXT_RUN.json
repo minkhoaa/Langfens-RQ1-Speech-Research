@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-88-MULTI-HEAD-LATENT-CONSENSUS-CALIBRATOR",
+  "hypothesis_id": "H83-multi-head-consensus-calibration",
+  "method_id": "M88-latent-consensus-calibrator",
+  "objective": "Design and benchmark a multi-head latent consensus calibration engine using epistemic entropy gating across the top 21 models to filter false alarms and target >0.6420 Macro AP and >0.5100 Utility",
+  "device": "cuda",
+  "prerequisites_met": true
+}

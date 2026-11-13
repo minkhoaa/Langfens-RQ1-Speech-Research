@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-45-DECIMAL-PARADIGM-SUPER-ENSEMBLE",
+  "hypothesis_id": "H40-decimal-ten-model-ensemble",
+  "method_id": "M45-decimal-ensemble-sweeper",
+  "description": "Continuous auto-research loop: 10-Model Decimal Super-Ensemble uniting Nonad-Pareto (EXP-43) with DMCT-Net dynamic masked context training (EXP-44) to break the 60% Macro F1 milestone",
+  "prerequisites_met": true,
+  "resource_lease": "cuda"
+}

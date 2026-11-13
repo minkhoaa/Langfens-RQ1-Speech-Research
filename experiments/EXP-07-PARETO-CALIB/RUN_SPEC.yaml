@@ -1,0 +1,18 @@
+run_id: "EXP-07-PARETO-CALIB"
+hypothesis_id: "H03-calibrated-cost-sensitive-network"
+method_id: "M07-pareto-optimal-calibrated-lpdn"
+experiment_type: "PARETO_OPTIMAL_THRESHOLD_CALIBRATION"
+operating_split: "DEV_SEARCH"
+date: "2026-11-04"
+hardware:
+  device: "cuda (NVIDIA GeForce GTX 1650 4GB)"
+  vram_allocated_mb: 24.5
+inputs:
+  train_features: "data/derived/l2arctic/features/train_features.npz"
+  cal_features: "data/derived/l2arctic/features/dev_cal_features.npz"
+  search_features: "data/derived/l2arctic/features/dev_search_features.npz"
+hyperparameters:
+  theta_subs: 0.50
+  theta_omis: 0.45
+  theta_ins: 0.45
+  pareto_objective: "balanced_minority_f1_with_fwr_penalty"

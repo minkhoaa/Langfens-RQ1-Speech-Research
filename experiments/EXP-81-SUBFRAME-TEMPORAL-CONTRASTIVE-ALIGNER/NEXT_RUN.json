@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-82-MULTI-ACCENT-INTERLANGUAGE-DIFFUSION-HYBRID",
+  "hypothesis_id": "H77-interlanguage-diffusion-hybrid",
+  "method_id": "M82-interlanguage-diffusion-trainer",
+  "objective": "Integrate empirical interlanguage error priors pi(p) directly into phonotactic latent score diffusion to eliminate coarticulatory false alarms and target >0.6220 standalone Macro AP and >0.4950 Utility",
+  "device": "cuda",
+  "prerequisites_met": true
+}

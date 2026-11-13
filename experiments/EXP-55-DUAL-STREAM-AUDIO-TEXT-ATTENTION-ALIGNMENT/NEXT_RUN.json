@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-56-CONFORMER-HRTD-HYBRID-ATTENTION",
+  "hypothesis_id": "H51-conformer-subframe-hybrid",
+  "method_id": "M56-conformer-hrtd-trainer",
+  "description": "Continuous auto-research loop: Deep Conformer depthwise convolutional backbone combined with 5ms sub-frame temporal micro-dynamics and dual-stream cross-attention",
+  "prerequisites_met": true,
+  "resource_lease": "cpu"
+}

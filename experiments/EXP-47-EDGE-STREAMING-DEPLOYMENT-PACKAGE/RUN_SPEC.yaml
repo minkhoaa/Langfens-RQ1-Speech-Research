@@ -1,0 +1,33 @@
+run_id: "EXP-47-EDGE-STREAMING-DEPLOYMENT-PACKAGE"
+hypothesis_id: "H42-quantized-streaming-runtime"
+method_id: "M47-edge-streaming-packager"
+experiment_type: "EDGE_DEPLOYMENT_QUANTIZATION_PROFILING"
+date: "2026-11-05"
+hardware:
+  device: "cpu"
+  cpu_model: "Intel Core i5-12450H (12 vCPUs)"
+  threads_used: 4
+model_profile:
+  architecture: "DynamicMaskedCascadedNetwork (DMCT-Net INT8)"
+  quantization_scheme: "torch.ao.quantization.quantize_dynamic (qint8)"
+  fp32_size_mb: 2.11
+  int8_size_mb: 1.69
+  compression_ratio_percent: 19.9
+latency_benchmark:
+  mean_latency_ms: 2.02
+  median_latency_ms: 1.82
+  p90_latency_ms: 2.94
+  p99_latency_ms: 4.32
+  real_time_factor_rtf: 0.00404
+  real_time_speedup: 247.3
+diagnostic_parity:
+  fp32_macro_ap: 0.6062
+  int8_macro_ap: 0.6076
+  delta_macro_ap: 0.0015
+  fp32_utility: 0.4535
+  int8_utility: 0.4537
+  delta_utility: 0.0002
+  parity_loss_passed: true
+evaluation:
+  protocol: "PROTOCOL_ALPHA_TARGET_MONOTONIC_V1"
+  status: "PRODUCTION_CERTIFIED"

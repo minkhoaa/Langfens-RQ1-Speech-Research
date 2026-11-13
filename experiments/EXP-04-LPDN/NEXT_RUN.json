@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-05-CONF-CALIB",
+  "hypothesis_id": "H02-learned-phonetic-diagnostic-network",
+  "method_id": "M05-confidence-gated-lpdn",
+  "description": "Confidence-Gated LPDN with strict FWR guardrail enforcement on DEV_CAL to restore precision and unlock full weighted utility",
+  "prerequisites_met": true,
+  "resource_lease": "cpu"
+}

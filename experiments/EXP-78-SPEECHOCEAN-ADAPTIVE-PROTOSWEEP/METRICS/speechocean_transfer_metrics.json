@@ -1,0 +1,84 @@
+{
+  "bilstm": {
+    "model_name": "BiLSTM (EXP-08)",
+    "pearson_r": 0.2690001685614385,
+    "pearson_p_value": 4.906802295956882e-76,
+    "spearman_rho": 0.31318813041043525,
+    "spearman_p_value": 8.619086791743585e-104,
+    "error_ap": 0.12584640452995613,
+    "error_precision": 0.1125776397515528,
+    "error_recall": 0.6387665198237885,
+    "error_f1": 0.19141914191419143
+  },
+  "dmct": {
+    "model_name": "DMCT-Net (EXP-44)",
+    "pearson_r": 0.25315373868259217,
+    "pearson_p_value": 2.8835708404912432e-67,
+    "spearman_rho": 0.30279069082685944,
+    "spearman_p_value": 8.255359856474174e-97,
+    "error_ap": 0.12510744419075556,
+    "error_precision": 0.12678288431061807,
+    "error_recall": 0.3524229074889868,
+    "error_f1": 0.1864801864801865
+  },
+  "hrtd": {
+    "model_name": "HRTD-Net (EXP-48)",
+    "pearson_r": 0.17314636437017475,
+    "pearson_p_value": 7.317795810731315e-32,
+    "spearman_rho": 0.24134970715864829,
+    "spearman_p_value": 3.998510096837702e-61,
+    "error_ap": 0.10877642423040021,
+    "error_precision": 0.09615384615384616,
+    "error_recall": 0.22026431718061673,
+    "error_f1": 0.13386880856760375
+  },
+  "dsca": {
+    "model_name": "DSCA-Net (EXP-55)",
+    "pearson_r": 0.20901453873441392,
+    "pearson_p_value": 5.911300669432926e-46,
+    "spearman_rho": 0.2573497754104061,
+    "spearman_p_value": 1.573461379608442e-69,
+    "error_ap": 0.11790117063125287,
+    "error_precision": 0.12162162162162163,
+    "error_recall": 0.23788546255506607,
+    "error_f1": 0.16095380029806258
+  },
+  "iptm": {
+    "model_name": "IPTM-Net (EXP-69)",
+    "pearson_r": 0.22508731482869476,
+    "pearson_p_value": 3.390510571319094e-53,
+    "spearman_rho": 0.27815670541196474,
+    "spearman_p_value": 2.210685190173948e-81,
+    "error_ap": 0.1250128564915729,
+    "error_precision": 0.1282798833819242,
+    "error_recall": 0.3876651982378855,
+    "error_f1": 0.1927710843373494
+  },
+  "tpd": {
+    "model_name": "TPD-Net (EXP-77)",
+    "pearson_r": 0.18356942410596855,
+    "pearson_p_value": 1.1437695119223401e-35,
+    "spearman_rho": 0.25704954997053064,
+    "spearman_p_value": 2.2918150396855043e-69,
+    "error_ap": 0.10839698804596481,
+    "error_precision": 0.11869918699186992,
+    "error_recall": 0.32158590308370044,
+    "error_f1": 0.17339667458432304
+  },
+  "septendecim_pareto": {
+    "model_name": "Septendecim-Pareto (EXP-76)",
+    "pearson_r": 0.22918469335224584,
+    "pearson_p_value": 3.892622702947607e-55,
+    "spearman_rho": 0.3014208742219338,
+    "spearman_p_value": 6.537400641235063e-96,
+    "error_ap": 0.12187484438515378,
+    "error_precision": 0.12387791741472172,
+    "error_recall": 0.3039647577092511,
+    "error_f1": 0.1760204081632653
+  },
+  "meta": {
+    "evaluated_phonemes": 4536,
+    "evaluated_utterances": 300,
+    "base_error_rate": 0.050044091710758375
+  }
+}

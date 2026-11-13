@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-87-PHONOLOGICAL-FEATURE-ATTENTION-ROUTING",
+  "hypothesis_id": "H82-articulatory-routing",
+  "method_id": "M87-articulatory-routing-trainer",
+  "objective": "Fine-grained articulatory feature routing cross-attention disentangling manner, place, and voicing to target >0.6250 standalone Macro F1 and >0.4950 standalone Utility",
+  "device": "cuda",
+  "prerequisites_met": true
+}

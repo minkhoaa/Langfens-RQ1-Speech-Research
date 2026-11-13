@@ -1,0 +1,27 @@
+run_id: "EXP-41-ZERO-SHOT-L2-ARCTIC-TRANSFER-BENCHMARK"
+hypothesis_id: "H36-unsupervised-cross-corpus-transfer"
+method_id: "M41-unsupervised-transfer-evaluator"
+experiment_type: "CROSS_CORPUS_ZERO_SHOT_BENCHMARKING"
+date: "2026-11-05"
+hardware:
+  device: "cuda"
+  gpu_name: "NVIDIA GeForce GTX 1650"
+  vram_allocated_mb: 202
+inputs:
+  dataset: "SpeechOcean762-Test"
+  tar_archive: "data/original_sources/speechocean762/speechocean762.tar.gz"
+  total_phonemes_evaluated: 4536
+  total_utterances_evaluated: 300
+  error_threshold: "score < 1.5"
+models_compared:
+  baseline: "BiLSTM (EXP-08)"
+  cascaded_champion: "HTC-Net (EXP-38)"
+evaluation:
+  protocol: "PROTOCOL_ALPHA_TARGET_MONOTONIC_V1"
+  bilstm_pearson_r: 0.2690
+  bilstm_spearman_rho: 0.3132
+  bilstm_error_recall: 0.6388
+  bilstm_error_ap: 0.1258
+  htc_pearson_r: 0.1610
+  htc_spearman_rho: 0.2717
+  status: "ROBUST_TRANSFER"

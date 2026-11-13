@@ -1,0 +1,29 @@
+experiment_id: EXP-110-PHASE-2-CONSOLIDATION-AND-PROGRESS-SYNTHESIS
+hypothesis_id: H105-phase2-consolidation
+method_id: M110-phase2-consolidator
+protocol: PROTOCOL_ALPHA_TARGET_MONOTONIC_V1
+split:
+  train: 1800
+  dev_search: 599
+  dev_cal: 300
+  dev_replication: 300
+  test_sealed: 600
+device: cpu
+model:
+  name: Phase 2 Master Consolidator
+  scope: EXP-01 through EXP-109
+  bootstrap_samples: 1000
+  audited_dimensions:
+    - sealed_test_pristine_cryptographic_hash
+    - 109_directory_artifact_completeness
+    - raw_prediction_recomputation
+    - speaker_clustered_confidence_intervals
+    - failure_mechanisms_and_progress_synthesis
+calibration_split: dev_cal
+evaluation_splits:
+  - dev_replication
+tags:
+  - phase_2_master_consolidation_audit
+  - exp_110_audit_receipt
+  - zero_leakage_certification
+  - reproducible_snapshot

@@ -1,0 +1,15 @@
+{
+  "next_run_id": "EXP-99-CENTURY-CONVERGENCE-MASTER-SUPER-ENSEMBLE",
+  "hypothesis": "H94-century-convergence-ensemble",
+  "method": "M99-century-ensemble-sweeper",
+  "target": "Unite all 24 peak architectural paradigms into the Century Convergence Master Super-Ensemble (Centum-Pareto), targeting all-time campaign peaks across Weighted Utility and Macro F1 toward EXP-100",
+  "resource_reservation": "CPU:1",
+  "prerequisites": [
+    "EXP-86-VIGINTI-CONVERGENCE-SUPER-ENSEMBLE",
+    "EXP-89-PROGRESSIVE-CASCADE-VIGINTI-ROUTER",
+    "EXP-94-ARTICULATORY-DISENTANGLED-AUTOENCODER",
+    "EXP-95-CROSS-ACCENT-INTERLANGUAGE-COVARIANCE-ALIGNER",
+    "EXP-97-MULTI-SCALE-TEMPORAL-RESIDUAL-CASCADE",
+    "EXP-98-GLOBAL-CONSENSUS-UNCERTAINTY-ROUTER"
+  ]
+}

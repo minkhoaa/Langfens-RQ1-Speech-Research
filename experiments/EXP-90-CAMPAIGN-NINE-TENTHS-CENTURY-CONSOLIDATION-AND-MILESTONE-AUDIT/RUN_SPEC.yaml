@@ -1,0 +1,25 @@
+experiment_id: EXP-90-CAMPAIGN-NINE-TENTHS-CENTURY-CONSOLIDATION-AND-MILESTONE-AUDIT
+hypothesis_id: H85-nine-tenths-century-audit
+method_id: M90-nine-tenths-century-auditor
+protocol: PROTOCOL_ALPHA_TARGET_MONOTONIC_V1
+scope:
+  total_experiments_audited: 89
+  manifest_hash_check: true
+  sealed_test_integrity_check: true
+  bootstrap_samples: 1000
+  bootstrap_cluster: speaker_id
+  evaluation_split: dev_replication
+  champions_evaluated:
+    accuracy: Viginti-Pareto (EXP-86)
+    efficiency: PCR-Engine (EXP-89)
+comparisons:
+  - Duodeviginti-Pareto (EXP-79)
+  - Undecim-Pareto (EXP-52)
+  - Hexad-Pareto (EXP-36)
+device: cpu
+tags:
+  - nine_tenths_century_grand_audit
+  - master_audit_receipt
+  - bootstrap_certification
+  - sealed_test_integrity_certified
+  - zero_leakage_enforced

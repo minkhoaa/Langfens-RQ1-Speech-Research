@@ -1,0 +1,67 @@
+run_id: "EXP-64-TREDECIM-GLOBAL-PARETO-ENSEMBLE"
+hypothesis_id: "H59-tredecim-super-ensemble"
+method_id: "M64-tredecim-ensemble-sweeper"
+experiment_type: "13_MODEL_TREDECIM_SUPER_ENSEMBLE"
+date: "2026-11-05"
+hardware:
+  device: "cpu"
+  cpu_model: "Intel Core i5-12450H (12 vCPUs)"
+  threads_used: 4
+models_fused:
+  model_1: "PSC-Net (EXP-22)"
+  model_2: "SRAD-Net (EXP-17)"
+  model_3: "NNA-Adapter (EXP-21)"
+  model_4: "Conformer (EXP-10)"
+  model_5: "JSAC-Net (EXP-24)"
+  model_6: "APED-Net (EXP-28)"
+  model_7: "PNC-Net (EXP-34)"
+  model_8: "HTC-Net (EXP-38)"
+  model_9: "VTLN-HTC-Net (EXP-42)"
+  model_10: "DMCT-Net (EXP-44)"
+  model_11: "HRTD-Net (EXP-48: 5ms Sub-frame Dynamics)"
+  model_12: "DSCA-Net (EXP-55: Dual-Stream Cross-Attention)"
+  model_13: "TDIS-Net (EXP-63: Triad Decoupled Insertion Specializer)"
+optimal_weights:
+  target_mixture: [0.02, 0.02, 0.02, 0.03, 0.04, 0.05, 0.05, 0.06, 0.04, 0.09, 0.24, 0.24, 0.10]
+  gap_mixture: [0.02, 0.02, 0.02, 0.04, 0.03, 0.04, 0.05, 0.04, 0.04, 0.06, 0.12, 0.12, 0.40]
+operating_thresholds:
+  dev_cal_pareto_score: 3.1474
+  theta_subs: 0.50
+  theta_omis: 0.50
+  theta_ins: 0.60
+results_summary:
+  dev_replication:
+    utility: 0.4930
+    macro_ap: 0.6351
+    macro_f1: 0.6054
+    macro_precision: 0.6293
+    omission_ap: 0.4774
+    omission_f1: 0.4519
+    omission_recall: 0.4475
+    substitution_ap: 0.4529
+    substitution_precision: 0.5108
+    substitution_f1: 0.4299
+    insertion_ap: 0.3128
+    insertion_precision: 0.5106
+    insertion_f1: 0.3404
+    correct_ap: 0.9750
+    correct_f1: 0.9345
+    overall_ece: 0.0358
+    gap_ece: 0.0060
+    fwr: 1.663
+  dev_search:
+    utility: 0.4397
+    macro_ap: 0.5726
+    omission_ap: 0.3069
+    omission_recall: 0.5455
+    substitution_ap: 0.4294
+    insertion_ap: 0.3007
+records_broken:
+  - "ALL_TIME_CAMPAIGN_HIGH_WEIGHTED_UTILITY_0.4930"
+  - "ALL_TIME_CAMPAIGN_HIGH_MACRO_AP_0.6351 (BROKE 63.5% MILESTONE)"
+  - "ALL_TIME_CAMPAIGN_HIGH_OMISSION_AP_0.4774 (BROKE 47.7% MILESTONE)"
+  - "ALL_TIME_CAMPAIGN_HIGH_ENSEMBLE_INSERTION_AP_0.3128"
+  - "SUSTAINED_51_PERCENT_ENSEMBLE_INSERTION_PRECISION_0.5106"
+evaluation:
+  protocol: "PROTOCOL_ALPHA_TARGET_MONOTONIC_V1"
+  status: "LOCAL_REPRODUCED"

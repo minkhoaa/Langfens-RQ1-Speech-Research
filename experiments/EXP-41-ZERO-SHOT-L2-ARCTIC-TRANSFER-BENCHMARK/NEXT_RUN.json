@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-42-AGE-INVARIANT-FRONTEND-NORMALIZATION",
+  "hypothesis_id": "H37-vocal-tract-length-normalization",
+  "method_id": "M42-vtln-acoustic-normalizer",
+  "description": "Continuous auto-research loop: Vocal Tract Length Normalization (VTLN) and pitch-invariant feature warping to bridge adult-to-child domain shift on cross-corpus pronunciation assessment",
+  "prerequisites_met": true,
+  "resource_lease": "cuda"
+}

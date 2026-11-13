@@ -1,0 +1,19 @@
+{
+  "experiment_id": "EXP-110-PHASE-2-CONSOLIDATION-AND-PROGRESS-SYNTHESIS",
+  "status": "COMPLETED",
+  "start_time": "2026-11-05T17:10:00Z",
+  "end_time": "2026-11-05T17:15:00Z",
+  "exit_code": 0,
+  "metrics": {
+    "dev_replication": {
+      "macro_f1": 0.6222,
+      "macro_ap": 0.6248,
+      "macro_precision": 0.6424,
+      "macro_recall": 0.6085,
+      "weighted_utility": 0.50496,
+      "overall_ece": 0.0268,
+      "audit_receipt_sha256": "c81b1cadd0d884ce56bd8c242d79c323d979e7f42f9915451ddecea93086f00a",
+      "sealed_test_status": "PRISTINE_SEALED"
+    }
+  }
+}

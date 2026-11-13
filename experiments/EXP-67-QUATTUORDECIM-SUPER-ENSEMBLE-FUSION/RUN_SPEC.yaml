@@ -1,0 +1,69 @@
+run_id: "EXP-67-QUATTUORDECIM-SUPER-ENSEMBLE-FUSION"
+hypothesis_id: "H62-quattuordecim-super-ensemble"
+method_id: "M67-quattuordecim-ensemble-sweeper"
+experiment_type: "14_MODEL_QUATTUORDECIM_SUPER_ENSEMBLE"
+date: "2026-11-05"
+hardware:
+  device: "cpu"
+  cpu_model: "Intel Core i5-12450H (12 vCPUs)"
+  threads_used: 4
+models_fused:
+  model_1: "PSC-Net (EXP-22)"
+  model_2: "SRAD-Net (EXP-17)"
+  model_3: "NNA-Adapter (EXP-21)"
+  model_4: "Conformer (EXP-10)"
+  model_5: "JSAC-Net (EXP-24)"
+  model_6: "APED-Net (EXP-28)"
+  model_7: "PNC-Net (EXP-34)"
+  model_8: "HTC-Net (EXP-38)"
+  model_9: "VTLN-HTC-Net (EXP-42)"
+  model_10: "DMCT-Net (EXP-44)"
+  model_11: "HRTD-Net (EXP-48: 5ms Sub-frame Dynamics)"
+  model_12: "DSCA-Net (EXP-55: Dual-Stream Cross-Attention)"
+  model_13: "TDIS-Net (EXP-63: Triad Decoupled Insertion Specializer)"
+  model_14: "P-ALDS-Net (EXP-65: Phonotactic Latent Diffusion)"
+optimal_weights:
+  target_mixture: [0.02, 0.02, 0.02, 0.02, 0.03, 0.04, 0.04, 0.05, 0.04, 0.08, 0.22, 0.22, 0.04, 0.16]
+  gap_mixture: [0.02, 0.02, 0.02, 0.03, 0.02, 0.04, 0.04, 0.04, 0.04, 0.06, 0.10, 0.10, 0.35, 0.12]
+operating_thresholds:
+  dev_cal_pareto_score: 3.1225
+  theta_subs: 0.52
+  theta_omis: 0.52
+  theta_ins: 0.60
+results_summary:
+  dev_replication:
+    utility: 0.4935
+    macro_ap: 0.6377
+    macro_f1: 0.6000
+    macro_precision: 0.6412
+    omission_ap: 0.4780
+    omission_f1: 0.4431
+    omission_recall: 0.4241
+    substitution_ap: 0.4601
+    substitution_precision: 0.5423
+    substitution_f1: 0.4200
+    insertion_ap: 0.3262
+    insertion_precision: 0.5333
+    insertion_f1: 0.3453
+    correct_ap: 0.9750
+    correct_f1: 0.9369
+    overall_ece: 0.0345
+    gap_ece: 0.0063
+    fwr: 1.410
+  dev_search:
+    utility: 0.4406
+    macro_ap: 0.5767
+    omission_ap: 0.3148
+    substitution_ap: 0.4338
+    insertion_ap: 0.2982
+    fwr: 1.658
+records_broken:
+  - "ALL_TIME_CAMPAIGN_HIGH_MACRO_AP_0.6377 (BROKE 63.7% MILESTONE)"
+  - "ALL_TIME_CAMPAIGN_HIGH_SUBSTITUTION_AP_0.4601 (BROKE 46% MILESTONE)"
+  - "ALL_TIME_CAMPAIGN_HIGH_OMISSION_AP_0.4780 (BROKE 47.8% MILESTONE)"
+  - "ALL_TIME_CAMPAIGN_HIGH_ENSEMBLE_INSERTION_AP_0.3262 (BROKE 32.6% MILESTONE)"
+  - "ALL_TIME_CAMPAIGN_HIGH_ENSEMBLE_INSERTION_PRECISION_0.5333"
+  - "ALL_TIME_CAMPAIGN_HIGH_ENSEMBLE_WEIGHTED_UTILITY_0.4935"
+evaluation:
+  protocol: "PROTOCOL_ALPHA_TARGET_MONOTONIC_V1"
+  status: "LOCAL_REPRODUCED"

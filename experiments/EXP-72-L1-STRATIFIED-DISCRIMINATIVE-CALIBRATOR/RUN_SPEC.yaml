@@ -1,0 +1,31 @@
+experiment_id: EXP-72-L1-STRATIFIED-DISCRIMINATIVE-CALIBRATOR
+hypothesis_id: H67-l1-stratified-calibration
+method_id: M72-l1-stratified-calibrator
+protocol: PROTOCOL_ALPHA_TARGET_MONOTONIC_V1
+split:
+  train: 1800
+  dev_search: 599
+  dev_cal: 300
+  dev_replication: 300
+  test_sealed: 600
+device: cuda
+base_model: EXP-70-QUINDECIM-SUPER-ENSEMBLE-FUSION
+calibration:
+  type: l1_stratified_temperature_and_threshold_offsets
+  cohorts:
+    - Arabic
+    - Chinese
+    - Hindi
+    - Korean
+    - Spanish
+    - Vietnamese
+calibration_split: dev_cal
+evaluation_splits:
+  - dev_search
+  - dev_replication
+tags:
+  - l1_stratified_calibration
+  - temperature_scaling
+  - dialectal_threshold_offsets
+  - false_warning_suppression
+  - zero_leakage_enforced

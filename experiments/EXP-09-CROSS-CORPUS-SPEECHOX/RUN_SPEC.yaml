@@ -1,0 +1,18 @@
+run_id: "EXP-09-CROSS-CORPUS-SPEECHOX"
+hypothesis_id: "H05-cross-dataset-robustness"
+method_id: "M09-cross-corpus-evaluator"
+experiment_type: "CROSS_DATASET_DOMAIN_EVALUATION"
+operating_dataset: "SpeechOcean762"
+operating_split: "test"
+date: "2026-11-05"
+hardware:
+  device: "cuda (NVIDIA GeForce GTX 1650 4GB)"
+  vram_allocated_mb: 580.4
+inputs:
+  corpus_archive: "data/original_sources/speechocean762/speechocean762.tar.gz"
+  trained_model: "experiments/EXP-08-PHONOTACTIC-CONTEXT/CHECKPOINTS/bilstm_context_model.pt"
+  sample_size_utts: 250
+  sample_size_phones: 3763
+hyperparameters:
+  zero_shot_transfer: true
+  error_score_threshold: 1.50

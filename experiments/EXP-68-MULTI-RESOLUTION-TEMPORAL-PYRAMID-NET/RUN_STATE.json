@@ -1,0 +1,45 @@
+{
+  "run_id": "EXP-68-MULTI-RESOLUTION-TEMPORAL-PYRAMID-NET",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "started_at": "2026-11-05T08:02:00Z",
+  "completed_at": "2026-11-05T08:05:30Z",
+  "duration_seconds": 210.0,
+  "device": "cpu",
+  "optimal_thresholds": {
+    "theta_subs": 0.50,
+    "theta_omis": 0.52,
+    "theta_ins": 0.60
+  },
+  "metrics_summary": {
+    "dev_search": {
+      "utility": 0.4306,
+      "macro_ap": 0.5640,
+      "substitution_ap": 0.4207,
+      "overall_ece": 0.0142,
+      "fwr": 2.027
+    },
+    "dev_replication": {
+      "utility": 0.4514,
+      "macro_ap": 0.5933,
+      "macro_precision": 0.6138,
+      "macro_recall": 0.5409,
+      "macro_f1": 0.5693,
+      "substitution_ap": 0.4322,
+      "substitution_f1": 0.4491,
+      "omission_ap": 0.3777,
+      "insertion_ap": 0.2104,
+      "correct_ap": 0.9698,
+      "correct_f1": 0.9344,
+      "overall_ece": 0.0083,
+      "target_ece": 0.0106,
+      "gap_ece": 0.0061,
+      "fwr": 1.750
+    }
+  },
+  "records_broken": [
+    "ALL_TIME_CAMPAIGN_LOW_OVERALL_ECE_0.0083",
+    "ALL_TIME_LOW_FALSE_OMISSION_ALARMS_89"
+  ],
+  "gate_status": "LOCAL_REPRODUCED"
+}

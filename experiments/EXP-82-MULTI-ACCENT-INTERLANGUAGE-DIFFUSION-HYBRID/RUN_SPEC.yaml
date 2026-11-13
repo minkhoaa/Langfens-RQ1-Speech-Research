@@ -1,0 +1,34 @@
+experiment_id: EXP-82-MULTI-ACCENT-INTERLANGUAGE-DIFFUSION-HYBRID
+hypothesis_id: H77-interlanguage-diffusion-hybrid
+method_id: M82-interlanguage-diffusion-trainer
+protocol: PROTOCOL_ALPHA_TARGET_MONOTONIC_V1
+split:
+  train: 1800
+  dev_search: 599
+  dev_cal: 300
+  dev_replication: 300
+  test_sealed: 600
+device: cuda
+model:
+  name: IP-ALDS-Net
+  in_acoustic_dim: 67
+  in_prompt_dim: 47
+  in_gap_dim: 13
+  cross_attention_heads: 4
+  proj_dim: 128
+  diffusion_steps: 50
+  ddim_inference_steps: 4
+  interlanguage_priors: true
+  triad_gap_categories: 3
+  epochs: 10
+  lr: 0.001
+calibration_split: dev_cal
+evaluation_splits:
+  - dev_search
+  - dev_replication
+tags:
+  - interlanguage_diffusion_hybrid
+  - ip_alds_net
+  - score_matching_ddim
+  - interlanguage_prior_guided_diffusion
+  - zero_leakage_enforced

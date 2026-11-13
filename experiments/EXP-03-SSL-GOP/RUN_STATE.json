@@ -1,0 +1,12 @@
+{
+  "run_id": "EXP-03-SSL-GOP",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "started_at": "2026-11-04T23:35:00Z",
+  "completed_at": "2026-11-04T23:36:00Z",
+  "duration_seconds": 55.0,
+  "weighted_utility": 0.2522,
+  "milestone_60_passed": false,
+  "outstanding_80_passed": false,
+  "gate_status": "EXPLORATORY"
+}

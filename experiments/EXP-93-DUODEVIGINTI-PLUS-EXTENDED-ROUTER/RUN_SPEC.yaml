@@ -1,0 +1,28 @@
+experiment_id: EXP-93-DUODEVIGINTI-PLUS-EXTENDED-ROUTER
+hypothesis_id: H88-extended-duodeviginti-routing
+method_id: M93-extended-ensemble-router
+protocol: PROTOCOL_ALPHA_TARGET_MONOTONIC_V1
+split:
+  train: 1800
+  dev_search: 599
+  dev_cal: 300
+  dev_replication: 300
+  test_sealed: 600
+device: cuda
+model:
+  name: Viginti-Plus-Pareto (23-Model Super-Ensemble)
+  base_ensemble: Viginti-Pareto (21 models)
+  added_models:
+    - BAPM-Net (EXP-91)
+    - FRTE-Net (EXP-92)
+  calibration: DEV_CAL Dirichlet Grid Optimization
+calibration_split: dev_cal
+evaluation_splits:
+  - dev_search
+  - dev_replication
+tags:
+  - duodeviginti_plus_super_ensemble
+  - 23_model_mixture
+  - viginti_plus_pareto
+  - convex_bayesian_optimization
+  - zero_leakage_enforced

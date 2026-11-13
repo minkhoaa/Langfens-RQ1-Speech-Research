@@ -1,0 +1,47 @@
+{
+  "run_id": "EXP-42-AGE-INVARIANT-FRONTEND-NORMALIZATION",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "started_at": "2026-11-05T04:45:00Z",
+  "completed_at": "2026-11-05T04:46:15Z",
+  "duration_seconds": 75.0,
+  "device": "cuda",
+  "dev_cal_pareto_score": 2.6483,
+  "optimal_thresholds": {
+    "theta_subs": 0.60,
+    "theta_omis": 0.55,
+    "theta_ins": 0.45
+  },
+  "metrics_summary": {
+    "dev_search": {
+      "utility": 0.3716,
+      "macro_ap": 0.5178,
+      "macro_precision": 0.5002,
+      "macro_f1": 0.4903,
+      "omission_ap": 0.2401,
+      "omission_recall": 0.4498,
+      "substitution_ap": 0.3373,
+      "insertion_ap": 0.2228,
+      "fwr": 1.962
+    },
+    "dev_replication": {
+      "utility": 0.4277,
+      "macro_ap": 0.5584,
+      "macro_precision": 0.5779,
+      "macro_f1": 0.5244,
+      "omission_ap": 0.3557,
+      "omission_recall": 0.4125,
+      "omission_f1": 0.3941,
+      "substitution_ap": 0.3517,
+      "insertion_ap": 0.2640,
+      "insertion_recall": 0.3936,
+      "insertion_f1": 0.3558,
+      "fwr": 1.493
+    }
+  },
+  "records_broken": [
+    "ALL_TIME_CAMPAIGN_HIGH_REPLICATION_INSERTION_AP_0.2640",
+    "ALL_TIME_CAMPAIGN_HIGH_REPLICATION_INSERTION_RECALL_0.3936"
+  ],
+  "gate_status": "LOCAL_REPRODUCED"
+}

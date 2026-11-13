@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-59-ACOUSTIC-ARTICULATORY-LATENT-DIFFUSION",
+  "hypothesis_id": "H54-diffusion-posterior-sampler",
+  "method_id": "M59-diffusion-posterior-sampler",
+  "description": "Continuous auto-research loop: Diffusion-based score-matching posterior sampling over 5ms acoustic trajectories to denoise non-native coarticulatory blending and push single-model AP past 0.6300",
+  "prerequisites_met": true,
+  "resource_lease": "cuda"
+}

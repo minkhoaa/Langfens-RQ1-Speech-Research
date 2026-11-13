@@ -1,0 +1,13 @@
+{
+  "run_id": "EXP-09-CROSS-CORPUS-SPEECHOX",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "started_at": "2026-11-05T00:15:00Z",
+  "completed_at": "2026-11-05T00:15:35Z",
+  "duration_seconds": 35.0,
+  "pearson_r": 0.2656,
+  "spearman_rho": 0.3140,
+  "error_detection_ap": 0.1232,
+  "error_recall": 0.6557,
+  "gate_status": "EXPLORATORY"
+}

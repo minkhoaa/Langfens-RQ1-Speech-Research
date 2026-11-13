@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-03-SSL-GOP",
+  "hypothesis_id": "H01-gop-acoustic-evidence",
+  "method_id": "M03-ssl-gop-verifier",
+  "description": "First real acoustic model: Wav2Vec2 CMU-phoneme acoustic alignment and GOP diagnostic verification on DEV_SEARCH",
+  "prerequisites_met": true,
+  "resource_lease": "gpu"
+}

@@ -1,0 +1,43 @@
+{
+  "run_id": "EXP-28-PROSODIC-ENERGY-DYNAMICS",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "started_at": "2026-11-05T03:30:00Z",
+  "completed_at": "2026-11-05T03:31:05Z",
+  "duration_seconds": 65.0,
+  "device": "cuda",
+  "dev_cal_pareto_score": 2.7233,
+  "optimal_thresholds": {
+    "theta_subs": 0.50,
+    "theta_omis": 0.55,
+    "theta_ins": 0.50
+  },
+  "metrics_summary": {
+    "dev_search": {
+      "utility": 0.3795,
+      "macro_ap": 0.5040,
+      "macro_precision": 0.5105,
+      "macro_f1": 0.5348,
+      "substitution_f1": 0.4227,
+      "insertion_f1": 0.3062,
+      "insertion_ap": 0.2563
+    },
+    "dev_replication": {
+      "utility": 0.4237,
+      "macro_ap": 0.5527,
+      "macro_precision": 0.5842,
+      "macro_f1": 0.5725,
+      "substitution_f1": 0.4461,
+      "insertion_f1": 0.3579,
+      "insertion_ap": 0.2589,
+      "omission_f1": 0.3427
+    }
+  },
+  "records_broken": [
+    "ALL_TIME_CAMPAIGN_HIGH_MACRO_F1_0.5725",
+    "ALL_TIME_CAMPAIGN_HIGH_SUBSTITUTION_F1_0.4461",
+    "ALL_TIME_CAMPAIGN_HIGH_INSERTION_F1_0.3579",
+    "ALL_TIME_CAMPAIGN_HIGH_INSERTION_AP_0.2589"
+  ],
+  "gate_status": "LOCAL_REPRODUCED"
+}

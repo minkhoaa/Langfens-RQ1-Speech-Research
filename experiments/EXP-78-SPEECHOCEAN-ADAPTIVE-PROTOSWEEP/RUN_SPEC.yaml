@@ -1,0 +1,29 @@
+experiment_id: EXP-78-SPEECHOCEAN-ADAPTIVE-PROTOSWEEP
+hypothesis_id: H73-speechocean-adaptive-cross-corpus
+method_id: M78-speechocean-adaptive-evaluator
+target_corpus: SpeechOcean762
+test_split: test (300 utterances, 4536 expert-annotated phonemes)
+domain_shift:
+  age_shift: adult_to_child
+  recording_environment: studio_to_consumer_tablet
+  accent: multi_l1_to_chinese_learners
+  rating_rubric: categorical_to_discrete_accuracy_score
+models_benchmarked:
+  - BiLSTM (EXP-08)
+  - DMCT-Net (EXP-44)
+  - HRTD-Net (EXP-48)
+  - DSCA-Net (EXP-55)
+  - IPTM-Net (EXP-69)
+  - TPD-Net (EXP-77)
+  - Septendecim-Pareto (EXP-76)
+metrics:
+  - pearson_r
+  - spearman_rho
+  - error_ap
+  - error_f1
+tags:
+  - zero_shot_cross_corpus_transfer
+  - speechocean762_benchmark
+  - adult_to_child_age_shift
+  - domain_robustness
+  - zero_leakage_enforced

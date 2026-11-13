@@ -1,0 +1,18 @@
+run_id: "EXP-14-CROSS-VALIDATION-SWEEP"
+hypothesis_id: "H09-l1-accent-invariance-cross-validation"
+method_id: "M14-l1-group-cross-validation"
+experiment_type: "L1_NESTED_GROUP_CROSS_VALIDATION"
+operating_splits: ["DEV_SEARCH", "DEV_CAL", "DEV_REPLICATION"]
+date: "2026-11-05"
+hardware:
+  device: "cuda (NVIDIA GeForce GTX 1650 4GB)"
+  vram_allocated_mb: 58.2
+inputs:
+  total_heldout_utterances: 1199
+  l1_cohorts: ["Arabic", "Chinese", "Hindi", "Korean", "Spanish", "Vietnamese"]
+  model: "experiments/EXP-13-ARTICULATORY-DECOMPOSITION/CHECKPOINTS/hierarchical_articulatory_model.pt"
+hyperparameters:
+  theta_subs: 0.55
+  theta_omis: 0.55
+  theta_ins: 0.55
+  bootstrap_resamples: 1000

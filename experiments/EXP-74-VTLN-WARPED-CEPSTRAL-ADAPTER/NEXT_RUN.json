@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-75-DIALECT-CONDITIONED-DIFFUSION-SAMPLER",
+  "hypothesis_id": "H70-dialect-diffusion-sampling",
+  "method_id": "M75-dialect-diffusion-trainer",
+  "objective": "Condition score-matching latent diffusion on 16-dim L1 dialect embeddings alongside CMUDict phonotactic priors to target >56.00% Substitution Precision and >0.4650 Substitution AP",
+  "device": "cuda",
+  "prerequisites_met": true
+}

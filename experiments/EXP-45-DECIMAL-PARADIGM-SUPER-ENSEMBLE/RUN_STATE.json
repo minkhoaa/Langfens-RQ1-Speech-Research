@@ -1,0 +1,54 @@
+{
+  "run_id": "EXP-45-DECIMAL-PARADIGM-SUPER-ENSEMBLE",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "started_at": "2026-11-05T05:05:00Z",
+  "completed_at": "2026-11-05T05:06:40Z",
+  "duration_seconds": 100.0,
+  "device": "cuda",
+  "dev_cal_pareto_score": 3.0680,
+  "optimal_weights": {
+    "target": [0.06, 0.08, 0.06, 0.06, 0.10, 0.12, 0.12, 0.15, 0.05, 0.20],
+    "gap": [0.05, 0.07, 0.07, 0.10, 0.08, 0.12, 0.14, 0.12, 0.10, 0.15]
+  },
+  "optimal_thresholds": {
+    "theta_subs": 0.55,
+    "theta_omis": 0.55,
+    "theta_ins": 0.55
+  },
+  "metrics_summary": {
+    "dev_search": {
+      "utility": 0.3913,
+      "macro_ap": 0.5421,
+      "macro_precision": 0.5588,
+      "macro_f1": 0.5318,
+      "omission_ap": 0.2373,
+      "substitution_ap": 0.4079,
+      "substitution_precision": 0.5108,
+      "insertion_ap": 0.2919,
+      "fwr": 1.311
+    },
+    "dev_replication": {
+      "utility": 0.4384,
+      "macro_ap": 0.6056,
+      "macro_precision": 0.6359,
+      "macro_f1": 0.5479,
+      "omission_ap": 0.4168,
+      "substitution_ap": 0.4257,
+      "substitution_precision": 0.5513,
+      "insertion_ap": 0.2715,
+      "insertion_precision": 0.4225,
+      "insertion_f1": 0.3636,
+      "fwr": 1.107
+    }
+  },
+  "records_broken": [
+    "ALL_TIME_CAMPAIGN_HIGH_SUBSTITUTION_AP_0.4257",
+    "ALL_TIME_CAMPAIGN_HIGH_SUBSTITUTION_PRECISION_0.5513",
+    "ALL_TIME_CAMPAIGN_HIGH_ENSEMBLE_OMISSION_AP_0.4168",
+    "ALL_TIME_CAMPAIGN_HIGH_ENSEMBLE_MACRO_PRECISION_0.6359",
+    "ALL_TIME_CAMPAIGN_HIGH_ENSEMBLE_INSERTION_AP_0.2715",
+    "ALL_TIME_CAMPAIGN_LOW_FALSE_WARNING_RATE_1.107"
+  ],
+  "gate_status": "LOCAL_REPRODUCED"
+}

@@ -1,0 +1,39 @@
+experiment_id: EXP-95-CROSS-ACCENT-INTERLANGUAGE-COVARIANCE-ALIGNER
+hypothesis_id: H90-interlanguage-covariance-alignment
+method_id: M95-covariance-aligner-trainer
+protocol: PROTOCOL_ALPHA_TARGET_MONOTONIC_V1
+split:
+  train: 1800
+  dev_search: 599
+  dev_cal: 300
+  dev_replication: 300
+  test_sealed: 600
+device: cuda
+model:
+  name: CICA-Net
+  in_acoustic_dim: 72
+  in_prompt_dim: 81
+  in_gap_dim: 13
+  cross_attention_heads: 4
+  proj_dim: 128
+  lstm_hidden: 96
+  phoneme_error_covariance_matrix: 39x39
+  disentangled_subspaces:
+    manner: 32
+    place: 32
+    voicing: 16
+    timbre: 48
+  orthogonality_penalty: true
+  reconstruction_mse: true
+  epochs: 10
+  lr: 0.001
+calibration_split: dev_cal
+evaluation_splits:
+  - dev_search
+  - dev_replication
+tags:
+  - cross_accent_interlanguage_covariance_aligner
+  - cica_net
+  - empirical_covariance_projection
+  - structured_phonological_transfer
+  - zero_leakage_enforced

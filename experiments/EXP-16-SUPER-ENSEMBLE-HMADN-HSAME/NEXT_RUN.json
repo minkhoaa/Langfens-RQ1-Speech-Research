@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-17-ADAPTIVE-DURATION-CTC",
+  "hypothesis_id": "H12-adaptive-duration-ctc-difference",
+  "method_id": "M17-adaptive-ctc-duration-model",
+  "description": "Adaptive Acoustic Duration Normalization and Sequence CTC Delta Differencing to push Omission and Substitution F1 beyond 0.45",
+  "prerequisites_met": true,
+  "resource_lease": "cuda"
+}

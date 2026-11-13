@@ -1,0 +1,22 @@
+{
+  "dataset": "SpeechOcean762",
+  "split": "test",
+  "sample_size": {
+    "utterances": 250,
+    "phone_tokens": 3763
+  },
+  "correlations": {
+    "pearson_r": 0.2656244885137624,
+    "pearson_p_value": 8.549498114909705e-62,
+    "spearman_rho": 0.3140244631164504,
+    "spearman_p_value": 6.736147570501826e-87
+  },
+  "binary_mispronunciation_detection": {
+    "error_prevalence": 0.048631411108158384,
+    "average_precision": 0.12324034684232513,
+    "precision": 0.10938924339106655,
+    "recall": 0.6557377049180327,
+    "f1": 0.1875
+  },
+  "domain_generalization_status": "EXPLORATORY"
+}

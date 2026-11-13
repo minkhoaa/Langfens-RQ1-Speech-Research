@@ -1,0 +1,15 @@
+run_id: "EXP-02-MISMATCH"
+hypothesis_id: "H01-gop-acoustic-evidence"
+method_id: "M02-mismatch-control"
+experiment_type: "NEGATIVE_CONTROL_MISMATCHED_AUDIO"
+operating_split: "DEV_SEARCH"
+date: "2026-11-04"
+hardware:
+  device: "cpu"
+  vram_allocated_mb: 0
+inputs:
+  dev_manifest: "data/derived/l2arctic/manifests/dev_search.jsonl"
+  audio_used: true
+  mismatch_seed: 42
+hyperparameters:
+  strategy: "shuffled_audio_mismatch"

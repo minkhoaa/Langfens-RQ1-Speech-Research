@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-69-CROSS-ACCENT-INTERLANGUAGE-PHONOTACTIC-MAPPER",
+  "hypothesis_id": "H64-interlanguage-phonotactics",
+  "method_id": "M69-interlanguage-mapper",
+  "description": "Continuous auto-research loop: L1-specific interlanguage phonotactic error transition matrix modeling systematic phonological transfer rules to boost Macro AP past 0.6400",
+  "prerequisites_met": true,
+  "resource_lease": "cpu"
+}

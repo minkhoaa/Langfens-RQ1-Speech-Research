@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-21-ENDLESS-EXPLORATION-ACOUSTIC-REFIT",
+  "hypothesis_id": "H16-adapter-acoustic-tuning",
+  "method_id": "M21-adapter-fine-tuning",
+  "description": "Continuous auto-research loop: parameter-efficient LoRA / Adapter acoustic fine-tuning on TRAIN to directly adapt Wav2Vec2 representations to non-native accented speech",
+  "prerequisites_met": true,
+  "resource_lease": "cuda"
+}

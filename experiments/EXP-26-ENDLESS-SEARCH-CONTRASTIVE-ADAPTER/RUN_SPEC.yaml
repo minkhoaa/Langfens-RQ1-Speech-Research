@@ -1,0 +1,45 @@
+run_id: "EXP-26-ENDLESS-SEARCH-CONTRASTIVE-ADAPTER"
+hypothesis_id: "H21-contrastive-acoustic-adapter"
+method_id: "M26-contrastive-adapter-model"
+experiment_type: "END_TO_END_CONTRASTIVE_ADAPTER_TRAINING"
+date: "2026-11-05"
+hardware:
+  device: "cuda"
+  gpu_name: "NVIDIA GeForce GTX 1650"
+  vram_allocated_mb: 68
+inputs:
+  train_features: "data/derived/l2arctic/features/train_features.npz"
+  cal_features: "data/derived/l2arctic/features/dev_cal_features.npz"
+  search_features: "data/derived/l2arctic/features/dev_search_features.npz"
+  rep_features: "data/derived/l2arctic/features/dev_replication_features.npz"
+hyperparameters:
+  adapter_bottleneck: 64
+  lstm_hidden: 96
+  proj_dim: 128
+  local_attn_sigma: 3.0
+  contrastive_margin: 0.35
+  lambda_margin: 0.20
+  lambda_manner: 0.15
+  lambda_place: 0.15
+  lambda_voicing: 0.10
+  lambda_gap: 0.80
+  focal_gamma: 1.5
+  optimizer: "AdamW"
+  lr: 0.0008
+  weight_decay: 0.0001
+  epochs: 30
+  batch_size: 32
+operating_thresholds:
+  dev_cal_pareto_score: 2.7015
+  theta_subs: 0.55
+  theta_omis: 0.55
+  theta_ins: 0.60
+evaluation:
+  protocol: "PROTOCOL_ALPHA_TARGET_MONOTONIC_V1"
+  search_utility: 0.3575
+  rep_utility: 0.4033
+  search_macro_ap: 0.5000
+  rep_macro_ap: 0.5503
+  rep_macro_precision: 0.5967
+  rep_macro_f1: 0.5494
+  status: "LOCAL_REPRODUCED"

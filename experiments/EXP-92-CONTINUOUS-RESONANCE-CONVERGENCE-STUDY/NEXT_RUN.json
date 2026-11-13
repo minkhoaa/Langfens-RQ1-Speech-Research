@@ -1,0 +1,12 @@
+{
+  "next_run_id": "EXP-93-DUODEVIGINTI-PLUS-EXTENDED-ROUTER",
+  "hypothesis": "H88-extended-duodeviginti-routing",
+  "method": "M93-extended-ensemble-router",
+  "target": "Fuse boundary-aware mapper (EXP-91 BAPM-Net) and formant resonance features (EXP-92 FRTE-Net) into the 22-model Viginti-Plus super-ensemble targeting >0.5100 Weighted Utility and >0.6300 Macro F1",
+  "resource_reservation": "CPU:1",
+  "prerequisites": [
+    "EXP-86-VIGINTI-CONVERGENCE-SUPER-ENSEMBLE",
+    "EXP-91-BOUNDARY-AWARE-PHONOTACTIC-POSTERIOR-MAPPER",
+    "EXP-92-CONTINUOUS-RESONANCE-CONVERGENCE-STUDY"
+  ]
+}

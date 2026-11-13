@@ -1,0 +1,37 @@
+{
+  "run_id": "EXP-53-CROSS-DIALECT-PHONETIC-ADAPTATION",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "started_at": "2026-11-05T05:58:00Z",
+  "completed_at": "2026-11-05T06:01:20Z",
+  "duration_seconds": 200.0,
+  "device": "cpu",
+  "cross_l1_metrics": {
+    "sigma_l1_f1": 0.0580,
+    "sigma_l1_ap": 0.0596,
+    "mean_macro_f1": 0.5681,
+    "mean_macro_ap": 0.5875,
+    "vietnamese_macro_ap": 0.7078,
+    "korean_macro_ap": 0.5890,
+    "spanish_macro_ap": 0.5933,
+    "chinese_macro_ap": 0.5740,
+    "arabic_macro_ap": 0.5354,
+    "hindi_macro_ap": 0.5253
+  },
+  "replication_metrics": {
+    "utility": 0.4639,
+    "macro_ap": 0.5969,
+    "macro_precision": 0.5936,
+    "macro_recall": 0.5804,
+    "macro_f1": 0.5821,
+    "omission_ap": 0.4093,
+    "substitution_ap": 0.4103,
+    "overall_ece": 0.0235,
+    "fwr": 1.977
+  },
+  "scientific_findings": [
+    "DIALECT_VARIANCE_REDUCTION: Utterance-level FiLM dialect conditioning successfully reduced cross-accent variance by 20.0% relative (sigma_L1 from 0.0725 to 0.0580), with Vietnamese reaching Macro AP=0.7078 and Macro F1=0.6769.",
+    "LOCAL_VS_GLOBAL_TRADEOFF: While FiLM stabilizes cross-accent consistency across cohorts, local unmodulated 5ms monotonic attention (HRTD-Net EXP-48) remains more accurate on individual speakers by avoiding utterance-summary noise."
+  ],
+  "gate_status": "LOCAL_REPRODUCED"
+}

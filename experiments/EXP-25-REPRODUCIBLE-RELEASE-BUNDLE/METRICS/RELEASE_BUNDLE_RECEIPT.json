@@ -1,0 +1,128 @@
+{
+  "release_bundle_status": "REPRODUCIBILITY_VERIFIED",
+  "total_experiments_verified": 24,
+  "protocol_lock": "PROTOCOL_ALPHA_TARGET_MONOTONIC_V1",
+  "sealed_test_sha256": "a5636249f747a62e3340dded63161149644e83dd13aa2560e312d044c825b4b6",
+  "experiments": [
+    {
+      "run_id": "EXP-01-PRIOR",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-02-MISMATCH",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-03-SSL-GOP",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-04-LPDN",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-05-CONF-CALIB",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-06-CALIB-TRAIN",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-07-PARETO-CALIB",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-08-PHONOTACTIC-CONTEXT",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-09-CROSS-CORPUS-SPEECHOX",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-10-CONFORMER-ATTENTION",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-11-ENSEMBLE-FUSION",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-12-REPLICATION-DEV-REP",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-13-ARTICULATORY-DECOMPOSITION",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-14-CROSS-VALIDATION-SWEEP",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-15-STREAMING-EFFICIENCY-BENCHMARK",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-16-SUPER-ENSEMBLE-HMADN-HSAME",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-17-ADAPTIVE-DURATION-CTC",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-18-MULTI-SEED-CERTIFICATION",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-19-TEST-SEALED-INTEGRITY-AUDIT",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-20-COMPREHENSIVE-SCIENTIFIC-SYNTHESIS",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-21-ENDLESS-EXPLORATION-ACOUSTIC-REFIT",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-22-PHONOLOGICAL-CONTRASTIVE-MARGIN",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-23-COMPOSITE-UTILITY-SWEEP",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    },
+    {
+      "run_id": "EXP-24-FINAL-ROADMAP-EXPANSION",
+      "has_artifact_hashes": true,
+      "has_run_state": true
+    }
+  ]
+}

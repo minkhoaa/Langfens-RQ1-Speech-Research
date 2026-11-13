@@ -1,0 +1,36 @@
+run_id: "EXP-29-PROSODIC-PENTAD-FUSION"
+hypothesis_id: "H24-prosodic-super-ensemble-fusion"
+method_id: "M29-prosodic-ensemble-sweeper"
+experiment_type: "6_MODEL_HEXAD_SUPER_ENSEMBLE"
+date: "2026-11-05"
+hardware:
+  device: "cuda"
+  gpu_name: "NVIDIA GeForce GTX 1650"
+  vram_allocated_mb: 202
+models_fused:
+  model_1: "PSC-Net (EXP-22)"
+  model_2: "SRAD-Net (EXP-17)"
+  model_3: "NNA-Adapter (EXP-21)"
+  model_4: "Conformer (EXP-10)"
+  model_5: "JSAC-Net (EXP-24)"
+  model_6: "APED-Net (EXP-28)"
+optimal_weights:
+  target_mixture: [0.15, 0.15, 0.15, 0.15, 0.20, 0.20]
+  gap_mixture: [0.10, 0.15, 0.15, 0.25, 0.15, 0.20]
+operating_thresholds:
+  dev_cal_pareto_score: 3.0134
+  theta_subs: 0.50
+  theta_omis: 0.55
+  theta_ins: 0.60
+evaluation:
+  protocol: "PROTOCOL_ALPHA_TARGET_MONOTONIC_V1"
+  search_utility: 0.3914
+  rep_utility: 0.4321
+  search_macro_ap: 0.5177
+  rep_macro_ap: 0.5810
+  rep_macro_precision: 0.6193
+  rep_macro_f1: 0.5801
+  rep_substitution_ap: 0.4019
+  rep_substitution_f1: 0.4441
+  rep_omission_ap: 0.3694
+  status: "LOCAL_REPRODUCED"

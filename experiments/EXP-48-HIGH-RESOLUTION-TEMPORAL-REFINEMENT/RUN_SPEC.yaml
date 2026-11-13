@@ -1,0 +1,54 @@
+run_id: "EXP-48-HIGH-RESOLUTION-TEMPORAL-REFINEMENT"
+hypothesis_id: "H43-subframe-temporal-resolution"
+method_id: "M48-subframe-temporal-refiner"
+experiment_type: "SUBFRAME_5MS_TEMPORAL_DYNAMICS"
+date: "2026-11-05"
+hardware:
+  device: "cpu"
+  cpu_model: "Intel Core i5-12450H (12 vCPUs)"
+  threads_used: 4
+features_introduced:
+  target_dims: 67
+  base_dims: 63
+  subframe_features:
+    - "5ms energy ratio between first and second half of slot"
+    - "Max instantaneous dE/dt at 5ms windowing"
+    - "Micro-temporal crest factor (max |x| / RMS_5ms)"
+    - "High-frequency onset burst energy ratio (>2kHz relative to vowel baseline)"
+  gap_dims: 13
+  gap_subframe_features:
+    - "5ms onset transition gradient"
+    - "5ms offset transition gradient"
+results_summary:
+  dev_replication:
+    utility: 0.4846
+    macro_ap: 0.6202
+    macro_precision: 0.6084
+    macro_recall: 0.6070
+    macro_f1: 0.6050
+    omission_ap: 0.4375
+    omission_recall: 0.4825
+    omission_f1: 0.4421
+    substitution_ap: 0.4487
+    substitution_f1: 0.4410
+    correct_ap: 0.9743
+    correct_f1: 0.9320
+    overall_ece: 0.0117
+    fwr: 2.037
+  dev_search:
+    utility: 0.4429
+    macro_ap: 0.5672
+    omission_ap: 0.3236
+    omission_recall: 0.5694
+    substitution_ap: 0.3978
+records_broken:
+  - "ALL_TIME_CAMPAIGN_HIGH_MACRO_AP_0.6202"
+  - "ALL_TIME_CAMPAIGN_HIGH_MACRO_F1_0.6050 (BROKE 60% MACRO F1 MILESTONE)"
+  - "ALL_TIME_CAMPAIGN_HIGH_WEIGHTED_UTILITY_0.4846"
+  - "ALL_TIME_CAMPAIGN_HIGH_SUBSTITUTION_AP_0.4487"
+  - "ALL_TIME_CAMPAIGN_HIGH_REPLICATION_OMISSION_AP_0.4375"
+  - "ALL_TIME_CAMPAIGN_HIGH_SEARCH_OMISSION_AP_0.3236 (BROKE 30% SEARCH BARRIER)"
+  - "ALL_TIME_CAMPAIGN_LOW_CALIBRATION_ECE_0.0117"
+evaluation:
+  protocol: "PROTOCOL_ALPHA_TARGET_MONOTONIC_V1"
+  status: "LOCAL_REPRODUCED"

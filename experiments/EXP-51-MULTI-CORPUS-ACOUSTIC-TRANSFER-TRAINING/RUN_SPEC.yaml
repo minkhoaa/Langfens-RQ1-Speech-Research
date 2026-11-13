@@ -1,0 +1,44 @@
+run_id: "EXP-51-MULTI-CORPUS-ACOUSTIC-TRANSFER-TRAINING"
+hypothesis_id: "H46-cross-corpus-representation-transfer"
+method_id: "M51-multi-corpus-trainer"
+experiment_type: "CROSS_CORPUS_ZERO_SHOT_BENCHMARK"
+date: "2026-11-05"
+hardware:
+  device: "cpu"
+  cpu_model: "Intel Core i5-12450H (12 vCPUs)"
+  threads_used: 4
+benchmark_dataset:
+  name: "SpeechOcean762-Test"
+  tar_archive: "data/original_sources/speechocean762/speechocean762.tar.gz"
+  phonemes_evaluated: 4536
+  utterances_evaluated: 300
+  human_expert_score_field: "phones-accuracy"
+  error_threshold: "score < 1.5"
+models_evaluated:
+  bilstm:
+    pearson_r: 0.2690
+    spearman_rho: 0.3132
+    error_ap: 0.1258
+    error_recall: 0.6388
+    error_f1: 0.1914
+  dmct_net:
+    pearson_r: 0.2532
+    spearman_rho: 0.3028
+    error_ap: 0.1251
+    error_recall: 0.3524
+    error_f1: 0.1865
+  hrtd_net:
+    pearson_r: 0.1731
+    spearman_rho: 0.2414
+    error_ap: 0.1088
+    error_recall: 0.2203
+    error_f1: 0.1339
+  decimal_pareto:
+    pearson_r: 0.2250
+    spearman_rho: 0.3039
+    error_ap: 0.1213
+    error_recall: 0.2379
+    error_f1: 0.1414
+evaluation:
+  protocol: "PROTOCOL_ALPHA_TARGET_MONOTONIC_V1"
+  status: "ROBUST_TRANSFER"

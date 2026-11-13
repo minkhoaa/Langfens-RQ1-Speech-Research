@@ -1,0 +1,10 @@
+{
+  "next_run_id": "EXP-94-ARTICULATORY-DISENTANGLED-AUTOENCODER",
+  "hypothesis": "H89-articulatory-disentangled-autoencoder",
+  "method": "M94-articulatory-autoencoder-trainer",
+  "target": "Train a multi-stream articulatory disentangled autoencoder (ADAE-Net) separating manner, place, and voicing acoustic manifolds to boost phonetic diagnosis precision and utility toward EXP-100",
+  "resource_reservation": "GPU:0",
+  "prerequisites": [
+    "EXP-93-DUODEVIGINTI-PLUS-EXTENDED-ROUTER"
+  ]
+}

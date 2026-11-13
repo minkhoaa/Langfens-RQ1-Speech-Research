@@ -1,0 +1,71 @@
+{
+  "report_id": "EXP-30-PORTFOLIO-STATISTICAL-CERTIFICATION",
+  "total_experiments_audited": 29,
+  "all_artifact_hashes_present": true,
+  "sealed_test_set_intact": true,
+  "sealed_test_sha256": "a5636249f747a62e3340dded63161149644e83dd13aa2560e312d044c825b4b6",
+  "bootstrap_sample_size": 1000,
+  "hexad_pareto_statistics": {
+    "weighted_utility": {
+      "mean": 0.43278279601410996,
+      "std": 0.012565461730431129,
+      "ci_95": [
+        0.40843028562669204,
+        0.4579768690410354
+      ]
+    },
+    "macro_ap": {
+      "mean": 0.5822677116361796,
+      "std": 0.01284237209596679,
+      "ci_95": [
+        0.5581153445322791,
+        0.6106767507533001
+      ]
+    },
+    "macro_precision": {
+      "mean": 0.6185683925433421,
+      "std": 0.014945033166678938,
+      "ci_95": [
+        0.5879740135133044,
+        0.6485004700470675
+      ]
+    },
+    "macro_f1": {
+      "mean": 0.5798986150639137,
+      "std": 0.011650850724562243,
+      "ci_95": [
+        0.5573203160101488,
+        0.6022469895326658
+      ]
+    },
+    "substitution_ap": {
+      "mean": 0.4032706238749185,
+      "std": 0.01868054518252209,
+      "ci_95": [
+        0.3680556634255584,
+        0.4409738178232731
+      ]
+    },
+    "omission_ap": {
+      "mean": 0.37165974193361023,
+      "std": 0.03340785944814827,
+      "ci_95": [
+        0.3087180900499501,
+        0.44533751071689964
+      ]
+    },
+    "insertion_f1": {
+      "mean": 0.26223540291653796,
+      "std": 0.04855443490184417,
+      "ci_95": [
+        0.17217766970198675,
+        0.3571528332003192
+      ]
+    }
+  },
+  "hypothesis_verdict": {
+    "H25_confirmed": true,
+    "macro_precision_milestone_60_statistically_certified": false,
+    "macro_f1_gain_significant": true
+  }
+}

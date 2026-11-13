@@ -1,0 +1,42 @@
+{
+  "run_id": "EXP-59-ACOUSTIC-ARTICULATORY-LATENT-DIFFUSION",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "started_at": "2026-11-05T06:44:00Z",
+  "completed_at": "2026-11-05T06:47:30Z",
+  "duration_seconds": 210.0,
+  "device": "cpu",
+  "optimal_thresholds": {
+    "theta_subs": 0.52,
+    "theta_omis": 0.50,
+    "theta_ins": 0.55
+  },
+  "metrics_summary": {
+    "dev_search": {
+      "utility": 0.4300,
+      "macro_ap": 0.5460,
+      "insertion_precision": 0.4615,
+      "overall_ece": 0.0094,
+      "fwr": 2.379
+    },
+    "dev_replication": {
+      "utility": 0.4722,
+      "macro_ap": 0.5865,
+      "macro_precision": 0.6093,
+      "macro_recall": 0.5654,
+      "macro_f1": 0.5820,
+      "omission_ap": 0.3944,
+      "substitution_ap": 0.3957,
+      "insertion_ap": 0.2825,
+      "insertion_precision": 0.5455,
+      "overall_ece": 0.0138,
+      "gap_ece": 0.0036,
+      "fwr": 1.643
+    }
+  },
+  "scientific_findings": [
+    "INSERTION_DENOISING_BREAKTHROUGH: Latent score-matching diffusion set an all-time record for standalone insertion precision at 54.55% with gap ECE at 0.0036, proving that diffusion successfully denoises inter-phoneme epenthesis.",
+    "SUBSTITUTION_OVER_DENOISING: Conditioned score matching on the canonical prompt stream pulls slight phonetic substitutions toward canonical targets, blunting substitution precision. DSCA-Net (EXP-55) remains the superior standalone substitution classifier."
+  ],
+  "gate_status": "LOCAL_REPRODUCED"
+}

@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-27-PENTAD-SUPER-ENSEMBLE",
+  "hypothesis_id": "H22-pentad-heterogeneous-ensemble",
+  "method_id": "M27-pentad-ensemble-sweeper",
+  "description": "Continuous auto-research loop: 5-Model Heterogeneous Super-Ensemble uniting JSAC-Net (EXP-24), PSC-Net (EXP-22), SRAD-Net (EXP-17), NNA-Adapter (EXP-21), and Conformer (EXP-10) to break campaign records across all 4 classes simultaneously",
+  "prerequisites_met": true,
+  "resource_lease": "cuda"
+}

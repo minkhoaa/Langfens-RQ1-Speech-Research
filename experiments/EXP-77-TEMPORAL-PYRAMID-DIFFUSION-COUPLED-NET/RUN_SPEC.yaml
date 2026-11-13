@@ -1,0 +1,35 @@
+experiment_id: EXP-77-TEMPORAL-PYRAMID-DIFFUSION-COUPLED-NET
+hypothesis_id: H72-temporal-pyramid-diffusion
+method_id: M77-pyramid-diffusion-trainer
+protocol: PROTOCOL_ALPHA_TARGET_MONOTONIC_V1
+split:
+  train: 1800
+  dev_search: 599
+  dev_cal: 300
+  dev_replication: 300
+  test_sealed: 600
+device: cuda
+model:
+  name: TPD-Net
+  in_acoustic_dim: 72
+  in_prompt_dim: 47
+  in_gap_dim: 13
+  cross_attention_heads: 4
+  proj_dim: 128
+  diffusion_steps: 50
+  ddim_inference_steps: 4
+  multi_resolution_pyramid: 4_scales_2p5ms_to_20ms
+  interlanguage_priors: true
+  triad_gap_categories: 3
+  epochs: 10
+  lr: 0.001
+calibration_split: dev_cal
+evaluation_splits:
+  - dev_search
+  - dev_replication
+tags:
+  - temporal_pyramid_diffusion_coupled_net
+  - tpd_net
+  - score_matching_ddim
+  - micro_burst_crest_features
+  - zero_leakage_enforced

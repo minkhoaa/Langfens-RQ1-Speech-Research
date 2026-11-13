@@ -1,0 +1,33 @@
+{
+  "run_id": "EXP-47-EDGE-STREAMING-DEPLOYMENT-PACKAGE",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "started_at": "2026-11-05T05:20:00Z",
+  "completed_at": "2026-11-05T05:21:15Z",
+  "duration_seconds": 75.0,
+  "device": "cpu",
+  "quantization_summary": {
+    "fp32_size_mb": 2.11,
+    "int8_size_mb": 1.69,
+    "compression_pct": 19.9
+  },
+  "latency_summary": {
+    "mean_ms": 2.02,
+    "median_ms": 1.82,
+    "p90_ms": 2.94,
+    "p99_ms": 4.32,
+    "rtf": 0.00404,
+    "speedup": 247.3
+  },
+  "parity_summary": {
+    "fp32_macro_ap": 0.6062,
+    "int8_macro_ap": 0.6076,
+    "delta_macro_ap": 0.0015,
+    "fp32_utility": 0.4535,
+    "int8_utility": 0.4537,
+    "delta_utility": 0.0002,
+    "parity_passed": true
+  },
+  "cli_tool_verified": true,
+  "gate_status": "PRODUCTION_CERTIFIED"
+}

@@ -1,0 +1,13 @@
+{
+  "run_id": "EXP-37-FINAL-SYNTHESIS-MONOGRAPH",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "started_at": "2026-11-05T04:20:00Z",
+  "completed_at": "2026-11-05T04:20:25Z",
+  "duration_seconds": 25.0,
+  "experiments_verified": 36,
+  "all_hashes_present": true,
+  "sealed_test_intact": true,
+  "unit_tests_passed": true,
+  "gate_status": "SYNTHESIS_PUBLISHED"
+}

@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-43-CONTINUOUS-AUTONOMOUS-FRONTIER-EXPANSION",
+  "hypothesis_id": "H38-continuous-frontier-expansion",
+  "method_id": "M43-frontier-expansion-engine",
+  "description": "Continuous auto-research loop: Integration of VTLN-HTC-Net high-frequency insertion priors into the master super-ensemble to achieve simultaneous 40% Omission AP and 42% Substitution AP",
+  "prerequisites_met": true,
+  "resource_lease": "cuda"
+}

@@ -1,0 +1,29 @@
+experiment_id: EXP-106-DUODEVIGINTI-PLUS-TWO-CONVERGENCE-SUPER-ENSEMBLE
+hypothesis_id: H101-extended-convergence-ensemble
+method_id: M106-extended-ensemble-sweeper
+protocol: PROTOCOL_ALPHA_TARGET_MONOTONIC_V1
+split:
+  train: 1800
+  dev_search: 599
+  dev_cal: 300
+  dev_replication: 300
+  test_sealed: 600
+device: cuda
+model:
+  name: Viginti-Quintum-Pareto (25-Model Super-Ensemble)
+  paradigms_fused:
+    - Viginti-Pareto (EXP-86: 21 Models)
+    - PEAR-Net (EXP-102: LoRA Acoustic Refiner)
+    - DSGA-Net (EXP-103: Graph Lattice Aligner)
+    - SGAN-Net (EXP-104: Soft-Gold Adjudication)
+    - VTI-Net (EXP-101: Vocal Tract Inversion)
+  calibration: DEV_CAL Dirichlet Grid Optimization
+calibration_split: dev_cal
+evaluation_splits:
+  - dev_search
+  - dev_replication
+tags:
+  - 25_model_convergence_super_ensemble
+  - viginti_quintum_pareto
+  - phase_2_frontier
+  - zero_leakage_enforced

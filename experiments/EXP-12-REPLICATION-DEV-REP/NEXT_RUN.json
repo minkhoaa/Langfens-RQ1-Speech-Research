@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-13-ARTICULATORY-DECOMPOSITION",
+  "hypothesis_id": "H08-articulatory-hierarchical-decomposition",
+  "method_id": "M13-articulatory-multitask-scorer",
+  "description": "Multi-task Hierarchical Articulatory Feature Network (predicting Place, Manner, and Voicing auxiliary targets) to push minority class F1 toward Milestone 60",
+  "prerequisites_met": true,
+  "resource_lease": "cuda"
+}

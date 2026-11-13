@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-20-COMPREHENSIVE-SCIENTIFIC-SYNTHESIS",
+  "hypothesis_id": "H15-scientific-synthesis",
+  "method_id": "M20-scientific-synthesizer",
+  "description": "Comprehensive scientific synthesis, cross-architectural ablation analysis, and publication-grade reporting of all campaign findings",
+  "prerequisites_met": true,
+  "resource_lease": "cpu"
+}

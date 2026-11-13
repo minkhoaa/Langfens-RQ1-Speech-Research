@@ -1,0 +1,23 @@
+experiment_id: EXP-80-CAMPAIGN-FOUR-FIFTHS-CENTURY-CONSOLIDATION-AND-MILESTONE-AUDIT
+hypothesis_id: H75-four-fifths-century-audit-consolidation
+method_id: M80-four-fifths-century-auditor
+protocol: PROTOCOL_ALPHA_TARGET_MONOTONIC_V1
+scope:
+  total_experiments_audited: 79
+  manifest_hash_check: true
+  sealed_test_integrity_check: true
+  bootstrap_samples: 1000
+  bootstrap_cluster: speaker_id
+  evaluation_split: dev_replication
+  champion_evaluated: Duodeviginti-Pareto (EXP-79)
+comparisons:
+  - Quindecim-Pareto (EXP-70)
+  - Undecim-Pareto (EXP-52)
+  - Hexad-Pareto (EXP-36)
+device: cpu
+tags:
+  - four_fifths_century_audit
+  - master_audit_receipt
+  - bootstrap_certification
+  - sealed_test_integrity_certified
+  - zero_leakage_enforced

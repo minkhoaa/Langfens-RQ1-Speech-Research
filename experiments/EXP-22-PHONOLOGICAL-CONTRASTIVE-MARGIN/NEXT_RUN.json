@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-23-COMPOSITE-UTILITY-SWEEP",
+  "hypothesis_id": "H18-global-pareto-frontier-optimization",
+  "method_id": "M23-global-pareto-sweeper",
+  "description": "Comprehensive Pareto frontier optimization sweep over the full hybrid model space (PSC-Net + SRAD-Net + Conformer + BiLSTM) to maximize weighted utility under strict false warning constraints",
+  "prerequisites_met": true,
+  "resource_lease": "cuda"
+}

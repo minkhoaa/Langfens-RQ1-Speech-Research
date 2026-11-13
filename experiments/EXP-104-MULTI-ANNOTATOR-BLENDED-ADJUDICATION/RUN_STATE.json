@@ -1,0 +1,33 @@
+{
+  "experiment_id": "EXP-104-MULTI-ANNOTATOR-BLENDED-ADJUDICATION",
+  "status": "COMPLETED",
+  "start_time": "2026-11-05T15:50:00Z",
+  "end_time": "2026-11-05T15:55:00Z",
+  "exit_code": 0,
+  "metrics": {
+    "dev_replication": {
+      "macro_f1": 0.5227140606554685,
+      "macro_ap": 0.6114480703411417,
+      "macro_precision": 0.6687961944410029,
+      "macro_recall": 0.47368408954673175,
+      "weighted_utility": 0.4623588423715023,
+      "overall_ece": 0.010950890626518914,
+      "false_warning_rate_per_utt": 0.9766666666666667,
+      "classes": {
+        "CORRECT": { "ap": 0.9725276178686006, "precision": 0.9059113828988306, "recall": 0.9759593157651411, "f1": 0.9396316697268124 },
+        "OMISSION": { "ap": 0.40907175474825574, "precision": 0.524390243902439, "recall": 0.16731517509727625, "f1": 0.2536873156342183 },
+        "SUBSTITUTION": { "ap": 0.45274483840656854, "precision": 0.5760869565217391, "recall": 0.2777777777777778, "f1": 0.37482319660537483 },
+        "INSERTION": { "ap": 0.3309086986208517, "precision": 0.3979591836734694, "recall": 0.4148936170212766, "f1": 0.40625 }
+      }
+    },
+    "dev_search": {
+      "macro_f1": 0.5239334654133725,
+      "macro_ap": 0.5678326362261257,
+      "macro_precision": 0.5924161897366763,
+      "macro_recall": 0.49253140560168734,
+      "weighted_utility": 0.4197583396178509,
+      "overall_ece": 0.023429476242679863,
+      "false_warning_rate_per_utt": 1.021702838063439
+    }
+  }
+}

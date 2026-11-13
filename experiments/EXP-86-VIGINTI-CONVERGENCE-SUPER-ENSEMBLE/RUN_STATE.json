@@ -1,0 +1,56 @@
+{
+  "run_id": "EXP-86-VIGINTI-CONVERGENCE-SUPER-ENSEMBLE",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "start_time": "2026-11-05T11:58:00Z",
+  "end_time": "2026-11-05T12:05:00Z",
+  "duration_seconds": 420.0,
+  "device": "cuda",
+  "models_fused": 21,
+  "pareto_optimal_weights": {
+    "target": [0.01, 0.01, 0.01, 0.02, 0.02, 0.03, 0.03, 0.04, 0.03, 0.04, 0.15, 0.15, 0.03, 0.10, 0.12, 0.03, 0.02, 0.05, 0.04, 0.03, 0.06],
+    "gap": [0.01, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.03, 0.07, 0.07, 0.30, 0.06, 0.06, 0.02, 0.02, 0.03, 0.10, 0.08, 0.03]
+  },
+  "operating_thresholds": {
+    "theta_subs": 0.52,
+    "theta_omis": 0.52,
+    "theta_ins": 0.60
+  },
+  "metrics": {
+    "dev_replication": {
+      "utility": 0.5078945999990736,
+      "macro_ap": 0.6357265164510887,
+      "macro_precision": 0.6418331225874746,
+      "macro_recall": 0.6208939985433022,
+      "macro_f1": 0.629219580455137,
+      "correct_ap": 0.975302813650992,
+      "omission_ap": 0.4715866457418639,
+      "omission_f1": 0.4772727272727273,
+      "omission_recall": 0.490272373540856,
+      "substitution_ap": 0.46029008996041026,
+      "substitution_f1": 0.4731934731934732,
+      "substitution_recall": 0.42557651991614254,
+      "substitution_precision": 0.5328083989501312,
+      "insertion_ap": 0.31662935128897934,
+      "insertion_f1": 0.34285714285714286,
+      "insertion_recall": 0.2553191489361702,
+      "insertion_precision": 0.5217391304347826,
+      "overall_ece": 0.02530164584721139,
+      "false_warning_rate_per_utt": 1.7433333333333334
+    },
+    "dev_search": {
+      "utility": 0.44828172703331504,
+      "macro_ap": 0.5791876711556462,
+      "macro_recall": 0.634580120775185,
+      "macro_f1": 0.571267393362007,
+      "omission_ap": 0.3139861749175791,
+      "substitution_ap": 0.44195284615656477,
+      "substitution_recall": 0.43665158371040724,
+      "substitution_f1": 0.4606205250596659,
+      "insertion_ap": 0.3065185845548414,
+      "false_warning_rate_per_utt": 2.0701168614357264
+    }
+  },
+  "gate_status": "LOCAL_REPRODUCED",
+  "hypothesis_verdict": "CONFIRMED_ALL_TIME_UTILITY_AND_MACRO_F1_PEAKS"
+}

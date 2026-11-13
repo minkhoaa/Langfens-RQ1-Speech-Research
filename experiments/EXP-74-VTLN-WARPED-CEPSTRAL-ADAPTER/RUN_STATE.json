@@ -1,0 +1,46 @@
+{
+  "run_id": "EXP-74-VTLN-WARPED-CEPSTRAL-ADAPTER",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "start_time": "2026-11-05T09:12:00Z",
+  "end_time": "2026-11-05T09:16:30Z",
+  "duration_seconds": 270.0,
+  "device": "cuda",
+  "epochs": 10,
+  "operating_thresholds": {
+    "theta_subs": 0.54,
+    "theta_omis": 0.54,
+    "theta_ins": 0.60
+  },
+  "metrics": {
+    "dev_replication": {
+      "utility": 0.4788231452952541,
+      "macro_ap": 0.597489861028675,
+      "macro_precision": 0.5962171938949443,
+      "macro_recall": 0.6351460837003221,
+      "macro_f1": 0.6139023180085557,
+      "correct_ap": 0.9725536144434062,
+      "omission_ap": 0.377388268217519,
+      "omission_f1": 0.43738977072310403,
+      "omission_recall": 0.48249027237354086,
+      "substitution_ap": 0.44252770042509987,
+      "substitution_f1": 0.4779375309866138,
+      "substitution_recall": 0.5052410901467506,
+      "insertion_ap": 0.2606477997259031,
+      "insertion_f1": 0.3583815028901734,
+      "insertion_recall": 0.32978723404255317,
+      "overall_ece": 0.030617884033426485,
+      "false_warning_rate_per_utt": 2.716666666666667
+    },
+    "dev_search": {
+      "utility": 0.4188197913296282,
+      "macro_ap": 0.5516139620712762,
+      "omission_ap": 0.2616314733585822,
+      "substitution_ap": 0.41456552027220883,
+      "insertion_ap": 0.24311713492026454,
+      "false_warning_rate_per_utt": 3.2437395659432386
+    }
+  },
+  "gate_status": "LOCAL_REPRODUCED",
+  "hypothesis_verdict": "CONFIRMED_VTLN_GAIN_OVER_EXP71"
+}

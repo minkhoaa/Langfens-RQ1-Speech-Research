@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-72-L1-STRATIFIED-DISCRIMINATIVE-CALIBRATOR",
+  "hypothesis_id": "H67-l1-stratified-calibration",
+  "method_id": "M72-l1-stratified-calibrator",
+  "objective": "Design and benchmark L1-stratified temperature scaling and adaptive threshold calibration across all 6 L1 cohorts to suppress dialect false alarms and target >0.6420 Macro AP",
+  "device": "cuda",
+  "prerequisites_met": true
+}

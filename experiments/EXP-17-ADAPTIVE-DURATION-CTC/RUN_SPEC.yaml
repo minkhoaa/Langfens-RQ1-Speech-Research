@@ -1,0 +1,21 @@
+run_id: "EXP-17-ADAPTIVE-DURATION-CTC"
+hypothesis_id: "H12-adaptive-duration-ctc-difference"
+method_id: "M17-adaptive-ctc-duration-model"
+experiment_type: "SPEAKING_RATE_ADAPTIVE_DURATION_NETWORK"
+operating_splits: ["DEV_SEARCH", "DEV_REPLICATION"]
+date: "2026-11-05"
+hardware:
+  device: "cuda (NVIDIA GeForce GTX 1650 4GB)"
+  vram_allocated_mb: 58.2
+inputs:
+  train_features: "data/derived/l2arctic/features/train_features.npz"
+  cal_features: "data/derived/l2arctic/features/dev_cal_features.npz"
+  search_features: "data/derived/l2arctic/features/dev_search_features.npz"
+  rep_features: "data/derived/l2arctic/features/dev_replication_features.npz"
+  target_dimension: 55
+hyperparameters:
+  adaptive_features: ["dur_ratio", "log_dur_ratio", "is_abbrev", "sil_contrast"]
+  epochs: 30
+  calibrated_theta_subs: 0.55
+  calibrated_theta_omis: 0.55
+  calibrated_theta_ins: 0.60

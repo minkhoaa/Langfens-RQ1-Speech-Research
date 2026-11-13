@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-71-CROSS-ATTENTION-SPECTRAL-RESIDUAL-NET",
+  "hypothesis_id": "H66-cross-attention-cepstral-fusion",
+  "method_id": "M71-cross-attention-cepstral-trainer",
+  "objective": "Couple 8-dimensional spectral cepstral residuals directly into dual-stream prompt cross-attention alongside 2.5ms micro-burst crest features to target >0.6250 standalone Macro AP and >0.4700 Substitution AP",
+  "device": "cuda",
+  "prerequisites_met": true
+}

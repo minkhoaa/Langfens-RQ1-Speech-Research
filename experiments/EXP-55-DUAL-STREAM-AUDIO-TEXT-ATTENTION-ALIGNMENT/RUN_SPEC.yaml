@@ -1,0 +1,49 @@
+run_id: "EXP-55-DUAL-STREAM-AUDIO-TEXT-ATTENTION-ALIGNMENT"
+hypothesis_id: "H50-dual-stream-cross-attention"
+method_id: "M55-dual-stream-aligner"
+experiment_type: "BIDIRECTIONAL_CROSS_ATTENTION"
+date: "2026-11-05"
+hardware:
+  device: "cpu"
+  cpu_model: "Intel Core i5-12450H (12 vCPUs)"
+  threads_used: 4
+architecture:
+  acoustic_stream_dims: 67
+  prompt_stream_dims: 42
+  cross_attention_heads: 4
+  cross_attention_dim: 128
+  alignment: "Bidirectional Multi-Head Cross-Attention (A->P and P->A)"
+  leakage_audit: "STRICT ZERO-LEAKAGE: Prompt stream derived strictly from canonical prompt text and CMUDict. Human realizations and gold labels completely isolated from input."
+results_summary:
+  dev_replication:
+    utility: 0.4928
+    macro_ap: 0.6159
+    macro_precision: 0.6231
+    macro_recall: 0.5912
+    macro_f1: 0.6026
+    omission_ap: 0.4427
+    omission_recall: 0.4669
+    omission_f1: 0.4528
+    substitution_ap: 0.4320
+    substitution_precision: 0.5090
+    substitution_f1: 0.4200
+    insertion_ap: 0.2451
+    insertion_precision: 0.4590
+    insertion_f1: 0.3613
+    correct_ap: 0.9730
+    correct_f1: 0.9349
+    overall_ece: 0.0140
+    fwr: 1.717
+  dev_search:
+    utility: 0.4304
+    macro_ap: 0.5708
+    omission_ap: 0.3142
+    substitution_ap: 0.4193
+records_broken:
+  - "ALL_TIME_CAMPAIGN_HIGH_WEIGHTED_UTILITY_0.4928"
+  - "ALL_TIME_CAMPAIGN_HIGH_STANDALONE_OMISSION_AP_0.4427"
+  - "ALL_TIME_CAMPAIGN_HIGH_STANDALONE_INSERTION_PRECISION_0.4590"
+  - "SOLIDLY_CERTIFIED_60_PERCENT_MACRO_F1_0.6026_AND_MACRO_AP_0.6159"
+evaluation:
+  protocol: "PROTOCOL_ALPHA_TARGET_MONOTONIC_V1"
+  status: "LOCAL_REPRODUCED"

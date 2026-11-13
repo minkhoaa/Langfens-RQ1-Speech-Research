@@ -1,0 +1,13 @@
+{
+  "next_run_id": "EXP-111-MULTI-STREAM-ACOUSTIC-ARTICULATORY-FUSION",
+  "hypothesis": "H106-multi-stream-fusion",
+  "method": "M111-multi-stream-trainer",
+  "target": "Train a Multi-Stream Acoustic-Articulatory Fusion Network (MSAF-Net) uniting continuous vocal tract area profiles (VTI), low-rank adapted acoustic representations (PEAR), and sequence-to-graph lattice decoding (DSGA) in a unified end-to-end architecture",
+  "resource_reservation": "GPU:0",
+  "prerequisites": [
+    "EXP-101-VOCAL-TRACT-AREA-FUNCTION-INVERSION",
+    "EXP-102-NON-NATIVE-SELF-SUPERVISED-ADAPTATION",
+    "EXP-103-DIFFERENTIABLE-GRAPH-PHONOLOGICAL-ALIGNER",
+    "EXP-110-PHASE-2-CONSOLIDATION-AND-PROGRESS-SYNTHESIS"
+  ]
+}

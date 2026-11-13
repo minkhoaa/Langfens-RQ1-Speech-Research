@@ -1,0 +1,18 @@
+run_id: "EXP-03-SSL-GOP"
+hypothesis_id: "H01-gop-acoustic-evidence"
+method_id: "M03-ssl-gop-verifier"
+experiment_type: "ACOUSTIC_SSL_GOP_ALIGNMENT"
+operating_split: "DEV_SEARCH"
+date: "2026-11-04"
+hardware:
+  device: "cuda (NVIDIA GeForce GTX 1650 4GB)"
+  vram_allocated_mb: 580.4
+inputs:
+  dev_manifest: "data/derived/l2arctic/manifests/dev_search.jsonl"
+  model_backbone: "charsiu/en_w2v2_fc_10ms"
+  tokenizer: "charsiu/tokenizer_en_cmu"
+  audio_used: true
+hyperparameters:
+  aligner: "monotonic_viterbi_silence_aware"
+  omission_decay_lambda: 0.50
+  insertion_threshold: 0.50

@@ -1,0 +1,38 @@
+run_id: "EXP-36-FINAL-HEXAD-PNC-SUPER-FUSION"
+hypothesis_id: "H31-septad-pareto-super-ensemble"
+method_id: "M36-septad-ensemble-sweeper"
+experiment_type: "7_MODEL_SEPTAD_SUPER_ENSEMBLE"
+date: "2026-11-05"
+hardware:
+  device: "cuda"
+  gpu_name: "NVIDIA GeForce GTX 1650"
+  vram_allocated_mb: 208
+models_fused:
+  model_1: "PSC-Net (EXP-22)"
+  model_2: "SRAD-Net (EXP-17)"
+  model_3: "NNA-Adapter (EXP-21)"
+  model_4: "Conformer (EXP-10)"
+  model_5: "JSAC-Net (EXP-24)"
+  model_6: "APED-Net (EXP-28)"
+  model_7: "PNC-Net (EXP-34)"
+optimal_weights:
+  target_mixture: [0.12, 0.15, 0.12, 0.12, 0.16, 0.16, 0.17]
+  gap_mixture: [0.08, 0.12, 0.12, 0.18, 0.12, 0.18, 0.20]
+operating_thresholds:
+  dev_cal_pareto_score: 3.0166
+  theta_subs: 0.55
+  theta_omis: 0.55
+  theta_ins: 0.50
+evaluation:
+  protocol: "PROTOCOL_ALPHA_TARGET_MONOTONIC_V1"
+  search_utility: 0.3810
+  rep_utility: 0.4303
+  rep_macro_ap: 0.5835
+  rep_macro_precision: 0.6320
+  rep_substitution_ap: 0.4041
+  rep_substitution_precision: 0.5364
+  rep_omission_ap: 0.3742
+  rep_insertion_precision: 0.4225
+  rep_insertion_f1: 0.3636
+  rep_false_warning_rate: 1.187
+  status: "LOCAL_REPRODUCED"

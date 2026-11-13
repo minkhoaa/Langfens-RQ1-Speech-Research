@@ -1,0 +1,10 @@
+{
+  "next_run_id": "EXP-102-NON-NATIVE-SELF-SUPERVISED-ADAPTATION",
+  "hypothesis": "H97-non-native-ssl-adaptation",
+  "method": "M102-ssl-lora-adapter-trainer",
+  "target": "Train Low-Rank Adaptation (LoRA) on WavLM/Charsiu acoustic representations using untranscribed non-native speech to resolve accent-induced feature collapse and elevate Macro AP past 0.6400",
+  "resource_reservation": "GPU:0",
+  "prerequisites": [
+    "EXP-101-VOCAL-TRACT-AREA-FUNCTION-INVERSION"
+  ]
+}

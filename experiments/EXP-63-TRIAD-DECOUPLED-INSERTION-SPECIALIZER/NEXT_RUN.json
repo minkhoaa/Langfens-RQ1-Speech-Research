@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-64-TREDECIM-GLOBAL-PARETO-ENSEMBLE",
+  "hypothesis_id": "H59-tredecim-super-ensemble",
+  "method_id": "M64-tredecim-ensemble-sweeper",
+  "description": "Continuous auto-research loop: 13-Model Tredecim Super-Ensemble uniting TDIS-Net (EXP-63 insertion champion) with Duodecim-Pareto (EXP-58) to break the 0.5000 Utility and 0.6400 Macro AP milestones",
+  "prerequisites_met": true,
+  "resource_lease": "cuda"
+}

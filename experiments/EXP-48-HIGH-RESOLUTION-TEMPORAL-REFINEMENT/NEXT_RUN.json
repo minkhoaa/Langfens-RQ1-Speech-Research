@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-49-ENDLESS-SEARCH-CONTRASTIVE-DYNAMIC-RECOVERY",
+  "hypothesis_id": "H44-contrastive-masked-recovery",
+  "method_id": "M49-contrastive-dynamic-trainer",
+  "description": "Continuous auto-research loop: Unified phonological contrastive margin with sub-frame 5ms micro-dynamics and dynamic token masking to drive Omission AP and Substitution AP past 0.4500",
+  "prerequisites_met": true,
+  "resource_lease": "cpu"
+}

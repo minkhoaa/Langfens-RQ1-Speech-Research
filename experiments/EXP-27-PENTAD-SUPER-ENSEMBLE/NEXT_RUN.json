@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-28-HYBRID-FRONTEND-FUSION",
+  "hypothesis_id": "H23-dual-frontend-hubert-wav2vec2",
+  "method_id": "M28-dual-frontend-model",
+  "description": "Continuous auto-research loop: Dual-frontend acoustic embedding fusion combining fine-grained phonetic frame posteriors with self-supervised semantic representations",
+  "prerequisites_met": true,
+  "resource_lease": "cuda"
+}

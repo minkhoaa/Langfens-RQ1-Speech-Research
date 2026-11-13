@@ -1,0 +1,36 @@
+experiment_id: EXP-87-PHONOLOGICAL-FEATURE-ATTENTION-ROUTING
+hypothesis_id: H82-articulatory-routing
+method_id: M87-articulatory-routing-trainer
+protocol: PROTOCOL_ALPHA_TARGET_MONOTONIC_V1
+split:
+  train: 1800
+  dev_search: 599
+  dev_cal: 300
+  dev_replication: 300
+  test_sealed: 600
+device: cuda
+model:
+  name: FAR-Net
+  in_acoustic_dim: 67
+  in_prompt_dim: 47
+  in_gap_dim: 13
+  cross_attention_routing_heads: 3
+  routing_categories:
+    - manner_attention (64 dims, 2 heads)
+    - place_attention (64 dims, 2 heads)
+    - voicing_attention (64 dims, 2 heads)
+  gated_moe_fusion: true
+  interlanguage_priors: true
+  triad_gap_categories: 3
+  epochs: 10
+  lr: 0.001
+calibration_split: dev_cal
+evaluation_splits:
+  - dev_search
+  - dev_replication
+tags:
+  - articulatory_feature_routing
+  - far_net
+  - gated_moe_cross_attention
+  - spe_distinctive_features
+  - zero_leakage_enforced

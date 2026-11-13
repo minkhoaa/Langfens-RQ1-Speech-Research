@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-67-QUATTUORDECIM-SUPER-ENSEMBLE-FUSION",
+  "hypothesis_id": "H62-quattuordecim-super-ensemble",
+  "method_id": "M67-quattuordecim-ensemble-sweeper",
+  "description": "Continuous auto-research loop: 14-Model Quattuordecim Super-Ensemble uniting P-ALDS-Net (EXP-65 phonotactic diffusion champion) into Tredecim-Pareto (EXP-64) to break 0.6400 Macro AP and 0.5050 Utility",
+  "prerequisites_met": true,
+  "resource_lease": "cpu"
+}

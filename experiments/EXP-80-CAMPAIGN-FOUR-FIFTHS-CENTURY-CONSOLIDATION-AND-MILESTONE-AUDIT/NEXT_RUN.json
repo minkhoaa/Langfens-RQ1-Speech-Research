@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-81-SUBFRAME-TEMPORAL-CONTRASTIVE-ALIGNER",
+  "hypothesis_id": "H76-subframe-contrastive-alignment",
+  "method_id": "M81-subframe-contrastive-trainer",
+  "objective": "Continuous monotonic subframe contrastive alignment optimizing plosive boundary sharpness and rapid flap transitions to target >0.6250 standalone Macro F1",
+  "device": "cuda",
+  "prerequisites_met": true
+}

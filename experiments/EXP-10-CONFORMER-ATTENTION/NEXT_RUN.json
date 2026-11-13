@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-11-ENSEMBLE-FUSION",
+  "hypothesis_id": "H07-hybrid-bilstm-conformer-fusion",
+  "method_id": "M11-hybrid-context-ensemble",
+  "description": "Optimal Bayesian Model Averaging fusing BiLSTM local recurrence with Conformer multi-head attention to break past 0.38 utility and push toward Milestone 60",
+  "prerequisites_met": true,
+  "resource_lease": "cuda"
+}

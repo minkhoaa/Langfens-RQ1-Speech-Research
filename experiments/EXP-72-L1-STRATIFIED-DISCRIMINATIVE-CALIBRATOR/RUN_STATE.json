@@ -1,0 +1,40 @@
+{
+  "run_id": "EXP-72-L1-STRATIFIED-DISCRIMINATIVE-CALIBRATOR",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "start_time": "2026-11-05T08:48:00Z",
+  "end_time": "2026-11-05T08:52:00Z",
+  "duration_seconds": 240.0,
+  "device": "cuda",
+  "base_model": "EXP-70-QUINDECIM-SUPER-ENSEMBLE-FUSION",
+  "metrics": {
+    "dev_replication": {
+      "utility": 0.49365631827537115,
+      "macro_ap": 0.6387658477941465,
+      "macro_precision": 0.6468703722710144,
+      "macro_recall": 0.5762024210536395,
+      "macro_f1": 0.6016181131422762,
+      "correct_ap": 0.9751085845629852,
+      "omission_ap": 0.4791553589436675,
+      "omission_f1": 0.4538152610441767,
+      "substitution_ap": 0.46203359987578674,
+      "substitution_f1": 0.4131578947368421,
+      "substitution_precision": 0.5547703180212014,
+      "insertion_ap": 0.3233351862894442,
+      "insertion_f1": 0.32592592592592595,
+      "insertion_precision": 0.5365853658536586,
+      "overall_ece": 0.034444384104349024,
+      "false_warning_rate_per_utt": 1.33
+    },
+    "dev_search": {
+      "utility": 0.4385362830427469,
+      "macro_ap": 0.581370617490307,
+      "omission_ap": 0.32754785550074483,
+      "substitution_ap": 0.4353193409516296,
+      "insertion_ap": 0.29324188376639243,
+      "false_warning_rate_per_utt": 1.5609348914858097
+    }
+  },
+  "gate_status": "LOCAL_REPRODUCED",
+  "hypothesis_verdict": "PARTIALLY_CONFIRMED_FOR_PRECISION_AND_FWR"
+}

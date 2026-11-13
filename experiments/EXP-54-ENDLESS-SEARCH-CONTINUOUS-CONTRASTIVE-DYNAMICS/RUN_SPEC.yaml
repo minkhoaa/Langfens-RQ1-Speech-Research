@@ -1,0 +1,41 @@
+run_id: "EXP-54-ENDLESS-SEARCH-CONTINUOUS-CONTRASTIVE-DYNAMICS"
+hypothesis_id: "H49-continuous-manifold-dynamics"
+method_id: "M54-continuous-manifold-trainer"
+experiment_type: "CONTINUOUS_MANIFOLD_DYNAMICS"
+date: "2026-11-05"
+hardware:
+  device: "cpu"
+  cpu_model: "Intel Core i5-12450H (12 vCPUs)"
+  threads_used: 4
+manifold_loss_weights:
+  lambda_smoothness: 0.10
+  lambda_boundary_margin: 0.10
+  margin_distance: 1.5
+results_summary:
+  dev_replication:
+    utility: 0.4676
+    macro_ap: 0.5947
+    macro_precision: 0.5839
+    macro_recall: 0.5866
+    macro_f1: 0.5792
+    omission_ap: 0.4375
+    omission_recall: 0.5292
+    omission_f1: 0.4666
+    substitution_ap: 0.3764
+    substitution_f1: 0.3436
+    insertion_ap: 0.2100
+    insertion_f1: 0.2874
+    correct_ap: 0.9703
+    correct_f1: 0.9274
+    overall_ece: 0.0255
+    fwr: 2.083
+  dev_search:
+    utility: 0.4175
+    macro_ap: 0.5318
+    omission_ap: 0.2663
+    omission_recall: 0.5981
+    substitution_ap: 0.3516
+scientific_verdict: "Omission recall reached an all-time record 52.92% on replication and 59.81% on search due to boundary margin loss, but uniform temporal smoothness slightly blunted diphthong substitution discrimination (HRTD-Net remains primary champion)."
+evaluation:
+  protocol: "PROTOCOL_ALPHA_TARGET_MONOTONIC_V1"
+  status: "LOCAL_REPRODUCED"

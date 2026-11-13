@@ -1,0 +1,35 @@
+{
+  "run_id": "EXP-26-ENDLESS-SEARCH-CONTRASTIVE-ADAPTER",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "started_at": "2026-11-05T03:20:00Z",
+  "completed_at": "2026-11-05T03:20:55Z",
+  "duration_seconds": 55.0,
+  "device": "cuda",
+  "dev_cal_pareto_score": 2.7015,
+  "optimal_thresholds": {
+    "theta_subs": 0.55,
+    "theta_omis": 0.55,
+    "theta_ins": 0.60
+  },
+  "metrics_summary": {
+    "dev_search": {
+      "utility": 0.3575,
+      "macro_ap": 0.5000,
+      "macro_f1": 0.5200,
+      "omission_ap": 0.1555,
+      "substitution_ap": 0.3675,
+      "insertion_ap": 0.2305
+    },
+    "dev_replication": {
+      "utility": 0.4033,
+      "macro_ap": 0.5503,
+      "macro_precision": 0.5967,
+      "macro_f1": 0.5494,
+      "omission_f1": 0.3722,
+      "substitution_ap": 0.3692,
+      "insertion_f1": 0.2674
+    }
+  },
+  "gate_status": "LOCAL_REPRODUCED"
+}

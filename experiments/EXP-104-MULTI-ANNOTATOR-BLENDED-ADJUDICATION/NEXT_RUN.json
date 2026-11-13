@@ -1,0 +1,11 @@
+{
+  "next_run_id": "EXP-105-CROSS-CORPUS-FULL-TRAINING-EXPANSION",
+  "hypothesis": "H100-cross-corpus-joint-training",
+  "method": "M105-joint-corpus-trainer",
+  "target": "Train a Joint Cross-Corpus Multi-Accent Network (JCCM-Net) expanding training with SpeechOcean762 adult/child L2 speech, evaluating zero-shot domain transfer and multi-corpus phonological representations",
+  "resource_reservation": "GPU:0",
+  "prerequisites": [
+    "EXP-94-ARTICULATORY-DISENTANGLED-AUTOENCODER",
+    "EXP-104-MULTI-ANNOTATOR-BLENDED-ADJUDICATION"
+  ]
+}

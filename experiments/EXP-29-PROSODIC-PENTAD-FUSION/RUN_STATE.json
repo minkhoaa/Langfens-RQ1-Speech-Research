@@ -1,0 +1,52 @@
+{
+  "run_id": "EXP-29-PROSODIC-PENTAD-FUSION",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "started_at": "2026-11-05T03:35:00Z",
+  "completed_at": "2026-11-05T03:36:10Z",
+  "duration_seconds": 70.0,
+  "device": "cuda",
+  "dev_cal_pareto_score": 3.0134,
+  "optimal_weights": {
+    "target": [0.15, 0.15, 0.15, 0.15, 0.20, 0.20],
+    "gap": [0.10, 0.15, 0.15, 0.25, 0.15, 0.20]
+  },
+  "optimal_thresholds": {
+    "theta_subs": 0.50,
+    "theta_omis": 0.55,
+    "theta_ins": 0.60
+  },
+  "metrics_summary": {
+    "dev_search": {
+      "utility": 0.3914,
+      "macro_ap": 0.5177,
+      "macro_precision": 0.5344,
+      "macro_f1": 0.5494,
+      "omission_ap": 0.1921,
+      "substitution_ap": 0.3811,
+      "substitution_f1": 0.4416,
+      "insertion_ap": 0.2721,
+      "insertion_f1": 0.3128
+    },
+    "dev_replication": {
+      "utility": 0.4321,
+      "macro_ap": 0.5810,
+      "macro_precision": 0.6193,
+      "macro_f1": 0.5801,
+      "omission_ap": 0.3694,
+      "substitution_ap": 0.4019,
+      "substitution_f1": 0.4441,
+      "insertion_ap": 0.2419,
+      "insertion_f1": 0.2639
+    }
+  },
+  "records_broken": [
+    "ALL_TIME_CAMPAIGN_HIGH_DEV_REPLICATION_UTILITY_0.4321",
+    "ALL_TIME_CAMPAIGN_HIGH_DEV_SEARCH_UTILITY_0.3914",
+    "ALL_TIME_CAMPAIGN_HIGH_MACRO_AP_0.5810",
+    "ALL_TIME_CAMPAIGN_HIGH_MACRO_F1_0.5801",
+    "ALL_TIME_CAMPAIGN_HIGH_SUBSTITUTION_AP_0.4019",
+    "ALL_TIME_CAMPAIGN_HIGH_REPLICATION_OMISSION_AP_0.3694"
+  ],
+  "gate_status": "LOCAL_REPRODUCED"
+}

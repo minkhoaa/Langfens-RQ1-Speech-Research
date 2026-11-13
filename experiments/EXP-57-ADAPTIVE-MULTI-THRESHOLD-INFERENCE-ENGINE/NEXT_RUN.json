@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-58-DUODECIM-SUPER-ENSEMBLE-FUSION",
+  "hypothesis_id": "H53-duodecim-super-ensemble",
+  "method_id": "M58-duodecim-ensemble-sweeper",
+  "description": "Continuous auto-research loop: 12-Model Duodecim Super-Ensemble uniting DSCA-Net (EXP-55) and HRTD-Net (EXP-48) into Undecim-Pareto (EXP-52) to break the 0.5000 Utility and 0.6300 Macro AP milestones",
+  "prerequisites_met": true,
+  "resource_lease": "cuda"
+}

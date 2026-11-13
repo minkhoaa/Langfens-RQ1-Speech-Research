@@ -1,0 +1,29 @@
+experiment_id: EXP-100-CENTURY-GRAND-CONSOLIDATION-AND-MANDATORY-SCIENTIFIC-REVIEW
+hypothesis_id: H95-century-grand-consolidation-and-audit
+method_id: M100-century-master-auditor
+protocol: PROTOCOL_ALPHA_TARGET_MONOTONIC_V1
+split:
+  train: 1800
+  dev_search: 599
+  dev_cal: 300
+  dev_replication: 300
+  test_sealed: 600
+device: cpu
+model:
+  name: Century Grand Master Auditor
+  scope: EXP-01 through EXP-99
+  bootstrap_samples: 1000
+  audited_dimensions:
+    - sealed_test_pristine_cryptographic_hash
+    - 99_directory_artifact_completeness
+    - raw_prediction_recomputation
+    - speaker_clustered_confidence_intervals
+    - failure_mechanisms_and_literature_critique
+calibration_split: dev_cal
+evaluation_splits:
+  - dev_replication
+tags:
+  - century_grand_master_audit
+  - exp_100_mandatory_review_checkpoint
+  - zero_leakage_certification
+  - reproducible_snapshot

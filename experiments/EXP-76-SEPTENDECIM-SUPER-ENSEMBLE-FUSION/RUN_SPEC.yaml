@@ -1,0 +1,39 @@
+experiment_id: EXP-76-SEPTENDECIM-SUPER-ENSEMBLE-FUSION
+hypothesis_id: H71-septendecim-super-ensemble
+method_id: M76-septendecim-ensemble-sweeper
+protocol: PROTOCOL_ALPHA_TARGET_MONOTONIC_V1
+split:
+  train: 1800
+  dev_search: 599
+  dev_cal: 300
+  dev_replication: 300
+  test_sealed: 600
+device: cuda
+model_roster:
+  - PSC-Net (EXP-22)
+  - SRAD-Net (EXP-17)
+  - NNA-Adapter (EXP-21)
+  - ConformerScorer (EXP-10)
+  - JSAC-Net (EXP-24)
+  - APED-Net (EXP-28)
+  - PNC-Net (EXP-34)
+  - HTC-Net (EXP-38)
+  - VTLN-HTC-Net (EXP-42)
+  - DMCT-Net (EXP-44)
+  - HRTD-Net (EXP-48)
+  - DSCA-Net (EXP-55)
+  - TDIS-Net (EXP-63)
+  - P-ALDS-Net (EXP-65)
+  - IPTM-Net (EXP-69)
+  - V-CASR-Net (EXP-74)
+  - DP-ALDS-Net (EXP-75)
+calibration_split: dev_cal
+evaluation_splits:
+  - dev_search
+  - dev_replication
+tags:
+  - 17_model_septendecim_super_ensemble
+  - convex_pareto_sweeper
+  - bayesian_mixture
+  - vtln_warped_diversity_fusion
+  - zero_leakage_enforced

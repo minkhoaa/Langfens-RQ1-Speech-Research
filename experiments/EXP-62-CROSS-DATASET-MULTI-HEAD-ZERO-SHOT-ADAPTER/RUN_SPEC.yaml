@@ -1,0 +1,41 @@
+run_id: "EXP-62-CROSS-DATASET-MULTI-HEAD-ZERO-SHOT-ADAPTER"
+hypothesis_id: "H57-multi-head-zero-shot-adapter"
+method_id: "M62-zero-shot-adapter"
+experiment_type: "CROSS_DATASET_VTLN_TRANSFER"
+date: "2026-11-05"
+hardware:
+  device: "cpu"
+  cpu_model: "Intel Core i5-12450H (12 vCPUs)"
+  threads_used: 4
+architecture:
+  acoustic_stream_dims: 70
+  prompt_stream_dims: 42
+  gap_dims: 13
+  vtln_warping: "Spectral centroid warping (alpha_vtln, C_rel, log_alpha relative to 1850 Hz)"
+  cross_attention: "Bidirectional Multi-Head Cross-Attention"
+results_summary:
+  dev_replication:
+    utility: 0.4662
+    macro_ap: 0.5978
+    macro_precision: 0.6149
+    macro_recall: 0.5670
+    macro_f1: 0.5881
+    omission_ap: 0.4139
+    omission_f1: 0.3763
+    substitution_ap: 0.4378
+    substitution_precision: 0.5105
+    substitution_f1: 0.4534
+    insertion_ap: 0.2525
+    insertion_precision: 0.4286
+    overall_ece: 0.0155
+    fwr: 1.747
+  speechocean762_transfer:
+    pearson_r: 0.2110
+    pearson_p_value: 7.72e-47
+    spearman_rho: 0.2637
+    error_ap: 0.1106
+    error_recall: 0.2423
+    error_f1: 0.1741
+evaluation:
+  protocol: "PROTOCOL_ALPHA_TARGET_MONOTONIC_V1"
+  status: "LOCAL_REPRODUCED"

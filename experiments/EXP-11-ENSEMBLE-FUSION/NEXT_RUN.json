@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-12-REPLICATION-DEV-REP",
+  "hypothesis_id": "H07-hybrid-bilstm-conformer-fusion",
+  "method_id": "M11-hybrid-context-ensemble",
+  "description": "Preregistered independent dev confirmation on held-out DEV_REPLICATION (300 utterances, unseen speakers TXHC and YKWK) with frozen operating policy",
+  "prerequisites_met": true,
+  "resource_lease": "cuda"
+}

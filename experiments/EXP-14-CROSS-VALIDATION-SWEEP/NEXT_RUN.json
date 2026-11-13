@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-15-STREAMING-EFFICIENCY-BENCHMARK",
+  "hypothesis_id": "H10-real-time-streaming-efficiency",
+  "method_id": "M15-streaming-inference-engine",
+  "description": "Real-time streaming latency, memory profiling, and CPU/GPU throughput benchmarking for local edge deployment",
+  "prerequisites_met": true,
+  "resource_lease": "cuda"
+}

@@ -1,0 +1,33 @@
+{
+  "experiment_id": "EXP-106-DUODEVIGINTI-PLUS-TWO-CONVERGENCE-SUPER-ENSEMBLE",
+  "status": "COMPLETED",
+  "start_time": "2026-11-05T16:10:00Z",
+  "end_time": "2026-11-05T16:15:00Z",
+  "exit_code": 0,
+  "metrics": {
+    "dev_replication": {
+      "macro_f1": 0.6168568969464605,
+      "macro_ap": 0.6347939065599099,
+      "macro_precision": 0.6447323167703171,
+      "macro_recall": 0.5968921983774121,
+      "weighted_utility": 0.5028030224446459,
+      "overall_ece": 0.03388779445574629,
+      "false_warning_rate_per_utt": 1.5866666666666667,
+      "classes": {
+        "CORRECT": { "ap": 0.9753161146691168, "precision": 0.9230079569651463, "recall": 0.951918631530282, "f1": 0.9372403982930299 },
+        "OMISSION": { "ap": 0.46792917789151567, "precision": 0.47107438016528924, "recall": 0.44357976653696496, "f1": 0.45691382765531063 },
+        "SUBSTITUTION": { "ap": 0.4611364271190968, "precision": 0.5401146131805158, "recall": 0.3951781970649895, "f1": 0.45641646489104115 },
+        "INSERTION": { "ap": 0.3199334651582899, "precision": 0.5344827586206896, "recall": 0.32978723404255317, "f1": 0.40789473684210525 }
+      }
+    },
+    "dev_search": {
+      "macro_f1": 0.5715001638057363,
+      "macro_ap": 0.5796379010851912,
+      "macro_precision": 0.5592385614705926,
+      "macro_recall": 0.6135271488597179,
+      "weighted_utility": 0.44300162243775315,
+      "overall_ece": 0.04362645209213981,
+      "false_warning_rate_per_utt": 1.8380634390651085
+    }
+  }
+}

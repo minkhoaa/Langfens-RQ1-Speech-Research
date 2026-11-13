@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-66-DYNAMIC-STREAMING-QUANTIZATION-BENCHMARK",
+  "hypothesis_id": "H61-streaming-quantization-benchmark",
+  "method_id": "M66-streaming-quantizer",
+  "description": "Continuous auto-research loop: Dynamic INT8 post-training quantization and CPU streaming latency benchmarking of DSCA-Net (EXP-55) and TDIS-Net (EXP-63) to deliver production edge packages",
+  "prerequisites_met": true,
+  "resource_lease": "cpu"
+}

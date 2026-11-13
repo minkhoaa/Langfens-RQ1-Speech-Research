@@ -1,0 +1,15 @@
+{
+  "next_run_id": "EXP-106-DUODEVIGINTI-PLUS-TWO-CONVERGENCE-SUPER-ENSEMBLE",
+  "hypothesis": "H101-extended-convergence-ensemble",
+  "method": "M106-extended-ensemble-sweeper",
+  "target": "Unite Phase 2 breakthrough specialists (VTI-Net physical inversion, PEAR-Net LoRA adapter, DSGA-Net graph aligner, SGAN-Net soft gold precision) with Viginti-Pareto into a 25-model supreme ensemble targeting >0.5100 Weighted Utility and >0.6300 Macro F1",
+  "resource_reservation": "CPU:1",
+  "prerequisites": [
+    "EXP-86-VIGINTI-CONVERGENCE-SUPER-ENSEMBLE",
+    "EXP-94-ARTICULATORY-DISENTANGLED-AUTOENCODER",
+    "EXP-101-VOCAL-TRACT-AREA-FUNCTION-INVERSION",
+    "EXP-102-NON-NATIVE-SELF-SUPERVISED-ADAPTATION",
+    "EXP-103-DIFFERENTIABLE-GRAPH-PHONOLOGICAL-ALIGNER",
+    "EXP-104-MULTI-ANNOTATOR-BLENDED-ADJUDICATION"
+  ]
+}

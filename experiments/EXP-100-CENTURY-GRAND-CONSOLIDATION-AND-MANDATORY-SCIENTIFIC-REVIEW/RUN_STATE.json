@@ -1,0 +1,19 @@
+{
+  "experiment_id": "EXP-100-CENTURY-GRAND-CONSOLIDATION-AND-MANDATORY-SCIENTIFIC-REVIEW",
+  "status": "COMPLETED",
+  "start_time": "2026-11-05T14:50:00Z",
+  "end_time": "2026-11-05T14:55:00Z",
+  "exit_code": 0,
+  "metrics": {
+    "dev_replication": {
+      "macro_f1": 0.6288,
+      "macro_ap": 0.6357,
+      "macro_precision": 0.6418,
+      "macro_recall": 0.6209,
+      "weighted_utility": 0.50789,
+      "overall_ece": 0.0253,
+      "audit_receipt_sha256": "2b2d747a9d76e73b421fabb38d8c1d39f9d8a1828e3c6a96a1189366bdcddde2",
+      "sealed_test_status": "PRISTINE_SEALED"
+    }
+  }
+}

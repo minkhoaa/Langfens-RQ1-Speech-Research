@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-33-COMPACT-QUANTIZED-EDGE-DEPLOYMENT",
+  "hypothesis_id": "H28-quantized-edge-efficiency",
+  "method_id": "M33-int8-quantization-profiler",
+  "description": "Continuous auto-research loop: Post-training dynamic int8 quantization, memory footprint reduction (<1MB), and ARM/CPU edge streaming profiling",
+  "prerequisites_met": true,
+  "resource_lease": "cpu"
+}

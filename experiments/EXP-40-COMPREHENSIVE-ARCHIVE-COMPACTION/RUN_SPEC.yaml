@@ -1,0 +1,21 @@
+run_id: "EXP-40-COMPREHENSIVE-ARCHIVE-COMPACTION"
+hypothesis_id: "H35-open-science-reproducible-archive"
+method_id: "M40-archive-compactor"
+experiment_type: "40_EXPERIMENT_ARCHIVE_COMPACTION_AND_REPRODUCIBILITY"
+date: "2026-11-05"
+hardware:
+  device: "cpu"
+  vram_allocated_mb: 0
+inputs:
+  total_audited_experiments: 39
+  sealed_test_manifest: "data/derived/l2arctic/manifests/test_sealed.jsonl"
+  reproduction_harness: "tools/reproduce_champions.py"
+  test_suite: "evaluation/tests/"
+evaluation:
+  protocol: "PROTOCOL_ALPHA_TARGET_MONOTONIC_V1"
+  experiments_verified: 39
+  reproduction_checks_passed: 12
+  all_hashes_present: true
+  sealed_test_intact: true
+  unit_tests_passed: true
+  status: "ARCHIVE_CERTIFIED"

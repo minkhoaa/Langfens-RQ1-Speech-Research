@@ -1,0 +1,10 @@
+{
+  "next_run_id": "EXP-110-PHASE-2-CONSOLIDATION-AND-PROGRESS-SYNTHESIS",
+  "hypothesis": "H105-phase2-consolidation",
+  "method": "M110-phase2-consolidator",
+  "target": "Execute Phase 2 master consolidation audit across EXP-101 to EXP-109: verify sealed test integrity, recompute all Phase 2 metrics from raw predictions, execute 1,000-sample clustered bootstrap certification of PCR-25 and ADAE-Net, and compile Phase 2 monograph receipt",
+  "resource_reservation": "CPU:2",
+  "prerequisites": [
+    "EXP-101-VOCAL-TRACT-AREA-FUNCTION-INVERSION" to "EXP-109-EPENTHESIS-CODA-CLUSTERING-SPECIALIZER"
+  ]
+}

@@ -1,0 +1,23 @@
+run_id: "EXP-16-SUPER-ENSEMBLE-HMADN-HSAME"
+hypothesis_id: "H11-unified-multi-task-ensemble"
+method_id: "M16-unified-super-ensemble"
+experiment_type: "TRI_MODEL_SUPER_ENSEMBLE"
+operating_splits: ["DEV_SEARCH", "DEV_REPLICATION"]
+date: "2026-11-05"
+hardware:
+  device: "cuda (NVIDIA GeForce GTX 1650 4GB)"
+  vram_allocated_mb: 84.5
+inputs:
+  train_features: "data/derived/l2arctic/features/train_features.npz"
+  cal_features: "data/derived/l2arctic/features/dev_cal_features.npz"
+  search_features: "data/derived/l2arctic/features/dev_search_features.npz"
+  rep_features: "data/derived/l2arctic/features/dev_replication_features.npz"
+  model_lstm: "experiments/EXP-08-PHONOTACTIC-CONTEXT/CHECKPOINTS/bilstm_context_model.pt"
+  model_conformer: "experiments/EXP-10-CONFORMER-ATTENTION/CHECKPOINTS/conformer_phonetic_scorer.pt"
+  model_articulatory: "experiments/EXP-13-ARTICULATORY-DECOMPOSITION/CHECKPOINTS/hierarchical_articulatory_model.pt"
+hyperparameters:
+  target_weights: [0.40, 0.30, 0.30]
+  gap_weights: [0.50, 0.25, 0.25]
+  theta_subs: 0.55
+  theta_omis: 0.50
+  theta_ins: 0.55

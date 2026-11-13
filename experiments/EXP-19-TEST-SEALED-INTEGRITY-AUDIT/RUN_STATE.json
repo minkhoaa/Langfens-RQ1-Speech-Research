@@ -1,0 +1,11 @@
+{
+  "run_id": "EXP-19-TEST-SEALED-INTEGRITY-AUDIT",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "started_at": "2026-11-05T02:05:00Z",
+  "completed_at": "2026-11-05T02:05:10Z",
+  "duration_seconds": 10.0,
+  "sealed_pristine": true,
+  "zero_leakage_verified": true,
+  "gate_status": "AUDIT_CERTIFIED"
+}

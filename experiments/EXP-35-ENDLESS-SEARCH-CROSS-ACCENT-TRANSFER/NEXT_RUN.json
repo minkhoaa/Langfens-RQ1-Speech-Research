@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-36-FINAL-HEXAD-PNC-SUPER-FUSION",
+  "hypothesis_id": "H31-septad-pareto-super-ensemble",
+  "method_id": "M36-septad-ensemble-sweeper",
+  "description": "Continuous auto-research loop: Septad Super-Ensemble uniting Hexad-Pareto (EXP-29) with PNC-Net lexical phonotactics (EXP-34) to break the 60% Macro F1 milestone across the board",
+  "prerequisites_met": true,
+  "resource_lease": "cuda"
+}

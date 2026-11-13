@@ -1,0 +1,22 @@
+run_id: "EXP-32-SELF-SUPERVISED-ROBUSTNESS-STRESS"
+hypothesis_id: "H27-environmental-noise-robustness"
+method_id: "M32-acoustic-noise-stress-tester"
+experiment_type: "ACOUSTIC_NOISE_SNR_STRESS_TESTING"
+date: "2026-11-05"
+hardware:
+  device: "cuda"
+  gpu_name: "NVIDIA GeForce GTX 1650"
+  vram_allocated_mb: 202
+inputs:
+  champion_model: "Hexad-Pareto (EXP-29)"
+  snr_regimes_evaluated: ["inf", 20.0, 10.0, 0.0]
+  eval_cohort: "DEV_REPLICATION (300 utts)"
+evaluation:
+  protocol: "PROTOCOL_ALPHA_TARGET_MONOTONIC_V1"
+  clean_utility: 0.4321
+  snr_20db_utility: 0.4308
+  snr_10db_utility: 0.4138
+  snr_0db_utility: 0.3242
+  utility_retention_10db: 0.9576
+  precision_resilience: 0.6177
+  status: "ROBUST_CONFIRMED"

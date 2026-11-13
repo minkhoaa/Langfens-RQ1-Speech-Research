@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-25-REPRODUCIBLE-RELEASE-BUNDLE",
+  "hypothesis_id": "H20-reproducibility-artifact-verification",
+  "method_id": "M25-release-bundle-generator",
+  "description": "Packaging complete reproducible open-science artifact bundle, automated test suite receipt, and publication-ready benchmarking ledger",
+  "prerequisites_met": true,
+  "resource_lease": "cpu"
+}

@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-46-CONTINUOUS-ACCENT-ROBUSTNESS-STRESS",
+  "hypothesis_id": "H41-stress-transfer-synthesis",
+  "method_id": "M46-stress-transfer-synthesizer",
+  "description": "Continuous auto-research loop: High-stress cross-speaker acoustic jitter and perturbation analysis across the top 3 champion architectures (Decimal-Pareto, DMCT-Net, HTC-Net)",
+  "prerequisites_met": true,
+  "resource_lease": "cuda"
+}

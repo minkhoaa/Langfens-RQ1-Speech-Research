@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-68-MULTI-RESOLUTION-TEMPORAL-PYRAMID-NET",
+  "hypothesis_id": "H63-temporal-pyramid-resolution",
+  "method_id": "M68-temporal-pyramid-trainer",
+  "description": "Continuous auto-research loop: Multi-resolution temporal pyramid network combining 2.5ms, 5ms, 10ms, and 20ms multi-scale acoustic windows to push Omission AP past 0.4900 and standalone Utility past 0.5000",
+  "prerequisites_met": true,
+  "resource_lease": "cpu"
+}

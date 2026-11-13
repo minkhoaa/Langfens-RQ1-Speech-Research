@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-55-DUAL-STREAM-AUDIO-TEXT-ATTENTION-ALIGNMENT",
+  "hypothesis_id": "H50-dual-stream-cross-attention",
+  "method_id": "M55-dual-stream-aligner",
+  "description": "Continuous auto-research loop: Dual-stream cross-attention aligning continuous 5ms acoustic speech frames directly with text prompt phonetic embeddings to eliminate omission false alarms while preserving substitution precision",
+  "prerequisites_met": true,
+  "resource_lease": "cpu"
+}

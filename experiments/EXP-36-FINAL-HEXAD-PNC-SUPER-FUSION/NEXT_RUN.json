@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-37-FINAL-SYNTHESIS-MONOGRAPH",
+  "hypothesis_id": "H32-monograph-scientific-synthesis",
+  "method_id": "M37-monograph-compiler",
+  "description": "Continuous auto-research loop: Publication-ready scientific monograph compiling all 36 completed experiments, theoretical proofs, ablation trees, and open-science reproducible checkpoints",
+  "prerequisites_met": true,
+  "resource_lease": "cpu"
+}

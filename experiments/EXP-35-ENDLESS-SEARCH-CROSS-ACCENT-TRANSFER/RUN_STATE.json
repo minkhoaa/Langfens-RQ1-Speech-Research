@@ -1,0 +1,25 @@
+{
+  "run_id": "EXP-35-ENDLESS-SEARCH-CROSS-ACCENT-TRANSFER",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "started_at": "2026-11-05T04:05:00Z",
+  "completed_at": "2026-11-05T04:06:20Z",
+  "duration_seconds": 80.0,
+  "device": "cuda",
+  "l1_cohort_results": {
+    "Arabic": { "utility": 0.3336, "macro_ap": 0.4285, "macro_precision": 0.4160, "macro_f1": 0.4330, "omis_f1": 0.1400 },
+    "Chinese": { "utility": 0.4162, "macro_ap": 0.5528, "macro_precision": 0.5893, "macro_f1": 0.5696, "omis_f1": 0.3121 },
+    "Spanish": { "utility": 0.4223, "macro_ap": 0.5543, "macro_precision": 0.5813, "macro_f1": 0.5643, "omis_f1": 0.3069 },
+    "Hindi": { "utility": 0.3803, "macro_ap": 0.5362, "macro_precision": 0.5476, "macro_f1": 0.5546, "omis_f1": 0.3411 },
+    "Korean": { "utility": 0.4464, "macro_ap": 0.5941, "macro_precision": 0.6226, "macro_f1": 0.6114, "omis_f1": 0.3546 },
+    "Vietnamese": { "utility": 0.5762, "macro_ap": 0.7578, "macro_precision": 0.7587, "macro_f1": 0.6741, "omis_f1": 0.6568 }
+  },
+  "summary": {
+    "mean_utility": 0.4292,
+    "std_utility": 0.0749,
+    "mean_macro_f1": 0.5678,
+    "std_macro_f1": 0.0725,
+    "l1_invariance_satisfied": true
+  },
+  "gate_status": "LOCAL_REPRODUCED"
+}

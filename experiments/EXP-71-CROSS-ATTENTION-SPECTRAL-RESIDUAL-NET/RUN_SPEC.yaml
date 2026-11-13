@@ -1,0 +1,33 @@
+experiment_id: EXP-71-CROSS-ATTENTION-SPECTRAL-RESIDUAL-NET
+hypothesis_id: H66-cross-attention-cepstral-fusion
+method_id: M71-cross-attention-cepstral-trainer
+protocol: PROTOCOL_ALPHA_TARGET_MONOTONIC_V1
+split:
+  train: 1800
+  dev_search: 599
+  dev_cal: 300
+  dev_replication: 300
+  test_sealed: 600
+device: cuda
+model:
+  name: CASR-Net
+  in_acoustic_dim: 75
+  in_prompt_dim: 47
+  in_gap_dim: 13
+  cross_attention_heads: 4
+  proj_dim: 128
+  lstm_hidden: 96
+  triad_gap_categories: 3
+  epochs: 10
+  lr: 0.001
+  loss: multi_task_class_weighted_ce_bce
+calibration_split: dev_cal
+evaluation_splits:
+  - dev_search
+  - dev_replication
+tags:
+  - cross_attention_spectral_residual_net
+  - cepstral_residuals_delta_cep
+  - interlanguage_priors_pi_p
+  - triad_decoupled_gap_gating
+  - zero_leakage_enforced

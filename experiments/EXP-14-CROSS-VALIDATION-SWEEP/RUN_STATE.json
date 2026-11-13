@@ -1,0 +1,13 @@
+{
+  "run_id": "EXP-14-CROSS-VALIDATION-SWEEP",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "started_at": "2026-11-05T01:10:00Z",
+  "completed_at": "2026-11-05T01:10:30Z",
+  "duration_seconds": 30.0,
+  "mean_macro_f1": 0.5408,
+  "std_macro_f1": 0.0716,
+  "l1_invariance_satisfied": true,
+  "highest_subgroup_f1": 0.6634,
+  "gate_status": "LOCAL_REPRODUCED"
+}

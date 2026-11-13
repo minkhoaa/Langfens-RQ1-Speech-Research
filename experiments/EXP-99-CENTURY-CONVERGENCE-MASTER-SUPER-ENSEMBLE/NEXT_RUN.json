@@ -1,0 +1,10 @@
+{
+  "next_run_id": "EXP-100-CENTURY-GRAND-CONSOLIDATION-AND-MANDATORY-SCIENTIFIC-REVIEW",
+  "hypothesis": "H95-century-grand-consolidation-and-audit",
+  "method": "M100-century-master-auditor",
+  "target": "Execute Mandatory Scientific Review Checkpoint at EXP-100: freeze cryptographic snapshot of all 100 experiments, independently recompute all champion metrics from raw predictions, audit data leakage and speaker independence, produce comparative leaderboards, analyze failure mechanisms, critique literature, and compile SCIENTIFIC_REVIEW_EXP100.md",
+  "resource_reservation": "CPU:2",
+  "prerequisites": [
+    "EXP-01-PRIOR" to "EXP-99-CENTURY-CONVERGENCE-MASTER-SUPER-ENSEMBLE"
+  ]
+}

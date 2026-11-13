@@ -1,0 +1,14 @@
+{
+  "run_id": "EXP-18-MULTI-SEED-CERTIFICATION",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "started_at": "2026-11-05T01:55:00Z",
+  "completed_at": "2026-11-05T01:57:30Z",
+  "duration_seconds": 150.0,
+  "mean_macro_precision": 0.6201,
+  "std_macro_precision": 0.0076,
+  "mean_macro_f1": 0.5619,
+  "std_macro_f1": 0.0032,
+  "mean_utility": 0.4159,
+  "certification_status": "STATISTICALLY_CONFIRMED"
+}

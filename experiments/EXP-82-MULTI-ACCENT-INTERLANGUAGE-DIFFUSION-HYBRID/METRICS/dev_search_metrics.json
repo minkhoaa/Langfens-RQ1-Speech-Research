@@ -1,0 +1,68 @@
+{
+  "counts": {
+    "total_utterances": 599,
+    "total_target_phones": 19755,
+    "total_gaps": 20354,
+    "false_omissions": 494,
+    "false_substitutions": 1617,
+    "false_insertions": 96,
+    "total_false_warnings": 2207
+  },
+  "classes": {
+    "CORRECT": {
+      "ap": 0.9792855576976933,
+      "precision": 0.9513255631378706,
+      "recall": 0.8860951738103273,
+      "f1": 0.9175524943938026
+    },
+    "OMISSION": {
+      "ap": 0.27625800288842367,
+      "precision": 0.18883415435139572,
+      "recall": 0.5502392344497608,
+      "f1": 0.28117359413202936
+    },
+    "SUBSTITUTION": {
+      "ap": 0.41164741830680995,
+      "precision": 0.3749516814843448,
+      "recall": 0.5486425339366516,
+      "f1": 0.4454649827784156
+    },
+    "INSERTION": {
+      "ap": 0.2536193272907711,
+      "precision": 0.28888888888888886,
+      "recall": 0.312,
+      "f1": 0.3
+    }
+  },
+  "macro": {
+    "precision": 0.5050371329912037,
+    "recall": 0.6616589807322466,
+    "f1": 0.5480636904347492,
+    "ap": 0.5557303262976423
+  },
+  "diagnostics": {
+    "coverage": 1.0,
+    "target_ece": 0.035130086621885714,
+    "gap_ece": 0.012249600312896344,
+    "overall_ece": 0.02368984346739103,
+    "false_warning_rate_per_utt": 3.684474123539232
+  },
+  "utility": {
+    "score": 0.4297001292790395,
+    "components": {
+      "omission_ap": 0.27625800288842367,
+      "omission_f1": 0.28117359413202936,
+      "substitution_ap_f1": 0.4285562005426128,
+      "insertion_ap_f1": 0.2768096636453855,
+      "correct_ap_f1": 0.9484190260457479,
+      "macro_balance": 0.5728352922689253,
+      "coverage_risk": 0.0,
+      "calibration": 0.8815507826630449
+    }
+  },
+  "gates": {
+    "milestone_60": false,
+    "outstanding_80": false,
+    "status": "EXPLORATORY"
+  }
+}

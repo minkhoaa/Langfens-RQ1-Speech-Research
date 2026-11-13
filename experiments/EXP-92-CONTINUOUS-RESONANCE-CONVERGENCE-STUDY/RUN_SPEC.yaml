@@ -1,0 +1,34 @@
+experiment_id: EXP-92-CONTINUOUS-RESONANCE-CONVERGENCE-STUDY
+hypothesis_id: H87-continuous-resonance-tracking
+method_id: M92-resonance-convergence-evaluator
+protocol: PROTOCOL_ALPHA_TARGET_MONOTONIC_V1
+split:
+  train: 1800
+  dev_search: 599
+  dev_cal: 300
+  dev_replication: 300
+  test_sealed: 600
+device: cuda
+model:
+  name: FRTE-Net
+  in_acoustic_dim: 73
+  in_prompt_dim: 47
+  in_gap_dim: 13
+  cross_attention_heads: 4
+  proj_dim: 128
+  lstm_hidden: 96
+  formant_resonance_features: 6
+  interlanguage_priors: true
+  triad_gap_categories: 3
+  epochs: 10
+  lr: 0.001
+calibration_split: dev_cal
+evaluation_splits:
+  - dev_search
+  - dev_replication
+tags:
+  - continuous_formant_resonance_dynamics
+  - frte_net
+  - lpc_formants_f1_f3
+  - vowel_substitution_disambiguation
+  - zero_leakage_enforced

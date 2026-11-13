@@ -1,0 +1,11 @@
+{
+  "next_run_id": "EXP-97-MULTI-SCALE-TEMPORAL-RESIDUAL-CASCADE",
+  "hypothesis": "H92-temporal-residual-cascade",
+  "method": "M97-temporal-cascade-trainer",
+  "target": "Train a Multi-Scale Temporal Residual Cascade Network (MTRC-Net) decomposing acoustic dynamics across 2.5ms, 5ms, 10ms, 20ms, and 40ms residual streams, targeting further gains toward EXP-100",
+  "resource_reservation": "GPU:0",
+  "prerequisites": [
+    "EXP-94-ARTICULATORY-DISENTANGLED-AUTOENCODER",
+    "EXP-96-PROGRESSIVE-CONFIDENCE-DYNAMIC-QUANTIZER"
+  ]
+}

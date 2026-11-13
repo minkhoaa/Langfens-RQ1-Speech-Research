@@ -1,0 +1,11 @@
+{
+  "next_run_id": "EXP-107-PROGRESSIVE-CASCADE-VIGINTI-QUINTUM-ROUTER",
+  "hypothesis": "H102-progressive-cascade-viginti-quintum",
+  "method": "M107-progressive-cascade-viginti-quintum-router",
+  "target": "Deploy a progressive confidence-cascaded router on the 25-model Viginti-Quintum super-ensemble, targeting >85% early exit rate and 3.5x CPU speedup while preserving full utility >0.5020",
+  "resource_reservation": "CPU:1",
+  "prerequisites": [
+    "EXP-89-PROGRESSIVE-CASCADE-VIGINTI-ROUTER",
+    "EXP-106-DUODEVIGINTI-PLUS-TWO-CONVERGENCE-SUPER-ENSEMBLE"
+  ]
+}

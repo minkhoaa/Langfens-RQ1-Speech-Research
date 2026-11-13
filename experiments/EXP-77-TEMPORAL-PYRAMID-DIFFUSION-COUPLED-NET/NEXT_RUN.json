@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-78-SPEECHOCEAN-ADAPTIVE-PROTOSWEEP",
+  "hypothesis_id": "H73-speechocean-adaptive-cross-corpus",
+  "method_id": "M78-speechocean-adaptive-evaluator",
+  "objective": "Zero-shot domain transfer benchmark of TPD-Net and Septendecim-Pareto on 4,536 phonemes of SpeechOcean762 to evaluate cross-corpus robustness under severe adult-to-child domain shift",
+  "device": "cuda",
+  "prerequisites_met": true
+}

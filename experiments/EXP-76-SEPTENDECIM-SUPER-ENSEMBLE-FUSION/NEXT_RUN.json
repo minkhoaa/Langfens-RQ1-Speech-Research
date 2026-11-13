@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-77-TEMPORAL-PYRAMID-DIFFUSION-COUPLED-NET",
+  "hypothesis_id": "H72-temporal-pyramid-diffusion",
+  "method_id": "M77-pyramid-diffusion-trainer",
+  "objective": "Couple 4-level acoustic temporal pyramid features (2.5ms to 20ms) directly into latent score-matching diffusion to target <0.0075 ECE and >0.4600 Substitution AP",
+  "device": "cuda",
+  "prerequisites_met": true
+}

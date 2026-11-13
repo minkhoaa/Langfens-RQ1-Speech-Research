@@ -1,0 +1,27 @@
+experiment_id: EXP-96-PROGRESSIVE-CONFIDENCE-DYNAMIC-QUANTIZER
+hypothesis_id: H91-progressive-dynamic-quantization
+method_id: M96-progressive-quantizer-profiler
+protocol: PROTOCOL_ALPHA_TARGET_MONOTONIC_V1
+split:
+  train: 1800
+  dev_search: 599
+  dev_cal: 300
+  dev_replication: 300
+  test_sealed: 600
+device: cpu (4 threads)
+model:
+  name: INT8-ADAE-Net
+  base_fp32_model: ADAE-Net (EXP-94)
+  quantization_scheme: PyTorch Dynamic INT8 (torch.qint8)
+  quantized_layers:
+    - nn.Linear
+    - nn.LSTM
+calibration_split: dev_cal
+evaluation_splits:
+  - dev_search
+  - dev_replication
+tags:
+  - dynamic_int8_quantization
+  - edge_streaming_profiler
+  - sub_5ms_cpu_latency
+  - zero_leakage_enforced

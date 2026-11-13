@@ -1,0 +1,43 @@
+{
+  "run_id": "EXP-57-ADAPTIVE-MULTI-THRESHOLD-INFERENCE-ENGINE",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "started_at": "2026-11-05T06:32:00Z",
+  "completed_at": "2026-11-05T06:34:10Z",
+  "duration_seconds": 130.0,
+  "device": "cpu",
+  "adaptive_params": {
+    "delta_o_stop": 0.06,
+    "delta_o_vowel": -0.04,
+    "delta_s_vowel": -0.02,
+    "alpha_dur": 0.06,
+    "beta_entropy": 0.03,
+    "gamma_gap": 0.0,
+    "th_s_base": 0.50,
+    "th_o_base": 0.52,
+    "th_i_base": 0.55
+  },
+  "metrics_summary": {
+    "undecim_pareto_amt": {
+      "utility": 0.4758,
+      "macro_ap": 0.6244,
+      "macro_precision": 0.6359,
+      "macro_f1": 0.6060,
+      "omission_ap": 0.4503,
+      "substitution_ap": 0.4481,
+      "substitution_precision": 0.5178,
+      "fwr": 1.720
+    },
+    "dsca_net_amt": {
+      "utility": 0.4919,
+      "macro_ap": 0.6159,
+      "macro_f1": 0.6007,
+      "fwr": 1.650
+    }
+  },
+  "scientific_findings": [
+    "ADAPTIVE_FALSE_ALARM_SUPPRESSION: Conditioned threshold offsets (+0.06 on stops) successfully suppressed false omission alarms in unreleased plosive closures, lowering FWR to 1.65 - 1.72.",
+    "AP_INVARIANCE: Because AUPRC integrates across all possible thresholds, slot-level threshold shifts optimize the operating point precision/recall balance without altering the underlying probability geometry."
+  ],
+  "gate_status": "LOCAL_REPRODUCED"
+}

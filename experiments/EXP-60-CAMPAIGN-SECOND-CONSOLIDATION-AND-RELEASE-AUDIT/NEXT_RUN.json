@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-61-ULTRA-HIGH-RESOLUTION-CEPSTRAL-RESIDUAL-NET",
+  "hypothesis_id": "H56-cepstral-residual-dynamics",
+  "method_id": "M61-cepstral-residual-trainer",
+  "description": "Continuous auto-research loop: High-order spectral cepstral residual modeling combining 5ms temporal dynamics with dual-stream cross-attention to push Substitution AP past 0.4700",
+  "prerequisites_met": true,
+  "resource_lease": "cuda"
+}

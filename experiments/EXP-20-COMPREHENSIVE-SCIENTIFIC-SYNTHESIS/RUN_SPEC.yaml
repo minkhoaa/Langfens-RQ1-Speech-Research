@@ -1,0 +1,16 @@
+run_id: "EXP-20-COMPREHENSIVE-SCIENTIFIC-SYNTHESIS"
+hypothesis_id: "H15-scientific-synthesis"
+method_id: "M20-scientific-synthesizer"
+experiment_type: "COMPREHENSIVE_SCIENTIFIC_SYNTHESIS"
+date: "2026-11-05"
+hardware:
+  device: "cpu"
+  vram_allocated_mb: 0
+inputs:
+  audited_experiments: 19
+  scorecard: "reports/SCORECARD.md"
+  pareto_frontier: "reports/PARETO_FRONTIER.md"
+  confirmed_methods: "reports/CONFIRMED_METHODS.md"
+  failures_ledger: "reports/RESEARCH_FAILURES.md"
+hyperparameters:
+  synthesis_scope: "all_experiments_and_ablation_matrix"

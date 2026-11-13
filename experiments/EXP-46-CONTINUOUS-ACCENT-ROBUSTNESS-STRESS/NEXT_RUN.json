@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-47-EDGE-STREAMING-DEPLOYMENT-PACKAGE",
+  "hypothesis_id": "H42-quantized-streaming-runtime",
+  "method_id": "M47-edge-streaming-packager",
+  "description": "Continuous auto-research loop: End-to-end edge deployment packaging uniting INT8 dynamic quantization with DMCT-Net and APED-Net for sub-10ms CPU inference",
+  "prerequisites_met": true,
+  "resource_lease": "cpu"
+}

@@ -1,0 +1,13 @@
+{
+  "run_id": "EXP-15-STREAMING-EFFICIENCY-BENCHMARK",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "started_at": "2026-11-05T01:25:00Z",
+  "completed_at": "2026-11-05T01:25:20Z",
+  "duration_seconds": 20.0,
+  "gpu_rtf": 0.00063,
+  "cpu_rtf": 0.00060,
+  "p95_latency_ms": 1.28,
+  "peak_vram_mb": 44.3,
+  "gate_status": "PRODUCTION_FEASIBLE"
+}

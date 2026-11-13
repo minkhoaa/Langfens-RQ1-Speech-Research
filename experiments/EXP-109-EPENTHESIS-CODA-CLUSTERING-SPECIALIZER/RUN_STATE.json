@@ -1,0 +1,33 @@
+{
+  "experiment_id": "EXP-109-EPENTHESIS-CODA-CLUSTERING-SPECIALIZER",
+  "status": "COMPLETED",
+  "start_time": "2026-11-05T16:55:00Z",
+  "end_time": "2026-11-05T17:00:00Z",
+  "exit_code": 0,
+  "metrics": {
+    "dev_replication": {
+      "macro_f1": 0.607047789097008,
+      "macro_ap": 0.6079436266646987,
+      "macro_precision": 0.5770610241182365,
+      "macro_recall": 0.6497411174453619,
+      "weighted_utility": 0.43716493240990906,
+      "overall_ece": 0.07028496708139963,
+      "false_warning_rate_per_utt": 3.256666666666667,
+      "classes": {
+        "CORRECT": { "ap": 0.9735028683599937, "precision": 0.9387878787878788, "recall": 0.8951687471104947, "f1": 0.9164595905809964 },
+        "OMISSION": { "ap": 0.4096832262561661, "precision": 0.3812316715542522, "recall": 0.5058365758754864, "f1": 0.43478260869565216 },
+        "SUBSTITUTION": { "ap": 0.44064478537793633, "precision": 0.4111635220125786, "recall": 0.5482180293501048, "f1": 0.46990116801437554 },
+        "INSERTION": { "ap": 0.1870846368233265, "precision": 0.2608695652173913, "recall": 0.06382978723404255, "f1": 0.10256410256410256 }
+      }
+    },
+    "dev_search": {
+      "macro_f1": 0.5445519912025621,
+      "macro_ap": 0.5555054965877406,
+      "macro_precision": 0.49830455643469324,
+      "macro_recall": 0.672060858322873,
+      "weighted_utility": 0.3847330933812416,
+      "overall_ece": 0.08447696914578043,
+      "false_warning_rate_per_utt": 4.193656093489149
+    }
+  }
+}

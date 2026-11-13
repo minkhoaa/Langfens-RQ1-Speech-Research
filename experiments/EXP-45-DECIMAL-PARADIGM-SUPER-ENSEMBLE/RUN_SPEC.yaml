@@ -1,0 +1,41 @@
+run_id: "EXP-45-DECIMAL-PARADIGM-SUPER-ENSEMBLE"
+hypothesis_id: "H40-decimal-ten-model-ensemble"
+method_id: "M45-decimal-ensemble-sweeper"
+experiment_type: "10_MODEL_DECIMAL_SUPER_ENSEMBLE"
+date: "2026-11-05"
+hardware:
+  device: "cuda"
+  gpu_name: "NVIDIA GeForce GTX 1650"
+  vram_allocated_mb: 254
+models_fused:
+  model_1: "PSC-Net (EXP-22)"
+  model_2: "SRAD-Net (EXP-17)"
+  model_3: "NNA-Adapter (EXP-21)"
+  model_4: "Conformer (EXP-10)"
+  model_5: "JSAC-Net (EXP-24)"
+  model_6: "APED-Net (EXP-28)"
+  model_7: "PNC-Net (EXP-34)"
+  model_8: "HTC-Net (EXP-38)"
+  model_9: "VTLN-HTC-Net (EXP-42)"
+  model_10: "DMCT-Net (EXP-44)"
+optimal_weights:
+  target_mixture: [0.06, 0.08, 0.06, 0.06, 0.10, 0.12, 0.12, 0.15, 0.05, 0.20]
+  gap_mixture: [0.05, 0.07, 0.07, 0.10, 0.08, 0.12, 0.14, 0.12, 0.10, 0.15]
+operating_thresholds:
+  dev_cal_pareto_score: 3.0680
+  theta_subs: 0.55
+  theta_omis: 0.55
+  theta_ins: 0.55
+evaluation:
+  protocol: "PROTOCOL_ALPHA_TARGET_MONOTONIC_V1"
+  search_utility: 0.3913
+  rep_utility: 0.4384
+  rep_macro_ap: 0.6056
+  rep_macro_precision: 0.6359
+  rep_substitution_ap: 0.4257
+  rep_substitution_precision: 0.5513
+  rep_omission_ap: 0.4168
+  rep_insertion_ap: 0.2715
+  rep_insertion_precision: 0.4225
+  rep_false_warning_rate: 1.107
+  status: "LOCAL_REPRODUCED"

@@ -1,0 +1,47 @@
+{
+  "run_id": "EXP-83-CROSS-LINGUISTIC-CONSONANT-CLUSTER-PARADIGM",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "start_time": "2026-11-05T11:10:00Z",
+  "end_time": "2026-11-05T11:15:00Z",
+  "duration_seconds": 300.0,
+  "device": "cuda",
+  "epochs": 10,
+  "operating_thresholds": {
+    "theta_subs": 0.54,
+    "theta_omis": 0.54,
+    "theta_ins": 0.60
+  },
+  "metrics": {
+    "dev_replication": {
+      "utility": 0.48489567088021757,
+      "macro_ap": 0.6008508993518289,
+      "macro_precision": 0.5829913219709532,
+      "macro_recall": 0.6490310593859654,
+      "macro_f1": 0.6106999341681986,
+      "correct_ap": 0.9715086237886388,
+      "omission_ap": 0.39846235657593354,
+      "omission_f1": 0.4536082474226804,
+      "omission_recall": 0.5136186770428015,
+      "substitution_ap": 0.43258171769091425,
+      "substitution_f1": 0.4616771866546438,
+      "substitution_recall": 0.5366876310272537,
+      "insertion_ap": 0.253229527983348,
+      "insertion_f1": 0.35789473684210527,
+      "insertion_recall": 0.3617021276595745,
+      "insertion_precision": 0.3541666666666667,
+      "overall_ece": 0.023317861288164744,
+      "false_warning_rate_per_utt": 3.3566666666666665
+    },
+    "dev_search": {
+      "utility": 0.42888888246066625,
+      "macro_ap": 0.5544043847519253,
+      "omission_ap": 0.26985323957853924,
+      "substitution_ap": 0.41405974504531023,
+      "insertion_ap": 0.2600225068283312,
+      "false_warning_rate_per_utt": 3.9382303839732886
+    }
+  },
+  "gate_status": "LOCAL_REPRODUCED",
+  "hypothesis_verdict": "PARTIALLY_CONFIRMED_FOR_RECALL"
+}

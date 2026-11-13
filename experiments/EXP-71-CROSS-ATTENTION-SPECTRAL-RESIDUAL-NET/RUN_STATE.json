@@ -1,0 +1,45 @@
+{
+  "run_id": "EXP-71-CROSS-ATTENTION-SPECTRAL-RESIDUAL-NET",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "start_time": "2026-11-05T08:35:00Z",
+  "end_time": "2026-11-05T08:38:30Z",
+  "duration_seconds": 210.0,
+  "device": "cuda",
+  "epochs": 10,
+  "operating_thresholds": {
+    "theta_subs": 0.52,
+    "theta_omis": 0.54,
+    "theta_ins": 0.60
+  },
+  "metrics": {
+    "dev_replication": {
+      "utility": 0.4673474006450245,
+      "macro_ap": 0.5921214083884777,
+      "macro_precision": 0.584584710253079,
+      "macro_recall": 0.6378449088666678,
+      "macro_f1": 0.6057075000645622,
+      "correct_ap": 0.9710918331235202,
+      "omission_ap": 0.3753098470453618,
+      "omission_f1": 0.4261682242990654,
+      "substitution_ap": 0.429962544996551,
+      "substitution_f1": 0.4747518342684506,
+      "substitution_recall": 0.5765199161425576,
+      "insertion_ap": 0.23421476612106226,
+      "insertion_f1": 0.3054187192118227,
+      "insertion_recall": 0.32978723404255317,
+      "overall_ece": 0.03314113912240174,
+      "false_warning_rate_per_utt": 3.5166666666666666
+    },
+    "dev_search": {
+      "utility": 0.40376253205207385,
+      "macro_ap": 0.544273882086309,
+      "omission_ap": 0.24388611300047738,
+      "substitution_ap": 0.4099988293864468,
+      "insertion_ap": 0.19605787239518183,
+      "false_warning_rate_per_utt": 4.35559265442404
+    }
+  },
+  "gate_status": "LOCAL_REPRODUCED",
+  "hypothesis_verdict": "FALSIFIED_FOR_RAW_RESIDUALS"
+}

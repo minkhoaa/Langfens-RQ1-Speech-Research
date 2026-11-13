@@ -1,0 +1,51 @@
+{
+  "run_id": "EXP-49-ENDLESS-SEARCH-CONTRASTIVE-DYNAMIC-RECOVERY",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "started_at": "2026-11-05T05:32:00Z",
+  "completed_at": "2026-11-05T05:33:40Z",
+  "duration_seconds": 100.0,
+  "device": "cuda",
+  "optimal_thresholds": {
+    "theta_subs": 0.48,
+    "theta_omis": 0.52,
+    "theta_ins": 0.55
+  },
+  "metrics_summary": {
+    "dev_search": {
+      "utility": 0.4350,
+      "macro_ap": 0.5505,
+      "macro_precision": 0.5160,
+      "macro_recall": 0.6472,
+      "macro_f1": 0.5576,
+      "omission_ap": 0.2927,
+      "substitution_ap": 0.3798,
+      "overall_ece": 0.0145,
+      "fwr": 3.386
+    },
+    "dev_replication": {
+      "utility": 0.4680,
+      "macro_ap": 0.5956,
+      "macro_precision": 0.5918,
+      "macro_recall": 0.5909,
+      "macro_f1": 0.5912,
+      "omission_ap": 0.4170,
+      "omission_recall": 0.4241,
+      "omission_f1": 0.4308,
+      "substitution_ap": 0.3988,
+      "substitution_recall": 0.4266,
+      "substitution_f1": 0.4198,
+      "correct_ap": 0.9712,
+      "correct_f1": 0.9231,
+      "insertion_ap": 0.2088,
+      "insertion_f1": 0.2436,
+      "overall_ece": 0.0166,
+      "fwr": 2.537
+    }
+  },
+  "scientific_findings": [
+    "CONTRASTIVE_PROTOTYPE_LIMITATION: While CDMR-Net achieves strong utility (0.4680) and low ECE (0.0166), explicit prototype clustering forces non-native phonetic variants into artificial clusters, slightly degrading substitution precision relative to unconstrained continuous local attention (HRTD-Net EXP-48).",
+    "HRTD_NET_REMAINS_CHAMPION: High-Resolution Temporal Dynamics (5ms sub-frame windowing) without discrete prototype clustering remains the laboratory champion with Macro AP=0.6202, Macro F1=0.6050, and Utility=0.4846."
+  ],
+  "gate_status": "LOCAL_REPRODUCED"
+}

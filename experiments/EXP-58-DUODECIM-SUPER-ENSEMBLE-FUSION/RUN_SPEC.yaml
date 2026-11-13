@@ -1,0 +1,65 @@
+run_id: "EXP-58-DUODECIM-SUPER-ENSEMBLE-FUSION"
+hypothesis_id: "H53-duodecim-super-ensemble"
+method_id: "M58-duodecim-ensemble-sweeper"
+experiment_type: "12_MODEL_DUODECIM_SUPER_ENSEMBLE"
+date: "2026-11-05"
+hardware:
+  device: "cuda"
+  gpu_name: "NVIDIA GeForce GTX 1650"
+  vram_allocated_mb: 270
+models_fused:
+  model_1: "PSC-Net (EXP-22)"
+  model_2: "SRAD-Net (EXP-17)"
+  model_3: "NNA-Adapter (EXP-21)"
+  model_4: "Conformer (EXP-10)"
+  model_5: "JSAC-Net (EXP-24)"
+  model_6: "APED-Net (EXP-28)"
+  model_7: "PNC-Net (EXP-34)"
+  model_8: "HTC-Net (EXP-38)"
+  model_9: "VTLN-HTC-Net (EXP-42)"
+  model_10: "DMCT-Net (EXP-44)"
+  model_11: "HRTD-Net (EXP-48: 5ms Sub-frame Dynamics)"
+  model_12: "DSCA-Net (EXP-55: Dual-Stream Cross-Attention)"
+optimal_weights:
+  target_mixture: [0.02, 0.03, 0.03, 0.03, 0.04, 0.05, 0.06, 0.07, 0.05, 0.10, 0.26, 0.26]
+  gap_mixture: [0.03, 0.04, 0.04, 0.06, 0.05, 0.08, 0.10, 0.08, 0.06, 0.10, 0.18, 0.18]
+operating_thresholds:
+  dev_cal_pareto_score: 3.1486
+  theta_subs: 0.50
+  theta_omis: 0.52
+  theta_ins: 0.55
+results_summary:
+  dev_replication:
+    utility: 0.4885
+    macro_ap: 0.6341
+    macro_f1: 0.6055
+    macro_precision: 0.6367
+    omission_ap: 0.4733
+    omission_f1: 0.4357
+    substitution_ap: 0.4540
+    substitution_precision: 0.5226
+    substitution_f1: 0.4452
+    insertion_ap: 0.2865
+    insertion_precision: 0.4746
+    insertion_f1: 0.3660
+    correct_ap: 0.9751
+    correct_f1: 0.9355
+    overall_ece: 0.0412
+    fwr: 1.630
+  dev_search:
+    utility: 0.4392
+    macro_ap: 0.5714
+    omission_ap: 0.3059
+    substitution_ap: 0.4269
+    insertion_ap: 0.3139
+    correct_ap: 0.9815
+records_broken:
+  - "ALL_TIME_CAMPAIGN_HIGH_MACRO_AP_0.6341 (BROKE 63% MACRO AP MILESTONE)"
+  - "ALL_TIME_CAMPAIGN_HIGH_OMISSION_AP_0.4733 (BROKE 47% OMISSION AP MILESTONE)"
+  - "ALL_TIME_CAMPAIGN_HIGH_SUBSTITUTION_AP_0.4540"
+  - "ALL_TIME_CAMPAIGN_HIGH_INSERTION_PRECISION_0.4746"
+  - "ALL_TIME_CAMPAIGN_HIGH_INSERTION_AP_0.2865"
+  - "SUSTAINED_60_PERCENT_MACRO_F1_0.6055"
+evaluation:
+  protocol: "PROTOCOL_ALPHA_TARGET_MONOTONIC_V1"
+  status: "LOCAL_REPRODUCED"

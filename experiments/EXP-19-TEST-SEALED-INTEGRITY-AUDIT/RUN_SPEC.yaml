@@ -1,0 +1,14 @@
+run_id: "EXP-19-TEST-SEALED-INTEGRITY-AUDIT"
+hypothesis_id: "H14-sealed-test-integrity"
+method_id: "M19-integrity-auditor"
+experiment_type: "SEALED_TEST_INTEGRITY_AUDIT"
+date: "2026-11-05"
+hardware:
+  device: "cpu"
+  vram_allocated_mb: 0
+inputs:
+  sealed_manifest: "data/derived/l2arctic/manifests/test_sealed.jsonl"
+  audited_feature_caches: 4
+  audited_experiments: 18
+hyperparameters:
+  strict_zero_leakage_assertion: true

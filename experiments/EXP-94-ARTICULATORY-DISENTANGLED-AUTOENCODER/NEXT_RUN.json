@@ -1,0 +1,10 @@
+{
+  "next_run_id": "EXP-95-CROSS-ACCENT-INTERLANGUAGE-COVARIANCE-ALIGNER",
+  "hypothesis": "H90-interlanguage-covariance-alignment",
+  "method": "M95-covariance-aligner-trainer",
+  "target": "Train a Cross-Accent Interlanguage Covariance Aligner (CICA-Net) to align error covariance matrices across all 6 L1 cohorts, targeting further reduction in dialect false alarms and advancing toward EXP-100",
+  "resource_reservation": "GPU:0",
+  "prerequisites": [
+    "EXP-94-ARTICULATORY-DISENTANGLED-AUTOENCODER"
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "cohorts": {
+    "Arabic": {
+      "utterances": 149,
+      "macro_ap": 0.5353733880087715,
+      "macro_f1": 0.48693401769085737,
+      "utility": 0.44000252763236136,
+      "omission_ap": 0.4027019600839612,
+      "substitution_ap": 0.22199544276020008
+    },
+    "Vietnamese": {
+      "utterances": 300,
+      "macro_ap": 0.7078386034928604,
+      "macro_f1": 0.6769461252620589,
+      "utility": 0.5536344443735064,
+      "omission_ap": 0.6291246040942687,
+      "substitution_ap": 0.5291237495967378
+    },
+    "Hindi": {
+      "utterances": 150,
+      "macro_ap": 0.5253136281241428,
+      "macro_f1": 0.5345812065983281,
+      "utility": 0.39097590917512604,
+      "omission_ap": 0.24910694303891376,
+      "substitution_ap": 0.3589699552322449
+    },
+    "Korean": {
+      "utterances": 300,
+      "macro_ap": 0.5889797184210431,
+      "macro_f1": 0.5897612508384493,
+      "utility": 0.46643175472246406,
+      "omission_ap": 0.341689426730316,
+      "substitution_ap": 0.4456368348530525
+    },
+    "Spanish": {
+      "utterances": 150,
+      "macro_ap": 0.5932616903790205,
+      "macro_f1": 0.5571938802425004,
+      "utility": 0.4301101915215871,
+      "omission_ap": 0.30131886143158565,
+      "substitution_ap": 0.5319146371681412
+    },
+    "Chinese": {
+      "utterances": 150,
+      "macro_ap": 0.5740372843296023,
+      "macro_f1": 0.5632623190040923,
+      "utility": 0.45039012437449766,
+      "omission_ap": 0.36998109664292367,
+      "substitution_ap": 0.38601297211894525
+    }
+  },
+  "mean_macro_f1": 0.5681131332727144,
+  "sigma_l1_f1": 0.05798054348723088,
+  "mean_macro_ap": 0.5874673854592402,
+  "sigma_l1_ap": 0.05955716160264298
+}

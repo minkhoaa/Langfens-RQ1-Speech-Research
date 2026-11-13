@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-48-HIGH-RESOLUTION-TEMPORAL-REFINEMENT",
+  "hypothesis_id": "H43-subframe-temporal-resolution",
+  "method_id": "M48-subframe-temporal-refiner",
+  "description": "Continuous auto-research loop: Sub-frame 5ms temporal windowing and localized boundary attention to resolve fine stop consonant omissions and subtle glide substitutions",
+  "prerequisites_met": true,
+  "resource_lease": "cuda"
+}

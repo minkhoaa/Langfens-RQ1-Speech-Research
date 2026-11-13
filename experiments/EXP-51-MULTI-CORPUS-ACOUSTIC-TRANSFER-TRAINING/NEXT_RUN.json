@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-52-ULTRA-ENSEMBLE-FUSION-HRTD-DECIMAL",
+  "hypothesis_id": "H47-undecim-super-ensemble",
+  "method_id": "M52-undecim-ensemble-sweeper",
+  "description": "Continuous auto-research loop: 11-Model Undecim Super-Ensemble uniting HRTD-Net (5ms sub-frame dynamics) with Decimal-Pareto (10 models including VTLN and prosodic energy) to target >0.6300 Macro AP and >0.5000 Utility",
+  "prerequisites_met": true,
+  "resource_lease": "cuda"
+}

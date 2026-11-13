@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-57-ADAPTIVE-MULTI-THRESHOLD-INFERENCE-ENGINE",
+  "hypothesis_id": "H52-adaptive-slot-thresholding",
+  "method_id": "M57-adaptive-threshold-engine",
+  "description": "Continuous auto-research loop: Dynamic slot-level threshold adaptation conditioned on phonetic duration, manner category, and acoustic posterior entropy to push Undecim-Pareto past 0.6300 Macro AP and 0.5000 Utility",
+  "prerequisites_met": true,
+  "resource_lease": "cuda"
+}

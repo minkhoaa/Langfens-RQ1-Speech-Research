@@ -1,0 +1,43 @@
+run_id: "EXP-56-CONFORMER-HRTD-HYBRID-ATTENTION"
+hypothesis_id: "H51-conformer-subframe-hybrid"
+method_id: "M56-conformer-hrtd-trainer"
+experiment_type: "CONFORMER_SUBFRAME_CROSS_ATTENTION"
+date: "2026-11-05"
+hardware:
+  device: "cuda"
+  gpu_name: "NVIDIA GeForce GTX 1650"
+  vram_allocated_mb: 265
+architecture:
+  conformer_blocks: 2
+  kernel_size: 5
+  attention_heads: 4
+  cross_attention: "Bidirectional Audio-Prompt MHCA"
+results_summary:
+  dev_replication:
+    utility: 0.4537
+    macro_ap: 0.5792
+    macro_precision: 0.5619
+    macro_recall: 0.6413
+    macro_f1: 0.5933
+    omission_ap: 0.3753
+    omission_recall: 0.5331
+    omission_f1: 0.4190
+    substitution_ap: 0.3941
+    substitution_recall: 0.4927
+    substitution_f1: 0.4447
+    insertion_ap: 0.1579
+    insertion_f1: 0.1500
+    correct_ap: 0.9683
+    correct_f1: 0.9164
+    overall_ece: 0.0111
+    fwr: 3.223
+  dev_search:
+    utility: 0.4180
+    macro_ap: 0.5419
+    omission_ap: 0.2821
+    omission_recall: 0.5837
+    substitution_ap: 0.3675
+scientific_verdict: "Conformer depthwise convolution achieved all-time low probability calibration error (ECE=0.0111) and strong omission recall (53.31%), but BiLSTM with local attention (DSCA-Net / HRTD-Net) maintains higher precision on low-resource training splits."
+evaluation:
+  protocol: "PROTOCOL_ALPHA_TARGET_MONOTONIC_V1"
+  status: "LOCAL_REPRODUCED"

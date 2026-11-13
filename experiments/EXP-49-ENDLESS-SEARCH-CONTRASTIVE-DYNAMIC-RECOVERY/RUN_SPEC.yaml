@@ -1,0 +1,35 @@
+run_id: "EXP-49-ENDLESS-SEARCH-CONTRASTIVE-DYNAMIC-RECOVERY"
+hypothesis_id: "H44-contrastive-masked-recovery"
+method_id: "M49-contrastive-dynamic-trainer"
+experiment_type: "CONTRASTIVE_PROTOTYPE_DYNAMIC_MASKING"
+date: "2026-11-05"
+hardware:
+  device: "cuda"
+  gpu_name: "NVIDIA GeForce GTX 1650"
+  vram_allocated_mb: 180
+results_summary:
+  dev_replication:
+    utility: 0.4680
+    macro_ap: 0.5956
+    macro_precision: 0.5918
+    macro_recall: 0.5909
+    macro_f1: 0.5912
+    omission_ap: 0.4170
+    omission_recall: 0.4241
+    omission_f1: 0.4308
+    substitution_ap: 0.3988
+    substitution_recall: 0.4266
+    substitution_f1: 0.4198
+    correct_ap: 0.9712
+    correct_f1: 0.9231
+    overall_ece: 0.0166
+    fwr: 2.537
+  dev_search:
+    utility: 0.4350
+    macro_ap: 0.5505
+    omission_ap: 0.2927
+    substitution_ap: 0.3798
+scientific_verdict: "NEGATIVE_GAIN_ISOLATION: Discrete prototype clustering slightly increases substitution false alarms relative to unconstrained continuous local Gaussian attention (HRTD-Net remains champion)."
+evaluation:
+  protocol: "PROTOCOL_ALPHA_TARGET_MONOTONIC_V1"
+  status: "LOCAL_REPRODUCED"

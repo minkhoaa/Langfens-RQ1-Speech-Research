@@ -1,0 +1,10 @@
+{
+  "mean_dsca_latency_ms": 3.9641991399791245,
+  "mean_tdis_latency_ms": 4.027551226705934,
+  "mean_dual_latency_ms": 7.991750366685058,
+  "median_dual_latency_ms": 6.599319498491241,
+  "p90_dual_latency_ms": 11.763736197463007,
+  "p99_dual_latency_ms": 15.240317224379394,
+  "overall_rtf": 0.015983500626813446,
+  "real_time_speedup": 62.560603133421296
+}

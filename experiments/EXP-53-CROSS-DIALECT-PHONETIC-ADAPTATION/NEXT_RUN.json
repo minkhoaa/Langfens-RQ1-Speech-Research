@@ -1,0 +1,8 @@
+{
+  "next_run_id": "EXP-54-ENDLESS-SEARCH-CONTINUOUS-CONTRASTIVE-DYNAMICS",
+  "hypothesis_id": "H49-continuous-manifold-dynamics",
+  "method_id": "M54-continuous-manifold-trainer",
+  "description": "Continuous auto-research loop: Smooth manifold metric regularization over sub-frame 5ms trajectories to push single-model Substitution AP and Omission AP toward the 0.80 gate",
+  "prerequisites_met": true,
+  "resource_lease": "cpu"
+}

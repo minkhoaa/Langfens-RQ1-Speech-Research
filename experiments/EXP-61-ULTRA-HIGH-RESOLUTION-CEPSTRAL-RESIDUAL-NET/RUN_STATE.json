@@ -1,0 +1,46 @@
+{
+  "run_id": "EXP-61-ULTRA-HIGH-RESOLUTION-CEPSTRAL-RESIDUAL-NET",
+  "status": "COMPLETED",
+  "exit_code": 0,
+  "started_at": "2026-11-05T07:00:00Z",
+  "completed_at": "2026-11-05T07:03:30Z",
+  "duration_seconds": 210.0,
+  "device": "cpu",
+  "optimal_thresholds": {
+    "theta_subs": 0.50,
+    "theta_omis": 0.50,
+    "theta_ins": 0.55
+  },
+  "metrics_summary": {
+    "dev_search": {
+      "utility": 0.4167,
+      "macro_ap": 0.5608,
+      "omission_ap": 0.3011,
+      "substitution_ap": 0.4022,
+      "fwr": 1.907
+    },
+    "dev_replication": {
+      "utility": 0.4726,
+      "macro_ap": 0.5953,
+      "macro_precision": 0.6163,
+      "macro_recall": 0.5374,
+      "macro_f1": 0.5647,
+      "omission_ap": 0.4101,
+      "substitution_ap": 0.4038,
+      "insertion_ap": 0.2945,
+      "insertion_precision": 0.3511,
+      "insertion_recall": 0.3511,
+      "insertion_f1": 0.3511,
+      "correct_ap": 0.9720,
+      "correct_f1": 0.9345,
+      "overall_ece": 0.0173,
+      "target_ece": 0.0110,
+      "fwr": 1.487
+    }
+  },
+  "records_broken": [
+    "ALL_TIME_CAMPAIGN_HIGH_STANDALONE_INSERTION_AP_0.2945",
+    "ALL_TIME_CAMPAIGN_LOW_TARGET_ECE_0.0110"
+  ],
+  "gate_status": "LOCAL_REPRODUCED"
+}
