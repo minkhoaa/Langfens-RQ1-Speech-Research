@@ -1,0 +1,11 @@
+## Review
+
+- Correct: The fit loop uses only fit-partition IDs for scaler computation, labels, CTC supervision, and competitor construction (`backend.py`, `NeuralBackend.fit` and `competitors`). Inner held-score coverage is checked before policy freezing (`workflow.py`, `freeze_policies`), and the driver defaults to plan mode with explicit formal authorization checks (`train.py`, `main`).
+
+- Finding: **P1 — Formal per-seed wall budget excludes population loading.** `train.py:53` constructs `TrainPopulation()` before calling `execute_seed`; its `__init__` parses the manifest, builds labels/indexes, opens cached arrays, and validates population supports (`datasets.py:59–83`). The budget is created only later inside `execute_seed` (`workflow.py:137–138`). Thus this work is unmetered and can exceed the specified 2700 seconds. **Fix:** start the per-seed budget before constructing/loading the population, and include that work in its accounting.
+
+- Finding: **P2 — A crash between policy and seal writes makes resume fail.** `freeze_policies` writes `policies.json` and then `policy_seal.json` as separate commits (`workflow.py:51–52`). If interrupted between them, the next run rejects the existing policy because the seal is missing (`workflow.py:18–19`), with no recovery path. **Fix:** commit policy and seal together as one atomic artifact, or safely validate and repair a missing seal on resume.
+
+- Finding: **P2 — Missing checkpoint-index entries are silently recreated.** `archive_completed` accepts an existing epoch archive with no corresponding `epochs.json` entry, hashes it, and adds the entry (`engine.py:94–98`). If an index entry is lost, a changed historical archive can therefore be accepted as the original. **Fix:** require index entries for all previously committed epochs; allow recreation only for the just-completed epoch when its commit was interrupted.
+
+- Merge verdict: **BLOCK** until the P1 budget accounting issue is fixed. The P2 recovery/integrity issues should also be addressed before relying on formal runs.

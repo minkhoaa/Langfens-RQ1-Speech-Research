@@ -1,0 +1,32 @@
+# Reference matrix — M0, accessed 2026-11-13
+
+Question: which sequence-MDD references can be reproduced under TRAIN speaker exclusion and the N-target/N+1-gap EVAL-V3.1 contract on this machine?
+
+Sources below are primary. Publication metrics are not LANGFENS measurements. “Not verified” means this audit did not establish availability, not that an artifact does not exist.
+
+| Reference / source | Task, labels, data and speaker split | Inference / boundaries | Errors and metrics | Code, checkpoints, licence and compute | EVAL-V3.1 / decision |
+|---|---|---|---|---|---|
+| [Qian, Meng & Soong 2016](https://www1.se.cuhk.edu.hk/~hccl/publications/pub/2016_07401018.pdf), §§III–VI | Two-pass phone MDD; Cantonese-English corpus; 49 training / 51 test speakers | Audio + canonical prompt; recognition networks; training alignment | Antiphones for substitution, skips for deletion, filler for insertion; detection/diagnosis error rates | HTK HMMs; paper-specific code/checkpoint licence and runtime not verified | Mechanistic reference; needs event scores and exact-gap adapter; original corpus not inventoried locally |
+| [Shahin & Ahmed 2024](https://www.isca-archive.org/interspeech_2024/shahin24_interspeech.pdf), §§2–3 | Phone and 35-attribute sequence MDD; LibriSpeech, TIMIT, L2-ARCTIC; 18/6 L2 speaker split | Audio recognition, then canonical sequence comparison; no gold boundaries specified as inference inputs | Feature substitutions/deletions/insertions; FAR, FRR, DER | wav2vec2-large-robust and linear head; attribute CTC; paper does not cite code/checkpoint; exact training compute/licence unverified | Phone-only sequence arm is a reproduction target; base/frozen adaptation must be labelled partial; feature metrics do not establish exact-gap phone AP |
+| [Geng et al. 2026, arXiv v1](https://arxiv.org/html/2604.22133v1), §§4,6 | CROTTC + indirect fusion; realized sequences; L2-ARCTIC six-speaker test differs from this repo | Prompt-free recognizer; canonical/mispronunciation information privileged during training | Hierarchical detection F1, diagnosis error, PER; no classwise exact-gap AP equivalence established | WavLM Large + Conformer + decoder; GH200; 300 AM / 200 LM epochs | Reproduction after profiling; published F1 cannot be compared with Macro-3; current hardware feasibility unmeasured |
+| [Official IF-MDD source](https://github.com/Secondtonumb/IF-MDD), README | Public CTC, CROTTC, IF and LLM recipes | Audio-only interfaces advertised | Recognition and MDD evaluation scripts provided | Apache-2.0 source; checkpoints separately licensed; HF CTC and CROTTC bundles linked; revision not pinned/downloaded here | M1: pin source and inspect data exclusions first; L2-trained public bundle may overlap our fit/cal/held speakers, so cannot provide clean grouped-CV results |
+| [Microsoft Pronunciation Assessment](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/how-to-pronunciation-assessment), configuration/results | Product reference; phone scores and word errors | Audio + reference text for scripted assessment; service alignment | Word Omission/Insertion via EnableMiscue; phone scores and NBestPhonemes | Hosted service; training data, model weights and compute unavailable in these docs; commercial service terms | No assumed phone S/O/I or exact-gap equivalence; not selected as the M1 scientific baseline |
+
+Confidence: moderate for each source-described method; unknown for local reproducibility until M1 executes it. The independent local findings below are not evidence that the papers' experiments have been reproduced.
+
+## Local implementations already tried
+
+| Local source | What exists | Consequence for the next experiment |
+|---|---|---|
+| `reports/METHOD_BENCH_03_DATA_METHOD_FEASIBILITY.md`; `experiments/rq1_method_bench_03/agent_a/train_ctc.py`, `train_w2v2_ctc.py` | Realized supervision already used by log-mel BiGRU and continuous frozen W2V2-H6 linear CTC; historical normalization maps some malformed symbols; labels include ERR | Do not call realized CTC itself new. First reproduce on audited labels and common folds; separately measure changes from supervision and recognizer capacity |
+| `reports/METHOD_BENCH_04_A_EVENT_CTC.md` | E4 uses finite alternative CTC likelihood ratios; not calibrated event posteriors; beam coverage diagnostics are poor | Retain E1/E4 controls; uncertainty candidate needs retained-mass and width-convergence evidence |
+| `reports/RQ1_METHOD_SELECT_02/EXP02_JOINT_ALIGNMENT.md` | Tested learned monotonic and interleaved gap attention scored below CharSiu controls | Retain the numerical negative result. This report's universal causal statements exceed what those configurations prove; new alignment requires a distinct, tested hypothesis |
+| `experiments/agent_b_training_optimization/REPORT.md`; `experiments/agent_b_focal_gamma2p0/REPORT.md` | Focal gamma 1.5/2.0: small/mixed ranking changes; unconstrained F1 policies had very high FWR | Do not repeat loss-only tuning as a new research direction |
+| `reports/RQ1_UNIFIED_02_BAO_CAO_TONG_HOP_CHI_TIET.md` | Crop/continuous predicted-gap, auxiliary CTC, bottleneck and sampling variants had negative or nonrepeating transfer | No blind auxiliary/crop sweep; require matched data, steps and full-domain output |
+| `reports/METHOD_BENCH_07_C_EXTERNAL_METHODS.md`; `tools/phonological_features.py` | Existing 16-attribute, correct-target-only adaptation; several phone vectors coincide | M4 must use realized supervision, sourced/versioned mapping and matched phone/attribute ablations; renaming the old head is insufficient |
+
+## Evidence log and remaining searches
+
+E1: Qian primary PDF, abstract and §§V–VI: three edit mechanisms and speaker-disjoint experiment. E2: Shahin primary PDF, §§2–3: sequence attributes and per-feature evaluation. E3: CROTTC primary HTML, §§6.1–6.3: backbone, splits and metric definitions. E4: official IF-MDD README: source and linked inference bundles. E5: Microsoft configuration/results: word-level error types. Access date for all: 2026-11-13.
+
+Unresolved: pin IF-MDD commit and checkpoint licence/training manifests; verify Shahin original code/recipe availability; profile any large backbone locally; implement and independently verify exact-gap adapters. M1 may start with a documented partial phone-CTC reproduction, but the original-reference reproduction gate remains open until fidelity is checked.

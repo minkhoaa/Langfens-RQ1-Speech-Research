@@ -1,27 +1,40 @@
 # AGENTS.md — LANGFENS
 Read before repository work. Verify evidence before reporting PASS.
 
+## Active Research Goals
+- User decision `RESEARCH-GOALS-SPLIT-20261114-v1` establishes **two active goals**: `GOAL_CROTTC_IF.md` (full-paper reproduction) and `GOAL_SM13.md` (larger-backbone SM13 method/common detection F1). `GOAL.md` is the index/shared thesis context; `SIDE_GOAL.md` is a compatibility pointer, not a third queue. Read the relevant goal and HANDOFF.md before work.
+- GOAL1: keep the user-authorized current Kaggle AM campaign uninterrupted, but label it **local-protocol development, NOT full-paper reproduction**. Exact paper data/recipe/metric and all-stage/coverage gates remain open. Current checkpoints trained on NJS cannot certify speaker-disjoint paper testing on NJS; a faithful paper-split campaign needs clean pretrained lineage and separately authorized data protocol.
+- GOAL2: latest user instruction is **continue on the new native pretrained WavLM Large backbone with fresh SM13 heads; all new SM13 tasks LOCAL ONLY, no Kaggle; do not break CROTTC** (`SM13-NATIVE-LOCAL-20261114-v1`). Original-backbone S0 target50/gap50 is COMPLETE and 102 states/metrics verified (`reports/SM13_EPOCH50_20261114/LOCAL_VERIFICATION.json`); do not claim it is still training or substitute more S0 work for S1. First recipe50/head; original conditional additional50/max100 remains provenance (GOAL_SM13§5.4). Explicit additional100 from50->150/head completed (`SM13-S1-PLUS100-20261114-v1`, §5.5). **Latest user authorizes S1 additional200 from150->350/head** (`SM13-S1-PLUS200-20261114-v1`, §5.6), despite reported plateau/overfitting: preserve verified full150 state, same recipe/frozen50 thresholds, bounded local-only/shared-lock run,14GiB main export disk floor plus3GiB output admission; no automatic extension after350. Historical S1 calibration350/head is COMPLETE and404states/fullcurves independently verified (`reports/SM13_S1_PLUS200_20261114/VERIFICATION.json`); do not call that run active or automatically extend it. Latest user separately authorizes **fresh paired raw-vs-fit-RMS50/head; only after preregistered correctness+quality gate passes, fresh normalized total300/head** (`SM13-RAW-NORMALIZED-CONDITIONAL300-20261114-v1`, GOAL_SM13§5.7). GPUsharedlock/localonly/4h; new weights outside Git on separate/home filesystem with4GiB output floor+5.5GiB admission; preserve independent14GiB/var/tmpCROTTC export floor. Pilot now PASSED all6gates and204states verified; normalized300/head now COMPLETE and602states independently verified (`reports/SM13_RAW_NORMALIZED_20261114/FINAL_VERIFICATION.json`), PID1763886terminal. No active SM13 training or automatic extension beyond300; no threshold retuning/best-epoch substitution. Matched50vs50F1@.5raw38.6507->norm40.8143%; norm30040.8843%,AP33.8588%: AP gain but no clear epoch-driven F1 gain. Prior150 CPU-only report repair/provenance remains retained. DetectionF1@0.5 declined40.6829->37.3146% from150->350; no gain claim. FullTRAIN1800 fitting/common DEV_SEARCH evaluation remain pending; resource/profile/registration gates apply. No automatic full-backbone fine-tuning or broad sweeps. Prevent all-TRAIN-adapted backbone leakage into claimed independent TRAIN OOF.
+- SM13 debug: CPU-only audit completed (`reports/SM13_S1_DEBUG_20261114/REPORT_VI.md`); label/order/resume/evaluator replay found no explanatory mismatch, overfitting/overconfidence confirmed. Raw-layer RMS disparity~89–100x is a conditioning hypothesis, not proven causal gain. `conditioning.py` is an opt-in fit-only RMS/new-head candidate, never applied to historical heads/cache. Latest user authorizes its fresh paired pilot and gated300 under§5.7; this is not evidence of a quality gain until verified outcomes. Native CPU replay has sparse strict tolerance failures despite tiny downstream differences; do not claim universal parity or silently loosen gates.
+- Preserve `SM13-BACKBONE-SIDE-20261114-v1`, `SM13-EPOCH50-20261114-v1` and Kaggle decision `CROTTC-IF-FULL-KAGGLE-20261114-v1` as valid provenance. Full CROTTC stays on Kaggle, never automatically local/Colab. Local SM13 uses bounded budgets/shared GPU lock/atomic state. Queued remote SM13 is not falsely called cancelled; no guessed session IDs or duplicate launches.
+- Current Kaggle runtime may continue despite exhausted quota; preserve/export/verify current window before any next admission. Do not promise uninterrupted300epochs/fullpaper, bypass quota, rollback verified parents, or stop current training to resolve resource limits for SM13. Live progress and independently downloaded verified checkpoints are distinct.
+- Original local CROTTC ended cleanly at update124/internalepoch2/cursor320 with7/32pending microbatches; do not resume it locally. Read HANDOFF.md and `reports/CROTTC_IF_KAGGLE_20261114/` for migration history.
+- Thesis context remains `THESIS-METHOD-DECISION-20261113-v1`, CROTTC baseline plus method evidence and L2-Arctic-plus/ALMs4Learning-guided feedback evaluation; neither goal alone certifies thesis completion.
+- Previous M0–M6 plans, `GOAL_before_*`/`GOAL_after_*` snapshots and completion markers are historical only, not active queues. Archives: `reports/GOAL_DECISION_20261113/` and full pre-split docs/hash receipts in `reports/GOAL_SPLIT_20261114/`. Preserve experiments/authorizations; never automatically resume historical sweeps.
+
 ## Execution Boundaries
-- Local laptop: Code development, unit/regression tests, manifest audits, metric analysis, and lightweight validation.
-- Google Colab GPU (official Colab CLI): ALL training, fine-tuning, backward passes, optimizer updates, and GPU ablations.
-- Google Drive: Persistent storage for original datasets, reusable fold packages, checkpoints, and experiment logs.
+- Local laptop: Development/tests/audits/analysis/package preparation/Kaggle CLI and artifact preservation for GOAL1; **authorized SM13 work for GOAL2** under its native profile/budget/lock gates. Never automatically restart CROTTC locally. Documentation edits do not authorize new production runs.
+- Kaggle: User-authorized full CROTTC training/fine-tuning/backward/optimizer destination. Profile actual runtime/accelerator/RAM/disk/quota; preserve registered migration/resume state. Existing124→125 and480→482 migrations are verified history, not pending steps to redo. Future stage/placement/recipe changes need explicit gates; do not assume optimized AM driver is a portable IF trainer.
+- Google Colab: Not selected; do not provision as an automatic fallback.
+- Storage: Preserve local historical checkpoints/logs and original Google Drive archives. Persist and retrieve/verify Kaggle checkpoint outputs across runtime windows; Drive remains optional for backup.
 - GitHub: Version-controlled source code, configurations, tests, and lightweight audit artifacts only.
-- Strict fallback prohibition: Never fall back to local GPU/CPU training when Colab is unavailable. Stop and report blockers.
+- Kaggle remains the default for CROTTC full training; local is the current user-selected SM13 platform. Preparation can proceed independently of remote availability. Do not ask again for platform choices already explicitly authorized; do not interchange their scopes.
 
 ## Reusable Data Staging & Storage
 - Keep original dataset archives (`l2arctic_release_v5.0.zip`) unchanged on Google Drive; do not re-upload from laptop.
 - Reusable fold packages: Build once per fold from frozen manifests containing ONLY authorized train/validation WAV and TextGrid.
 - Official test sealing: Never stage or extract official test audio/labels. Maintain strict speaker-disjoint isolation.
-- Colab VM storage (`/content`) is ephemeral: Copy reusable fold package from Drive to VM disk and verify SHA-256 before training.
-- Read audio directly from local VM disk during training; never stream training audio across a Google Drive mount.
+- Verify frozen manifests and SHA-256 of local audio/features before training.
+- Read training audio/features from the selected runtime's disk; do not stream through a Google Drive mount. Kaggle packages must be private and contain only manifest-allowlisted TRAIN/DEV_SEARCH assets; never upload the whole data tree, raw archives, sealed test or credentials.
 
-## Colab CLI & Operational Safety
-- Provision GPU runtimes via official Colab CLI (`colab new -s <name> --gpu T4` or `colab run`).
-- Colab non-interactive rule: Never execute interactive commands (`colab drivemount`, `colab auth`, `colab repl`) in automation.
-- Monitor compute units via `colab usage`. If GPU quota is exhausted or auth is missing, STOP and report.
-- Resource hygiene: Always release idle runtimes promptly (`colab stop -s <name>`) to preserve compute units.
+## Local GPU & Operational Safety
+- Check available VRAM, RAM, disk, and existing GPU jobs before training; acquire the shared GPU lock.
+- Use explicit, bounded training budgets and retain failed/interrupted run provenance.
+- Save resumable checkpoints atomically each epoch. Stop on nonfinite loss, data mismatch, or resource exhaustion; never silently skip failed batches.
+- On Kaggle, preserve weights/optimizer/scheduler/scaler/RNG/cursors and pending gradients, record kernel/dataset versions and runtime identity, and verify exported checkpoints before the next window. Any path/runtime/placement change needs explicit provenance; never rewrite historical receipts or silently discard partial gradients.
 
 ## Training Contract & Provenance
+- The Fold-1 entrypoints, counts, and two-head objective below apply to the legacy RQ1-TRN-02A experiment. New work follows GOAL.md's two goal documents and the relevant registered protocol; do not mix populations. Local-training authorization from 2026-11-13 is historical; the latest platform decision is Kaggle2026-11-14, and the old M2 milestone is historical.
 - Split manifest: `manifests/RQ1-SPLIT-01/l2arctic_4fold_splits.json` (SHA-256 `7d6bfdf62bc6702b449048968f20e8c78df5b174be341b8d081667982980804b`).
 - Fold 1 contract: 2,399 train, 300 val (NJS/RRBI), 900 test SEALED. Two-head objective: CTC + Binary MDD only.
 - Backbone integrity: Pretrained `facebook/wav2vec2-base-960h` (rev `22aad52d435eb6dbaf354bdad9b0da84ce7d6156`) kept frozen in eval.
@@ -29,6 +42,6 @@ Read before repository work. Verify evidence before reporting PASS.
 - Never use gold TextGrid timestamps as model inference inputs or claim acoustic diagnosis readiness.
 - Training entrypoints: `configs/rq1_trn_02a_fold1.yaml` and `audit_scripts/train_fold1_ctc_binary.py`.
 - Atomic checkpointing: Save each epoch (`last.pt`, `best.pt`) with weights, optimizer, scheduler, scaler, RNG, and metadata.
-- Sync each epoch checkpoint to Google Drive immediately; verify remote presence.
+- Persist each epoch checkpoint locally immediately and verify it can be loaded; Google Drive sync is optional.
 - Keep datasets, archives, checkpoints, model weights, and credentials out of Git.
 - Work on reviewable feature branches. Never force-push, merge into main, or start training without explicit user authorization.

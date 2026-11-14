@@ -1,0 +1,3 @@
+# MB07 Agent A artifact inventory
+
+This directory contains no training/evaluation outputs. MB07 nested fusion was not run: available TRAIN OOF artifacts are only outer 4-fold outputs, not inner-3-fold crossfits per outer split. Reusing them to fit meta-model then score same folds would leak meta-training information into outer evaluation. See `reports/METHOD_BENCH_07_A_NESTED_COMPLEMENTARITY.md` for audited findings.

@@ -1,0 +1,3 @@
+# Predeclared selection protocol
+
+Before fitting candidates, select the candidate with the highest DEV_CAL exact-gap insertion average precision (AP), calculated over all DEV_CAL gap positions from the CE-selected checkpoint. AP is the sole candidate-selection criterion; exact ties go to the lower positive weight. For each candidate, the checkpoint is chosen by the existing minimum unweighted target-plus-gap DEV_CAL cross-entropy rule. DEV_SEARCH must not be inspected for any candidate until this choice is frozen, and is evaluated once for the selected candidate. Report all candidate checkpoints and calibration scores. No FWR filtering.

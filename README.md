@@ -1,18 +1,26 @@
 # Project Langfens — RQ1 Speech Research
 
-## Autonomous Research Lab
+> **New teammate? Start with [ONBOARDING.md](ONBOARDING.md).** It maps the research history,
+> benchmark families, current CROTTC/SM13 goals, evidence limits, runtime setup and collaboration rules.
+> See also [experiment catalog](docs/EXPERIMENT_CATALOG.md), [GOAL.md](GOAL.md) and [HANDOFF.md](HANDOFF.md).
+>
+> **Status: research not complete.** Older sections below describe historical architecture/data/setup,
+> not current training authorization or a universal benchmark. CROTTC full-paper reproduction and
+> SM13 matched common-development comparison remain open. No automatic training/sweeps on clone.
+
+## Research Lab (historical overview)
 
 An independent, autonomous, evidence-driven scientific research project discovering, designing, testing, and continuously improving English L2 phoneme-level pronunciation assessment methods.
 
 ## Core Capabilities
 - Phone-level diagnosis: `CORRECT`, `OMISSION`, `SUBSTITUTION`, `INSERTION`.
 - Target-conditioned deployment inference without oracle boundaries or labels.
-- Continuous auto-research loop powered by Pi / OMP native subagents.
-- Rigorous zero-leakage speaker-disjoint evaluation and weighted utility scoring.
+- Historical research tooling and controlled experiment runners; execution requires explicit scope and resource gates.
+- Speaker-disjoint/provenance checks with documented limitations; no blanket zero-leakage certification.
 
 **Phoneme-Level Mispronunciation Detection & Diagnosis (MDD) Pipeline, Reproducibility Audit, and Modeling Readiness**
 
-[![CI / Regression Tests](https://img.shields.io/badge/pytest-passing-brightgreen)](tests/)
+[![Scoped validation](https://img.shields.io/badge/tests-see_scoped_validation-blue)](reports/TEAM_ONBOARDING_20261114/VALIDATION.md)
 [![Python](https://img.shields.io/badge/Python-3.11%20%7C%203.14-blue)](pyproject.toml)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.14-orange)](requirements-lock.txt)
 [![License: MIT](https://img.shields.io/badge/Code%20License-MIT-yellow.svg)](LICENSE)
@@ -74,9 +82,15 @@ Langfens-RQ1-Speech-Research/
 
 ---
 
-## 3. Dual Execution Environments
+## 3. Historical Dual Execution Environments
 
-To balance bleeding-edge host compatibility with GPU training stability, the repository supports two verified environments:
+**Do not use this historical setup as the active runtime.** Current owner-machine CROTTC/SM13
+uses Python3.11/PyTorch2.6.0+cu124 and transformers4.57.0; see
+[ONBOARDING §9](ONBOARDING.md#9-môi-trường-và-bước-đầu-an-toàn) and the
+[effective environment inventory](environments/research-runtime-20261114.txt).
+`requirements-lock.txt` below is an older snapshot, not the current runtime lock.
+
+The following table/commands are retained as historical context:
 
 | Environment | Python | PyTorch | Device | Primary Purpose |
 | :--- | :---: | :---: | :---: | :--- |

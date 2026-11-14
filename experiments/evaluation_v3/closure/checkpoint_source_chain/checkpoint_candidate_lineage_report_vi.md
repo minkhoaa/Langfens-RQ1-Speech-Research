@@ -1,0 +1,7 @@
+# Xác minh chuỗi source cho ứng viên có checkpoint
+
+Chỉ source code tĩnh và đường dẫn checkpoint metadata trong root; không load/đọc weights, không chạy model, không đọc dữ liệu. Rà soát **34** candidate method có checkpoint: `{'VERIFIED_GOLD_CONDITIONED_INFERENCE': 34, 'STATIC_CANDIDATE_GOLD_CONDITIONING': 0}`. CSV/JSON ghi actual AST callsite, function/no_grad context, binding từ `item['target_m']`, cal/search source binding, builder source lines, dependency paths và SHA256 mọi source được dùng. Những hàng chưa đủ builder/split evidence giữ trạng thái candidate.
+
+Các builder source local (như M42/M44) tạo `target_m` bằng `get_articulatory_labels(target_p, gold_label, realized_p)` rồi truyền array sequence. Phần lớn nhánh dùng `build_hrtd_sequences` import từ M48; hàm này đọc realized mapping và `udata['y']` để tạo target_m. Callsite trong eval/predict truyền item target_m tại inference context. Cal/search được xác định từ source-level binding và caller, không mở cohort data. Mọi model-specific hashes/citations nằm trong CSV/JSON.
+
+**M68:** `extract_pyramid_features` lấy `durs = t_x[:,48]` rồi đổi sang cửa sổ audio bằng `p_f*160` (run.py khoảng :160-190). Feature dim 48 đến sau normalization của `build_hrtd_sequences`; nếu đó là normalized log-duration thì dùng như số frame vật lý có thể tạo cửa sổ không đúng về vật lý. Đây không phải gold-label leakage. Giữ nguyên hành vi native trong parity; chỉ sửa như experiment riêng sau khi có kiểm tra tương thích.
